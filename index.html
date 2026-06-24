@@ -147,7 +147,25 @@
     .ref-body { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); line-height: 2.1; }
     .ref-body .val { color: var(--text); }
 
-    footer { text-align: center; padding: 24px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); border-top: 1px solid var(--border); }
+    
+/* ── Search bar ── */
+.search-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.search-input-wrap { position: relative; flex: 1; max-width: 420px; }
+.search-input-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+#queue-search {
+  width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 12px 10px 38px; color: var(--text); font-family: 'Space Mono', monospace;
+  font-size: 12px; outline: none; transition: border-color .2s;
+}
+#queue-search:focus { border-color: var(--teal); }
+#queue-search::placeholder { color: var(--muted); }
+.search-count { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); white-space: nowrap; }
+.search-clear { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--purple); cursor: pointer; background: none; border: none; padding: 0; display: none; }
+.search-clear:hover { color: var(--purple2); }
+tr.search-hidden { display: none; }
+mark.hit { background: rgba(0,212,170,.25); color: var(--teal2); border-radius: 2px; padding: 0 1px; }
+
+footer { text-align: center; padding: 24px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); border-top: 1px solid var(--border); }
   </style>
 </head>
 <body>
@@ -186,6 +204,14 @@
     </table>
   </div>
   <div class="section-header">Agent Outreach Queue</div>
+  <div class="search-wrap">
+    <div class="search-input-wrap">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="queue-search" type="text" placeholder="Search by address, agent, market, type..." oninput="searchQueue(this.value)" />
+    </div>
+    <span class="search-count" id="search-count"></span>
+    <button class="search-clear" id="search-clear" onclick="clearSearch()">&#x2715; clear</button>
+  </div>
   <div class="table-wrap">
     <table>
       <thead><tr><th>Address</th><th>Market</th><th>Price</th><th>DOM</th><th>Type</th><th>Offer</th><th>Agent</th><th>Sent</th></tr></thead>
@@ -917,6 +943,141 @@ function setText(id, val) {
 }
 
 loadRunData();
+
+// ── Search ────────────────────────────────────────────────────────────────────
+// Searches the queue table (address, market, type, offer, agent, sent)
+// and the runs table (date, market, status) live as you type.
+// Highlights matched text in teal.
+
+let _rawQueue = [];   // stores original row data so we can re-render with highlights
+let _rawRuns  = [];
+
+// Override loadRunData to cache raw data
+const _origLoad = loadRunData;
+
+// After data loads we hook in — patched at bottom of loadRunData replacement below.
+// Instead, we override the two innerHTML assignments to also cache raw rows.
+
+function _cacheAndRender(tbodyId, rows) {
+  const tbody = document.getElementById(tbodyId);
+  if (!tbody) return;
+  if (tbodyId === 'queue-tbody') _rawQueue = rows;
+  if (tbodyId === 'runs-tbody')  _rawRuns  = rows;
+  tbody.innerHTML = rows.join('');
+  _updateSearchCount();
+}
+
+function searchQueue(q) {
+  q = q.trim().toLowerCase();
+  const clearBtn = document.getElementById('search-clear');
+  clearBtn.style.display = q ? 'inline' : 'none';
+
+  _filterTable('queue-tbody', _rawQueue, q);
+  _filterTable('runs-tbody',  _rawRuns,  q);
+  _updateSearchCount();
+}
+
+function _filterTable(tbodyId, rawRows, q) {
+  const tbody = document.getElementById(tbodyId);
+  if (!tbody) return;
+
+  if (!q) {
+    tbody.innerHTML = rawRows.join('');
+    return;
+  }
+
+  const highlighted = rawRows.map(rowHtml => {
+    // Check if this row matches
+    const plain = rowHtml.replace(/<[^>]+>/g, '').toLowerCase();
+    if (!plain.includes(q)) {
+      return rowHtml.replace('<tr', '<tr class="search-hidden"');
+    }
+    // Highlight matching text — only inside <td> content, not inside tags/attributes
+    return rowHtml.replace(/(<td[^>]*>)([\s\S]*?)(<\/td>)/g, (match, open, content, close) => {
+      const highlighted = content.replace(
+        new RegExp(q.replace(/[.*+?^${}()|[\]\]/g, '\$&'), 'gi'),
+        m => `<mark class="hit">${m}</mark>`
+      );
+      return open + highlighted + close;
+    });
+  });
+
+  tbody.innerHTML = highlighted.join('');
+}
+
+function clearSearch() {
+  const inp = document.getElementById('queue-search');
+  inp.value = '';
+  document.getElementById('search-clear').style.display = 'none';
+  searchQueue('');
+  inp.focus();
+}
+
+function _updateSearchCount() {
+  const q = (document.getElementById('queue-search')?.value || '').trim().toLowerCase();
+  const countEl = document.getElementById('search-count');
+  if (!countEl) return;
+
+  if (!q || !_rawQueue.length) {
+    countEl.textContent = _rawQueue.length
+      ? _rawQueue.length + ' leads'
+      : '';
+    return;
+  }
+
+  const visible = _rawQueue.filter(r => r.replace(/<[^>]+>/g, '').toLowerCase().includes(q)).length;
+  countEl.textContent = visible + ' of ' + _rawQueue.length + ' leads';
+}
+
+// ── Patch loadRunData to cache rows ──────────────────────────────────────────
+// We wrap the tbody.innerHTML assignments inside the existing loadRunData
+// by overriding MutationObserver-style: simply replace loadRunData entirely.
+const _patchedLoadRunData = async function() {
+  try {
+    const res = await fetch('./data/pipeline_log.json');
+    if (!res.ok) return;
+    const d = await res.json();
+
+    if (d.summary) {
+      const s = d.summary;
+      setText('s-total',  s.total_leads  ?? '—');
+      setText('s-emails', s.emails_sent  ?? '—');
+      setText('s-ghl',    s.ghl_pushed   ?? '—');
+      setText('s-of',     s.of_deals     ?? '—');
+      setText('s-cl',     s.cl_deals     ?? '—');
+      setText('s-last',   s.run_date     ?? '—');
+    }
+
+    if (d.runs?.length) {
+      const rows = d.runs.map(r => `
+        <tr>
+          <td>${r.date || '—'}</td><td>${r.market || '—'}</td>
+          <td>${r.leads ?? '—'}</td><td>${r.emails ?? '—'}</td>
+          <td>${r.of ?? 0} / ${r.cl ?? 0}</td><td>${r.ghl ?? '—'}</td>
+          <td><span class="badge ${r.status === 'OK' ? 'badge-new' : 'badge-of'}">${r.status || '—'}</span></td>
+        </tr>`);
+      _cacheAndRender('runs-tbody', rows);
+    }
+
+    if (d.queue?.length) {
+      const rows = d.queue.map(q => `
+        <tr>
+          <td>${q.address || '—'}</td><td>${q.market || '—'}</td>
+          <td>${q.price ? '$' + Number(q.price).toLocaleString() : '—'}</td>
+          <td>${q.dom ?? '—'}</td>
+          <td><span class="badge ${q.type === 'OF' ? 'badge-of' : 'badge-cl'}">${q.type || '—'}</span></td>
+          <td>${q.offer ? '$' + Number(q.offer).toLocaleString() : '—'}</td>
+          <td>${q.agent || '—'}</td><td>${q.sent || '—'}</td>
+        </tr>`);
+      _cacheAndRender('queue-tbody', rows);
+    }
+  } catch(e) { /* no data yet */ }
+};
+
+// Replace the original loadRunData call
+window.loadRunData = _patchedLoadRunData;
+_patchedLoadRunData();
+
 </script>
 </body>
 </html>
