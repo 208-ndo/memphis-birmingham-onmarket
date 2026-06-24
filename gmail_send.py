@@ -2,10 +2,13 @@ import smtplib
 import time
 import random
 import logging
+import os
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 from datetime import datetime
 from config import MARKETS, EMAIL
+from generate_offer_pdf import generate_offer_pdf
 
 log = logging.getLogger(__name__)
 
@@ -15,10 +18,12 @@ def send_email(
     to_email: str,
     subject: str,
     body: str,
+    pdf_path: str = None,
     dry_run: bool = False
 ) -> bool:
     """
     Send a single email via Gmail SMTP using App Password.
+    Attaches offer PDF if provided.
     Returns True on success, False on failure.
     """
     market = MARKETS[market_key]
@@ -34,25 +39,38 @@ def send_email(
         return False
 
     if dry_run:
-        log.info(f"[DRY RUN] Would send to {to_email} | Subject: {subject}")
+        log.info(f"[DRY RUN] Would send to {to_email} | Subject: {subject} | PDF: {pdf_path}")
         return True
 
     try:
-        msg = MIMEMultipart("alternative")
+        msg = MIMEMultipart("mixed")
         msg["Subject"] = subject
         msg["From"] = gmail_user
         msg["To"] = to_email
         msg["Reply-To"] = gmail_user
 
-        # Plain text version
-        part = MIMEText(body, "plain")
-        msg.attach(part)
+        # Attach plain text body
+        msg.attach(MIMEText(body, "plain"))
+
+        # Attach PDF offer if it exists
+        if pdf_path and os.path.exists(pdf_path):
+            with open(pdf_path, "rb") as f:
+                pdf_data = f.read()
+            pdf_part = MIMEApplication(pdf_data, _subtype="pdf")
+            pdf_filename = os.path.basename(pdf_path)
+            pdf_part.add_header(
+                "Content-Disposition",
+                "attachment",
+                filename=pdf_filename
+            )
+            msg.attach(pdf_part)
+            log.info(f"PDF attached: {pdf_filename}")
 
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
             server.login(gmail_user, gmail_password)
             server.sendmail(gmail_user, to_email, msg.as_string())
 
-        log.info(f"SENT: {to_email} | {subject}")
+        log.info(f"SENT: {to_email} | {subject} | PDF: {'yes' if pdf_path else 'no'}")
         return True
 
     except smtplib.SMTPAuthenticationError:
@@ -69,22 +87,24 @@ def send_email(
 def send_batch(leads_with_emails: list, market_key: str, dry_run: bool = False) -> list:
     """
     Send a batch of emails with staggered delays.
+    Generates PDF offer for each property and attaches it.
     Respects daily limit per account.
-    Tracks sent count and returns list of successfully sent leads.
+    Returns list of successfully sent leads.
     """
     daily_limit = EMAIL["daily_limit_per_account"]
     delay = EMAIL["delay_between_sends_sec"]
     sent_results = []
     sent_count = 0
 
-    log.info(f"Starting batch send: {len(leads_with_emails)} leads | Market: {market_key} | Limit: {daily_limit}")
+    log.info(f"Starting batch: {len(leads_with_emails)} leads | Market: {market_key} | Limit: {daily_limit}")
 
     for item in leads_with_emails:
         if sent_count >= daily_limit:
-            log.info(f"Daily limit reached ({daily_limit}) — stopping batch")
+            log.info(f"Daily limit reached ({daily_limit}) — stopping")
             break
 
         listing = item["listing"]
+        offer = item["offer"]
         email_draft = item["email"]
         to_email = listing.get("agent_email")
         subject = email_draft.get("subject", "Quick question")
@@ -94,11 +114,24 @@ def send_batch(leads_with_emails: list, market_key: str, dry_run: bool = False) 
             log.warning(f"No email for {listing.get('address')} — skipping")
             continue
 
+        # Generate PDF offer for this property
+        pdf_path = None
+        try:
+            pdf_path = generate_offer_pdf(listing, offer, output_dir="data/offers")
+            if pdf_path:
+                log.info(f"PDF ready: {pdf_path}")
+            else:
+                log.warning(f"PDF generation failed for {listing.get('address')} — sending without")
+        except Exception as e:
+            log.error(f"PDF error for {listing.get('address')}: {e}")
+
+        # Send email with PDF attached
         success = send_email(
             market_key=market_key,
             to_email=to_email,
             subject=subject,
             body=body,
+            pdf_path=pdf_path,
             dry_run=dry_run
         )
 
@@ -107,11 +140,20 @@ def send_batch(leads_with_emails: list, market_key: str, dry_run: bool = False) 
             sent_results.append({
                 "listing": listing,
                 "email": email_draft,
+                "offer": offer,
+                "pdf_path": pdf_path,
                 "sent_at": datetime.now().isoformat(),
                 "success": True
             })
 
-            # Staggered delay between sends — randomize to look human
+            # Clean up PDF after sending
+            if pdf_path and os.path.exists(pdf_path) and not dry_run:
+                try:
+                    os.remove(pdf_path)
+                except Exception:
+                    pass
+
+            # Staggered delay — randomized to look human
             if sent_count < daily_limit:
                 jitter = random.uniform(-15, 30)
                 sleep_time = max(60, delay + jitter)
@@ -121,6 +163,8 @@ def send_batch(leads_with_emails: list, market_key: str, dry_run: bool = False) 
             sent_results.append({
                 "listing": listing,
                 "email": email_draft,
+                "offer": offer,
+                "pdf_path": None,
                 "sent_at": datetime.now().isoformat(),
                 "success": False
             })
