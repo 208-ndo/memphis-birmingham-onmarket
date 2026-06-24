@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>229 Holdings | On-Market Pipeline</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: #2a2a3a;
+    --accent: #6c63ff;
+    --accent2: #00d4aa;
+    --accent3: #ff6b6b;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --hot: #ff4757;
+    --warm: #ffa502;
+    --cool: #5352ed;
+    --sent: #2ed573;
+    --memphis: #6c63ff;
+    --birmingham: #00d4aa;
+    --font: 'Inter', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-mark {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+    color: white;
+  }
+
+  .logo-text {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+  }
+
+  .logo-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .last-run {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--sent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* MAIN */
+  .main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px;
+  }
+
+  /* STATS ROW */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .stat-card.purple::before { background: var(--accent); }
+  .stat-card.teal::before { background: var(--accent2); }
+  .stat-card.red::before { background: var(--hot); }
+  .stat-card.orange::before { background: var(--warm); }
+  .stat-card.green::before { background: var(--sent); }
+  .stat-card.blue::before { background: var(--cool); }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    font-family: var(--mono);
+    letter-spacing: -1px;
+  }
+
+  .stat-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* MARKET TABS */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+    width: fit-content;
+  }
+
+  .tab {
+    padding: 8px 20px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+
+  .tab.active {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .tab.memphis.active { color: var(--memphis); }
+  .tab.birmingham.active { color: var(--birmingham); }
+
+  /* FILTERS */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .filters {
+    display: flex;
+    gap: 8px;
+  }
+
+  .filter-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+
+  .filter-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(108, 99, 255, 0.1);
+  }
+
+  .search-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    color: var(--text);
+    font-size: 13px;
+    width: 240px;
+    outline: none;
+  }
+
+  .search-box:focus {
+    border-color: var(--accent);
+  }
+
+  /* TABLE */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 14px 16px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  tr:hover td {
+    background: rgba(255,255,255,0.02);
+  }
+
+  .address-cell {
+    font-weight: 500;
+    max-width: 200px;
+  }
+
+  .address-link {
+    color: var(--text);
+    text-decoration: none;
+    display: block;
+  }
+
+  .address-link:hover { color: var(--accent); }
+
+  .address-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .price {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .offer-cell {
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .offer-of { color: var(--accent); }
+  .offer-cash { color: var(--accent2); }
+
+  /* TAGS */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  .tag-hot {
+    background: rgba(255, 71, 87, 0.15);
+    color: var(--hot);
+    border: 1px solid rgba(255, 71, 87, 0.3);
+  }
+
+  .tag-warm {
+    background: rgba(255, 165, 2, 0.15);
+    color: var(--warm);
+    border: 1px solid rgba(255, 165, 2, 0.3);
+  }
+
+  .tag-cool {
+    background: rgba(83, 82, 237, 0.15);
+    color: #7b7af5;
+    border: 1px solid rgba(83, 82, 237, 0.3);
+  }
+
+  .tag-sent {
+    background: rgba(46, 213, 115, 0.12);
+    color: var(--sent);
+    border: 1px solid rgba(46, 213, 115, 0.25);
+  }
+
+  .tag-pending {
+    background: rgba(107, 107, 138, 0.15);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  .tag-cut {
+    background: rgba(255, 107, 107, 0.1);
+    color: #ff8080;
+    border: 1px solid rgba(255, 107, 107, 0.2);
+  }
+
+  .tag-memphis {
+    background: rgba(108, 99, 255, 0.12);
+    color: var(--memphis);
+    border: 1px solid rgba(108, 99, 255, 0.25);
+  }
+
+  .tag-birmingham {
+    background: rgba(0, 212, 170, 0.12);
+    color: var(--birmingham);
+    border: 1px solid rgba(0, 212, 170, 0.25);
+  }
+
+  .dom-cell {
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+
+  .dom-high { color: var(--hot); }
+  .dom-med { color: var(--warm); }
+  .dom-low { color: var(--muted); }
+
+  .score-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: var(--mono);
+  }
+
+  .score-hot { background: rgba(255,71,87,0.2); color: var(--hot); }
+  .score-warm { background: rgba(255,165,2,0.2); color: var(--warm); }
+  .score-cool { background: rgba(83,82,237,0.2); color: #7b7af5; }
+
+  .agent-cell {
+    font-size: 12px;
+    max-width: 160px;
+  }
+
+  .agent-name { font-weight: 500; }
+  .agent-email {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 2px;
+    word-break: break-all;
+  }
+
+  /* EMPTY STATE */
+  .empty {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--muted);
+  }
+
+  .empty-icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+  .empty-sub { font-size: 13px; }
+
+  /* OVERFLOW BANNER */
+  .overflow-banner {
+    background: rgba(108, 99, 255, 0.08);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+  }
+
+  .overflow-dot {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 1100px) {
+    .stats-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .main { padding: 16px; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .header { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-mark">229</div>
+    <div>
+      <div class="logo-text">On-Market Pipeline</div>
+      <div class="logo-sub">Memphis · Birmingham</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="last-run" id="lastRun">Loading...</span>
+    <div class="live-dot"></div>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card purple">
+      <div class="stat-label">Total Leads</div>
+      <div class="stat-value" id="statTotal">0</div>
+      <div class="stat-sub">all markets</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">Emails Sent</div>
+      <div class="stat-value" id="statSent">0</div>
+      <div class="stat-sub">offers out</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-label">Hot Leads</div>
+      <div class="stat-value" id="statHot">0</div>
+      <div class="stat-sub">score 7+</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-label">Price Cuts</div>
+      <div class="stat-value" id="statCuts">0</div>
+      <div class="stat-sub">motivated sellers</div>
+    </div>
+    <div class="stat-card teal">
+      <div class="stat-label">Memphis</div>
+      <div class="stat-value" id="statMemphis">0</div>
+      <div class="stat-sub">leads today</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-label">Birmingham</div>
+      <div class="stat-value" id="statBirmingham">0</div>
+      <div class="stat-sub">leads today</div>
+    </div>
+  </div>
+
+  <!-- OVERFLOW BANNER -->
+  <div class="overflow-banner" id="overflowBanner" style="display:none">
+    <div class="overflow-dot"></div>
+    <span id="overflowText"></span>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="setMarket('all')">All Markets</button>
+    <button class="tab memphis" onclick="setMarket('memphis')">Memphis TN</button>
+    <button class="tab birmingham" onclick="setMarket('birmingham')">Birmingham AL</button>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="filters">
+      <button class="filter-btn active" onclick="setFilter('all')">All</button>
+      <button class="filter-btn" onclick="setFilter('hot')">🔴 Hot</button>
+      <button class="filter-btn" onclick="setFilter('warm')">🟡 Warm</button>
+      <button class="filter-btn" onclick="setFilter('sent')">✅ Sent</button>
+      <button class="filter-btn" onclick="setFilter('cut')">✂️ Price Cut</button>
+      <button class="filter-btn" onclick="setFilter('pending')">⏳ Pending</button>
+    </div>
+    <input class="search-box" type="text" placeholder="Search address or agent..." oninput="applySearch(this.value)">
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Market</th>
+          <th>Score</th>
+          <th>List Price</th>
+          <th>Our Offer</th>
+          <th>DOM</th>
+          <th>Views/Day</th>
+          <th>Signals</th>
+          <th>Agent</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="leadsTable">
+        <tr>
+          <td colspan="10">
+            <div class="empty">
+              <div class="empty-icon">⚡</div>
+              <div class="empty-title">Loading pipeline data...</div>
+              <div class="empty-sub">Data loads after first pipeline run</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  let allLeads = [];
+  let currentMarket = 'all';
+  let currentFilter = 'all';
+  let currentSearch = '';
+
+  function getScoreClass(score) {
+    if (score >= 7) return 'hot';
+    if (score >= 4) return 'warm';
+    return 'cool';
+  }
+
+  function getScoreBadge(score) {
+    const cls = getScoreClass(score);
+    return `<span class="score-badge score-${cls}">${score}</span>`;
+  }
+
+  function getScoreTag(score) {
+    const cls = getScoreClass(score);
+    const labels = { hot: '🔴 HOT', warm: '🟡 WARM', cool: '⚪ COOL' };
+    return `<span class="tag tag-${cls}">${labels[cls]}</span>`;
+  }
+
+  function formatPrice(p) {
+    if (!p) return '—';
+    return '$' + Number(p).toLocaleString();
+  }
+
+  function formatDOM(dom) {
+    let cls = dom >= 90 ? 'dom-high' : dom >= 60 ? 'dom-med' : 'dom-low';
+    return `<span class="dom-cell ${cls}">${dom}d</span>`;
+  }
+
+  function renderRow(lead) {
+    const market = lead.market || '';
+    const score = lead.score || 0;
+    const sent = lead.email_sent;
+    const hasCut = lead.has_price_cut;
+
+    const signals = [];
+    if (hasCut) signals.push(`<span class="tag tag-cut">✂️ Cut</span>`);
+    if (lead.days_on_market >= 90) signals.push(`<span class="tag tag-hot">90+ Days</span>`);
+
+    const offerHtml = lead.owner_finance_offer
+      ? `<div class="offer-cell offer-of">OF: ${formatPrice(lead.owner_finance_offer)}</div>
+         <div class="offer-cell offer-cash">CA: ${formatPrice(lead.cash_offer)}</div>`
+      : '—';
+
+    const statusTag = sent
+      ? `<span class="tag tag-sent">✅ Sent</span>`
+      : `<span class="tag tag-pending">⏳ Pending</span>`;
+
+    const marketTag = market === 'memphis'
+      ? `<span class="tag tag-memphis">Memphis</span>`
+      : `<span class="tag tag-birmingham">Birmingham</span>`;
+
+    const zillow = lead.zillow_url
+      ? `<a class="address-link" href="${lead.zillow_url}" target="_blank">${lead.address}</a>`
+      : `<span class="address-link">${lead.address}</span>`;
+
+    return `<tr data-market="${market}" data-score="${score}" data-sent="${sent}" data-cut="${hasCut}">
+      <td class="address-cell">
+        ${zillow}
+        <div class="address-sub">${lead.pipeline_date || ''}</div>
+      </td>
+      <td>${marketTag}</td>
+      <td>${getScoreBadge(score)}</td>
+      <td class="price">${formatPrice(lead.list_price)}</td>
+      <td>${offerHtml}</td>
+      <td>${formatDOM(lead.days_on_market)}</td>
+      <td class="price">${lead.views_per_day || 0}</td>
+      <td>${signals.join(' ') || '<span style="color:var(--muted)">—</span>'}</td>
+      <td class="agent-cell">
+        <div class="agent-name">${lead.agent_name || '—'}</div>
+        <div class="agent-email">${lead.agent_email || ''}</div>
+      </td>
+      <td>${statusTag}</td>
+    </tr>`;
+  }
+
+  function applyFilters() {
+    let filtered = [...allLeads];
+
+    if (currentMarket !== 'all') {
+      filtered = filtered.filter(l => l.market === currentMarket);
+    }
+
+    if (currentFilter === 'hot') filtered = filtered.filter(l => (l.score || 0) >= 7);
+    else if (currentFilter === 'warm') filtered = filtered.filter(l => (l.score || 0) >= 4 && (l.score || 0) < 7);
+    else if (currentFilter === 'sent') filtered = filtered.filter(l => l.email_sent);
+    else if (currentFilter === 'pending') filtered = filtered.filter(l => !l.email_sent);
+    else if (currentFilter === 'cut') filtered = filtered.filter(l => l.has_price_cut);
+
+    if (currentSearch) {
+      const s = currentSearch.toLowerCase();
+      filtered = filtered.filter(l =>
+        (l.address || '').toLowerCase().includes(s) ||
+        (l.agent_name || '').toLowerCase().includes(s) ||
+        (l.agent_email || '').toLowerCase().includes(s)
+      );
+    }
+
+    const tbody = document.getElementById('leadsTable');
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="10"><div class="empty">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-title">No leads match this filter</div>
+        <div class="empty-sub">Try a different filter or market</div>
+      </div></td></tr>`;
+    } else {
+      tbody.innerHTML = filtered.map(renderRow).join('');
+    }
+  }
+
+  function setMarket(m) {
+    currentMarket = m;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    applyFilters();
+  }
+
+  function setFilter(f) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    applyFilters();
+  }
+
+  function applySearch(val) {
+    currentSearch = val;
+    applyFilters();
+  }
+
+  function updateStats(leads) {
+    const total = leads.length;
+    const sent = leads.filter(l => l.email_sent).length;
+    const hot = leads.filter(l => (l.score || 0) >= 7).length;
+    const cuts = leads.filter(l => l.has_price_cut).length;
+    const memphis = leads.filter(l => l.market === 'memphis').length;
+    const birmingham = leads.filter(l => l.market === 'birmingham').length;
+
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statSent').textContent = sent;
+    document.getElementById('statHot').textContent = hot;
+    document.getElementById('statCuts').textContent = cuts;
+    document.getElementById('statMemphis').textContent = memphis;
+    document.getElementById('statBirmingham').textContent = birmingham;
+  }
+
+  async function loadData() {
+    const markets = ['memphis', 'birmingham'];
+    let combined = [];
+    let lastRun = null;
+
+    for (const market of markets) {
+      try {
+        const resp = await fetch(`data/${market}_leads.json?t=${Date.now()}`);
+        if (resp.ok) {
+          const data = await resp.json();
+          combined = combined.concat(data);
+          if (data.length > 0 && data[0].scraped_at) {
+            const d = new Date(data[0].scraped_at);
+            if (!lastRun || d > lastRun) lastRun = d;
+          }
+        }
+      } catch (e) {
+        console.log(`No data for ${market} yet`);
+      }
+    }
+
+    // Sort by score desc
+    combined.sort((a, b) => (b.score || 0) - (a.score || 0));
+    allLeads = combined;
+
+    if (lastRun) {
+      document.getElementById('lastRun').textContent =
+        'Last run: ' + lastRun.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    } else {
+      document.getElementById('lastRun').textContent = 'Awaiting first run';
+    }
+
+    updateStats(combined);
+
+    // Check overflow
+    try {
+      const ov = await fetch('data/overflow.json');
+      if (ov.ok) {
+        const ovData = await ov.json();
+        if (ovData.length > 0) {
+          document.getElementById('overflowBanner').style.display = 'flex';
+          document.getElementById('overflowText').textContent =
+            `${ovData.length} leads saved in overflow — will send tomorrow to stay under daily limit`;
+        }
+      }
+    } catch (e) {}
+
+    applyFilters();
+  }
+
+  loadData();
+  setInterval(loadData, 300000); // Refresh every 5 min
+</script>
+</body>
+</html>
