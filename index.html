@@ -7,209 +7,152 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg:     #0a0a0f;
-      --bg2:    #12121a;
-      --bg3:    #1a1a26;
-      --border: #2a2a3a;
-      --purple: #6c63ff;
-      --purple2:#8b84ff;
-      --teal:   #00d4aa;
-      --teal2:  #00ffcc;
-      --red:    #ff4757;
-      --yellow: #ffd700;
-      --text:   #e8e8f0;
-      --muted:  #7a7a9a;
-      --green:  #00e676;
-      --orange: #ff8c00;
+      --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a26;--border:#2a2a3a;
+      --purple:#6c63ff;--purple2:#8b84ff;--teal:#00d4aa;--teal2:#00ffcc;
+      --red:#ff4757;--yellow:#ffd700;--text:#e8e8f0;--muted:#7a7a9a;--green:#00e676;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: 'Barlow Condensed', sans-serif; font-size: 16px; min-height: 100vh; }
-
-    /* ── Header ── */
-    header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; }
-    .logo { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; letter-spacing: 1px; color: var(--teal); }
-    .logo span { color: var(--purple); }
-    .header-meta { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); text-align: right; line-height: 1.6; }
-    .live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green); margin-right: 5px; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
-
-    /* ── Tabs ── */
-    .tab-bar { background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; padding: 0 32px; overflow-x: auto; }
-    .tab { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); padding: 14px 22px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: color .2s, border-color .2s; }
-    .tab:hover { color: var(--text); }
-    .tab.active { color: var(--teal); border-bottom-color: var(--teal); }
-    .tab.deal-tab.active { color: var(--purple); border-bottom-color: var(--purple); }
-
-    /* ── Panels ── */
-    .panel { display: none; padding: 32px; }
-    .panel.active { display: block; }
-
-    /* ── Stat grid ── */
-    .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; margin-bottom: 32px; }
-    .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
-    .stat-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-    .stat-value { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; line-height: 1; }
-    .stat-value.purple{color:var(--purple)} .stat-value.teal{color:var(--teal)} .stat-value.yellow{color:var(--yellow)} .stat-value.red{color:var(--red)} .stat-value.green{color:var(--green)}
-
-    /* ── Section headers ── */
-    .section-header { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-
-    /* ── Tables ── */
-    .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 32px; }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    thead th { background: var(--bg3); font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
-    tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
-    tbody tr:last-child { border-bottom: none; }
-    tbody tr:hover { background: var(--bg3); }
-    tbody td { padding: 10px 14px; }
-    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; }
-    .badge-of{background:rgba(108,99,255,.2);color:var(--purple)} .badge-cl{background:rgba(0,212,170,.2);color:var(--teal)} .badge-new{background:rgba(0,230,118,.15);color:var(--green)}
-
-    /* ── Search ── */
-    .search-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-    .search-input-wrap { position: relative; flex: 1; max-width: 420px; }
-    .search-input-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; }
-    #queue-search { width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px 10px 38px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 12px; outline: none; transition: border-color .2s; }
-    #queue-search:focus { border-color: var(--teal); }
-    #queue-search::placeholder { color: var(--muted); }
-    .search-count { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); white-space: nowrap; }
-    .search-clear { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--purple); cursor: pointer; background: none; border: none; padding: 0; display: none; }
-    tr.search-hidden { display: none; }
-    mark.hit { background: rgba(0,212,170,.25); color: var(--teal2); border-radius: 2px; padding: 0 1px; }
-
-    /* ═══ DEAL ANALYZER ═══ */
-    /* Sub-tab bar inside analyzer */
-    .sub-tab-bar { display: flex; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
-    .sub-tab { font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 9px 18px; border-radius: 6px; border: 1px solid var(--border); color: var(--muted); cursor: pointer; transition: all .2s; background: var(--bg2); }
-    .sub-tab:hover { color: var(--text); border-color: var(--text); }
-    .sub-tab.active-of { background: rgba(108,99,255,.15); color: var(--purple); border-color: var(--purple); }
-    .sub-tab.active-cl { background: rgba(0,212,170,.15); color: var(--teal); border-color: var(--teal); }
-    .sub-panel { display: none; }
-    .sub-panel.active { display: block; }
-
-    /* calc card */
-    .calc-grid { display: grid; grid-template-columns: 380px 1fr; gap: 24px; align-items: start; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:'Barlow Condensed',sans-serif;font-size:16px;min-height:100vh}
+    header{background:var(--bg2);border-bottom:1px solid var(--border);padding:18px 32px;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:1px;color:var(--teal)}
+    .logo span{color:var(--purple)}
+    .header-meta{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-align:right;line-height:1.6}
+    .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:5px;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+    .tab-bar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;padding:0 32px;overflow-x:auto}
+    .tab{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:14px 22px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color .2s,border-color .2s}
+    .tab:hover{color:var(--text)}
+    .tab.active{color:var(--teal);border-bottom-color:var(--teal)}
+    .tab.deal-tab.active{color:var(--purple);border-bottom-color:var(--purple)}
+    .panel{display:none;padding:32px}
+    .panel.active{display:block}
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px;margin-bottom:32px}
+    .stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+    .stat-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+    .stat-value{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1}
+    .stat-value.purple{color:var(--purple)}.stat-value.teal{color:var(--teal)}.stat-value.yellow{color:var(--yellow)}.stat-value.red{color:var(--red)}.stat-value.green{color:var(--green)}
+    .section-header{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+    .table-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-bottom:32px}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    thead th{background:var(--bg3);font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+    tbody tr:last-child{border-bottom:none}
+    tbody tr:hover{background:var(--bg3)}
+    tbody td{padding:10px 14px}
+    .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-family:'Space Mono',monospace;font-size:10px;font-weight:700}
+    .badge-of{background:rgba(108,99,255,.2);color:var(--purple)}.badge-cl{background:rgba(0,212,170,.2);color:var(--teal)}.badge-new{background:rgba(0,230,118,.15);color:var(--green)}
+    .search-wrap{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+    .search-input-wrap{position:relative;flex:1;max-width:420px}
+    .search-input-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none}
+    #queue-search{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px 10px 38px;color:var(--text);font-family:'Space Mono',monospace;font-size:12px;outline:none;transition:border-color .2s}
+    #queue-search:focus{border-color:var(--teal)}
+    #queue-search::placeholder{color:var(--muted)}
+    .search-count{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);white-space:nowrap}
+    .search-clear{font-family:'Space Mono',monospace;font-size:10px;color:var(--purple);cursor:pointer;background:none;border:none;padding:0;display:none}
+    tr.search-hidden{display:none}
+    mark.hit{background:rgba(0,212,170,.25);color:var(--teal2);border-radius:2px;padding:0 1px}
+    .sub-tab-bar{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+    .sub-tab{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:9px 18px;border-radius:6px;border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .2s;background:var(--bg2)}
+    .sub-tab:hover{color:var(--text);border-color:var(--text)}
+    .sub-tab.active-of{background:rgba(108,99,255,.15);color:var(--purple);border-color:var(--purple)}
+    .sub-tab.active-cl{background:rgba(0,212,170,.15);color:var(--teal);border-color:var(--teal)}
+    .sub-panel{display:none}
+    .sub-panel.active{display:block}
+    .calc-grid{display:grid;grid-template-columns:380px 1fr;gap:24px;align-items:start}
     @media(max-width:900px){.calc-grid{grid-template-columns:1fr}}
-    .calc-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 28px; }
-    .calc-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; margin-bottom: 4px; }
-    .calc-title.purple{color:var(--purple)} .calc-title.teal{color:var(--teal)}
-    .calc-subtitle { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 22px; }
-
-    /* inputs */
-    .field-group { margin-bottom: 14px; }
-    .field-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
-    .field-hint { font-size: 9px; color: var(--purple); }
-    .teal-card .field-hint { color: var(--teal); }
-    .field-row { display: flex; gap: 10px; }
-    .field-group input, .field-group select { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 13px; outline: none; transition: border-color .2s; }
-    .field-group input:focus, .field-group select:focus { border-color: var(--purple); }
-    .teal-card .field-group input:focus { border-color: var(--teal); }
-    .field-group select option { background: var(--bg3); }
-
-    .calc-btn { width: 100%; padding: 13px; border: none; border-radius: 8px; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1px; cursor: pointer; margin-top: 6px; transition: opacity .2s, transform .1s; }
-    .calc-btn:hover{opacity:.88} .calc-btn:active{transform:scale(.98)}
+    .calc-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:28px}
+    .calc-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:4px}
+    .calc-title.purple{color:var(--purple)}.calc-title.teal{color:var(--teal)}
+    .calc-subtitle{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:22px}
+    .field-group{margin-bottom:14px}
+    .field-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center}
+    .field-hint{font-size:9px;color:var(--purple)}
+    .teal-card .field-hint{color:var(--teal)}
+    .field-row{display:flex;gap:10px}
+    .field-group input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 12px;color:var(--text);font-family:'Space Mono',monospace;font-size:13px;outline:none;transition:border-color .2s}
+    .field-group input:focus{border-color:var(--purple)}
+    .teal-card .field-group input:focus{border-color:var(--teal)}
+    .calc-btn{width:100%;padding:13px;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;margin-top:6px;transition:opacity .2s,transform .1s}
+    .calc-btn:hover{opacity:.88}.calc-btn:active{transform:scale(.98)}
     .calc-btn.purple-btn{background:var(--purple);color:#fff}
     .calc-btn.teal-btn{background:var(--teal);color:#0a0a0f}
-
-    /* results numbers */
-    .results-box { margin-top: 20px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 20px; display: none; }
-    .result-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-    .result-row:last-child { border-bottom: none; }
-    .result-row.hl { background: rgba(108,99,255,.05); border-radius: 4px; padding: 8px 6px; margin: 2px -6px; }
-    .teal-card .result-row.hl { background: rgba(0,212,170,.05); }
-    .result-label { color: var(--muted); font-family: 'Space Mono', monospace; font-size: 10px; }
-    .result-value { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; }
-    .result-value.purple{color:var(--purple2)} .result-value.teal{color:var(--teal2)} .result-value.yellow{color:var(--yellow)} .result-value.green{color:var(--green)} .result-value.red{color:var(--red)} .result-value.muted{color:var(--muted)} .result-value.orange{color:var(--orange)}
-    .divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
-    .pitch-check { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; padding: 12px 16px; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; text-align: center; }
+    .results-box{margin-top:20px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;display:none}
+    .result-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+    .result-row:last-child{border-bottom:none}
+    .result-row.hl{background:rgba(108,99,255,.05);border-radius:4px;padding:8px 6px;margin:2px -6px}
+    .teal-card .result-row.hl{background:rgba(0,212,170,.05)}
+    .result-label{color:var(--muted);font-family:'Space Mono',monospace;font-size:10px}
+    .result-value{font-family:'Syne',sans-serif;font-weight:700;font-size:15px}
+    .result-value.purple{color:var(--purple2)}.result-value.teal{color:var(--teal2)}.result-value.yellow{color:var(--yellow)}.result-value.green{color:var(--green)}.result-value.red{color:var(--red)}.result-value.muted{color:var(--muted)}
+    .divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+    .pitch-check{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;padding:12px 16px;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;text-align:center}
     .pitch-check.pass{background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.25)}
     .pitch-check.fail{background:rgba(255,71,87,.1);color:var(--red);border:1px solid rgba(255,71,87,.25)}
-    .pitch-breakdown { margin-top: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); line-height: 1.9; display: none; }
-    .pitch-breakdown .hi{color:var(--teal);font-weight:700} .pitch-breakdown .hi.p{color:var(--purple)}
-
-    /* ── Offer Output Panel ── */
-    .output-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 28px; }
-    .output-view-tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
-    .ovt-btn { font-family: 'Space Mono', monospace; font-size: 10px; padding: 6px 14px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg3); color: var(--muted); cursor: pointer; transition: all .15s; letter-spacing: .5px; }
-    .ovt-btn.active { background: var(--purple); border-color: var(--purple); color: #fff; }
-    .ovt-btn:hover:not(.active) { color: var(--text); border-color: var(--muted); }
-
-    /* Executive view */
-    .offer-doc { background: #fff; border-radius: 8px; padding: 32px; color: #1a1a1a; font-family: 'Barlow Condensed', sans-serif; min-height: 200px; }
-    .offer-doc .od-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #6c63ff; padding-bottom: 16px; margin-bottom: 20px; }
-    .offer-doc .od-brand { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: #6c63ff; }
-    .offer-doc .od-brand span { color: #0a0a0f; }
-    .offer-doc .od-type { font-family: 'Space Mono', monospace; font-size: 10px; color: #7a7a9a; letter-spacing: 2px; text-transform: uppercase; text-align: right; }
-    .offer-doc .od-address { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
-    .offer-doc .od-date { font-family: 'Space Mono', monospace; font-size: 10px; color: #7a7a9a; margin-bottom: 20px; }
-    .offer-doc .od-section { margin-bottom: 18px; }
-    .offer-doc .od-label { font-family: 'Space Mono', monospace; font-size: 9px; color: #7a7a9a; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
-    .offer-doc .od-value { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: #6c63ff; }
-    .offer-doc .od-value.teal { color: #00a88a; }
-    .offer-doc .od-value.dark { color: #1a1a1a; font-size: 16px; }
-    .offer-doc .od-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
-    .offer-doc .od-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 18px; }
-    .offer-doc .od-box { background: #f8f7ff; border: 1px solid #e8e4ff; border-radius: 6px; padding: 12px 14px; }
-    .offer-doc .od-box.teal-box { background: #f0fefb; border-color: #b3f0e6; }
-    .offer-doc .od-comm-banner { background: #1a1a26; border-left: 4px solid #00d4aa; border-radius: 6px; padding: 14px 16px; margin-bottom: 18px; }
-    .offer-doc .od-comm-banner .od-comm-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: #00d4aa; margin-bottom: 4px; }
-    .offer-doc .od-comm-banner .od-comm-body { font-family: 'Space Mono', monospace; font-size: 10px; color: #a0a0c0; line-height: 1.7; }
-    .offer-doc .od-legal { font-family: 'Space Mono', monospace; font-size: 10px; color: #7a7a9a; line-height: 1.8; border-top: 1px solid #e8e8f0; padding-top: 14px; margin-top: 14px; }
-    .offer-doc .od-sig { display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid #e8e8f0; padding-top: 16px; margin-top: 16px; }
-    .offer-doc .od-sig-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; color: #1a1a1a; }
-    .offer-doc .od-sig-co { font-family: 'Space Mono', monospace; font-size: 10px; color: #7a7a9a; }
-
-    /* Direct view */
-    .offer-direct { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 15px; line-height: 1.8; color: var(--text); white-space: pre-wrap; }
-
-    /* Copy button */
-    .copy-btn { margin-top: 12px; padding: 9px 20px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg3); color: var(--muted); font-family: 'Space Mono', monospace; font-size: 10px; cursor: pointer; transition: all .15s; }
-    .copy-btn:hover { color: var(--text); border-color: var(--text); }
-    .copy-btn.copied { color: var(--green); border-color: var(--green); }
-
-    /* ── Email previewer ── */
-    .email-gen-section { margin-top: 28px; border-top: 1px solid var(--border); padding-top: 24px; }
-    .email-preview-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-top: 12px; min-height: 80px; }
-    .email-meta { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-    .email-body { font-family: 'Barlow Condensed', sans-serif; font-size: 15px; line-height: 1.7; color: var(--text); white-space: pre-wrap; }
-    .email-tabs { display: flex; gap: 6px; margin-bottom: 0; flex-wrap: wrap; }
-    .email-tab-btn { font-family: 'Space Mono', monospace; font-size: 10px; padding: 5px 12px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg3); color: var(--muted); cursor: pointer; transition: all .15s; }
-    .email-tab-btn.active { background: var(--purple); border-color: var(--purple); color: #fff; }
-    .email-tab-btn:hover:not(.active) { color: var(--text); border-color: var(--text); }
-    .loading-shimmer { background: linear-gradient(90deg,var(--bg3) 25%,var(--border) 50%,var(--bg3) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 4px; height: 14px; margin: 6px 0; }
+    .pitch-breakdown{margin-top:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);line-height:1.9;display:none}
+    .pitch-breakdown .hi{color:var(--teal);font-weight:700}.pitch-breakdown .hi.p{color:var(--purple)}
+    .output-panel{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:28px}
+    .output-view-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+    .ovt-btn{font-family:'Space Mono',monospace;font-size:10px;padding:6px 14px;border-radius:4px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .15s;letter-spacing:.5px}
+    .ovt-btn.active{background:var(--purple);border-color:var(--purple);color:#fff}
+    .ovt-btn:hover:not(.active){color:var(--text);border-color:var(--muted)}
+    .offer-doc{background:#fff;border-radius:8px;padding:32px;color:#1a1a1a;font-family:'Barlow Condensed',sans-serif;min-height:200px}
+    .od-header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #6c63ff;padding-bottom:16px;margin-bottom:20px}
+    .od-brand{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#6c63ff}
+    .od-brand span{color:#0a0a0f}
+    .od-type{font-family:'Space Mono',monospace;font-size:10px;color:#7a7a9a;letter-spacing:2px;text-transform:uppercase;text-align:right}
+    .od-address{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#1a1a1a;margin-bottom:4px}
+    .od-date{font-family:'Space Mono',monospace;font-size:10px;color:#7a7a9a;margin-bottom:20px}
+    .od-label{font-family:'Space Mono',monospace;font-size:9px;color:#7a7a9a;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px}
+    .od-value{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#6c63ff}
+    .od-value.teal{color:#00a88a}.od-value.dark{color:#1a1a1a;font-size:16px}
+    .od-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+    .od-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:18px}
+    .od-box{background:#f8f7ff;border:1px solid #e8e4ff;border-radius:6px;padding:12px 14px}
+    .od-box.teal-box{background:#f0fefb;border-color:#b3f0e6}
+    .od-comm-banner{background:#1a1a26;border-left:4px solid #00d4aa;border-radius:6px;padding:14px 16px;margin-bottom:18px}
+    .od-comm-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#00d4aa;margin-bottom:4px}
+    .od-comm-body{font-family:'Space Mono',monospace;font-size:10px;color:#a0a0c0;line-height:1.7}
+    .od-legal{font-family:'Space Mono',monospace;font-size:10px;color:#7a7a9a;line-height:1.8;border-top:1px solid #e8e8f0;padding-top:14px;margin-top:14px}
+    .od-sig{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid #e8e8f0;padding-top:16px;margin-top:16px}
+    .od-sig-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#1a1a1a}
+    .od-sig-co{font-family:'Space Mono',monospace;font-size:10px;color:#7a7a9a}
+    .offer-direct{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;font-family:'Barlow Condensed',sans-serif;font-size:15px;line-height:1.8;color:var(--text);white-space:pre-wrap}
+    .copy-btn{margin-top:12px;padding:9px 20px;border:1px solid var(--border);border-radius:6px;background:var(--bg3);color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;transition:all .15s}
+    .copy-btn:hover{color:var(--text);border-color:var(--text)}
+    .copy-btn.copied{color:var(--green);border-color:var(--green)}
+    .email-gen-section{margin-top:28px;border-top:1px solid var(--border);padding-top:24px}
+    .email-preview-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;margin-top:12px;min-height:80px}
+    .email-meta{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:8px}
+    .email-body{font-family:'Barlow Condensed',sans-serif;font-size:15px;line-height:1.7;color:var(--text);white-space:pre-wrap}
+    .email-tabs{display:flex;gap:6px;margin-bottom:0;flex-wrap:wrap}
+    .email-tab-btn{font-family:'Space Mono',monospace;font-size:10px;padding:5px 12px;border-radius:4px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .15s}
+    .email-tab-btn.active{background:var(--purple);border-color:var(--purple);color:#fff}
+    .email-tab-btn:hover:not(.active){color:var(--text);border-color:var(--text)}
+    .loading-shimmer{background:linear-gradient(90deg,var(--bg3) 25%,var(--border) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:4px;height:14px;margin:6px 0}
     @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-    /* ── Quick ref ── */
-    .ref-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 32px; }
+    .ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px}
     @media(max-width:700px){.ref-grid{grid-template-columns:1fr}}
-    .ref-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
-    .ref-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; margin-bottom: 12px; }
-    .ref-title.p{color:var(--purple)} .ref-title.t{color:var(--teal)}
-    .ref-body { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); line-height: 2.1; }
-    .ref-body .val { color: var(--text); }
-
-    footer { text-align: center; padding: 24px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); border-top: 1px solid var(--border); }
+    .ref-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px}
+    .ref-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:12px}
+    .ref-title.p{color:var(--purple)}.ref-title.t{color:var(--teal)}
+    .ref-body{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);line-height:2.1}
+    .ref-body .val{color:var(--text)}
+    footer{text-align:center;padding:24px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);border-top:1px solid var(--border)}
   </style>
 </head>
 <body>
-
 <header>
   <div class="logo">229 <span>Holdings</span></div>
-  <div class="header-meta">
-    <span class="live-dot"></span>PIPELINE LIVE<br>
-    Memphis TN &amp; Birmingham AL<br>
-    Auto-fires Tue / Wed / Thu 8AM CT
-  </div>
+  <div class="header-meta"><span class="live-dot"></span>PIPELINE LIVE<br>Memphis TN &amp; Birmingham AL<br>Auto-fires Tue / Wed / Thu 8AM CT</div>
 </header>
-
 <div class="tab-bar">
-  <div class="tab active"   onclick="switchTab(event,'all')">All Markets</div>
-  <div class="tab"          onclick="switchTab(event,'memphis')">Memphis TN</div>
-  <div class="tab"          onclick="switchTab(event,'birmingham')">Birmingham AL</div>
+  <div class="tab active" onclick="switchTab(event,'all')">All Markets</div>
+  <div class="tab" onclick="switchTab(event,'memphis')">Memphis TN</div>
+  <div class="tab" onclick="switchTab(event,'birmingham')">Birmingham AL</div>
   <div class="tab deal-tab" onclick="switchTab(event,'analyzer')">Deal Analyzer</div>
 </div>
 
-<!-- ═══════ ALL MARKETS ═══════ -->
+<!-- ALL MARKETS -->
 <div class="panel active" id="panel-all">
   <div class="stat-grid">
     <div class="stat-card"><div class="stat-label">Total Leads Scraped</div><div class="stat-value purple" id="s-total">—</div></div>
@@ -220,10 +163,8 @@
     <div class="stat-card"><div class="stat-label">Last Run</div><div class="stat-value green" style="font-size:16px" id="s-last">—</div></div>
   </div>
   <div class="section-header">Recent Pipeline Runs</div>
-  <div class="table-wrap">
-    <table><thead><tr><th>Date</th><th>Market</th><th>Leads</th><th>Emails</th><th>OF / CL</th><th>GHL</th><th>Status</th></tr></thead>
-    <tbody id="runs-tbody"><tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px">No run data yet. Pipeline auto-fires Tue/Wed/Thu 8AM CT.</td></tr></tbody></table>
-  </div>
+  <div class="table-wrap"><table><thead><tr><th>Date</th><th>Market</th><th>Leads</th><th>Emails</th><th>OF / CL</th><th>GHL</th><th>Status</th></tr></thead>
+  <tbody id="runs-tbody"><tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px">No run data yet. Pipeline auto-fires Tue/Wed/Thu 8AM CT.</td></tr></tbody></table></div>
   <div class="section-header">Agent Outreach Queue</div>
   <div class="search-wrap">
     <div class="search-input-wrap">
@@ -233,13 +174,11 @@
     <span class="search-count" id="search-count"></span>
     <button class="search-clear" id="search-clear" onclick="clearSearch()">&#x2715; clear</button>
   </div>
-  <div class="table-wrap">
-    <table><thead><tr><th>Address</th><th>Market</th><th>Price</th><th>DOM</th><th>Type</th><th>Offer</th><th>Agent</th><th>Sent</th></tr></thead>
-    <tbody id="queue-tbody"><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">Queue populates after first live run.</td></tr></tbody></table>
-  </div>
+  <div class="table-wrap"><table><thead><tr><th>Address</th><th>Market</th><th>Price</th><th>DOM</th><th>Type</th><th>Offer</th><th>Agent</th><th>Sent</th></tr></thead>
+  <tbody id="queue-tbody"><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">Queue populates after first live run.</td></tr></tbody></table></div>
 </div>
 
-<!-- ═══════ MEMPHIS ═══════ -->
+<!-- MEMPHIS -->
 <div class="panel" id="panel-memphis">
   <div class="stat-grid">
     <div class="stat-card"><div class="stat-label">Memphis Leads</div><div class="stat-value purple">—</div></div>
@@ -253,7 +192,7 @@
   <tbody><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">Memphis leads populate after first run.</td></tr></tbody></table></div>
 </div>
 
-<!-- ═══════ BIRMINGHAM ═══════ -->
+<!-- BIRMINGHAM -->
 <div class="panel" id="panel-birmingham">
   <div class="stat-grid">
     <div class="stat-card"><div class="stat-label">Birmingham Leads</div><div class="stat-value purple">—</div></div>
@@ -267,68 +206,37 @@
   <tbody><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">Birmingham leads populate after first run.</td></tr></tbody></table></div>
 </div>
 
-<!-- ═══════ DEAL ANALYZER ═══════ -->
+<!-- DEAL ANALYZER -->
 <div class="panel" id="panel-analyzer">
   <div class="section-header" style="margin-bottom:20px">Deal Analyzer — 229 Holdings</div>
-
-  <!-- Sub-tabs -->
   <div class="sub-tab-bar">
     <div class="sub-tab active-of" id="stab-of" onclick="switchSubTab('of')">&#127968; Owner Finance / Creative</div>
     <div class="sub-tab" id="stab-cl" onclick="switchSubTab('cl')">&#128176; Cash Lowball</div>
   </div>
 
-  <!-- ═══ OWNER FINANCE / CREATIVE ═══ -->
+  <!-- OF SUB-PANEL -->
   <div class="sub-panel active" id="sub-of">
     <div class="calc-grid">
-
-      <!-- LEFT: Inputs -->
       <div class="calc-card" id="of-card">
         <div class="calc-title purple">Creative Offer</div>
         <div class="calc-subtitle">Seller Finance — Flip Man KISS</div>
-
-        <div class="field-group">
-          <div class="field-label">Property Address <span class="field-hint">for offer doc</span></div>
-          <input type="text" id="of-address" placeholder="123 Main St, Memphis TN 38104" />
-        </div>
-        <div class="field-group">
-          <div class="field-label">List / Purchase Price ($) <span class="field-hint">offer = full list</span></div>
-          <input type="number" id="of-price" placeholder="55000" oninput="clearOF()" />
+        <div class="field-group"><div class="field-label">Property Address <span class="field-hint">for offer doc</span></div><input type="text" id="of-address" placeholder="123 Main St, Memphis TN 38104" /></div>
+        <div class="field-group"><div class="field-label">List / Purchase Price ($) <span class="field-hint">offer = full list</span></div><input type="number" id="of-price" placeholder="55000" oninput="clearOF()" /></div>
+        <div class="field-row">
+          <div class="field-group" style="flex:1"><div class="field-label">Down % <span class="field-hint">default 5%</span></div><input type="number" id="of-dp-pct" value="5" /></div>
+          <div class="field-group" style="flex:1"><div class="field-label"># Payments <span class="field-hint">default 100</span></div><input type="number" id="of-payments" value="100" /></div>
         </div>
         <div class="field-row">
-          <div class="field-group" style="flex:1">
-            <div class="field-label">Down Payment % <span class="field-hint">default 5%</span></div>
-            <input type="number" id="of-dp-pct" value="5" />
-          </div>
-          <div class="field-group" style="flex:1">
-            <div class="field-label"># of Payments <span class="field-hint">default 100</span></div>
-            <input type="number" id="of-payments" value="100" />
-          </div>
+          <div class="field-group" style="flex:1"><div class="field-label">Interest % <span class="field-hint">default 0%</span></div><input type="number" id="of-rate" value="0" /></div>
+          <div class="field-group" style="flex:1"><div class="field-label">Buyer Down % <span class="field-hint">resale 12%</span></div><input type="number" id="of-buyer-dp" value="12" /></div>
         </div>
-        <div class="field-row">
-          <div class="field-group" style="flex:1">
-            <div class="field-label">Interest % <span class="field-hint">default 0%</span></div>
-            <input type="number" id="of-rate" value="0" />
-          </div>
-          <div class="field-group" style="flex:1">
-            <div class="field-label">Buyer Down % <span class="field-hint">resale 12%</span></div>
-            <input type="number" id="of-buyer-dp" value="12" />
-          </div>
-        </div>
-        <div class="field-group">
-          <div class="field-label">Est. Monthly Rent (cash flow)</div>
-          <input type="number" id="of-rent" placeholder="optional" />
-        </div>
-        <div class="field-group">
-          <div class="field-label">Listing Agent Name <span class="field-hint">for offer doc</span></div>
-          <input type="text" id="of-agent" placeholder="Jane Smith" />
-        </div>
-
+        <div class="field-group"><div class="field-label">Est. Monthly Rent (cash flow)</div><input type="number" id="of-rent" placeholder="optional" /></div>
+        <div class="field-group"><div class="field-label">Listing Agent Name <span class="field-hint">for offer doc</span></div><input type="text" id="of-agent" placeholder="Jane Smith" /></div>
         <button class="calc-btn purple-btn" onclick="calcOF()">Calculate + Generate Offer</button>
-
         <div class="results-box" id="of-results">
           <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Deal Numbers</div>
           <div class="result-row"><span class="result-label">Purchase Price (full list)</span><span class="result-value purple" id="of-r-price">—</span></div>
-          <div class="result-row"><span class="result-label">Down Payment (your cost)</span><span class="result-value purple" id="of-r-dp">—</span></div>
+          <div class="result-row"><span class="result-label">Down Payment</span><span class="result-value purple" id="of-r-dp">—</span></div>
           <div class="result-row"><span class="result-label">Financed Balance</span><span class="result-value" id="of-r-bal">—</span></div>
           <div class="result-row"><span class="result-label">Monthly Payment to Seller</span><span class="result-value" id="of-r-monthly">—</span></div>
           <hr class="divider"/>
@@ -341,138 +249,56 @@
           <div class="pitch-breakdown" id="of-breakdown"></div>
           <hr class="divider"/>
           <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Your Profit</div>
-          <div class="result-row hl"><span class="result-label">Your Fee (buyer 12% – your 5%)</span><span class="result-value green" id="of-r-yourfee">—</span></div>
+          <div class="result-row hl"><span class="result-label">Your Fee (buyer 12% - your 5%)</span><span class="result-value green" id="of-r-yourfee">—</span></div>
           <div class="result-row"><span class="result-label">End Buyer Down (12%)</span><span class="result-value teal" id="of-r-buyer-dp">—</span></div>
           <div class="result-row"><span class="result-label">End Buyer Monthly (8%, 30yr)</span><span class="result-value teal" id="of-r-buyer-monthly">—</span></div>
           <div class="result-row"><span class="result-label">End Buyer Cash Flow</span><span class="result-value" id="of-r-cashflow">—</span></div>
         </div>
       </div>
-
-      <!-- RIGHT: Offer Output + Email -->
       <div class="output-panel" id="of-output-panel" style="display:none">
         <div class="calc-title purple" style="margin-bottom:4px">Offer Output</div>
         <div class="calc-subtitle" style="margin-bottom:16px">Seller Financed Offer — 229 Holdings LLC</div>
-
         <div class="output-view-tabs">
-          <button class="ovt-btn active" onclick="showOfferView('executive')">Executive</button>
-          <button class="ovt-btn" onclick="showOfferView('direct')">Direct (Email Paste)</button>
+          <button class="ovt-btn active" onclick="showOfferView(event,'of','executive')">Executive</button>
+          <button class="ovt-btn" onclick="showOfferView(event,'of','direct')">Direct (Paste)</button>
         </div>
-
-        <!-- Executive View -->
-        <div id="view-executive">
-          <div class="offer-doc" id="exec-doc">
-            <!-- populated by JS -->
-          </div>
-          <button class="copy-btn" onclick="copyView('exec-doc')">&#128203; Copy Offer</button>
-        </div>
-
-        <!-- Direct View -->
-        <div id="view-direct" style="display:none">
-          <div class="offer-direct" id="direct-doc"></div>
-          <button class="copy-btn" onclick="copyDirect()">&#128203; Copy Text</button>
-        </div>
-
-        <!-- AI Email -->
+        <div id="of-view-executive"><div class="offer-doc" id="of-exec-doc"></div><button class="copy-btn" onclick="copyEl('of-exec-doc',this)">&#128203; Copy Offer</button></div>
+        <div id="of-view-direct" style="display:none"><div class="offer-direct" id="of-direct-doc"></div><button class="copy-btn" onclick="copyEl('of-direct-doc',this)">&#128203; Copy Text</button></div>
         <div class="email-gen-section" id="of-email-section" style="display:none">
           <div class="section-header" style="font-size:11px;margin-bottom:12px">AI Email — 4 Variations</div>
-          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px">Flip Man rules. Rotate before sending. No em dashes. Commission called out exact.</div>
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px">Flip Man rules. Rotate before sending. Commission called out exact.</div>
           <div class="email-tabs" id="of-email-tabs"></div>
-          <div class="email-preview-box">
-            <div class="email-meta" id="of-email-subject"></div>
-            <div class="email-body" id="of-email-body"></div>
-          </div>
+          <div class="email-preview-box"><div class="email-meta" id="of-email-subject"></div><div class="email-body" id="of-email-body"></div></div>
           <button class="calc-btn purple-btn" style="margin-top:10px;font-size:12px;padding:9px" onclick="generateOFEmails()">Regenerate All 4</button>
         </div>
       </div>
     </div>
-
-    <!-- Quick Ref -->
     <div class="ref-grid">
-      <div class="ref-card">
-        <div class="ref-title p">Owner Finance Rules</div>
-        <div class="ref-body">
-          Band: <span class="val">$30k–$80k</span><br>
-          Offer: <span class="val">FULL list price</span><br>
-          Down: <span class="val">5%</span> — covers agent commission at close<br>
-          Balance: <span class="val">100 monthly payments @ 0%</span><br>
-          Earnest: <span class="val">$500</span> &nbsp;|&nbsp; Close: <span class="val">21 days</span><br>
-          Due Diligence: <span class="val">10 days, as-is</span><br>
-          Your fee: <span class="val">12% buyer down – 5% your down</span>
-        </div>
-      </div>
-      <div class="ref-card">
-        <div class="ref-title p">Pitch Must Hold</div>
-        <div class="ref-body">
-          At-list baseline = <span class="val">3% of list</span> (buyer-side only)<br>
-          Total to agent must be <span class="val">&ge; 3% of list</span><br>
-          Commission language: <span class="val">paid from buyer's down payment</span><br>
-          Subject line: <span class="val">NEVER "seller financing"</span><br>
-          Body: <span class="val">neutral — just "offer on [address]"</span><br>
-          If pitch fails: <span class="val">do not send</span>
-        </div>
-      </div>
-      <div class="ref-card">
-        <div class="ref-title p">Email Hard Rules</div>
-        <div class="ref-body">
-          Length: <span class="val">3–5 sentences max</span><br>
-          Em dashes: <span class="val">NEVER — commas/periods only</span><br>
-          Commission: <span class="val">exact dollar amount always</span><br>
-          Seller wins: <span class="val">emphasize full asking price</span><br>
-          CTA: <span class="val">soft — ask where to send offer</span><br>
-          Sign off: <span class="val">Michael | 229 Holdings LLC</span>
-        </div>
-      </div>
-      <div class="ref-card">
-        <div class="ref-title p">Creative Legal Language</div>
-        <div class="ref-body">
-          Commission: <span class="val">paid from buyer's down payment at closing</span><br>
-          As-is: <span class="val">subject to walk-through inspection</span><br>
-          Closing costs: <span class="val">buyer pays all minus liens/taxes</span><br>
-          Closing location: <span class="val">buyer selects attorney/title/escrow</span><br>
-          Assignment: <span class="val">buyer reserves right to assign</span>
-        </div>
-      </div>
+      <div class="ref-card"><div class="ref-title p">Owner Finance Rules</div><div class="ref-body">Band: <span class="val">$30k-$80k</span><br>Offer: <span class="val">FULL list price</span><br>Down: <span class="val">5%</span> covers agent commission at close<br>Balance: <span class="val">100 monthly payments @ 0%</span><br>Earnest: <span class="val">$500</span> | Close: <span class="val">21 days</span><br>Due Diligence: <span class="val">10 days, as-is</span><br>Your fee: <span class="val">12% buyer down - 5% your down</span></div></div>
+      <div class="ref-card"><div class="ref-title p">Pitch Must Hold</div><div class="ref-body">At-list baseline = <span class="val">3% of list</span> (buyer-side only)<br>Total to agent must be <span class="val">&ge; 3% of list</span><br>Commission: <span class="val">paid from buyer's down payment</span><br>Subject line: <span class="val">NEVER "seller financing"</span><br>If pitch fails: <span class="val">do not send</span></div></div>
+      <div class="ref-card"><div class="ref-title p">Email Hard Rules</div><div class="ref-body">Length: <span class="val">3-5 sentences max</span><br>Em dashes: <span class="val">NEVER</span><br>Commission: <span class="val">exact dollar always</span><br>Seller wins: <span class="val">emphasize full asking price</span><br>CTA: <span class="val">soft - ask where to send offer</span><br>Sign off: <span class="val">Michael | 229 Holdings LLC</span></div></div>
+      <div class="ref-card"><div class="ref-title p">Legal Language</div><div class="ref-body">Commission: <span class="val">paid from buyer's down payment at closing</span><br>As-is: <span class="val">subject to walk-through inspection</span><br>Closing costs: <span class="val">buyer pays all minus liens/taxes</span><br>Location: <span class="val">buyer selects attorney/title/escrow</span><br>Assignment: <span class="val">buyer reserves right to assign</span></div></div>
     </div>
-  </div><!-- /sub-of -->
+  </div>
 
-  <!-- ═══ CASH LOWBALL ═══ -->
+  <!-- CL SUB-PANEL -->
   <div class="sub-panel" id="sub-cl">
     <div class="calc-grid">
-
-      <!-- LEFT: Inputs -->
       <div class="calc-card teal-card" id="cl-card">
         <div class="calc-title teal">Cash Lowball</div>
-        <div class="calc-subtitle">Lowball AI formula — MAO method</div>
-
-        <div class="field-group">
-          <div class="field-label">Property Address <span class="field-hint" style="color:var(--teal)">for offer doc</span></div>
-          <input type="text" id="cl-address" placeholder="456 Oak Ave, Birmingham AL 35203" />
-        </div>
-        <div class="field-group">
-          <div class="field-label">ARV — After Repair Value ($) <span class="field-hint" style="color:var(--teal)">fully rehabbed</span></div>
-          <input type="number" id="cl-arv" placeholder="120000" oninput="clearCL()" />
-        </div>
-        <div class="field-group">
-          <div class="field-label">Estimated Repairs ($) <span class="field-hint" style="color:var(--teal)">rehab cost</span></div>
-          <input type="number" id="cl-repair" placeholder="25000" oninput="clearCL()" />
-        </div>
-        <div class="field-group">
-          <div class="field-label">Target Assignment Fee ($) <span class="field-hint" style="color:var(--teal)">start $30k, walk down</span></div>
-          <input type="number" id="cl-fee" value="30000" oninput="clearCL()" />
-        </div>
-        <div class="field-group">
-          <div class="field-label">Listing Agent Name <span class="field-hint" style="color:var(--teal)">for offer doc</span></div>
-          <input type="text" id="cl-agent" placeholder="John Davis" />
-        </div>
-
+        <div class="calc-subtitle">Lowball AI Formula — MAO Method</div>
+        <div class="field-group"><div class="field-label">Property Address <span class="field-hint" style="color:var(--teal)">for offer doc</span></div><input type="text" id="cl-address" placeholder="456 Oak Ave, Birmingham AL 35203" /></div>
+        <div class="field-group"><div class="field-label">ARV — After Repair Value ($) <span class="field-hint" style="color:var(--teal)">fully rehabbed</span></div><input type="number" id="cl-arv" placeholder="120000" oninput="clearCL()" /></div>
+        <div class="field-group"><div class="field-label">Estimated Repairs ($) <span class="field-hint" style="color:var(--teal)">rehab cost</span></div><input type="number" id="cl-repair" placeholder="25000" oninput="clearCL()" /></div>
+        <div class="field-group"><div class="field-label">Target Assignment Fee ($) <span class="field-hint" style="color:var(--teal)">start $30k, walk down</span></div><input type="number" id="cl-fee" value="30000" oninput="clearCL()" /></div>
+        <div class="field-group"><div class="field-label">Listing Agent Name <span class="field-hint" style="color:var(--teal)">for offer doc</span></div><input type="text" id="cl-agent" placeholder="John Davis" /></div>
         <button class="calc-btn teal-btn" onclick="calcCL()">Calculate + Generate Offer</button>
-
         <div class="results-box" id="cl-results">
           <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">MAO Breakdown</div>
-          <div class="result-row"><span class="result-label">ARV × 90%</span><span class="result-value teal" id="cl-r-arv90">—</span></div>
-          <div class="result-row"><span class="result-label">Repairs × 2 (rehab + carry costs)</span><span class="result-value red" id="cl-r-rep2x">—</span></div>
+          <div class="result-row"><span class="result-label">ARV x 90%</span><span class="result-value teal" id="cl-r-arv90">—</span></div>
+          <div class="result-row"><span class="result-label">Repairs x 2 (rehab + carry)</span><span class="result-value red" id="cl-r-rep2x">—</span></div>
           <div class="result-row hl"><span class="result-label">MAO Ceiling</span><span class="result-value teal" id="cl-r-mao">—</span></div>
-          <div class="result-row hl"><span class="result-label">Your Contract Price (MAO – fee)</span><span class="result-value teal" id="cl-r-offer">—</span></div>
+          <div class="result-row hl"><span class="result-label">Contract Price (MAO - fee)</span><span class="result-value teal" id="cl-r-offer">—</span></div>
           <hr class="divider"/>
           <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Agent Pitch</div>
           <div class="result-row hl"><span class="result-label">Agent Commission (6% of offer)</span><span class="result-value yellow" id="cl-r-comm">—</span></div>
@@ -494,582 +320,271 @@
           <div id="cl-r-walkdown"></div>
         </div>
       </div>
-
-      <!-- RIGHT: Offer Output + Email -->
       <div class="output-panel" id="cl-output-panel" style="display:none">
         <div class="calc-title teal" style="margin-bottom:4px">Offer Output</div>
         <div class="calc-subtitle" style="margin-bottom:16px">Cash As-Is Offer — 229 Holdings LLC</div>
-
         <div class="output-view-tabs">
-          <button class="ovt-btn active" id="cl-ovt-exec" onclick="showCLView('executive')">Executive</button>
-          <button class="ovt-btn" id="cl-ovt-direct" onclick="showCLView('direct')">Direct (Email Paste)</button>
+          <button class="ovt-btn active" id="cl-ovt-executive" onclick="showOfferView(event,'cl','executive')">Executive</button>
+          <button class="ovt-btn" id="cl-ovt-direct" onclick="showOfferView(event,'cl','direct')">Direct (Paste)</button>
         </div>
-
-        <div id="cl-view-executive">
-          <div class="offer-doc" id="cl-exec-doc"></div>
-          <button class="copy-btn" onclick="copyView('cl-exec-doc')">&#128203; Copy Offer</button>
-        </div>
-        <div id="cl-view-direct" style="display:none">
-          <div class="offer-direct" id="cl-direct-doc"></div>
-          <button class="copy-btn" onclick="copyCLDirect()">&#128203; Copy Text</button>
-        </div>
-
+        <div id="cl-view-executive"><div class="offer-doc" id="cl-exec-doc"></div><button class="copy-btn" onclick="copyEl('cl-exec-doc',this)">&#128203; Copy Offer</button></div>
+        <div id="cl-view-direct" style="display:none"><div class="offer-direct" id="cl-direct-doc"></div><button class="copy-btn" onclick="copyEl('cl-direct-doc',this)">&#128203; Copy Text</button></div>
         <div class="email-gen-section" id="cl-email-section" style="display:none">
           <div class="section-header" style="font-size:11px;margin-bottom:12px">AI Email — 4 Variations</div>
-          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px">Cash offer framing. Speed + certainty + commission. Rotate before sending.</div>
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px">Cash framing. Speed + certainty + commission. Rotate before sending.</div>
           <div class="email-tabs" id="cl-email-tabs"></div>
-          <div class="email-preview-box">
-            <div class="email-meta" id="cl-email-subject"></div>
-            <div class="email-body" id="cl-email-body"></div>
-          </div>
+          <div class="email-preview-box"><div class="email-meta" id="cl-email-subject"></div><div class="email-body" id="cl-email-body"></div></div>
           <button class="calc-btn teal-btn" style="margin-top:10px;font-size:12px;padding:9px" onclick="generateCLEmails()">Regenerate All 4</button>
         </div>
       </div>
     </div>
-
-    <!-- Quick Ref -->
     <div class="ref-grid">
-      <div class="ref-card">
-        <div class="ref-title t">Cash Lowball Formula</div>
-        <div class="ref-body">
-          MAO = <span class="val">(ARV × 90%) − (Repairs × 2) − Fee</span><br>
-          90% ARV: <span class="val">your absolute ceiling</span><br>
-          2× repairs: <span class="val">rehab + holding/closing baked in</span><br>
-          Fee: <span class="val">start $30k, walk down $10k at a time</span><br>
-          Contract price: <span class="val">MAO − your assignment fee</span><br>
-          Assign at: <span class="val">MAO = what buyer pays you</span>
-        </div>
-      </div>
-      <div class="ref-card">
-        <div class="ref-title t">Cash Deal Rules</div>
-        <div class="ref-body">
-          Agent: <span class="val">6% of contract price + flat fee</span><br>
-          Pitch must hold: <span class="val">total &ge; 3% of ARV</span><br>
-          Close: <span class="val">7–14 days, as-is, no contingencies</span><br>
-          Earnest: <span class="val">$500</span><br>
-          Inspection: <span class="val">10 days</span><br>
-          Assignment: <span class="val">buyer reserves right to assign</span>
-        </div>
-      </div>
-      <div class="ref-card">
-        <div class="ref-title t">Fee Walk-Down Logic</div>
-        <div class="ref-body">
-          Start at <span class="val">$30k</span> assignment fee<br>
-          If offer goes negative: <span class="val">walk to $20k</span><br>
-          Still tight: <span class="val">walk to $10k</span><br>
-          Under $10k: <span class="val">pass on the deal</span><br>
-          Never go below: <span class="val">$10k minimum fee</span><br>
-          Buyer needs: <span class="val">20%+ ROI to move</span>
-        </div>
-      </div>
-      <div class="ref-card">
-        <div class="ref-title t">Email Hard Rules</div>
-        <div class="ref-body">
-          Lead with: <span class="val">speed + certainty of close</span><br>
-          As-is: <span class="val">no repairs, no contingencies</span><br>
-          Commission: <span class="val">exact dollar amount always</span><br>
-          Em dashes: <span class="val">NEVER</span><br>
-          CTA: <span class="val">soft — ask where to send offer</span><br>
-          Sign off: <span class="val">Michael | 229 Holdings LLC</span>
-        </div>
-      </div>
+      <div class="ref-card"><div class="ref-title t">Cash Lowball Formula</div><div class="ref-body">MAO = <span class="val">(ARV x 90%) - (Repairs x 2) - Fee</span><br>90% ARV: <span class="val">your absolute ceiling</span><br>2x repairs: <span class="val">rehab + holding/closing baked in</span><br>Fee: <span class="val">start $30k, walk down $10k at a time</span><br>Contract: <span class="val">MAO - your assignment fee</span></div></div>
+      <div class="ref-card"><div class="ref-title t">Cash Deal Rules</div><div class="ref-body">Agent: <span class="val">6% of contract + flat fee</span><br>Pitch: <span class="val">total &ge; 3% of ARV</span><br>Close: <span class="val">7-14 days, as-is, no contingencies</span><br>Earnest: <span class="val">$500</span> | Inspection: <span class="val">10 days</span></div></div>
+      <div class="ref-card"><div class="ref-title t">Fee Walk-Down</div><div class="ref-body">Start: <span class="val">$30k fee</span><br>Walk to: <span class="val">$20k if offer tight</span><br>Walk to: <span class="val">$10k if still tight</span><br>Pass: <span class="val">anything under $10k</span><br>Buyer needs: <span class="val">20%+ ROI to move</span></div></div>
+      <div class="ref-card"><div class="ref-title t">Email Hard Rules</div><div class="ref-body">Lead: <span class="val">speed + certainty of close</span><br>As-is: <span class="val">no repairs, no contingencies</span><br>Commission: <span class="val">exact dollar always</span><br>Em dashes: <span class="val">NEVER</span><br>Sign off: <span class="val">Michael | 229 Holdings LLC</span></div></div>
     </div>
-  </div><!-- /sub-cl -->
-
-</div><!-- /panel-analyzer -->
+  </div>
+</div>
 
 <footer>229 Holdings LLC &nbsp;|&nbsp; 229homebuyers.com &nbsp;|&nbsp; Memphis TN &bull; Birmingham AL &nbsp;|&nbsp; Flip Man KISS Method</footer>
-
 <script>
-// ════════════════════════════════════════════════════════════
-// GLOBALS
-// ════════════════════════════════════════════════════════════
-let ofData = null, clData = null;
-let ofEmails = [], clEmails = [];
-let _rawQueue = [], _rawRuns = [];
+var ofData=null,clData=null,ofEmails=[],clEmails=[],_rawQueue=[],_rawRuns=[];
+var fmt=function(v){return '$'+Math.round(v).toLocaleString();};
+var fmtP=function(v){return v.toFixed(1)+'%';};
+function today(){var d=new Date();return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}
+function coeDate(days){var d=new Date();d.setDate(d.getDate()+(days||21));return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}
+function setEl(id,val,cls){var el=document.getElementById(id);if(!el)return;el.textContent=val;el.className='result-value'+(cls?' '+cls:'');}
 
-const fmt  = v => '$' + Math.round(v).toLocaleString();
-const fmtP = v => v.toFixed(1) + '%';
-const today = () => { const d = new Date(); return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}); };
-const coeDate = (days=21) => { const d = new Date(); d.setDate(d.getDate()+days); return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}); };
-
-function setEl(id, val, cls) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.textContent = val;
-  el.className = 'result-value' + (cls ? ' ' + cls : '');
-}
-
-// ════════════════════════════════════════════════════════════
-// TAB SWITCHING
-// ════════════════════════════════════════════════════════════
-function switchTab(e, name) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+function switchTab(e,name){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
   e.currentTarget.classList.add('active');
-  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+}
+function switchSubTab(name){
+  document.querySelectorAll('.sub-tab').forEach(function(t){t.classList.remove('active-of','active-cl');});
+  document.querySelectorAll('.sub-panel').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('stab-'+name).classList.add('active-'+name);
+  document.getElementById('sub-'+name).classList.add('active');
 }
 
-function switchSubTab(name) {
-  document.querySelectorAll('.sub-tab').forEach(t => { t.classList.remove('active-of','active-cl'); });
-  document.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('stab-' + name).classList.add('active-' + name);
-  document.getElementById('sub-' + name).classList.add('active');
-}
+function clearOF(){document.getElementById('of-results').style.display='none';document.getElementById('of-output-panel').style.display='none';ofData=null;ofEmails=[];}
+function clearCL(){document.getElementById('cl-results').style.display='none';document.getElementById('cl-output-panel').style.display='none';clData=null;clEmails=[];}
 
-// ════════════════════════════════════════════════════════════
-// OWNER FINANCE CALCULATOR
-// ════════════════════════════════════════════════════════════
-function clearOF() {
-  document.getElementById('of-results').style.display = 'none';
-  document.getElementById('of-output-panel').style.display = 'none';
-  ofData = null; ofEmails = [];
-}
-
-function calcOF() {
-  const price   = parseFloat(document.getElementById('of-price').value)    || 0;
-  const dpPct   = parseFloat(document.getElementById('of-dp-pct').value)   || 5;
-  const pmts    = parseFloat(document.getElementById('of-payments').value)  || 100;
-  const rate    = parseFloat(document.getElementById('of-rate').value)      || 0;
-  const buyerDp = parseFloat(document.getElementById('of-buyer-dp').value) || 12;
-  const rent    = parseFloat(document.getElementById('of-rent').value)      || 0;
-  const address = document.getElementById('of-address').value.trim() || '123 Main St';
-  const agent   = document.getElementById('of-agent').value.trim() || 'Listing Agent';
-
-  if (!price) { alert('Enter a list price.'); return; }
-
-  const dp      = price * (dpPct / 100);
-  const balance = price - dp;
-  const monthly = rate === 0 ? balance / pmts
-    : (balance * (rate/100/12)) / (1 - Math.pow(1 + rate/100/12, -pmts));
-
-  const comm       = price * 0.06;
-  const flat       = price < 50000 ? 1000 : (price <= 150000 ? 1500 : 2000);
-  const agentTotal = comm + flat;
-  const atList     = price * 0.03;
-  const pitchOk    = agentTotal >= atList;
-
-  const yourFee   = price * ((buyerDp - dpPct) / 100);
-  const buyerDown = price * (buyerDp / 100);
-  const buyerBal  = price - buyerDown;
-  const r30 = 0.08/12, n30 = 360;
-  const buyerMo = buyerBal > 0 ? (buyerBal * r30) / (1 - Math.pow(1+r30,-n30)) : 0;
-  const cf = rent > 0 ? rent - buyerMo : null;
-
-  const termYears = Math.floor(pmts/12);
-  const termMos   = pmts % 12;
-  const termStr   = termYears > 0
-    ? `${termYears} year${termYears>1?'s':''}, ${termMos} month${termMos!==1?'s':''}`
-    : `${pmts} months`;
-
-  ofData = { price, dpPct, pmts, rate, buyerDp, rent, dp, balance, monthly, comm, flat, agentTotal, atList, pitchOk, yourFee, buyerDown, buyerMo, cf, address, agent, termStr, agentTotal };
-
-  // Numbers panel
-  setEl('of-r-price',        fmt(price),           'purple');
-  setEl('of-r-dp',           fmt(dp),              'purple');
-  setEl('of-r-bal',          fmt(balance),         '');
-  setEl('of-r-monthly',      fmt(monthly)+'/mo',   '');
-  setEl('of-r-comm',         fmt(comm),            'yellow');
-  setEl('of-r-flat',         fmt(flat),            'yellow');
-  setEl('of-r-agent-total',  fmt(agentTotal),      'yellow');
-  setEl('of-r-atlist',       fmt(atList),          'muted');
-  setEl('of-r-yourfee',      fmt(yourFee),         'green');
-  setEl('of-r-buyer-dp',     fmt(buyerDown),       'teal');
-  setEl('of-r-buyer-monthly',fmt(buyerMo)+'/mo',   'teal');
-
-  const cfEl = document.getElementById('of-r-cashflow');
-  if (cf !== null) { cfEl.textContent = fmt(cf)+'/mo'; cfEl.className='result-value '+(cf>=0?'green':'red'); }
-  else { cfEl.textContent='Enter rent above'; cfEl.className='result-value muted'; }
-
-  const pitchEl = document.getElementById('of-pitch');
-  pitchEl.style.display = 'flex';
-  pitchEl.className = 'pitch-check ' + (pitchOk ? 'pass' : 'fail');
-  pitchEl.innerHTML = pitchOk ? '&#10003; PITCH HOLDS' : '&#10007; PITCH FAILS — DO NOT SEND';
-
-  const bd = document.getElementById('of-breakdown');
-  bd.style.display = 'block';
-  const delta = agentTotal - atList;
-  bd.innerHTML = `Agent gets <span class="hi">${fmt(agentTotal)}</span> from your offer.<br>At-list baseline (3%): <span class="hi p">${fmt(atList)}</span>.<br>Agent nets <span class="hi">${delta>=0?'+':''}${fmt(delta)}</span> vs. full-price sale.`;
-
-  document.getElementById('of-results').style.display = 'block';
-
-  // Generate offer doc + emails
+function calcOF(){
+  var price=parseFloat(document.getElementById('of-price').value)||0;
+  var dpPct=parseFloat(document.getElementById('of-dp-pct').value)||5;
+  var pmts=parseFloat(document.getElementById('of-payments').value)||100;
+  var rate=parseFloat(document.getElementById('of-rate').value)||0;
+  var buyerDp=parseFloat(document.getElementById('of-buyer-dp').value)||12;
+  var rent=parseFloat(document.getElementById('of-rent').value)||0;
+  var address=document.getElementById('of-address').value.trim()||'Property Address';
+  var agent=document.getElementById('of-agent').value.trim()||'Listing Agent';
+  if(!price){alert('Enter a list price.');return;}
+  var dp=price*(dpPct/100);
+  var balance=price-dp;
+  var monthly=rate===0?balance/pmts:(balance*(rate/100/12))/(1-Math.pow(1+rate/100/12,-pmts));
+  var comm=price*0.06;
+  var flat=price<50000?1000:(price<=150000?1500:2000);
+  var agentTotal=comm+flat;
+  var atList=price*0.03;
+  var pitchOk=agentTotal>=atList;
+  var yourFee=price*((buyerDp-dpPct)/100);
+  var buyerDown=price*(buyerDp/100);
+  var buyerBal=price-buyerDown;
+  var r30=0.08/12,n30=360;
+  var buyerMo=buyerBal>0?(buyerBal*r30)/(1-Math.pow(1+r30,-n30)):0;
+  var cf=rent>0?rent-buyerMo:null;
+  var termYears=Math.floor(pmts/12),termMos=pmts%12;
+  var termStr=(termYears>0?termYears+' year'+(termYears>1?'s':'')+', ':'')+(termMos>0?termMos+' month'+(termMos!==1?'s':''):'');
+  ofData={price:price,dpPct:dpPct,pmts:pmts,rate:rate,buyerDp:buyerDp,rent:rent,dp:dp,balance:balance,monthly:monthly,comm:comm,flat:flat,agentTotal:agentTotal,atList:atList,pitchOk:pitchOk,yourFee:yourFee,buyerDown:buyerDown,buyerMo:buyerMo,cf:cf,address:address,agent:agent,termStr:termStr};
+  setEl('of-r-price',fmt(price),'purple');
+  setEl('of-r-dp',fmt(dp),'purple');
+  setEl('of-r-bal',fmt(balance),'');
+  setEl('of-r-monthly',fmt(monthly)+'/mo','');
+  setEl('of-r-comm',fmt(comm),'yellow');
+  setEl('of-r-flat',fmt(flat),'yellow');
+  setEl('of-r-agent-total',fmt(agentTotal),'yellow');
+  setEl('of-r-atlist',fmt(atList),'muted');
+  setEl('of-r-yourfee',fmt(yourFee),'green');
+  setEl('of-r-buyer-dp',fmt(buyerDown),'teal');
+  setEl('of-r-buyer-monthly',fmt(buyerMo)+'/mo','teal');
+  var cfEl=document.getElementById('of-r-cashflow');
+  if(cf!==null){cfEl.textContent=fmt(cf)+'/mo';cfEl.className='result-value '+(cf>=0?'green':'red');}
+  else{cfEl.textContent='Enter rent above';cfEl.className='result-value muted';}
+  var pitchEl=document.getElementById('of-pitch');
+  pitchEl.style.display='flex';pitchEl.className='pitch-check '+(pitchOk?'pass':'fail');
+  pitchEl.innerHTML=pitchOk?'&#10003; PITCH HOLDS':'&#10007; PITCH FAILS';
+  var bd=document.getElementById('of-breakdown');bd.style.display='block';
+  var delta=agentTotal-atList;
+  bd.innerHTML='Agent gets <span class="hi">'+fmt(agentTotal)+'</span> from your offer.<br>At-list baseline (3%): <span class="hi p">'+fmt(atList)+'</span>.<br>Agent nets <span class="hi">'+(delta>=0?'+':'')+fmt(delta)+'</span> vs full-price sale.';
+  document.getElementById('of-results').style.display='block';
   renderOFOffer();
-  document.getElementById('of-output-panel').style.display = 'block';
+  document.getElementById('of-output-panel').style.display='block';
   generateOFEmails();
 }
 
-// ── OF Offer Document ─────────────────────────────────────────────────────────
-function renderOFOffer() {
-  const d = ofData;
-  if (!d) return;
-
-  // Executive HTML
-  document.getElementById('exec-doc').innerHTML = `
-    <div class="od-header">
-      <div>
-        <div class="od-brand">229 <span>HOLDINGS LLC</span></div>
-        <div style="font-family:'Space Mono',monospace;font-size:9px;color:#7a7a9a;margin-top:4px">229homebuyers.com</div>
-      </div>
-      <div class="od-type">SELLER FINANCED OFFER<br>${today()}</div>
-    </div>
-
-    <div class="od-address">${d.address}</div>
-    <div class="od-date">Presented to: ${d.agent}</div>
-
-    <div class="od-comm-banner">
-      <div class="od-comm-title">&#10003; AGENT COMMISSION FULLY PROTECTED</div>
-      <div class="od-comm-body">Total Commission to Listing Agent: <strong style="color:#00d4aa">${fmt(d.agentTotal)}</strong> &nbsp;|&nbsp; Covered by Buyer's Down Payment at Closing<br>
-      Agent nets ${fmt(d.agentTotal)} — more than the ${fmt(d.atList)} from a traditional full-price sale.</div>
-    </div>
-
-    <div class="od-grid">
-      <div class="od-box">
-        <div class="od-label">Purchase Price</div>
-        <div class="od-value">${fmt(d.price)}</div>
-        <div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:'Space Mono',monospace">Seller receives full asking price</div>
-      </div>
-      <div class="od-box teal-box">
-        <div class="od-label">Down Payment</div>
-        <div class="od-value teal">${fmt(d.dp)}</div>
-        <div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:'Space Mono',monospace">${d.dpPct}% — covers agent commission</div>
-      </div>
-    </div>
-
-    <div class="od-grid-3">
-      <div class="od-box">
-        <div class="od-label">Financed Amount</div>
-        <div class="od-value dark">${fmt(d.balance)}</div>
-      </div>
-      <div class="od-box">
-        <div class="od-label">Monthly Payment</div>
-        <div class="od-value dark">${fmt(d.monthly)}/mo</div>
-      </div>
-      <div class="od-box">
-        <div class="od-label">Term</div>
-        <div class="od-value dark" style="font-size:14px">${d.pmts} months</div>
-        <div style="font-size:10px;color:#7a7a9a;font-family:'Space Mono',monospace">${d.termStr}</div>
-      </div>
-    </div>
-
-    <div class="od-grid-3">
-      <div class="od-box">
-        <div class="od-label">Interest Rate</div>
-        <div class="od-value dark">${d.rate === 0 ? '0% — Interest Free' : d.rate + '%'}</div>
-      </div>
-      <div class="od-box">
-        <div class="od-label">Earnest Money</div>
-        <div class="od-value dark">$500</div>
-      </div>
-      <div class="od-box">
-        <div class="od-label">Close of Escrow</div>
-        <div class="od-value dark" style="font-size:13px">${coeDate(21)}</div>
-      </div>
-    </div>
-
-    <div class="od-section">
-      <div class="od-label">Closing Terms</div>
-      <div class="od-value dark" style="font-size:13px;line-height:1.5">
-        Due Diligence: 10 Days &nbsp;|&nbsp; As-Is, subject to walk-through<br>
-        Buyer pays all closing costs minus any unpaid mortgages, taxes, or liens.<br>
-        Buyer will select closing attorney / title company / escrow company.
-      </div>
-    </div>
-
-    <div class="od-legal">
-      <strong>AGENT COMMISSION:</strong> The Seller's agent commission is negotiable and shall be paid out of the Buyer's down payment at the time of closing. The total commission amount shall be ${fmt(d.agentTotal)}, or a mutually agreed upon flat fee negotiated between the parties, to be deducted from the closing proceeds. In the event of dual agency, the Buyer consents to the agent representing both parties, subject to state regulations.<br><br>
-      <strong>ASSIGNMENT:</strong> Buyer reserves the right to assign this contract to a third party without Seller's consent. Closing location selected by Buyer.
-    </div>
-
-    <div class="od-sig">
-      <div>
-        <div class="od-sig-name">Michael</div>
-        <div class="od-sig-co">229 Holdings LLC &nbsp;|&nbsp; 229homebuyers.com</div>
-      </div>
-      <div style="text-align:right;font-family:'Space Mono',monospace;font-size:10px;color:#7a7a9a">
-        Date: ___________________<br>
-        Seller Signature: ___________________
-      </div>
-    </div>
-  `;
-
-  // Direct text
-  document.getElementById('direct-doc').textContent =
-`SELLER FINANCED OFFER — 229 Holdings LLC
-${d.address}
-${today()}
-Presented to: ${d.agent}
-
-PURCHASE PRICE: ${fmt(d.price)}
-(Seller receives full asking price)
-
-DOWN PAYMENT: ${fmt(d.dp)} (${d.dpPct}%)
-FINANCED AMOUNT: ${fmt(d.balance)}
-MONTHLY PAYMENT: ${fmt(d.monthly)}/mo
-TERM: ${d.pmts} months (${d.termStr}) @ ${d.rate === 0 ? '0% interest free' : d.rate + '%'}
-
-AGENT COMMISSION: ${fmt(d.agentTotal)} — paid from Buyer's down payment at closing.
-(${fmt(d.agentTotal)} is more than the ${fmt(d.atList)} from a traditional full-price sale.)
-
-CLOSING TERMS:
-- Earnest Money: $500
-- Due Diligence: 10 Days | As-Is, subject to walk-through
-- Close of Escrow: ${coeDate(21)}
-- Buyer pays all closing costs minus unpaid mortgages, taxes, or liens
-- Buyer will select closing attorney / title company / escrow company
-- Buyer reserves right to assign contract
-
-Michael | 229 Holdings LLC | 229homebuyers.com`;
+function renderOFOffer(){
+  var d=ofData;if(!d)return;
+  document.getElementById('of-exec-doc').innerHTML='<div class="od-header"><div><div class="od-brand">229 <span>HOLDINGS LLC</span></div><div style="font-family:Space Mono,monospace;font-size:9px;color:#7a7a9a;margin-top:4px">229homebuyers.com</div></div><div class="od-type">SELLER FINANCED OFFER<br>'+today()+'</div></div><div class="od-address">'+d.address+'</div><div class="od-date">Presented to: '+d.agent+'</div><div class="od-comm-banner"><div class="od-comm-title">&#10003; AGENT COMMISSION FULLY PROTECTED</div><div class="od-comm-body">Total Commission to Listing Agent: <strong style="color:#00d4aa">'+fmt(d.agentTotal)+'</strong> &nbsp;|&nbsp; Covered by Buyer\'s Down Payment at Closing<br>Agent nets '+fmt(d.agentTotal)+' vs '+fmt(d.atList)+' from a traditional full-price sale.</div></div><div class="od-grid"><div class="od-box"><div class="od-label">Purchase Price</div><div class="od-value">'+fmt(d.price)+'</div><div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:Space Mono,monospace">Seller receives full asking price</div></div><div class="od-box teal-box"><div class="od-label">Down Payment</div><div class="od-value teal">'+fmt(d.dp)+'</div><div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:Space Mono,monospace">'+d.dpPct+'% covers agent commission</div></div></div><div class="od-grid-3"><div class="od-box"><div class="od-label">Financed Amount</div><div class="od-value dark">'+fmt(d.balance)+'</div></div><div class="od-box"><div class="od-label">Monthly Payment</div><div class="od-value dark">'+fmt(d.monthly)+'/mo</div></div><div class="od-box"><div class="od-label">Term</div><div class="od-value dark" style="font-size:14px">'+d.pmts+' months</div><div style="font-size:10px;color:#7a7a9a;font-family:Space Mono,monospace">'+d.termStr+'</div></div></div><div class="od-grid-3"><div class="od-box"><div class="od-label">Interest Rate</div><div class="od-value dark">'+(d.rate===0?'0% Interest Free':d.rate+'%')+'</div></div><div class="od-box"><div class="od-label">Earnest Money</div><div class="od-value dark">$500</div></div><div class="od-box"><div class="od-label">Close of Escrow</div><div class="od-value dark" style="font-size:13px">'+coeDate(21)+'</div></div></div><div class="od-legal"><strong>AGENT COMMISSION:</strong> The Seller\'s agent commission is negotiable and shall be paid out of the Buyer\'s down payment at the time of closing. The total commission amount shall be '+fmt(d.agentTotal)+', or a mutually agreed upon flat fee negotiated between the parties, to be deducted from the closing proceeds. In the event of dual agency, the Buyer consents to the agent representing both parties, subject to state regulations.<br><br><strong>TERMS:</strong> Due Diligence 10 Days. As-Is subject to walk-through. Buyer pays all closing costs minus unpaid mortgages, taxes, or liens. Buyer will select closing attorney / title company / escrow company. Buyer reserves right to assign contract.</div><div class="od-sig"><div><div class="od-sig-name">Michael</div><div class="od-sig-co">229 Holdings LLC | 229homebuyers.com</div></div><div style="text-align:right;font-family:Space Mono,monospace;font-size:10px;color:#7a7a9a">Date: ___________________<br>Seller Signature: ___________________</div></div>';
+  document.getElementById('of-direct-doc').textContent='SELLER FINANCED OFFER - 229 Holdings LLC\n'+d.address+'\n'+today()+'\nPresented to: '+d.agent+'\n\nPURCHASE PRICE: '+fmt(d.price)+'\n(Seller receives full asking price)\n\nDOWN PAYMENT: '+fmt(d.dp)+' ('+d.dpPct+'%)\nFINANCED AMOUNT: '+fmt(d.balance)+'\nMONTHLY PAYMENT: '+fmt(d.monthly)+'/mo\nTERM: '+d.pmts+' months ('+d.termStr+') @ '+(d.rate===0?'0% interest free':d.rate+'%')+'\n\nAGENT COMMISSION: '+fmt(d.agentTotal)+'\nPaid from Buyer\'s down payment at closing.\n'+fmt(d.agentTotal)+' is more than the '+fmt(d.atList)+' from a traditional full-price sale.\n\nCLOSING TERMS:\n- Earnest Money: $500\n- Due Diligence: 10 Days | As-Is, subject to walk-through\n- Close of Escrow: '+coeDate(21)+'\n- Buyer pays all closing costs minus unpaid mortgages, taxes, or liens\n- Buyer will select closing attorney / title company / escrow company\n- Buyer reserves right to assign contract\n\nMichael | 229 Holdings LLC | 229homebuyers.com';
 }
 
-function showOfferView(view) {
-  document.querySelectorAll('#of-output-panel .ovt-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('view-executive').style.display  = view==='executive' ? 'block' : 'none';
-  document.getElementById('view-direct').style.display     = view==='direct'    ? 'block' : 'none';
-  event.currentTarget.classList.add('active');
-}
-
-// ════════════════════════════════════════════════════════════
-// CASH LOWBALL CALCULATOR
-// ════════════════════════════════════════════════════════════
-function clearCL() {
-  document.getElementById('cl-results').style.display = 'none';
-  document.getElementById('cl-output-panel').style.display = 'none';
-  clData = null; clEmails = [];
-}
-
-function calcCL() {
-  const arv     = parseFloat(document.getElementById('cl-arv').value)    || 0;
-  const repair  = parseFloat(document.getElementById('cl-repair').value) || 0;
-  const fee     = parseFloat(document.getElementById('cl-fee').value)    || 30000;
-  const address = document.getElementById('cl-address').value.trim() || '456 Oak Ave';
-  const agent   = document.getElementById('cl-agent').value.trim() || 'Listing Agent';
-
-  if (!arv)   { alert('Enter an ARV.'); return; }
-  if (!repair){ alert('Enter repair estimate.'); return; }
-
-  const arv90  = arv * 0.90;
-  const rep2x  = repair * 2;
-  const mao    = arv90 - rep2x;
-  const offer  = mao - fee;
-
-  const comm       = offer > 0 ? offer * 0.06 : 0;
-  const flat       = offer < 50000 ? 1000 : (offer <= 150000 ? 1500 : 2000);
-  const agentTotal = comm + flat;
-  const atList     = arv * 0.03;
-  const pitchOk    = agentTotal >= atList && offer > 0;
-
-  const assignPrice = offer + fee;  // = mao
-  const allIn       = assignPrice + repair;
-  const profit      = arv - allIn;
-  const roi         = allIn > 0 ? (profit / allIn) * 100 : 0;
-
-  const feeScenarios = [30000, 20000, 10000].map(f => ({ fee: f, offer: mao - f, valid: (mao - f) > 0 }));
-
-  clData = { arv, repair, fee, arv90, rep2x, mao, offer, comm, flat, agentTotal, atList, pitchOk, assignPrice, allIn, profit, roi, feeScenarios, address, agent };
-
-  setEl('cl-r-arv90',       fmt(arv90),          'teal');
-  setEl('cl-r-rep2x',       fmt(rep2x),          'red');
-  setEl('cl-r-mao',         fmt(mao),            mao>0?'teal':'red');
-  setEl('cl-r-offer',       offer>0?fmt(offer):'NEGATIVE — lower fee', offer>0?'teal':'red');
-  setEl('cl-r-comm',        fmt(comm),           'yellow');
-  setEl('cl-r-flat',        fmt(flat),           'yellow');
-  setEl('cl-r-agent-total', fmt(agentTotal),     'yellow');
-  setEl('cl-r-atlist',      fmt(atList),         'muted');
-  setEl('cl-r-fee',         fmt(fee),            'green');
-  setEl('cl-r-assign',      fmt(assignPrice),    'green');
-  setEl('cl-r-repair',      fmt(repair),         'red');
-  setEl('cl-r-allin',       fmt(allIn),          '');
-  setEl('cl-r-profit',      fmt(profit),         profit>=0?'green':'red');
-  setEl('cl-r-roi',         fmtP(roi),           roi>=0?'green':'red');
-
-  // Walk-down
-  document.getElementById('cl-r-walkdown').innerHTML = feeScenarios.map(s =>
-    `<div class="result-row"><span class="result-label">Fee ${fmt(s.fee)} &rarr; Contract Price</span><span class="result-value ${s.valid?'':'red'}">${s.valid?fmt(s.offer):'N/A'}</span></div>`
-  ).join('');
-
-  const pitchEl = document.getElementById('cl-pitch');
-  pitchEl.style.display = 'flex';
-  if (offer <= 0) {
-    pitchEl.className = 'pitch-check fail';
-    pitchEl.innerHTML = '&#10007; NEGATIVE OFFER — Lower fee or pass on deal';
-  } else {
-    pitchEl.className = 'pitch-check ' + (pitchOk?'pass':'fail');
-    pitchEl.innerHTML = pitchOk ? '&#10003; PITCH HOLDS' : '&#10007; PITCH FAILS — DO NOT SEND';
-  }
-
-  const bd = document.getElementById('cl-breakdown');
-  bd.style.display = 'block';
-  const delta = agentTotal - atList;
-  bd.innerHTML = `MAO: (${fmt(arv)} &times; 90%) &minus; (${fmt(repair)} &times; 2) = ceiling <span class="hi">${fmt(mao)}</span>.<br>Contract: <span class="hi">${offer>0?fmt(offer):'NEGATIVE'}</span> (MAO &minus; ${fmt(fee)} fee).<br>Agent: <span class="hi">${fmt(agentTotal)}</span> vs. at-list <span class="hi p">${fmt(atList)}</span> (${delta>=0?'+':''}${fmt(delta)}).`;
-
-  document.getElementById('cl-results').style.display = 'block';
-
+function calcCL(){
+  var arv=parseFloat(document.getElementById('cl-arv').value)||0;
+  var repair=parseFloat(document.getElementById('cl-repair').value)||0;
+  var fee=parseFloat(document.getElementById('cl-fee').value)||30000;
+  var address=document.getElementById('cl-address').value.trim()||'Property Address';
+  var agent=document.getElementById('cl-agent').value.trim()||'Listing Agent';
+  if(!arv){alert('Enter an ARV.');return;}
+  if(!repair){alert('Enter repair estimate.');return;}
+  var arv90=arv*0.90,rep2x=repair*2,mao=arv90-rep2x,offer=mao-fee;
+  var comm=offer>0?offer*0.06:0;
+  var flat=offer<50000?1000:(offer<=150000?1500:2000);
+  var agentTotal=comm+flat,atList=arv*0.03,pitchOk=agentTotal>=atList&&offer>0;
+  var assignPrice=offer+fee,allIn=assignPrice+repair,profit=arv-allIn,roi=allIn>0?(profit/allIn)*100:0;
+  var scenarios=[30000,20000,10000].map(function(f){return{fee:f,offer:mao-f,valid:(mao-f)>0};});
+  clData={arv:arv,repair:repair,fee:fee,arv90:arv90,rep2x:rep2x,mao:mao,offer:offer,comm:comm,flat:flat,agentTotal:agentTotal,atList:atList,pitchOk:pitchOk,assignPrice:assignPrice,allIn:allIn,profit:profit,roi:roi,scenarios:scenarios,address:address,agent:agent};
+  setEl('cl-r-arv90',fmt(arv90),'teal');
+  setEl('cl-r-rep2x',fmt(rep2x),'red');
+  setEl('cl-r-mao',fmt(mao),mao>0?'teal':'red');
+  setEl('cl-r-offer',offer>0?fmt(offer):'NEGATIVE - lower fee',offer>0?'teal':'red');
+  setEl('cl-r-comm',fmt(comm),'yellow');
+  setEl('cl-r-flat',fmt(flat),'yellow');
+  setEl('cl-r-agent-total',fmt(agentTotal),'yellow');
+  setEl('cl-r-atlist',fmt(atList),'muted');
+  setEl('cl-r-fee',fmt(fee),'green');
+  setEl('cl-r-assign',fmt(assignPrice),'green');
+  setEl('cl-r-repair',fmt(repair),'red');
+  setEl('cl-r-allin',fmt(allIn),'');
+  setEl('cl-r-profit',fmt(profit),profit>=0?'green':'red');
+  setEl('cl-r-roi',fmtP(roi),roi>=0?'green':'red');
+  document.getElementById('cl-r-walkdown').innerHTML=scenarios.map(function(s){return '<div class="result-row"><span class="result-label">Fee '+fmt(s.fee)+' &rarr; Contract</span><span class="result-value '+(s.valid?'':'red')+'">'+(s.valid?fmt(s.offer):'N/A')+'</span></div>';}).join('');
+  var pitchEl=document.getElementById('cl-pitch');pitchEl.style.display='flex';
+  if(offer<=0){pitchEl.className='pitch-check fail';pitchEl.innerHTML='&#10007; NEGATIVE - lower fee or pass';}
+  else{pitchEl.className='pitch-check '+(pitchOk?'pass':'fail');pitchEl.innerHTML=pitchOk?'&#10003; PITCH HOLDS':'&#10007; PITCH FAILS';}
+  var bd=document.getElementById('cl-breakdown');bd.style.display='block';
+  var delta=agentTotal-atList;
+  bd.innerHTML='MAO: ('+fmt(arv)+' x 90%) - ('+fmt(repair)+' x 2) = <span class="hi">'+fmt(mao)+'</span><br>Contract: <span class="hi">'+(offer>0?fmt(offer):'NEGATIVE')+'</span> (MAO - '+fmt(fee)+' fee)<br>Agent: <span class="hi">'+fmt(agentTotal)+'</span> vs at-list <span class="hi p">'+fmt(atList)+'</span> ('+(delta>=0?'+':'')+fmt(delta)+')';
+  document.getElementById('cl-results').style.display='block';
   renderCLOffer();
-  document.getElementById('cl-output-panel').style.display = 'block';
+  document.getElementById('cl-output-panel').style.display='block';
   generateCLEmails();
 }
 
-// ── CL Offer Document ─────────────────────────────────────────────────────────
-function renderCLOffer() {
-  const d = clData;
-  if (!d) return;
-
-  document.getElementById('cl-exec-doc').innerHTML = `
-    <div class="od-header">
-      <div>
-        <div class="od-brand">229 <span>HOLDINGS LLC</span></div>
-        <div style="font-family:'Space Mono',monospace;font-size:9px;color:#7a7a9a;margin-top:4px">229homebuyers.com</div>
-      </div>
-      <div class="od-type">CASH AS-IS OFFER<br>${today()}</div>
-    </div>
-
-    <div class="od-address">${d.address}</div>
-    <div class="od-date">Presented to: ${d.agent}</div>
-
-    <div class="od-comm-banner">
-      <div class="od-comm-title">&#10003; AGENT COMMISSION PROTECTED — CASH CLOSE</div>
-      <div class="od-comm-body">Total Commission to Listing Agent: <strong style="color:#00d4aa">${fmt(d.agentTotal)}</strong><br>
-      ${d.pitchOk ? `Agent nets ${fmt(d.agentTotal)} — more than the ${fmt(d.atList)} at-list baseline.` : `Note: Verify commission structure with agent.`}</div>
-    </div>
-
-    <div class="od-grid">
-      <div class="od-box teal-box">
-        <div class="od-label">Cash Offer (Contract Price)</div>
-        <div class="od-value teal">${d.offer>0?fmt(d.offer):'See walk-down'}</div>
-        <div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:'Space Mono',monospace">MAO ceiling: ${fmt(d.mao)} | Your fee: ${fmt(d.fee)}</div>
-      </div>
-      <div class="od-box">
-        <div class="od-label">Your Assignment Price</div>
-        <div class="od-value dark">${fmt(d.assignPrice)}</div>
-        <div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:'Space Mono',monospace">What end buyer pays you</div>
-      </div>
-    </div>
-
-    <div class="od-grid-3">
-      <div class="od-box">
-        <div class="od-label">ARV (Rehabbed Value)</div>
-        <div class="od-value dark">${fmt(d.arv)}</div>
-      </div>
-      <div class="od-box">
-        <div class="od-label">Repair Estimate</div>
-        <div class="od-value dark" style="color:#ff4757">${fmt(d.repair)}</div>
-      </div>
-      <div class="od-box">
-        <div class="od-label">Buyer Profit vs ARV</div>
-        <div class="od-value dark" style="${d.profit>=0?'color:#00e676':'color:#ff4757'}">${fmt(d.profit)}</div>
-      </div>
-    </div>
-
-    <div class="od-grid-3">
-      <div class="od-box">
-        <div class="od-label">Earnest Money</div>
-        <div class="od-value dark">$500</div>
-      </div>
-      <div class="od-box">
-        <div class="od-label">Inspection Period</div>
-        <div class="od-value dark">10 Days</div>
-      </div>
-      <div class="od-box">
-        <div class="od-label">Close of Escrow</div>
-        <div class="od-value dark" style="font-size:13px">${coeDate(14)}</div>
-      </div>
-    </div>
-
-    <div class="od-section">
-      <div class="od-label">Closing Terms</div>
-      <div class="od-value dark" style="font-size:13px;line-height:1.5">
-        As-Is — No repairs required. No financing contingency. Cash close.<br>
-        Buyer pays all closing costs minus any unpaid mortgages, taxes, or liens.<br>
-        Buyer will select closing attorney / title company / escrow company.
-      </div>
-    </div>
-
-    <div class="od-legal">
-      <strong>ASSIGNMENT:</strong> Buyer reserves the right to assign this contract to a third party without Seller's consent.<br><br>
-      <strong>AGENT COMMISSION:</strong> Total commission of ${fmt(d.agentTotal)} to be paid at closing from proceeds. Includes ${fmt(d.comm)} (6% of offer) plus flat fee of ${fmt(d.flat)}.
-    </div>
-
-    <div class="od-sig">
-      <div>
-        <div class="od-sig-name">Michael</div>
-        <div class="od-sig-co">229 Holdings LLC &nbsp;|&nbsp; 229homebuyers.com</div>
-      </div>
-      <div style="text-align:right;font-family:'Space Mono',monospace;font-size:10px;color:#7a7a9a">
-        Date: ___________________<br>
-        Seller Signature: ___________________
-      </div>
-    </div>
-  `;
-
-  document.getElementById('cl-direct-doc').textContent =
-`CASH AS-IS OFFER — 229 Holdings LLC
-${d.address}
-${today()}
-Presented to: ${d.agent}
-
-CASH OFFER: ${d.offer>0?fmt(d.offer):'See walk-down below'}
-(No repairs. No contingencies. Cash close.)
-
-ARV (After Repair Value): ${fmt(d.arv)}
-MAO Ceiling: ${fmt(d.mao)} | Your Assignment Fee: ${fmt(d.fee)}
-Buyer All-In: ${fmt(d.allIn)} | Buyer Profit: ${fmt(d.profit)} | ROI: ${fmtP(d.roi)}
-
-AGENT COMMISSION: ${fmt(d.agentTotal)}
-(${fmt(d.comm)} commission + ${fmt(d.flat)} flat fee — paid at closing)
-
-CLOSING TERMS:
-- Earnest Money: $500
-- Inspection: 10 Days | As-Is, no repairs
-- Close of Escrow: ${coeDate(14)} (14 days)
-- Buyer pays all closing costs minus unpaid mortgages, taxes, or liens
-- No financing contingency | Cash close
-- Buyer reserves right to assign contract
-
-FEE WALK-DOWN:
-${clData.feeScenarios.map(s=>`  Fee ${fmt(s.fee)} → Contract ${s.valid?fmt(s.offer):'N/A'}`).join('\n')}
-
-Michael | 229 Holdings LLC | 229homebuyers.com`;
+function renderCLOffer(){
+  var d=clData;if(!d)return;
+  document.getElementById('cl-exec-doc').innerHTML='<div class="od-header"><div><div class="od-brand">229 <span>HOLDINGS LLC</span></div><div style="font-family:Space Mono,monospace;font-size:9px;color:#7a7a9a;margin-top:4px">229homebuyers.com</div></div><div class="od-type">CASH AS-IS OFFER<br>'+today()+'</div></div><div class="od-address">'+d.address+'</div><div class="od-date">Presented to: '+d.agent+'</div><div class="od-comm-banner"><div class="od-comm-title">&#10003; AGENT COMMISSION PROTECTED - CASH CLOSE</div><div class="od-comm-body">Total Commission to Listing Agent: <strong style="color:#00d4aa">'+fmt(d.agentTotal)+'</strong><br>'+(d.pitchOk?'Agent nets '+fmt(d.agentTotal)+' vs '+fmt(d.atList)+' at-list baseline.':'Verify commission structure with agent.')+'</div></div><div class="od-grid"><div class="od-box teal-box"><div class="od-label">Cash Offer (Contract Price)</div><div class="od-value teal">'+(d.offer>0?fmt(d.offer):'See walk-down')+'</div><div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:Space Mono,monospace">MAO ceiling: '+fmt(d.mao)+' | Your fee: '+fmt(d.fee)+'</div></div><div class="od-box"><div class="od-label">Your Assignment Price</div><div class="od-value dark">'+fmt(d.assignPrice)+'</div><div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:Space Mono,monospace">What end buyer pays you</div></div></div><div class="od-grid-3"><div class="od-box"><div class="od-label">ARV (Rehabbed Value)</div><div class="od-value dark">'+fmt(d.arv)+'</div></div><div class="od-box"><div class="od-label">Repair Estimate</div><div class="od-value dark" style="color:#ff4757">'+fmt(d.repair)+'</div></div><div class="od-box"><div class="od-label">Buyer Profit vs ARV</div><div class="od-value dark" style="color:'+(d.profit>=0?'#00e676':'#ff4757')+'">'+fmt(d.profit)+'</div></div></div><div class="od-grid-3"><div class="od-box"><div class="od-label">Earnest Money</div><div class="od-value dark">$500</div></div><div class="od-box"><div class="od-label">Inspection Period</div><div class="od-value dark">10 Days</div></div><div class="od-box"><div class="od-label">Close of Escrow</div><div class="od-value dark" style="font-size:13px">'+coeDate(14)+'</div></div></div><div class="od-legal"><strong>TERMS:</strong> As-Is. No repairs required. No financing contingency. Cash close. Buyer pays all closing costs minus unpaid mortgages, taxes, or liens. Buyer will select closing attorney / title company / escrow company.<br><br><strong>COMMISSION:</strong> Total commission of '+fmt(d.agentTotal)+' paid at closing ('+fmt(d.comm)+' + flat fee '+fmt(d.flat)+').<br><br><strong>ASSIGNMENT:</strong> Buyer reserves right to assign contract without Seller consent.</div><div class="od-sig"><div><div class="od-sig-name">Michael</div><div class="od-sig-co">229 Holdings LLC | 229homebuyers.com</div></div><div style="text-align:right;font-family:Space Mono,monospace;font-size:10px;color:#7a7a9a">Date: ___________________<br>Seller Signature: ___________________</div></div>';
+  var walkText=d.scenarios.map(function(s){return'  Fee '+fmt(s.fee)+' -> Contract '+(s.valid?fmt(s.offer):'N/A');}).join('\n');
+  document.getElementById('cl-direct-doc').textContent='CASH AS-IS OFFER - 229 Holdings LLC\n'+d.address+'\n'+today()+'\nPresented to: '+d.agent+'\n\nCASH OFFER: '+(d.offer>0?fmt(d.offer):'See walk-down')+'\n(No repairs. No contingencies. Cash close.)\n\nARV: '+fmt(d.arv)+' | MAO Ceiling: '+fmt(d.mao)+' | Your Fee: '+fmt(d.fee)+'\nBuyer All-In: '+fmt(d.allIn)+' | Buyer Profit: '+fmt(d.profit)+' | ROI: '+fmtP(d.roi)+'\n\nAGENT COMMISSION: '+fmt(d.agentTotal)+'\n('+fmt(d.comm)+' commission + '+fmt(d.flat)+' flat fee - paid at closing)\n\nCLOSING TERMS:\n- Earnest Money: $500\n- Inspection: 10 Days | As-Is, no repairs\n- Close of Escrow: '+coeDate(14)+'\n- No financing contingency | Cash close\n- Buyer pays all closing costs minus unpaid mortgages, taxes, liens\n- Buyer reserves right to assign contract\n\nFEE WALK-DOWN:\n'+walkText+'\n\nMichael | 229 Holdings LLC | 229homebuyers.com';
 }
 
-function showCLView(view) {
-  document.querySelectorAll('#cl-output-panel .ovt-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('cl-view-executive').style.display = view==='executive' ? 'block' : 'none';
-  document.getElementById('cl-view-direct').style.display    = view==='direct'    ? 'block' : 'none';
-  document.getElementById('cl-ovt-'+view).classList.add('active');
+function showOfferView(e,prefix,view){
+  var panel=document.getElementById(prefix+'-output-panel');
+  panel.querySelectorAll('.ovt-btn').forEach(function(b){b.classList.remove('active');});
+  e.currentTarget.classList.add('active');
+  document.getElementById(prefix+'-view-executive').style.display=view==='executive'?'block':'none';
+  document.getElementById(prefix+'-view-direct').style.display=view==='direct'?'block':'none';
 }
 
-// ════════════════════════════════════════════════════════════
-// COPY HELPERS
-// ════════════════════════════════════════════════════════════
-function copyView(id) {
-  const el = document.getElementById(id);
-  const text = el.innerText;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = el.nextElementSibling;
-    btn.textContent = '✓ Copied!'; btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = '📋 Copy Offer'; btn.classList.remove('copied'); }, 2000);
-  });
-}
-function copyDirect() {
-  const text = document.getElementById('direct-doc').textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('direct-doc').nextElementSibling;
-    btn.textContent='✓ Copied!'; btn.classList.add('copied');
-    setTimeout(()=>{ btn.textContent='📋 Copy Text'; btn.classList.remove('copied'); },2000);
-  });
-}
-function copyCLDirect() {
-  const text = document.getElementById('cl-direct-doc').textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('cl-direct-doc').nextElementSibling;
-    btn.textContent='✓ Copied!'; btn.classList.add('copied');
-    setTimeout(()=>{ btn.textContent='📋 Copy Text'; btn.classList.remove('copied'); },2000);
+function copyEl(id,btn){
+  var el=document.getElementById(id);
+  var text=el.innerText||el.textContent;
+  navigator.clipboard.writeText(text).then(function(){
+    var orig=btn.textContent;btn.textContent='Copied!';btn.classList.add('copied');
+    setTimeout(function(){btn.textContent=orig;btn.classList.remove('copied');},2000);
   });
 }
 
-// ════════════════════════════════════════════════════════════
-// AI EMAIL GENERATORS
-// ════════════════════════════════════════════════════════════
-async function generateOFEmails() {
-  if (
+async function generateOFEmails(){
+  if(!ofData)return;
+  var d=ofData;
+  var subjects=['Offer on your listing','Quick offer for you','Your listing - offer inside','Interested in your property'];
+  var prompt='You are a real estate wholesaler writing to a listing agent about their stale listing.\n\nOFFER TYPE: Seller Finance / Creative\nProperty: '+d.address+'\nList Price: '+fmt(d.price)+'\nDown Payment: '+fmt(d.dp)+' ('+d.dpPct+'% - covers commission at closing)\nMonthly Payment: '+fmt(d.monthly)+'/mo | Term: '+d.pmts+' payments | Interest: '+(d.rate===0?'0% interest free':d.rate+'%')+'\nSeller receives: FULL ASKING PRICE\nAgent total payout: '+fmt(d.agentTotal)+' (6% commission + flat fee, paid from buyer down payment)\nAt-list comparison (3% buyer-side): '+fmt(d.atList)+'\nAgent nets '+(d.agentTotal>=d.atList?'+'+fmt(d.agentTotal-d.atList)+' MORE':fmt(d.agentTotal-d.atList)+' LESS')+' than a full-price sale\n\nHARD RULES:\n1. NO em dashes. Commas and periods only.\n2. 3-5 sentences MAX. Short, punchy, handwritten feel.\n3. Never say "seller financing" or "owner financing"\n4. Call out exact commission: '+fmt(d.agentTotal)+' paid from buyer down payment\n5. Emphasize seller gets FULL asking price\n6. Soft CTA: ask where to send written offer\n7. Sign off EXACTLY: Michael | 229 Holdings LLC | 229homebuyers.com\n8. V1=direct/confident, V2=empathetic, V3=curiosity hook, V4=ultra short 2-3 sentences\n\nReturn ONLY a JSON array: [{"variation":1,"body":"..."},...] Raw JSON only.';
+  showEmailLoading('of');
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    var data=await res.json();
+    var raw=data.content[0].text.trim().replace(/```json|```/g,'').trim();
+    ofEmails=JSON.parse(raw);
+    ofEmails.forEach(function(e,i){e.body=e.body.replace(/\u2014/g,',').replace(/\u2013/g,',');e.subject=subjects[i%subjects.length];});
+    renderEmailTabs('of',ofEmails);showEmail('of',0);
+  }catch(err){document.getElementById('of-email-body').textContent='Email generation failed.';}
+  document.getElementById('of-email-section').style.display='block';
+}
+
+async function generateCLEmails(){
+  if(!clData)return;
+  var d=clData;
+  var subjects=['Cash offer on your listing','Quick cash offer - as-is','Cash offer ready to send','Can we close this in 14 days?'];
+  var prompt='You are a real estate wholesaler writing to a listing agent about their stale listing.\n\nOFFER TYPE: Cash As-Is\nProperty: '+d.address+'\nARV: '+fmt(d.arv)+' | Repairs: '+fmt(d.repair)+'\nMAO: '+fmt(d.mao)+' | Cash Offer (contract): '+(d.offer>0?fmt(d.offer):'see walk-down')+'\nAgent total payout: '+fmt(d.agentTotal)+' (6% + flat fee)\nAt-list comparison (3% of ARV): '+fmt(d.atList)+'\nAgent nets '+(d.agentTotal>=d.atList?'+'+fmt(d.agentTotal-d.atList)+' MORE':fmt(d.agentTotal-d.atList)+' LESS')+' than a full-price sale\nClose: 7-14 days | No repairs | No contingencies | Cash | Earnest $500\n\nHARD RULES:\n1. NO em dashes. Commas and periods only.\n2. 3-5 sentences MAX. Short, punchy, handwritten.\n3. Lead with speed + certainty - cash, as-is, close in 14 days\n4. Call out exact commission: '+fmt(d.agentTotal)+'\n5. Compare to at-list '+fmt(d.atList)+' - agent wins with your offer\n6. Soft CTA: ask where to send written offer\n7. Sign off EXACTLY: Michael | 229 Holdings LLC | 229homebuyers.com\n8. V1=direct/confident, V2=empathetic, V3=curiosity hook, V4=ultra short 2-3 sentences\n\nReturn ONLY a JSON array: [{"variation":1,"body":"..."},...] Raw JSON only.';
+  showEmailLoading('cl');
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    var data=await res.json();
+    var raw=data.content[0].text.trim().replace(/```json|```/g,'').trim();
+    clEmails=JSON.parse(raw);
+    clEmails.forEach(function(e,i){e.body=e.body.replace(/\u2014/g,',').replace(/\u2013/g,',');e.subject=subjects[i%subjects.length];});
+    renderEmailTabs('cl',clEmails);showEmail('cl',0);
+  }catch(err){document.getElementById('cl-email-body').textContent='Email generation failed.';}
+  document.getElementById('cl-email-section').style.display='block';
+}
+
+function showEmailLoading(prefix){
+  document.getElementById(prefix+'-email-section').style.display='block';
+  document.getElementById(prefix+'-email-subject').textContent='Generating...';
+  document.getElementById(prefix+'-email-body').innerHTML='<div class="loading-shimmer" style="width:80%"></div><div class="loading-shimmer" style="width:65%"></div><div class="loading-shimmer" style="width:72%"></div>';
+  document.getElementById(prefix+'-email-tabs').innerHTML='';
+}
+function renderEmailTabs(prefix,emails){
+  var c=document.getElementById(prefix+'-email-tabs');c.innerHTML='';
+  emails.forEach(function(e,i){var btn=document.createElement('button');btn.className='email-tab-btn'+(i===0?' active':'');btn.textContent='V'+(i+1);btn.onclick=function(){showEmail(prefix,i);};c.appendChild(btn);});
+}
+function showEmail(prefix,idx){
+  var emails=prefix==='of'?ofEmails:clEmails;if(!emails.length)return;
+  document.querySelectorAll('#'+prefix+'-email-tabs .email-tab-btn').forEach(function(b,i){b.classList.toggle('active',i===idx);});
+  var e=emails[idx];
+  document.getElementById(prefix+'-email-subject').textContent='Subject: '+(e.subject||'');
+  document.getElementById(prefix+'-email-body').textContent=e.body||'';
+}
+
+function searchQueue(q){
+  q=q.trim().toLowerCase();
+  document.getElementById('search-clear').style.display=q?'inline':'none';
+  filterTable('queue-tbody',_rawQueue,q);
+  filterTable('runs-tbody',_rawRuns,q);
+  updateSearchCount();
+}
+function filterTable(tbodyId,rawRows,q){
+  var tbody=document.getElementById(tbodyId);if(!tbody)return;
+  if(!q){tbody.innerHTML=rawRows.join('');return;}
+  tbody.innerHTML=rawRows.map(function(rowHtml){
+    var plain=rowHtml.replace(/<[^>]+>/g,'').toLowerCase();
+    if(!plain.includes(q))return rowHtml.replace('<tr','<tr class="search-hidden"');
+    return rowHtml.replace(/(<td[^>]*>)([\s\S]*?)(<\/td>)/g,function(m,open,content,close){
+      return open+content.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),function(m){return'<mark class="hit">'+m+'</mark>';})+close;
+    });
+  }).join('');
+}
+function clearSearch(){var inp=document.getElementById('queue-search');inp.value='';document.getElementById('search-clear').style.display='none';searchQueue('');inp.focus();}
+function updateSearchCount(){
+  var q=(document.getElementById('queue-search')?.value||'').trim().toLowerCase();
+  var el=document.getElementById('search-count');if(!el)return;
+  if(!q||!_rawQueue.length){el.textContent=_rawQueue.length?_rawQueue.length+' leads':'';return;}
+  el.textContent=_rawQueue.filter(function(r){return r.replace(/<[^>]+>/g,'').toLowerCase().includes(q);}).length+' of '+_rawQueue.length+' leads';
+}
+
+async function loadRunData(){
+  try{
+    var res=await fetch('./data/pipeline_log.json');if(!res.ok)return;
+    var d=await res.json();
+    if(d.summary){var s=d.summary;[['s-total',s.total_leads],['s-emails',s.emails_sent],['s-ghl',s.ghl_pushed],['s-of',s.of_deals],['s-cl',s.cl_deals],['s-last',s.run_date]].forEach(function(pair){var el=document.getElementById(pair[0]);if(el)el.textContent=pair[1]!=null?pair[1]:'--';});}
+    if(d.runs&&d.runs.length){_rawRuns=d.runs.map(function(r){return'<tr><td>'+(r.date||'--')+'</td><td>'+(r.market||'--')+'</td><td>'+(r.leads!=null?r.leads:'--')+'</td><td>'+(r.emails!=null?r.emails:'--')+'</td><td>'+(r.of||0)+'/'+(r.cl||0)+'</td><td>'+(r.ghl!=null?r.ghl:'--')+'</td><td><span class="badge '+(r.status==='OK'?'badge-new':'badge-of')+'">'+(r.status||'--')+'</span></td></tr>';});document.getElementById('runs-tbody').innerHTML=_rawRuns.join('');}
+    if(d.queue&&d.queue.length){_rawQueue=d.queue.map(function(q){return'<tr><td>'+(q.address||'--')+'</td><td>'+(q.market||'--')+'</td><td>'+(q.price?'$'+Number(q.price).toLocaleString():'--')+'</td><td>'+(q.dom!=null?q.dom:'--')+'</td><td><span class="badge '+(q.type==='OF'?'badge-of':'badge-cl')+'">'+(q.type||'--')+'</span></td><td>'+(q.offer?'$'+Number(q.offer).toLocaleString():'--')+'</td><td>'+(q.agent||'--')+'</td><td>'+(q.sent||'--')+'</td></tr>';});document.getElementById('queue-tbody').innerHTML=_rawQueue.join('');updateSearchCount();}
+  }catch(e){}
+}
+loadRunData();
+</script>
+</body>
+</html>
