@@ -6,11 +6,15 @@ from config import ANTHROPIC, EMAIL
 log = logging.getLogger(__name__)
 
 
+def calculate_agent_commission(list_price: float, rate: float = 0.05) -> float:
+    """Estimate agent commission — typically 5% split 2.5/2.5."""
+    return round(list_price * rate)
+
+
 def generate_emails(listing: dict, offer: dict) -> list:
     """
     Use Claude API to generate 4 unique email variations per property.
-    Based on Zompz listing agent contact skill — each email must feel
-    handwritten, unique, and lead with solving the agent's problem.
+    Includes explicit agent commission callout — proven conversion driver.
     """
     client = anthropic.Anthropic(api_key=ANTHROPIC["api_key"])
 
@@ -25,6 +29,10 @@ def generate_emails(listing: dict, offer: dict) -> list:
     monthly_payment = offer.get("monthly_payment_estimate", 0)
     offer_type = offer.get("offer_type", "owner_finance")
 
+    # Agent commission calculation
+    agent_commission = calculate_agent_commission(list_price)
+    agent_commission_fmt = f"${agent_commission:,}"
+
     # Clean agent name to first name only
     first_name = agent_name.split()[0] if agent_name and agent_name != "there" else "there"
 
@@ -33,29 +41,35 @@ def generate_emails(listing: dict, offer: dict) -> list:
 Property: {address}, {city}, {state}
 List Price: ${list_price:,}
 Days on Market: {dom}
-Our Owner Finance Offer: ${owner_finance_offer:,} (seller gets near full price, we pay over time)
+Agent First Name: {first_name}
+Estimated Agent Commission: {agent_commission_fmt}
+
+Our Owner Finance Offer: ${owner_finance_offer:,} (seller gets near full price)
 Our Cash Offer: ${cash_offer:,} (fast close, as-is, no repairs)
 Monthly Payment if Owner Finance: ~${monthly_payment:,}/mo
-Agent First Name: {first_name}
 Primary Offer Type: {offer_type}
 
 Write {ANTHROPIC["email_variations"]} completely different email variations to this listing agent.
-Each email must:
-1. Be 3-5 sentences max — short and punchy
-2. Feel handwritten and personal, NOT like a template
-3. Lead with the agent's pain point (stale listing, seller frustrated, commission at risk)
-4. Mention we can close in 14 days or less, as-is, no contingencies
-5. For owner finance: emphasize seller gets NEAR FULL LIST PRICE
-6. For cash: emphasize speed and certainty
-7. End with a simple soft call to action — just asking if they're open to a conversation
-8. NO subject line — body only
-9. Sign off as: Michael | 229 Holdings LLC | 229homebuyers.com
 
-Vary the tone across the 4 emails:
-- Email 1: Direct and confident
-- Email 2: Empathetic and understanding  
-- Email 3: Curiosity-driven, ask a question
-- Email 4: Ultra short, 2-3 sentences max
+Each email MUST:
+1. Be 3-5 sentences max — short, punchy, human
+2. Feel handwritten — NOT like a template or mass email
+3. Lead with the agent's pain (stale listing, seller frustrated, commission at risk)
+4. Explicitly mention the agent commission is PROTECTED and PAID IN FULL
+   - Use the exact amount: {agent_commission_fmt}
+   - Frame it as: their {agent_commission_fmt} commission is covered/protected/guaranteed
+5. Mention we close in 14 days or less, as-is, no contingencies
+6. For owner finance: seller gets NEAR FULL LIST PRICE
+7. For cash: emphasize speed and certainty
+8. Soft CTA — just asking if they're open to a conversation
+9. NO subject line — body only
+10. Sign off: Michael | 229 Holdings LLC | 229homebuyers.com
+
+Vary tone across 4 emails:
+- Email 1: Direct and confident — lead with commission protection
+- Email 2: Empathetic — acknowledge the frustration of a stale listing
+- Email 3: Curiosity-driven — open with a question
+- Email 4: Ultra short — 2-3 sentences max, still mention commission
 
 Return ONLY a JSON array with 4 objects, each with keys "variation" (1-4) and "body".
 No markdown, no explanation, just the raw JSON array."""
@@ -79,7 +93,7 @@ No markdown, no explanation, just the raw JSON array."""
         import json
         emails = json.loads(raw)
 
-        # Add subject lines from config
+        # Add subject lines and metadata
         subjects = EMAIL["subject_lines"]
         for i, email in enumerate(emails):
             subject = subjects[i % len(subjects)]
@@ -88,6 +102,7 @@ No markdown, no explanation, just the raw JSON array."""
             email["agent_email"] = listing.get("agent_email")
             email["agent_phone"] = listing.get("agent_phone")
             email["market"] = listing.get("market")
+            email["agent_commission"] = agent_commission
 
         log.info(f"Generated {len(emails)} email variations for {address}")
         return emails
