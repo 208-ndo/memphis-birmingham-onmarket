@@ -1,6 +1,7 @@
 import requests
 import logging
 import time
+import random
 from datetime import datetime
 from config import GHL, MARKETS
 
@@ -18,7 +19,7 @@ def get_headers():
 
 
 def find_contact_by_email(email: str) -> str | None:
-    """Check if contact already exists in GHL by email. Returns contact ID or None."""
+    """Check if contact already exists in GHL by email."""
     try:
         resp = requests.get(
             f"{GHL_BASE_URL}/contacts/",
@@ -27,8 +28,7 @@ def find_contact_by_email(email: str) -> str | None:
             timeout=10
         )
         if resp.status_code == 200:
-            data = resp.json()
-            contacts = data.get("contacts", [])
+            contacts = resp.json().get("contacts", [])
             if contacts:
                 return contacts[0]["id"]
     except Exception as e:
@@ -39,6 +39,7 @@ def find_contact_by_email(email: str) -> str | None:
 def create_contact(listing: dict, offer: dict, market_key: str) -> str | None:
     """
     Create a new contact in GHL for the listing agent.
+    Checks for existing contact first — never creates duplicates.
     Returns contact ID on success.
     """
     agent_email = listing.get("agent_email", "")
@@ -47,7 +48,6 @@ def create_contact(listing: dict, offer: dict, market_key: str) -> str | None:
     address = listing.get("address", "")
     city = listing.get("city", "")
     state = listing.get("state", "")
-    market = MARKETS[market_key]
 
     # Check for existing contact first
     if agent_email:
@@ -77,6 +77,9 @@ def create_contact(listing: dict, offer: dict, market_key: str) -> str | None:
             "distress_score": str(listing.get("score", 0)),
             "owner_finance_offer": f"${offer.get('owner_finance_offer', 0):,}",
             "cash_offer": f"${offer.get('cash_offer', 0):,}",
+            "your_fee_estimate": f"${offer.get('your_fee_estimate', 0):,}",
+            "offer_type": offer.get("offer_type", ""),
+            "pitch_holds": str(offer.get("pitch_holds", False)),
             "zillow_url": listing.get("url", ""),
             "pipeline_date": datetime.now().strftime("%Y-%m-%d"),
         }
@@ -102,8 +105,9 @@ def create_contact(listing: dict, offer: dict, market_key: str) -> str | None:
 
 def send_sms(contact_id: str, listing: dict, offer: dict, market_key: str) -> bool:
     """
-    Send SMS to listing agent via GHL after email is sent.
-    Fires 30 minutes after email — references the email sent.
+    Send SMS to listing agent via GHL.
+    Fires 5 minutes after email sends.
+    Rotates through 4 casual text variations.
     """
     market = MARKETS[market_key]
     from_number = market.get("ghl_phone_number")
@@ -111,13 +115,16 @@ def send_sms(contact_id: str, listing: dict, offer: dict, market_key: str) -> bo
     first_name = agent_name.split()[0] if agent_name else "there"
     address = listing.get("address", "")
     owner_finance_offer = offer.get("owner_finance_offer", 0)
+    offer_type = offer.get("offer_type", "owner_finance")
 
-    message = (
-        f"Hi {first_name}, this is Michael with 229 Holdings — "
-        f"I just sent you an email about {address}. "
-        f"We can offer your seller ${owner_finance_offer:,} and close in 14 days as-is. "
-        f"Open to a quick chat?"
-    )
+    # 4 rotating casual text variations
+    texts = [
+        f"Hey {first_name}, just sent you an email about {address} — still available? What's the deal with it?",
+        f"Hey {first_name} — offer sent on {address}. Let me know what we can do to help your client close this 😊",
+        f"Hey {first_name}, you see my email on {address}? We can close fast as-is — open to chat?",
+        f"{first_name} — sent an offer on {address}. Cash or owner finance, 14 days close. Worth a quick call?",
+    ]
+    message = random.choice(texts)
 
     if not from_number:
         log.error(f"No GHL phone number configured for market: {market_key}")
@@ -139,7 +146,7 @@ def send_sms(contact_id: str, listing: dict, offer: dict, market_key: str) -> bo
             timeout=10
         )
         if resp.status_code in [200, 201]:
-            log.info(f"SMS sent to contact {contact_id} | {address}")
+            log.info(f"SMS sent to {contact_id} | {address} | '{message[:50]}...'")
             return True
         else:
             log.error(f"SMS failed: {resp.status_code} {resp.text}")
@@ -152,22 +159,27 @@ def push_to_ghl(listing: dict, offer: dict, email_sent: dict, market_key: str) -
     """
     Master GHL push function.
     1. Creates or finds contact
-    2. Logs the deal
-    3. Fires SMS 30 min after email
+    2. Waits 5 minutes
+    3. Fires SMS with random text variation
     Returns True on full success.
     """
-    # Step 1 — Create/find contact
+    # Step 1 — Create or find contact
     contact_id = create_contact(listing, offer, market_key)
     if not contact_id:
         log.error(f"Could not create GHL contact for {listing.get('address')}")
         return False
 
-    # Step 2 — Wait then send SMS
+    # Step 2 — Wait 5 minutes then send SMS
     delay_minutes = GHL["text_delay_minutes"]
     log.info(f"Waiting {delay_minutes} min before SMS to {listing.get('agent_email')}...")
     time.sleep(delay_minutes * 60)
 
     # Step 3 — Fire SMS
     sms_success = send_sms(contact_id, listing, offer, market_key)
+
+    if sms_success:
+        log.info(f"GHL push complete: {listing.get('address')}")
+    else:
+        log.warning(f"GHL contact created but SMS failed: {listing.get('address')}")
 
     return sms_success
