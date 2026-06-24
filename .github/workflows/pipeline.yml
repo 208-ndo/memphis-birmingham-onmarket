@@ -2,7 +2,6 @@ name: Memphis Birmingham On-Market Pipeline
 
 on:
   schedule:
-    # Runs 8:00 AM Central Time (13:00 UTC) Tue/Wed/Thu
     - cron: '0 13 * * 2,3,4'
   workflow_dispatch:
     inputs:
@@ -25,16 +24,12 @@ jobs:
         with:
           python-version: '3.11'
 
-     - name: Install dependencies
+      - name: Install dependencies
         run: |
           pip install -r requirements.txt
           playwright install chromium
           sudo apt-get update
-          sudo apt-get install -y \
-            libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 \
-            libcups2 libdrm2 libxkbcommon0 libxcomposite1 \
-            libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 \
-            libpango-1.0-0 libcairo2 libatspi2.0-0
+          sudo apt-get install -y libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2 libatspi2.0-0
 
       - name: Restore dedup log
         uses: actions/cache@v4
