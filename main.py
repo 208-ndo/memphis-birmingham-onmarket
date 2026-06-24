@@ -57,7 +57,6 @@ def save_dashboard_data(market_key: str, leads: list, sent_results: list):
     os.makedirs("data", exist_ok=True)
     dashboard_file = f"data/{market_key}_leads.json"
 
-    # Load existing data
     existing = []
     if os.path.exists(dashboard_file):
         try:
@@ -84,17 +83,24 @@ def save_dashboard_data(market_key: str, leads: list, sent_results: list):
             "agent_name": lead.get("listing_agent"),
             "agent_email": lead.get("agent_email"),
             "agent_phone": lead.get("agent_phone"),
+            "offer_type": offer.get("offer_type", ""),
             "owner_finance_offer": offer.get("owner_finance_offer", 0),
             "cash_offer": offer.get("cash_offer", 0),
+            "monthly_payment": offer.get("monthly_payment", 0),
+            "your_fee_estimate": offer.get("your_fee_estimate", 0),
+            "pitch_holds": offer.get("pitch_holds", False),
+            "down_payment": offer.get("down_payment", 0),
             "zillow_url": lead.get("url"),
             "email_sent": address in sent_addresses,
             "scraped_at": lead.get("scraped_at"),
             "pipeline_date": datetime.now().strftime("%Y-%m-%d"),
         })
 
-    # Merge — newest first, dedup by address
-    all_entries = new_entries + [e for e in existing if e["address"] not in {n["address"] for n in new_entries}]
-    all_entries = all_entries[:200]  # Keep last 200 entries
+    all_entries = new_entries + [
+        e for e in existing
+        if e["address"] not in {n["address"] for n in new_entries}
+    ]
+    all_entries = all_entries[:200]
 
     with open(dashboard_file, "w") as f:
         json.dump(all_entries, f, indent=2)
@@ -102,12 +108,13 @@ def save_dashboard_data(market_key: str, leads: list, sent_results: list):
 
 
 def run_market(market_key: str, dry_run: bool = False):
-    """Run the full pipeline for a single market with overflow logic."""
+    """Run the full pipeline for a single market."""
     log.info(f"{'='*60}")
     log.info(f"PIPELINE: {market_key.upper()} | {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    log.info(f"DRY RUN: {dry_run}")
     log.info(f"{'='*60}")
 
-    # STEP 1 — Load overflow from previous run first
+    # STEP 1 — Load overflow first
     overflow_leads = load_overflow()
     overflow_for_market = [l for l in overflow_leads if l.get("market") == market_key]
     other_overflow = [l for l in overflow_leads if l.get("market") != market_key]
@@ -117,16 +124,16 @@ def run_market(market_key: str, dry_run: bool = False):
     fresh_leads = scrape_market(market_key)
     log.info(f"[1/5] {len(fresh_leads)} fresh leads from Zillow")
 
-    # STEP 3 — Combine overflow + fresh, overflow gets priority
+    # STEP 3 — Combine overflow + fresh
     all_leads = overflow_for_market + fresh_leads
-    log.info(f"[2/5] Total pool: {len(all_leads)} leads ({len(overflow_for_market)} overflow + {len(fresh_leads)} fresh)")
+    log.info(f"[2/5] Total pool: {len(all_leads)} ({len(overflow_for_market)} overflow + {len(fresh_leads)} fresh)")
 
     # STEP 4 — Dedup filter
     fresh_deduped = [l for l in all_leads if should_send(l)]
     log.info(f"[2/5] {len(fresh_deduped)} after dedup")
 
     if not fresh_deduped:
-        log.info("No fresh leads to send — exiting market")
+        log.info("No fresh leads — exiting market")
         clear_overflow()
         return []
 
@@ -140,38 +147,71 @@ def run_market(market_key: str, dry_run: bool = False):
     else:
         save_overflow(other_overflow)
 
-    log.info(f"Sending today: {len(todays_leads)} | Overflow for tomorrow: {len(overflow_remaining)}")
+    log.info(f"Sending today: {len(todays_leads)} | Overflow: {len(overflow_remaining)}")
 
-    # STEP 6 — Calculate offers + generate emails
-    log.info(f"[3/5] Generating offers and emails...")
+    # STEP 6 — Calculate offers + skip if pitch doesn't hold
+    log.info(f"[3/5] Calculating offers and generating emails...")
     send_queue = []
+    skipped_pitch = 0
+    skipped_no_email = 0
 
     for listing in todays_leads:
         try:
+            # Skip if no agent email — can't contact them
+            if not listing.get("agent_email"):
+                skipped_no_email += 1
+                log.info(f"SKIP (no email): {listing.get('address')}")
+                continue
+
+            # Calculate offer
             offer = calculate_offer(listing)
+            if not offer:
+                continue
+
+            # ── KEY FIX: Skip if pitch doesn't hold ──────────────────────
+            # Agent would net LESS from our offer than a full-price sale
+            # Sending this offer would be pointless — agent has no incentive
+            if not offer.get("pitch_holds", True):
+                skipped_pitch += 1
+                log.info(
+                    f"SKIP (pitch fails): {listing.get('address')} | "
+                    f"Total to agent: ${offer.get('total_to_agent', 0):,} | "
+                    f"At-list: ${offer.get('at_list_commission', 0):,}"
+                )
+                continue
+
             listing["offer"] = offer
+
+            # Generate 4 email variations via Claude API
             emails = generate_emails(listing, offer)
             if not emails:
+                log.warning(f"No emails generated for {listing.get('address')} — skipping")
                 continue
+
             chosen_email = pick_email(emails)
             send_queue.append({
                 "listing": listing,
                 "offer": offer,
                 "email": chosen_email,
             })
+
         except Exception as e:
             log.error(f"Error processing {listing.get('address')}: {e}")
+            continue
 
-    log.info(f"[3/5] {len(send_queue)} ready to send")
+    log.info(
+        f"[3/5] {len(send_queue)} ready to send | "
+        f"Skipped: {skipped_pitch} (pitch fails) + {skipped_no_email} (no email)"
+    )
 
-    # STEP 7 — Send emails
+    # STEP 7 — Send emails via Gmail
     log.info(f"[4/5] Sending emails...")
     sent_results = send_batch(send_queue, market_key, dry_run=dry_run)
     successful = [r for r in sent_results if r["success"]]
-    log.info(f"[4/5] {len(successful)} sent successfully")
+    log.info(f"[4/5] {len(successful)} emails sent successfully")
 
     # STEP 8 — GHL push + SMS + mark sent
-    log.info(f"[5/5] Pushing to GHL...")
+    log.info(f"[5/5] Pushing to GHL and firing texts...")
     for result in successful:
         listing = result["listing"]
         offer = listing.get("offer", {})
@@ -181,44 +221,56 @@ def run_market(market_key: str, dry_run: bool = False):
             if not dry_run:
                 push_to_ghl(listing, offer, email_sent, market_key)
             else:
-                log.info(f"[DRY RUN] GHL skipped: {listing.get('address')}")
+                log.info(f"[DRY RUN] GHL + SMS skipped: {listing.get('address')}")
         except Exception as e:
-            log.error(f"GHL error: {e}")
+            log.error(f"GHL error for {listing.get('address')}: {e}")
 
     # STEP 9 — Save dashboard data
     save_dashboard_data(market_key, todays_leads, sent_results)
 
     stats = get_stats()
-    log.info(f"COMPLETE: {market_key.upper()} | Sent: {len(successful)} | Total ever: {stats['total_properties_emailed']}")
+    log.info(f"{'='*60}")
+    log.info(f"COMPLETE: {market_key.upper()}")
+    log.info(f"Scraped: {len(fresh_leads)} | Sent: {len(successful)} | "
+             f"Pitch skipped: {skipped_pitch} | No email: {skipped_no_email}")
+    log.info(f"All-time: {stats['total_properties_emailed']} properties | "
+             f"{stats['total_agents_contacted']} agents")
+    log.info(f"{'='*60}")
     return sent_results
 
 
 def main():
-    """Run both markets. Tue/Wed/Thu only."""
-    today = datetime.now().weekday()
+    """
+    Run pipeline for both markets.
+    Weekdays only — Tue/Wed/Thu for best agent response rates.
+    """
+    today = datetime.now().weekday()  # 0=Mon 1=Tue 2=Wed 3=Thu 4=Fri
     dry_run = "--dry-run" in sys.argv
 
     if today not in [1, 2, 3]:
         day_names = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
-        log.info(f"Today is {day_names[today]} — runs Tue/Wed/Thu only. Exiting.")
+        log.info(f"Today is {day_names[today]} — pipeline only runs Tue/Wed/Thu. Exiting.")
         sys.exit(0)
 
-    log.info(f"Starting both markets | Dry run: {dry_run}")
+    log.info(f"Pipeline starting | Markets: Memphis + Birmingham | Dry run: {dry_run}")
 
+    # Run Memphis first
     try:
         run_market("memphis", dry_run=dry_run)
     except Exception as e:
-        log.error(f"Memphis error: {e}")
+        log.error(f"Memphis pipeline error: {e}")
 
-    log.info("Waiting 5 min between markets...")
+    # Wait 5 min between markets
+    log.info("Waiting 5 minutes between markets...")
     time.sleep(300)
 
+    # Run Birmingham
     try:
         run_market("birmingham", dry_run=dry_run)
     except Exception as e:
-        log.error(f"Birmingham error: {e}")
+        log.error(f"Birmingham pipeline error: {e}")
 
-    log.info("Both markets complete.")
+    log.info("Both markets complete. Check dashboard and GHL for results.")
 
 
 if __name__ == "__main__":
