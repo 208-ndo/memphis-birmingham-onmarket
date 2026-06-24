@@ -1,0 +1,73 @@
+name: Memphis Birmingham On-Market Pipeline
+
+on:
+  schedule:
+    # Runs 8:00 AM Central Time (13:00 UTC) Tue/Wed/Thu
+    - cron: '0 13 * * 2,3,4'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (no emails sent)'
+        required: false
+        default: 'false'
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          playwright install chromium
+          playwright install-deps chromium
+
+      - name: Restore dedup log
+        uses: actions/cache@v4
+        with:
+          path: data/sent_leads.json
+          key: dedup-log-${{ github.run_id }}
+          restore-keys: |
+            dedup-log-
+
+      - name: Run pipeline
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GMAIL_USER_MEMPHIS: ${{ secrets.GMAIL_USER_MEMPHIS }}
+          GMAIL_APP_PASSWORD_MEMPHIS: ${{ secrets.GMAIL_APP_PASSWORD_MEMPHIS }}
+          GMAIL_USER_BIRMINGHAM: ${{ secrets.GMAIL_USER_BIRMINGHAM }}
+          GMAIL_APP_PASSWORD_BIRMINGHAM: ${{ secrets.GMAIL_APP_PASSWORD_BIRMINGHAM }}
+          GHL_API_KEY: ${{ secrets.GHL_API_KEY }}
+          GHL_LOCATION_ID: ${{ secrets.GHL_LOCATION_ID }}
+          GHL_PHONE_MEMPHIS: ${{ secrets.GHL_PHONE_MEMPHIS }}
+          GHL_PHONE_BIRMINGHAM: ${{ secrets.GHL_PHONE_BIRMINGHAM }}
+        run: |
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            python main.py --dry-run
+          else
+            python main.py
+          fi
+
+      - name: Save dedup log
+        uses: actions/cache@v4
+        if: always()
+        with:
+          path: data/sent_leads.json
+          key: dedup-log-${{ github.run_id }}
+
+      - name: Upload pipeline log
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pipeline-log-${{ github.run_id }}
+          path: data/pipeline.log
+          retention-days: 30
