@@ -2,7 +2,7 @@ name: Memphis Birmingham On-Market Pipeline
 
 on:
   schedule:
-    - cron: '0 13 * * 2,3,4'
+    - cron: '0 13 * * 2,3,4'  # 8AM Central = 1PM UTC, Tue/Wed/Thu
   workflow_dispatch:
     inputs:
       dry_run:
@@ -14,10 +14,14 @@ jobs:
   run-pipeline:
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    permissions:
+      contents: write  # needed to commit dedup log + pipeline_log back to repo
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -28,28 +32,22 @@ jobs:
         run: |
           pip install -r requirements.txt
           playwright install chromium
-          sudo apt-get update
-          sudo apt-get install -y libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2 libatspi2.0-0
-
-      - name: Restore dedup log
-        uses: actions/cache@v4
-        with:
-          path: data/sent_leads.json
-          key: dedup-log-${{ github.run_id }}
-          restore-keys: |
-            dedup-log-
+          sudo apt-get update -qq
+          sudo apt-get install -y libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 \
+            libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 \
+            libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2 libatspi2.0-0
 
       - name: Run pipeline
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GMAIL_USER_MEMPHIS: ${{ secrets.GMAIL_USER_MEMPHIS }}
+          ANTHROPIC_API_KEY:        ${{ secrets.ANTHROPIC_API_KEY }}
+          GMAIL_USER_MEMPHIS:       ${{ secrets.GMAIL_USER_MEMPHIS }}
           GMAIL_APP_PASSWORD_MEMPHIS: ${{ secrets.GMAIL_APP_PASSWORD_MEMPHIS }}
-          GMAIL_USER_BIRMINGHAM: ${{ secrets.GMAIL_USER_BIRMINGHAM }}
+          GMAIL_USER_BIRMINGHAM:    ${{ secrets.GMAIL_USER_BIRMINGHAM }}
           GMAIL_APP_PASSWORD_BIRMINGHAM: ${{ secrets.GMAIL_APP_PASSWORD_BIRMINGHAM }}
-          GHL_API_KEY: ${{ secrets.GHL_API_KEY }}
-          GHL_LOCATION_ID: ${{ secrets.GHL_LOCATION_ID }}
-          GHL_PHONE_MEMPHIS: ${{ secrets.GHL_PHONE_MEMPHIS }}
-          GHL_PHONE_BIRMINGHAM: ${{ secrets.GHL_PHONE_BIRMINGHAM }}
+          GHL_API_KEY:              ${{ secrets.GHL_API_KEY }}
+          GHL_LOCATION_ID:          ${{ secrets.GHL_LOCATION_ID }}
+          GHL_PHONE_MEMPHIS:        ${{ secrets.GHL_PHONE_MEMPHIS }}
+          GHL_PHONE_BIRMINGHAM:     ${{ secrets.GHL_PHONE_BIRMINGHAM }}
         run: |
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             python main.py --dry-run
@@ -57,14 +55,16 @@ jobs:
             python main.py
           fi
 
-      - name: Save dedup log
-        uses: actions/cache@v4
+      - name: Commit dedup log + dashboard data to repo
         if: always()
-        with:
-          path: data/sent_leads.json
-          key: dedup-log-${{ github.run_id }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/sent_leads.json data/pipeline_log.json data/memphis_leads.json data/birmingham_leads.json || true
+          git diff --staged --quiet || git commit -m "Pipeline run $(date +'%Y-%m-%d %H:%M') — auto update"
+          git push || true
 
-      - name: Upload pipeline log
+      - name: Upload pipeline log artifact
         uses: actions/upload-artifact@v4
         if: always()
         with:
