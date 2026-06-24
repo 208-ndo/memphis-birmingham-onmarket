@@ -88,7 +88,7 @@ EMAIL = {
 GHL = {
     "api_key": os.environ.get("GHL_API_KEY"),
     "location_id": os.environ.get("GHL_LOCATION_ID"),
-    "text_delay_minutes": 30,
+    "text_delay_minutes": 5,
     "pipeline_name": "On-Market Wholesale",
     "stage_name": "Offer Sent",
 }
