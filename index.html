@@ -7,131 +7,47 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg:       #0a0a0f;
-      --bg2:      #12121a;
-      --bg3:      #1a1a26;
-      --border:   #2a2a3a;
-      --purple:   #6c63ff;
-      --purple2:  #8b84ff;
-      --teal:     #00d4aa;
-      --teal2:    #00ffcc;
-      --red:      #ff4757;
-      --yellow:   #ffd700;
-      --text:     #e8e8f0;
-      --muted:    #7a7a9a;
-      --green:    #00e676;
+      --bg:     #0a0a0f;
+      --bg2:    #12121a;
+      --bg3:    #1a1a26;
+      --border: #2a2a3a;
+      --purple: #6c63ff;
+      --purple2:#8b84ff;
+      --teal:   #00d4aa;
+      --teal2:  #00ffcc;
+      --red:    #ff4757;
+      --yellow: #ffd700;
+      --text:   #e8e8f0;
+      --muted:  #7a7a9a;
+      --green:  #00e676;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 16px;
-      min-height: 100vh;
-    }
+    body { background: var(--bg); color: var(--text); font-family: 'Barlow Condensed', sans-serif; font-size: 16px; min-height: 100vh; }
 
     /* ── Header ── */
-    header {
-      background: var(--bg2);
-      border-bottom: 1px solid var(--border);
-      padding: 18px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .logo {
-      font-family: 'Syne', sans-serif;
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      color: var(--teal);
-    }
+    header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; letter-spacing: 1px; color: var(--teal); }
     .logo span { color: var(--purple); }
-    .header-meta {
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
-      color: var(--muted);
-      text-align: right;
-      line-height: 1.6;
-    }
-    .live-dot {
-      display: inline-block;
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      margin-right: 5px;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: .3; }
-    }
+    .header-meta { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); text-align: right; line-height: 1.6; }
+    .live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green); margin-right: 5px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:.3 } }
 
     /* ── Tabs ── */
-    .tab-bar {
-      background: var(--bg2);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      gap: 0;
-      padding: 0 32px;
-      overflow-x: auto;
-    }
-    .tab {
-      font-family: 'Syne', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--muted);
-      padding: 14px 22px;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      white-space: nowrap;
-      transition: color .2s, border-color .2s;
-    }
+    .tab-bar { background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; padding: 0 32px; overflow-x: auto; }
+    .tab { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); padding: 14px 22px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: color .2s, border-color .2s; }
     .tab:hover { color: var(--text); }
-    .tab.active {
-      color: var(--teal);
-      border-bottom-color: var(--teal);
-    }
-    .tab.deal-tab.active {
-      color: var(--purple);
-      border-bottom-color: var(--purple);
-    }
+    .tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+    .tab.deal-tab.active { color: var(--purple); border-bottom-color: var(--purple); }
 
-    /* ── Content panels ── */
+    /* ── Panels ── */
     .panel { display: none; padding: 32px; }
     .panel.active { display: block; }
 
     /* ── Stat grid ── */
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-      gap: 16px;
-      margin-bottom: 32px;
-    }
-    .stat-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 18px 20px;
-    }
-    .stat-label {
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
-    .stat-value {
-      font-family: 'Syne', sans-serif;
-      font-size: 28px;
-      font-weight: 800;
-      line-height: 1;
-    }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+    .stat-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .stat-value { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; line-height: 1; }
     .stat-value.purple { color: var(--purple); }
     .stat-value.teal   { color: var(--teal); }
     .stat-value.yellow { color: var(--yellow); }
@@ -139,179 +55,99 @@
     .stat-value.green  { color: var(--green); }
 
     /* ── Section headers ── */
-    .section-header {
-      font-family: 'Syne', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 16px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border);
-    }
+    .section-header { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
 
-    /* ── Table ── */
+    /* ── Tables ── */
     .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 32px; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    thead th {
-      background: var(--bg3);
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      padding: 10px 14px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-    }
+    thead th { background: var(--bg3); font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
     tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: var(--bg3); }
-    tbody td { padding: 10px 14px; color: var(--text); }
-    .badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      font-weight: 700;
-    }
+    tbody td { padding: 10px 14px; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; }
     .badge-of  { background: rgba(108,99,255,.2); color: var(--purple); }
     .badge-cl  { background: rgba(0,212,170,.2);  color: var(--teal); }
     .badge-new { background: rgba(0,230,118,.15); color: var(--green); }
 
-    /* ── Deal Analyzer tab ── */
-    .analyzer-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
+    /* ═══ DEAL ANALYZER ═══ */
+    .analyzer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
     @media (max-width: 900px) { .analyzer-grid { grid-template-columns: 1fr; } }
 
-    .calc-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px;
-    }
-    .calc-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 18px;
-      font-weight: 800;
-      margin-bottom: 4px;
-    }
+    .calc-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 28px; }
+    .calc-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; margin-bottom: 4px; }
     .calc-title.purple { color: var(--purple); }
     .calc-title.teal   { color: var(--teal); }
-    .calc-subtitle {
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 24px;
-    }
+    .calc-subtitle { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 22px; }
 
     /* inputs */
-    .field-group { margin-bottom: 16px; }
-    .field-label {
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 6px;
-    }
+    .field-group { margin-bottom: 14px; }
+    .field-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
+    .field-hint { font-size: 9px; color: var(--purple); }
+    .teal-card .field-hint { color: var(--teal); }
     .field-row { display: flex; gap: 10px; }
     .field-group input {
-      width: 100%;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 10px 12px;
-      color: var(--text);
-      font-family: 'Space Mono', monospace;
-      font-size: 13px;
-      outline: none;
-      transition: border-color .2s;
+      width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px;
+      padding: 10px 12px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 13px; outline: none; transition: border-color .2s;
     }
     .field-group input:focus { border-color: var(--purple); }
-    .calc-card.teal-card .field-group input:focus { border-color: var(--teal); }
+    .teal-card .field-group input:focus { border-color: var(--teal); }
 
-    .calc-btn {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      font-family: 'Syne', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: opacity .2s;
-    }
-    .calc-btn:hover { opacity: .85; }
+    .calc-btn { width: 100%; padding: 13px; border: none; border-radius: 8px; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1px; cursor: pointer; margin-top: 6px; transition: opacity .2s, transform .1s; }
+    .calc-btn:hover { opacity: .88; }
+    .calc-btn:active { transform: scale(.98); }
     .calc-btn.purple-btn { background: var(--purple); color: #fff; }
-    .calc-btn.teal-btn   { background: var(--teal);   color: #0a0a0f; }
+    .calc-btn.teal-btn   { background: var(--teal); color: #0a0a0f; }
 
     /* results */
-    .results-box {
-      margin-top: 20px;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 20px;
-      display: none;
-    }
-    .result-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 7px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
-    }
+    .results-box { margin-top: 20px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 20px; display: none; }
+    .result-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
     .result-row:last-child { border-bottom: none; }
-    .result-label { color: var(--muted); font-family: 'Space Mono', monospace; font-size: 11px; }
+    .result-row.highlight { background: rgba(108,99,255,.05); border-radius: 4px; padding: 8px 6px; margin: 2px -6px; }
+    .teal-card .result-row.highlight { background: rgba(0,212,170,.05); }
+    .result-label { color: var(--muted); font-family: 'Space Mono', monospace; font-size: 10px; }
     .result-value { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; }
     .result-value.purple { color: var(--purple2); }
     .result-value.teal   { color: var(--teal2); }
     .result-value.yellow { color: var(--yellow); }
     .result-value.green  { color: var(--green); }
     .result-value.red    { color: var(--red); }
+    .result-value.muted  { color: var(--muted); }
 
-    .pitch-check {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 16px;
-      padding: 12px;
-      border-radius: 8px;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 16px;
-      letter-spacing: 1px;
-    }
-    .pitch-check.pass { background: rgba(0,230,118,.12); color: var(--green); border: 1px solid rgba(0,230,118,.3); }
-    .pitch-check.fail { background: rgba(255,71,87,.12);  color: var(--red);   border: 1px solid rgba(255,71,87,.3); }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 
-    .divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 16px 0;
-    }
+    .pitch-check { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; padding: 12px 16px; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: .5px; text-align: center; }
+    .pitch-check.pass { background: rgba(0,230,118,.1); color: var(--green); border: 1px solid rgba(0,230,118,.25); }
+    .pitch-check.fail { background: rgba(255,71,87,.1); color: var(--red); border: 1px solid rgba(255,71,87,.25); }
 
-    /* footer */
-    footer {
-      text-align: center;
-      padding: 24px;
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      color: var(--muted);
-      border-top: 1px solid var(--border);
-    }
+    /* ── Pitch breakdown banner ── */
+    .pitch-breakdown { margin-top: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); line-height: 1.9; display: none; }
+    .pitch-breakdown .hi { color: var(--teal); font-weight: 700; }
+    .pitch-breakdown .hi.p { color: var(--purple); }
+
+    /* ── Email previewer ── */
+    .email-gen-section { margin-top: 28px; }
+    .email-preview-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-top: 14px; min-height: 80px; }
+    .email-meta { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    .email-body { font-family: 'Barlow Condensed', sans-serif; font-size: 15px; line-height: 1.7; color: var(--text); white-space: pre-wrap; }
+    .email-tabs { display: flex; gap: 6px; margin-bottom: 0; flex-wrap: wrap; }
+    .email-tab-btn { font-family: 'Space Mono', monospace; font-size: 10px; padding: 5px 12px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg3); color: var(--muted); cursor: pointer; transition: all .15s; }
+    .email-tab-btn.active { background: var(--purple); border-color: var(--purple); color: #fff; }
+    .email-tab-btn:hover:not(.active) { color: var(--text); border-color: var(--text); }
+    .loading-shimmer { background: linear-gradient(90deg, var(--bg3) 25%, var(--border) 50%, var(--bg3) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 4px; height: 14px; margin: 6px 0; }
+    @keyframes shimmer { 0% { background-position: 200% 0 } 100% { background-position: -200% 0 } }
+
+    /* ── Quick ref ── */
+    .ref-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+    @media (max-width: 700px) { .ref-grid { grid-template-columns: 1fr; } }
+    .ref-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+    .ref-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; margin-bottom: 12px; }
+    .ref-title.p { color: var(--purple); }
+    .ref-title.t { color: var(--teal); }
+    .ref-body { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); line-height: 2.1; }
+    .ref-body .val { color: var(--text); }
+
+    footer { text-align: center; padding: 24px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); border-top: 1px solid var(--border); }
   </style>
 </head>
 <body>
@@ -326,36 +162,34 @@
 </header>
 
 <div class="tab-bar">
-  <div class="tab active"        onclick="switchTab('all')">All Markets</div>
-  <div class="tab"               onclick="switchTab('memphis')">Memphis TN</div>
-  <div class="tab"               onclick="switchTab('birmingham')">Birmingham AL</div>
-  <div class="tab deal-tab"      onclick="switchTab('analyzer')">Deal Analyzer</div>
+  <div class="tab active"   onclick="switchTab(event,'all')">All Markets</div>
+  <div class="tab"          onclick="switchTab(event,'memphis')">Memphis TN</div>
+  <div class="tab"          onclick="switchTab(event,'birmingham')">Birmingham AL</div>
+  <div class="tab deal-tab" onclick="switchTab(event,'analyzer')">Deal Analyzer</div>
 </div>
 
 <!-- ═══════════════ ALL MARKETS ═══════════════ -->
 <div class="panel active" id="panel-all">
   <div class="stat-grid">
     <div class="stat-card"><div class="stat-label">Total Leads Scraped</div><div class="stat-value purple" id="s-total">—</div></div>
-    <div class="stat-card"><div class="stat-label">Emails Sent (All)</div><div class="stat-value teal"   id="s-emails">—</div></div>
+    <div class="stat-card"><div class="stat-label">Emails Sent (All)</div><div class="stat-value teal" id="s-emails">—</div></div>
     <div class="stat-card"><div class="stat-label">GHL Contacts Pushed</div><div class="stat-value yellow" id="s-ghl">—</div></div>
     <div class="stat-card"><div class="stat-label">Owner Finance Deals</div><div class="stat-value purple" id="s-of">—</div></div>
-    <div class="stat-card"><div class="stat-label">Cash Lowball Deals</div><div class="stat-value teal"   id="s-cl">—</div></div>
-    <div class="stat-card"><div class="stat-label">Last Run</div><div class="stat-value green" style="font-size:16px;" id="s-last">—</div></div>
+    <div class="stat-card"><div class="stat-label">Cash Lowball Deals</div><div class="stat-value teal" id="s-cl">—</div></div>
+    <div class="stat-card"><div class="stat-label">Last Run</div><div class="stat-value green" style="font-size:16px" id="s-last">—</div></div>
   </div>
-
   <div class="section-header">Recent Pipeline Runs</div>
   <div class="table-wrap">
     <table>
       <thead><tr><th>Date</th><th>Market</th><th>Leads</th><th>Emails</th><th>OF / CL</th><th>GHL</th><th>Status</th></tr></thead>
-      <tbody id="runs-tbody"><tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px;">No run data yet. Pipeline auto-fires Tue/Wed/Thu 8AM CT.</td></tr></tbody>
+      <tbody id="runs-tbody"><tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px">No run data yet. Pipeline auto-fires Tue/Wed/Thu 8AM CT.</td></tr></tbody>
     </table>
   </div>
-
   <div class="section-header">Agent Outreach Queue</div>
   <div class="table-wrap">
     <table>
       <thead><tr><th>Address</th><th>Market</th><th>Price</th><th>DOM</th><th>Type</th><th>Offer</th><th>Agent</th><th>Sent</th></tr></thead>
-      <tbody id="queue-tbody"><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px;">Queue populates after first live run.</td></tr></tbody>
+      <tbody id="queue-tbody"><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">Queue populates after first live run.</td></tr></tbody>
     </table>
   </div>
 </div>
@@ -373,7 +207,7 @@
   <div class="table-wrap">
     <table>
       <thead><tr><th>Address</th><th>List Price</th><th>DOM</th><th>Sqft</th><th>Type</th><th>Offer</th><th>Agent Commission</th><th>Status</th></tr></thead>
-      <tbody><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px;">Memphis leads populate after first run.</td></tr></tbody>
+      <tbody><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">Memphis leads populate after first run.</td></tr></tbody>
     </table>
   </div>
 </div>
@@ -391,7 +225,7 @@
   <div class="table-wrap">
     <table>
       <thead><tr><th>Address</th><th>List Price</th><th>DOM</th><th>Sqft</th><th>Type</th><th>Offer</th><th>Agent Commission</th><th>Status</th></tr></thead>
-      <tbody><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px;">Birmingham leads populate after first run.</td></tr></tbody>
+      <tbody><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">Birmingham leads populate after first run.</td></tr></tbody>
     </table>
   </div>
 </div>
@@ -399,132 +233,269 @@
 <!-- ═══════════════ DEAL ANALYZER ═══════════════ -->
 <div class="panel" id="panel-analyzer">
 
-  <div class="section-header" style="margin-bottom:24px;">Flip Man KISS — Deal Analyzer</div>
+  <div class="section-header" style="margin-bottom:24px">Flip Man KISS — Deal Analyzer</div>
 
   <div class="analyzer-grid">
 
-    <!-- ── CALCULATOR 1: Owner Finance ── -->
-    <div class="calc-card">
+    <!-- ── CALC 1: Owner Finance ── -->
+    <div class="calc-card" id="of-card">
       <div class="calc-title purple">Owner Finance Analyzer</div>
       <div class="calc-subtitle">Flip Man KISS — $30k–$80k band</div>
 
       <div class="field-group">
-        <div class="field-label">List / Purchase Price ($)</div>
-        <input type="number" id="of-price" placeholder="55000" />
+        <div class="field-label">List / Purchase Price ($) <span class="field-hint">Offer = Full List</span></div>
+        <input type="number" id="of-price" placeholder="55000" oninput="clearOF()" />
       </div>
       <div class="field-row">
         <div class="field-group" style="flex:1">
-          <div class="field-label">Down Payment %</div>
-          <input type="number" id="of-dp-pct" placeholder="5" value="5" />
+          <div class="field-label">Your Down % <span class="field-hint">default 5%</span></div>
+          <input type="number" id="of-dp-pct" value="5" />
         </div>
         <div class="field-group" style="flex:1">
-          <div class="field-label"># of Payments</div>
-          <input type="number" id="of-payments" placeholder="100" value="100" />
+          <div class="field-label"># of Payments <span class="field-hint">default 100</span></div>
+          <input type="number" id="of-payments" value="100" />
         </div>
       </div>
       <div class="field-row">
         <div class="field-group" style="flex:1">
-          <div class="field-label">Interest Rate %</div>
-          <input type="number" id="of-rate" placeholder="0" value="0" />
+          <div class="field-label">Interest % <span class="field-hint">default 0%</span></div>
+          <input type="number" id="of-rate" value="0" />
         </div>
         <div class="field-group" style="flex:1">
-          <div class="field-label">End Buyer Down % (resale)</div>
-          <input type="number" id="of-buyer-dp" placeholder="12" value="12" />
+          <div class="field-label">Buyer Down % <span class="field-hint">resale 12%</span></div>
+          <input type="number" id="of-buyer-dp" value="12" />
         </div>
       </div>
       <div class="field-group">
-        <div class="field-label">Est. Monthly Rent (for cash flow)</div>
-        <input type="number" id="of-rent" placeholder="750" />
+        <div class="field-label">Est. Monthly Rent (cash flow check)</div>
+        <input type="number" id="of-rent" placeholder="optional — e.g. 750" />
       </div>
 
-      <button class="calc-btn purple-btn" onclick="calcOF()">Calculate Owner Finance Deal</button>
+      <button class="calc-btn purple-btn" onclick="calcOF()">Run Owner Finance Numbers</button>
 
       <div class="results-box" id="of-results">
+
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Your Deal</div>
+
         <div class="result-row"><span class="result-label">Purchase Price (full list)</span><span class="result-value purple" id="of-r-price">—</span></div>
-        <div class="result-row"><span class="result-label">Down Payment (your cost)</span><span class="result-value purple" id="of-r-dp">—</span></div>
-        <div class="result-row"><span class="result-label">Remaining Balance</span><span class="result-value" id="of-r-bal">—</span></div>
-        <div class="result-row"><span class="result-label">Monthly Payment (to seller)</span><span class="result-value" id="of-r-monthly">—</span></div>
+        <div class="result-row"><span class="result-label">Your Down Payment (5%)</span><span class="result-value purple" id="of-r-dp">—</span></div>
+        <div class="result-row"><span class="result-label">Financed Balance</span><span class="result-value" id="of-r-bal">—</span></div>
+        <div class="result-row"><span class="result-label">Your Monthly Payment (to seller)</span><span class="result-value" id="of-r-monthly">—</span></div>
+
         <hr class="divider" />
-        <div class="result-row"><span class="result-label">Agent Commission (6%)</span><span class="result-value yellow" id="of-r-comm">—</span></div>
-        <div class="result-row"><span class="result-label">Agent Flat Fee</span><span class="result-value yellow" id="of-r-flat">—</span></div>
-        <div class="result-row"><span class="result-label">Total To Agent</span><span class="result-value yellow" id="of-r-agent-total">—</span></div>
-        <div class="result-row"><span class="result-label">At-List Commission (3%)</span><span class="result-value" id="of-r-atlist">—</span></div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Agent Pitch (must hold)</div>
+
+        <div class="result-row highlight">
+          <span class="result-label">Agent Commission (6% of purchase)</span>
+          <span class="result-value yellow" id="of-r-comm">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Agent Flat Fee (auto)</span>
+          <span class="result-value yellow" id="of-r-flat">—</span>
+        </div>
+        <div class="result-row highlight">
+          <span class="result-label">Total To Agent</span>
+          <span class="result-value yellow" id="of-r-agent-total">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">At-List Baseline (3% — buyer side)</span>
+          <span class="result-value muted" id="of-r-atlist">—</span>
+        </div>
+
+        <div id="of-pitch" class="pitch-check" style="display:none"></div>
+        <div class="pitch-breakdown" id="of-breakdown"></div>
+
         <hr class="divider" />
-        <div class="result-row"><span class="result-label">Your Fee (buyer 12% – your 5%)</span><span class="result-value green" id="of-r-yourfee">—</span></div>
-        <div class="result-row"><span class="result-label">End Buyer Down Payment</span><span class="result-value teal" id="of-r-buyer-dp">—</span></div>
-        <div class="result-row"><span class="result-label">End Buyer Monthly (8%, 30yr)</span><span class="result-value teal" id="of-r-buyer-monthly">—</span></div>
-        <div class="result-row"><span class="result-label">End Buyer Cash Flow (est.)</span><span class="result-value" id="of-r-cashflow">—</span></div>
-        <div id="of-pitch" class="pitch-check" style="display:none;"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Your Profit</div>
+
+        <div class="result-row highlight">
+          <span class="result-label">Your Fee (buyer 12% down – your 5%)</span>
+          <span class="result-value green" id="of-r-yourfee">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">End Buyer Down Payment (12%)</span>
+          <span class="result-value teal" id="of-r-buyer-dp">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">End Buyer Monthly (8%, 30yr)</span>
+          <span class="result-value teal" id="of-r-buyer-monthly">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">End Buyer Cash Flow vs Your Payment</span>
+          <span class="result-value" id="of-r-cashflow">—</span>
+        </div>
+      </div>
+
+      <!-- ── AI Email Previewer ── -->
+      <div class="email-gen-section" id="of-email-section" style="display:none">
+        <div class="section-header" style="font-size:11px;margin-top:0">AI Email Preview</div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px">
+          What your Flip Man email looks like for this deal. 4 variations, rotate before sending.
+        </div>
+        <div class="email-tabs" id="of-email-tabs"></div>
+        <div class="email-preview-box" id="of-email-box">
+          <div class="email-meta" id="of-email-subject"></div>
+          <div class="email-body" id="of-email-body"></div>
+        </div>
+        <button class="calc-btn purple-btn" style="margin-top:10px;font-size:12px;padding:9px" onclick="generateOFEmails()">
+          Regenerate All 4 Variations
+        </button>
       </div>
     </div>
 
-    <!-- ── CALCULATOR 2: Cash Lowball ── -->
-    <div class="calc-card teal-card">
+    <!-- ── CALC 2: Cash Lowball ── -->
+    <div class="calc-card teal-card" id="cl-card">
       <div class="calc-title teal">Cash Lowball Analyzer</div>
       <div class="calc-subtitle">KISS tier formula — $80k+ band</div>
 
       <div class="field-group">
-        <div class="field-label">List Price / ARV ($)</div>
-        <input type="number" id="cl-arv" placeholder="120000" />
+        <div class="field-label">List Price / ARV ($) <span class="field-hint" style="color:var(--teal)">auto-selects tier</span></div>
+        <input type="number" id="cl-arv" placeholder="120000" oninput="clearCL()" />
       </div>
       <div class="field-group">
         <div class="field-label">Repair Estimate ($)</div>
         <input type="number" id="cl-repair" placeholder="25000" />
       </div>
       <div class="field-group">
-        <div class="field-label">Your Assignment Fee Target ($)</div>
-        <input type="number" id="cl-fee" placeholder="10000" value="10000" />
+        <div class="field-label">Your Assignment Fee ($) <span class="field-hint" style="color:var(--teal)">target $10k+</span></div>
+        <input type="number" id="cl-fee" value="10000" />
       </div>
 
-      <button class="calc-btn teal-btn" onclick="calcCL()">Calculate Cash Lowball Deal</button>
+      <button class="calc-btn teal-btn" onclick="calcCL()">Run Cash Lowball Numbers</button>
 
       <div class="results-box" id="cl-results">
-        <div class="result-row"><span class="result-label">ARV / List Price</span><span class="result-value teal" id="cl-r-arv">—</span></div>
-        <div class="result-row"><span class="result-label">KISS Tier Applied</span><span class="result-value" id="cl-r-tier">—</span></div>
-        <div class="result-row"><span class="result-label">Your KISS Offer (contract price)</span><span class="result-value teal" id="cl-r-offer">—</span></div>
+
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Your Offer</div>
+
+        <div class="result-row highlight">
+          <span class="result-label">KISS Tier Applied</span>
+          <span class="result-value teal" id="cl-r-tier">—</span>
+        </div>
+        <div class="result-row highlight">
+          <span class="result-label">Your KISS Offer (contract price)</span>
+          <span class="result-value teal" id="cl-r-offer">—</span>
+        </div>
+
         <hr class="divider" />
-        <div class="result-row"><span class="result-label">Agent Commission (6% of offer)</span><span class="result-value yellow" id="cl-r-comm">—</span></div>
-        <div class="result-row"><span class="result-label">Agent Flat Fee</span><span class="result-value yellow" id="cl-r-flat">—</span></div>
-        <div class="result-row"><span class="result-label">Total To Agent</span><span class="result-value yellow" id="cl-r-agent-total">—</span></div>
-        <div class="result-row"><span class="result-label">At-List Commission (3%)</span><span class="result-value" id="cl-r-atlist">—</span></div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Agent Pitch (must hold)</div>
+
+        <div class="result-row highlight">
+          <span class="result-label">Agent Commission (6% of offer)</span>
+          <span class="result-value yellow" id="cl-r-comm">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Agent Flat Fee (auto)</span>
+          <span class="result-value yellow" id="cl-r-flat">—</span>
+        </div>
+        <div class="result-row highlight">
+          <span class="result-label">Total To Agent</span>
+          <span class="result-value yellow" id="cl-r-agent-total">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">At-List Baseline (3% of ARV — buyer side)</span>
+          <span class="result-value muted" id="cl-r-atlist">—</span>
+        </div>
+
+        <div id="cl-pitch" class="pitch-check" style="display:none"></div>
+        <div class="pitch-breakdown" id="cl-breakdown"></div>
+
         <hr class="divider" />
-        <div class="result-row"><span class="result-label">Your Assign Price</span><span class="result-value green" id="cl-r-assign">—</span></div>
-        <div class="result-row"><span class="result-label">Repair Estimate</span><span class="result-value red" id="cl-r-repair">—</span></div>
-        <div class="result-row"><span class="result-label">Buyer's All-In Cost</span><span class="result-value" id="cl-r-allin">—</span></div>
-        <div class="result-row"><span class="result-label">Buyer Profit (vs ARV)</span><span class="result-value green" id="cl-r-profit">—</span></div>
-        <div class="result-row"><span class="result-label">Buyer ROI %</span><span class="result-value green" id="cl-r-roi">—</span></div>
-        <div id="cl-pitch" class="pitch-check" style="display:none;"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Deal Stack</div>
+
+        <div class="result-row highlight">
+          <span class="result-label">Your Assign Price</span>
+          <span class="result-value green" id="cl-r-assign">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Your Assignment Fee</span>
+          <span class="result-value green" id="cl-r-fee">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Repair Estimate</span>
+          <span class="result-value red" id="cl-r-repair">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Buyer All-In (assign + repairs)</span>
+          <span class="result-value" id="cl-r-allin">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Buyer Profit (ARV – all-in)</span>
+          <span class="result-value green" id="cl-r-profit">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Buyer ROI</span>
+          <span class="result-value green" id="cl-r-roi">—</span>
+        </div>
+      </div>
+
+      <!-- ── AI Email Previewer ── -->
+      <div class="email-gen-section" id="cl-email-section" style="display:none">
+        <div class="section-header" style="font-size:11px;margin-top:0">AI Email Preview</div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px">
+          What your Flip Man cash offer email looks like. Rotate across 4 variations.
+        </div>
+        <div class="email-tabs" id="cl-email-tabs"></div>
+        <div class="email-preview-box" id="cl-email-box">
+          <div class="email-meta" id="cl-email-subject"></div>
+          <div class="email-body" id="cl-email-body"></div>
+        </div>
+        <button class="calc-btn teal-btn" style="margin-top:10px;font-size:12px;padding:9px" onclick="generateCLEmails()">
+          Regenerate All 4 Variations
+        </button>
       </div>
     </div>
 
   </div><!-- /analyzer-grid -->
 
   <!-- ── Quick Reference ── -->
-  <div style="margin-top:32px;">
-    <div class="section-header">KISS Quick Reference</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-      <div class="calc-card" style="padding:20px;">
-        <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--purple);margin-bottom:12px;font-size:14px;">Owner Finance Rules</div>
-        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);line-height:2;">
-          Band: $30k–$80k<br>
-          Offer = FULL list price<br>
-          Down = 5% (covers agent comm.)<br>
-          Balance / 100 payments @ 0%<br>
-          Earnest = $500 | Close = 21 days<br>
-          Due Diligence = 10 days, as-is<br>
-          Your fee = spread on end buyer down
-        </div>
+  <div class="section-header" style="margin-top:32px">KISS Quick Reference</div>
+  <div class="ref-grid">
+    <div class="ref-card">
+      <div class="ref-title p">Owner Finance Rules</div>
+      <div class="ref-body">
+        Band: <span class="val">$30k–$80k</span><br>
+        Offer: <span class="val">FULL list price</span><br>
+        Down: <span class="val">5%</span> (covers agent commission at close)<br>
+        Balance: <span class="val">100 monthly payments @ 0%</span><br>
+        Earnest: <span class="val">$500</span> &nbsp;|&nbsp; Close: <span class="val">21 days</span><br>
+        Due Diligence: <span class="val">10 days, as-is</span><br>
+        Your fee: <span class="val">12% buyer down – 5% your down</span><br>
+        Agent: <span class="val">6% of purchase + flat fee</span>
       </div>
-      <div class="calc-card" style="padding:20px;">
-        <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--teal);margin-bottom:12px;font-size:14px;">Cash KISS Tiers</div>
-        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);line-height:2;">
-          $80k–$150k &rarr; 40% of value<br>
-          $150k–$300k &rarr; 50% of value<br>
-          $300k–$750k &rarr; 60% of value<br>
-          $750k–$1.5M &rarr; 65% of value<br>
-          Agent: 6% of cash offer + flat fee<br>
-          Assign at $10k+ above contract
-        </div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-title t">Cash KISS Tiers</div>
+      <div class="ref-body">
+        $80k–$150k &rarr; <span class="val">40% of value</span><br>
+        $150k–$300k &rarr; <span class="val">50% of value</span><br>
+        $300k–$750k &rarr; <span class="val">60% of value</span><br>
+        $750k–$1.5M &rarr; <span class="val">65% of value</span><br>
+        Agent: <span class="val">6% of cash offer + flat fee</span><br>
+        Assign at: <span class="val">$10k+ above contract</span><br>
+        Close: <span class="val">7–14 days, as-is, no contingencies</span>
+      </div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-title p">Pitch Must Hold</div>
+      <div class="ref-body">
+        At-list baseline = <span class="val">3% of list price</span> (buyer-side only)<br>
+        Your total to agent must be <span class="val">&ge; 3%</span> of list<br>
+        Owner Finance: <span class="val">6% commission + flat fee &ge; 3%</span><br>
+        Cash: <span class="val">6% of offer + flat fee &ge; 3% of ARV</span><br>
+        If pitch fails: <span class="val">do not send the offer</span><br>
+        Pitch fails rarely — sub-$50k with tiny flat fee
+      </div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-title t">Email Hard Rules</div>
+      <div class="ref-body">
+        Subject (OF): <span class="val">neutral — never "seller financing"</span><br>
+        Subject (cash): <span class="val">can say "cash offer"</span><br>
+        Length: <span class="val">3–5 sentences max</span><br>
+        Em dashes: <span class="val">NEVER — use commas/periods</span><br>
+        Commission: <span class="val">exact dollar amount always</span><br>
+        CTA: <span class="val">soft — just ask where to send offer</span><br>
+        Sign off: <span class="val">Michael | 229 Holdings LLC</span>
       </div>
     </div>
   </div>
@@ -534,202 +505,418 @@
 <footer>229 Holdings LLC &nbsp;|&nbsp; 229homebuyers.com &nbsp;|&nbsp; Memphis TN &bull; Birmingham AL &nbsp;|&nbsp; Flip Man KISS Method</footer>
 
 <script>
-  // ── Tab switching ──
-  function switchTab(name) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-    document.getElementById('panel-' + name).classList.add('active');
+// ── Globals ──────────────────────────────────────────────────────────────────
+let ofData = null;
+let clData = null;
+let ofEmails = [];
+let clEmails = [];
+let activeOFEmail = 0;
+let activeCLEmail = 0;
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+const fmt  = v => '$' + Math.round(v).toLocaleString();
+const fmtP = v => v.toFixed(1) + '%';
+
+function set(id, val, cls) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = val;
+  el.className = 'result-value' + (cls ? ' ' + cls : '');
+}
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function switchTab(e, name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  e.currentTarget.classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+// ── Clear on input ────────────────────────────────────────────────────────────
+function clearOF() {
+  document.getElementById('of-results').style.display = 'none';
+  document.getElementById('of-email-section').style.display = 'none';
+  ofData = null; ofEmails = [];
+}
+function clearCL() {
+  document.getElementById('cl-results').style.display = 'none';
+  document.getElementById('cl-email-section').style.display = 'none';
+  clData = null; clEmails = [];
+}
+
+// ── Owner Finance Calculator ──────────────────────────────────────────────────
+function calcOF() {
+  const price   = parseFloat(document.getElementById('of-price').value)    || 0;
+  const dpPct   = parseFloat(document.getElementById('of-dp-pct').value)   || 5;
+  const pmts    = parseFloat(document.getElementById('of-payments').value)  || 100;
+  const rate    = parseFloat(document.getElementById('of-rate').value)      || 0;
+  const buyerDp = parseFloat(document.getElementById('of-buyer-dp').value) || 12;
+  const rent    = parseFloat(document.getElementById('of-rent').value)      || 0;
+
+  if (!price) { alert('Enter a list price first.'); return; }
+
+  const dp      = price * (dpPct / 100);
+  const balance = price - dp;
+  const monthly = rate === 0
+    ? balance / pmts
+    : (balance * (rate/100/12)) / (1 - Math.pow(1 + rate/100/12, -pmts));
+
+  // Agent: 6% commission + flat fee
+  const comm       = price * 0.06;
+  const flat       = price < 50000 ? 1000 : (price <= 150000 ? 1500 : 2000);
+  const agentTotal = comm + flat;
+  const atList     = price * 0.03;   // 3% buyer-side baseline
+  const pitchOk    = agentTotal >= atList;
+
+  // Your fee = spread on buyer down
+  const yourFee    = price * ((buyerDp - dpPct) / 100);
+  const buyerDown  = price * (buyerDp / 100);
+
+  // Buyer monthly at 8%, 30yr
+  const buyerBal = price - buyerDown;
+  const r30 = 0.08 / 12, n30 = 360;
+  const buyerMo = buyerBal > 0 ? (buyerBal * r30) / (1 - Math.pow(1 + r30, -n30)) : 0;
+
+  // Cash flow: rent vs buyer monthly
+  const cf = rent > 0 ? rent - buyerMo : null;
+
+  // Store for email gen
+  ofData = { price, dpPct, pmts, rate, buyerDp, rent, dp, balance, monthly, comm, flat, agentTotal, atList, pitchOk, yourFee, buyerDown, buyerMo, cf };
+
+  // Populate results
+  set('of-r-price',        fmt(price),             'purple');
+  set('of-r-dp',           fmt(dp),                'purple');
+  set('of-r-bal',          fmt(balance),           '');
+  set('of-r-monthly',      fmt(monthly) + '/mo',   '');
+  set('of-r-comm',         fmt(comm),              'yellow');
+  set('of-r-flat',         fmt(flat),              'yellow');
+  set('of-r-agent-total',  fmt(agentTotal),        'yellow');
+  set('of-r-atlist',       fmt(atList),            'muted');
+  set('of-r-yourfee',      fmt(yourFee),           'green');
+  set('of-r-buyer-dp',     fmt(buyerDown),         'teal');
+  set('of-r-buyer-monthly',fmt(buyerMo) + '/mo',   'teal');
+
+  const cfEl = document.getElementById('of-r-cashflow');
+  if (cf !== null) {
+    cfEl.textContent = fmt(cf) + '/mo';
+    cfEl.className = 'result-value ' + (cf >= 0 ? 'green' : 'red');
+  } else {
+    cfEl.textContent = 'Enter rent above to check';
+    cfEl.className = 'result-value muted';
   }
 
-  // ── Formatting helpers ──
-  const fmt  = v => '$' + Math.round(v).toLocaleString();
-  const fmtP = v => v.toFixed(1) + '%';
+  // Pitch check
+  const pitchEl = document.getElementById('of-pitch');
+  pitchEl.style.display = 'flex';
+  if (pitchOk) {
+    pitchEl.className = 'pitch-check pass';
+    pitchEl.innerHTML = '&#10003; PITCH HOLDS';
+  } else {
+    pitchEl.className = 'pitch-check fail';
+    pitchEl.innerHTML = '&#10007; PITCH FAILS — DO NOT SEND';
+  }
 
-  // ── Owner Finance Calculator ──
-  function calcOF() {
-    const price   = parseFloat(document.getElementById('of-price').value)      || 0;
-    const dpPct   = parseFloat(document.getElementById('of-dp-pct').value)     || 5;
-    const pmts    = parseFloat(document.getElementById('of-payments').value)    || 100;
-    const rate    = parseFloat(document.getElementById('of-rate').value)        || 0;
-    const buyerDp = parseFloat(document.getElementById('of-buyer-dp').value)   || 12;
-    const rent    = parseFloat(document.getElementById('of-rent').value)        || 0;
+  // Pitch breakdown
+  const bd = document.getElementById('of-breakdown');
+  bd.style.display = 'block';
+  const delta = agentTotal - atList;
+  bd.innerHTML =
+    `Agent gets <span class="hi">${fmt(agentTotal)}</span> from your offer.<br>` +
+    `At-list baseline (3% buyer side): <span class="hi p">${fmt(atList)}</span>.<br>` +
+    `Agent nets <span class="hi">${delta >= 0 ? '+' : ''}${fmt(delta)}</span> compared to a full-price sale.`;
 
-    if (!price) { alert('Enter a list price.'); return; }
+  document.getElementById('of-results').style.display = 'block';
 
-    const dp        = price * (dpPct / 100);
-    const balance   = price - dp;
-    const monthly   = rate === 0
-      ? balance / pmts
-      : (balance * (rate/100/12)) / (1 - Math.pow(1 + rate/100/12, -pmts));
+  // Auto-generate email previews
+  generateOFEmails();
+}
 
-    const comm      = price * 0.06;
-    const flat      = price < 50000 ? 1000 : (price <= 150000 ? 1500 : 2000);
-    const agentTotal = comm + flat;
-    const atList    = price * 0.03;
-    const pitchOk   = agentTotal >= atList;
+// ── Cash Lowball Calculator ───────────────────────────────────────────────────
+function calcCL() {
+  const arv    = parseFloat(document.getElementById('cl-arv').value)    || 0;
+  const repair = parseFloat(document.getElementById('cl-repair').value) || 0;
+  const fee    = parseFloat(document.getElementById('cl-fee').value)    || 10000;
 
-    const yourFee   = price * ((buyerDp - dpPct) / 100);
-    const buyerDownAmt = price * (buyerDp / 100);
+  if (!arv) { alert('Enter a list price / ARV first.'); return; }
 
-    // End buyer monthly at 8% / 30yr on (price - buyerDownAmt)
-    const buyerBal  = price - buyerDownAmt;
-    const r30       = 0.08 / 12;
-    const n30       = 360;
-    const buyerMo   = buyerBal > 0
-      ? (buyerBal * r30) / (1 - Math.pow(1 + r30, -n30))
-      : 0;
+  // KISS tier
+  let pct, tierLabel;
+  if      (arv <= 150000) { pct = 0.40; tierLabel = '40% — $80k–$150k'; }
+  else if (arv <= 300000) { pct = 0.50; tierLabel = '50% — $150k–$300k'; }
+  else if (arv <= 750000) { pct = 0.60; tierLabel = '60% — $300k–$750k'; }
+  else                    { pct = 0.65; tierLabel = '65% — $750k–$1.5M'; }
 
-    const cashflow  = rent > 0 ? rent - buyerMo : null;
+  const offer      = arv * pct;
+  const comm       = offer * 0.06;     // 6% of the OFFER, not ARV
+  const flat       = offer < 50000 ? 1000 : (offer <= 150000 ? 1500 : 2000);
+  const agentTotal = comm + flat;
+  const atList     = arv * 0.03;       // 3% of ARV = buyer-side baseline
+  const pitchOk    = agentTotal >= atList;
 
-    // Populate
-    set('of-r-price',        fmt(price),        'purple');
-    set('of-r-dp',           fmt(dp),           'purple');
-    set('of-r-bal',          fmt(balance),      '');
-    set('of-r-monthly',      fmt(monthly) + '/mo', '');
-    set('of-r-comm',         fmt(comm),         'yellow');
-    set('of-r-flat',         fmt(flat),         'yellow');
-    set('of-r-agent-total',  fmt(agentTotal),   'yellow');
-    set('of-r-atlist',       fmt(atList),       '');
-    set('of-r-yourfee',      fmt(yourFee),      'green');
-    set('of-r-buyer-dp',     fmt(buyerDownAmt), 'teal');
-    set('of-r-buyer-monthly',fmt(buyerMo) + '/mo', 'teal');
+  const assignPrice = offer + fee;
+  const allIn       = assignPrice + repair;
+  const profit      = arv - allIn;
+  const roi         = allIn > 0 ? (profit / allIn) * 100 : 0;
 
-    const cfEl = document.getElementById('of-r-cashflow');
-    if (cashflow !== null) {
-      cfEl.textContent = fmt(cashflow) + '/mo';
-      cfEl.className   = 'result-value ' + (cashflow >= 0 ? 'green' : 'red');
-    } else {
-      cfEl.textContent = 'Enter rent above';
-      cfEl.className   = 'result-value';
+  clData = { arv, repair, fee, pct, tierLabel, offer, comm, flat, agentTotal, atList, pitchOk, assignPrice, allIn, profit, roi };
+
+  set('cl-r-tier',        tierLabel,   'teal');
+  set('cl-r-offer',       fmt(offer),  'teal');
+  set('cl-r-comm',        fmt(comm),   'yellow');
+  set('cl-r-flat',        fmt(flat),   'yellow');
+  set('cl-r-agent-total', fmt(agentTotal), 'yellow');
+  set('cl-r-atlist',      fmt(atList), 'muted');
+  set('cl-r-assign',      fmt(assignPrice), 'green');
+  set('cl-r-fee',         fmt(fee),    'green');
+  set('cl-r-repair',      fmt(repair), 'red');
+  set('cl-r-allin',       fmt(allIn),  '');
+  set('cl-r-profit',      fmt(profit), profit >= 0 ? 'green' : 'red');
+  set('cl-r-roi',         fmtP(roi),   roi >= 0 ? 'green' : 'red');
+
+  const pitchEl = document.getElementById('cl-pitch');
+  pitchEl.style.display = 'flex';
+  if (pitchOk) {
+    pitchEl.className = 'pitch-check pass';
+    pitchEl.innerHTML = '&#10003; PITCH HOLDS';
+  } else {
+    pitchEl.className = 'pitch-check fail';
+    pitchEl.innerHTML = '&#10007; PITCH FAILS — DO NOT SEND';
+  }
+
+  const bd = document.getElementById('cl-breakdown');
+  bd.style.display = 'block';
+  const delta = agentTotal - atList;
+  bd.innerHTML =
+    `Agent gets <span class="hi">${fmt(agentTotal)}</span> from your cash offer.<br>` +
+    `At-list baseline (3% of ARV, buyer side): <span class="hi p">${fmt(atList)}</span>.<br>` +
+    `Agent nets <span class="hi">${delta >= 0 ? '+' : ''}${fmt(delta)}</span> vs. a full-price sale.`;
+
+  document.getElementById('cl-results').style.display = 'block';
+
+  generateCLEmails();
+}
+
+// ── AI Email Previewer ────────────────────────────────────────────────────────
+async function generateOFEmails() {
+  if (!ofData) return;
+  const d = ofData;
+
+  const subjects = [
+    `Offer on your listing`,
+    `Quick offer for you`,
+    `Your listing — offer inside`,
+    `Interested in your property`,
+  ];
+
+  const prompt = `You are a real estate wholesaler writing to a listing agent about their stale property.
+
+OFFER TYPE: Owner Finance
+List Price: ${fmt(d.price)}
+Down Payment: ${fmt(d.dp)} (5% — covers your commission at close)
+Monthly Payment: ${fmt(d.monthly)}/mo for ${d.pmts} payments at 0% interest
+Seller gets: FULL ASKING PRICE — nothing off the top
+Agent total payout: ${fmt(d.agentTotal)} (6% commission + flat fee)
+Traditional at-list comparison (3% buyer side): ${fmt(d.atList)}
+Agent nets ${d.agentTotal >= d.atList ? '+' + fmt(d.agentTotal - d.atList) + ' MORE' : fmt(d.agentTotal - d.atList) + ' LESS'} than a full-price sale
+
+HARD RULES:
+1. NO em dashes. Commas and periods only.
+2. 3-5 sentences MAX per email. Short and punchy.
+3. Feel handwritten, not templated.
+4. Name the exact dollar commission: ${fmt(d.agentTotal)}
+5. Compare to the at-list ${fmt(d.atList)} — agent wins with your offer
+6. CTA: soft. Just ask where to send the written offer.
+7. Sign off EXACTLY: Michael | 229 Holdings LLC | 229homebuyers.com
+8. NEVER say "seller financing" or "owner financing"
+9. Vary tone: Email 1=direct/confident, 2=empathetic, 3=curiosity hook, 4=ultra short (2-3 sentences)
+
+Return ONLY a JSON array with 4 objects: [{"variation":1,"body":"..."},...]
+No markdown. No explanation. Raw JSON only.`;
+
+  showEmailLoading('of');
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    let raw = data.content[0].text.trim();
+    raw = raw.replace(/```json|```/g, '').trim();
+    ofEmails = JSON.parse(raw);
+
+    // Clean em dashes
+    ofEmails.forEach((e, i) => {
+      e.body = e.body.replace(/\u2014/g, ',').replace(/\u2013/g, ',');
+      e.subject = subjects[i % subjects.length];
+    });
+
+    renderEmailTabs('of', ofEmails, subjects);
+    showEmail('of', 0);
+  } catch(err) {
+    document.getElementById('of-email-body').textContent = 'Email preview failed. Check your API connection.';
+    document.getElementById('of-email-subject').textContent = '';
+  }
+
+  document.getElementById('of-email-section').style.display = 'block';
+}
+
+async function generateCLEmails() {
+  if (!clData) return;
+  const d = clData;
+
+  const subjects = [
+    `Cash offer on your listing`,
+    `Quick cash offer — as-is`,
+    `${fmt(d.offer)} cash, close in 14 days`,
+    `Cash offer ready to send`,
+  ];
+
+  const prompt = `You are a real estate wholesaler writing to a listing agent about their stale listing.
+
+OFFER TYPE: Cash As-Is
+ARV / List Price: ${fmt(d.arv)}
+KISS Tier: ${d.tierLabel}
+Your Cash Offer: ${fmt(d.offer)}
+Agent total payout: ${fmt(d.agentTotal)} (6% of offer + flat fee)
+Traditional at-list comparison (3% buyer side): ${fmt(d.atList)}
+Agent nets ${d.agentTotal >= d.atList ? '+' + fmt(d.agentTotal - d.atList) + ' MORE' : fmt(d.agentTotal - d.atList) + ' LESS'} than a full-price sale
+Close: 7-14 days | No repairs | No contingencies | Earnest $500
+
+HARD RULES:
+1. NO em dashes. Commas and periods only.
+2. 3-5 sentences MAX. Short and punchy.
+3. Handwritten feel — not a template.
+4. Name the exact dollar commission: ${fmt(d.agentTotal)}
+5. Emphasize: cash, as-is, speed, certainty of close
+6. Compare to at-list ${fmt(d.atList)} — they make more with your offer
+7. CTA: soft. Just ask where to send the written offer.
+8. Sign off EXACTLY: Michael | 229 Holdings LLC | 229homebuyers.com
+9. Vary tone: Email 1=direct/confident, 2=empathetic, 3=curiosity hook, 4=ultra short (2-3 sentences)
+
+Return ONLY a JSON array with 4 objects: [{"variation":1,"body":"..."},...]
+No markdown. No explanation. Raw JSON only.`;
+
+  showEmailLoading('cl');
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    let raw = data.content[0].text.trim();
+    raw = raw.replace(/```json|```/g, '').trim();
+    clEmails = JSON.parse(raw);
+
+    clEmails.forEach((e, i) => {
+      e.body = e.body.replace(/\u2014/g, ',').replace(/\u2013/g, ',');
+      e.subject = subjects[i % subjects.length];
+    });
+
+    renderEmailTabs('cl', clEmails, subjects);
+    showEmail('cl', 0);
+  } catch(err) {
+    document.getElementById('cl-email-body').textContent = 'Email preview failed. Check your API connection.';
+    document.getElementById('cl-email-subject').textContent = '';
+  }
+
+  document.getElementById('cl-email-section').style.display = 'block';
+}
+
+function showEmailLoading(prefix) {
+  document.getElementById(prefix + '-email-section').style.display = 'block';
+  document.getElementById(prefix + '-email-subject').textContent = 'Generating...';
+  document.getElementById(prefix + '-email-body').innerHTML =
+    '<div class="loading-shimmer" style="width:80%"></div>' +
+    '<div class="loading-shimmer" style="width:65%"></div>' +
+    '<div class="loading-shimmer" style="width:72%"></div>' +
+    '<div class="loading-shimmer" style="width:55%"></div>';
+  document.getElementById(prefix + '-email-tabs').innerHTML = '';
+}
+
+function renderEmailTabs(prefix, emails, subjects) {
+  const container = document.getElementById(prefix + '-email-tabs');
+  container.innerHTML = '';
+  emails.forEach((e, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'email-tab-btn' + (i === 0 ? ' active' : '');
+    btn.textContent = `V${i + 1}`;
+    btn.onclick = () => showEmail(prefix, i);
+    container.appendChild(btn);
+  });
+}
+
+function showEmail(prefix, idx) {
+  const emails = prefix === 'of' ? ofEmails : clEmails;
+  if (!emails.length) return;
+
+  document.querySelectorAll(`#${prefix}-email-tabs .email-tab-btn`).forEach((b, i) => {
+    b.classList.toggle('active', i === idx);
+  });
+
+  const email = emails[idx];
+  document.getElementById(prefix + '-email-subject').textContent = 'Subject: ' + (email.subject || '—');
+  document.getElementById(prefix + '-email-body').textContent = email.body || '';
+}
+
+// ── Load run data ─────────────────────────────────────────────────────────────
+async function loadRunData() {
+  try {
+    const res = await fetch('./data/pipeline_log.json');
+    if (!res.ok) return;
+    const d = await res.json();
+
+    if (d.summary) {
+      const s = d.summary;
+      setText('s-total',  s.total_leads  ?? '—');
+      setText('s-emails', s.emails_sent  ?? '—');
+      setText('s-ghl',    s.ghl_pushed   ?? '—');
+      setText('s-of',     s.of_deals     ?? '—');
+      setText('s-cl',     s.cl_deals     ?? '—');
+      setText('s-last',   s.run_date     ?? '—');
     }
 
-    const pitchEl = document.getElementById('of-pitch');
-    pitchEl.style.display = 'flex';
-    if (pitchOk) {
-      pitchEl.className = 'pitch-check pass';
-      pitchEl.innerHTML = '&#10003; PITCH HOLDS &mdash; Agent gets ' + fmt(agentTotal) + ' vs ' + fmt(atList) + ' at-list';
-    } else {
-      pitchEl.className = 'pitch-check fail';
-      pitchEl.innerHTML = '&#10007; PITCH FAILS &mdash; ' + fmt(agentTotal) + ' < ' + fmt(atList) + ' at-list';
+    if (d.runs?.length) {
+      document.getElementById('runs-tbody').innerHTML = d.runs.map(r => `
+        <tr>
+          <td>${r.date || '—'}</td><td>${r.market || '—'}</td>
+          <td>${r.leads ?? '—'}</td><td>${r.emails ?? '—'}</td>
+          <td>${r.of ?? 0} / ${r.cl ?? 0}</td><td>${r.ghl ?? '—'}</td>
+          <td><span class="badge ${r.status === 'OK' ? 'badge-new' : 'badge-of'}">${r.status || '—'}</span></td>
+        </tr>`).join('');
     }
 
-    document.getElementById('of-results').style.display = 'block';
-  }
-
-  // ── Cash Lowball Calculator ──
-  function calcCL() {
-    const arv    = parseFloat(document.getElementById('cl-arv').value)    || 0;
-    const repair = parseFloat(document.getElementById('cl-repair').value) || 0;
-    const fee    = parseFloat(document.getElementById('cl-fee').value)    || 10000;
-
-    if (!arv) { alert('Enter a list price / ARV.'); return; }
-
-    // KISS tier
-    let pct, tierLabel;
-    if (arv <= 150000)      { pct = 0.40; tierLabel = '40% ($80k-$150k)'; }
-    else if (arv <= 300000) { pct = 0.50; tierLabel = '50% ($150k-$300k)'; }
-    else if (arv <= 750000) { pct = 0.60; tierLabel = '60% ($300k-$750k)'; }
-    else                    { pct = 0.65; tierLabel = '65% ($750k-$1.5M)'; }
-
-    const offer      = arv * pct;
-    const comm       = offer * 0.06;
-    const flat       = offer < 50000 ? 1000 : (offer <= 150000 ? 1500 : 2000);
-    const agentTotal = comm + flat;
-    const atList     = arv * 0.03;
-    const pitchOk    = agentTotal >= atList;
-
-    const assignPrice = offer + fee;
-    const allIn       = assignPrice + repair;
-    const profit      = arv - allIn;
-    const roi         = allIn > 0 ? (profit / allIn) * 100 : 0;
-
-    set('cl-r-arv',          fmt(arv),          'teal');
-    set('cl-r-tier',         tierLabel,          '');
-    set('cl-r-offer',        fmt(offer),         'teal');
-    set('cl-r-comm',         fmt(comm),          'yellow');
-    set('cl-r-flat',         fmt(flat),          'yellow');
-    set('cl-r-agent-total',  fmt(agentTotal),    'yellow');
-    set('cl-r-atlist',       fmt(atList),        '');
-    set('cl-r-assign',       fmt(assignPrice),   'green');
-    set('cl-r-repair',       fmt(repair),        'red');
-    set('cl-r-allin',        fmt(allIn),         '');
-    set('cl-r-profit',       fmt(profit),        profit >= 0 ? 'green' : 'red');
-    set('cl-r-roi',          fmtP(roi),          roi >= 0 ? 'green' : 'red');
-
-    const pitchEl = document.getElementById('cl-pitch');
-    pitchEl.style.display = 'flex';
-    if (pitchOk) {
-      pitchEl.className = 'pitch-check pass';
-      pitchEl.innerHTML = '&#10003; PITCH HOLDS &mdash; Agent gets ' + fmt(agentTotal) + ' vs ' + fmt(atList) + ' at-list';
-    } else {
-      pitchEl.className = 'pitch-check fail';
-      pitchEl.innerHTML = '&#10007; PITCH FAILS &mdash; ' + fmt(agentTotal) + ' < ' + fmt(atList) + ' at-list';
+    if (d.queue?.length) {
+      document.getElementById('queue-tbody').innerHTML = d.queue.map(q => `
+        <tr>
+          <td>${q.address || '—'}</td><td>${q.market || '—'}</td>
+          <td>${q.price ? '$' + Number(q.price).toLocaleString() : '—'}</td>
+          <td>${q.dom ?? '—'}</td>
+          <td><span class="badge ${q.type === 'OF' ? 'badge-of' : 'badge-cl'}">${q.type || '—'}</span></td>
+          <td>${q.offer ? '$' + Number(q.offer).toLocaleString() : '—'}</td>
+          <td>${q.agent || '—'}</td><td>${q.sent || '—'}</td>
+        </tr>`).join('');
     }
+  } catch(e) { /* no data yet */ }
+}
 
-    document.getElementById('cl-results').style.display = 'block';
-  }
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
 
-  function set(id, val, cls) {
-    const el = document.getElementById(id);
-    el.textContent = val;
-    el.className   = 'result-value' + (cls ? ' ' + cls : '');
-  }
-
-  // ── Load run data from JSON artifact (GitHub Actions writes pipeline_log.json) ──
-  async function loadRunData() {
-    try {
-      const res = await fetch('./data/pipeline_log.json');
-      if (!res.ok) return;
-      const d = await res.json();
-
-      if (d.summary) {
-        const s = d.summary;
-        setText('s-total',  s.total_leads   ?? '—');
-        setText('s-emails', s.emails_sent   ?? '—');
-        setText('s-ghl',    s.ghl_pushed    ?? '—');
-        setText('s-of',     s.of_deals      ?? '—');
-        setText('s-cl',     s.cl_deals      ?? '—');
-        setText('s-last',   s.run_date      ?? '—');
-      }
-
-      if (d.runs && d.runs.length) {
-        const tbody = document.getElementById('runs-tbody');
-        tbody.innerHTML = d.runs.map(r => `
-          <tr>
-            <td>${r.date || '—'}</td>
-            <td>${r.market || '—'}</td>
-            <td>${r.leads ?? '—'}</td>
-            <td>${r.emails ?? '—'}</td>
-            <td>${r.of ?? 0} / ${r.cl ?? 0}</td>
-            <td>${r.ghl ?? '—'}</td>
-            <td><span class="badge ${r.status === 'OK' ? 'badge-new' : 'badge-of'}">${r.status || '—'}</span></td>
-          </tr>`).join('');
-      }
-
-      if (d.queue && d.queue.length) {
-        const tbody = document.getElementById('queue-tbody');
-        tbody.innerHTML = d.queue.map(q => `
-          <tr>
-            <td>${q.address || '—'}</td>
-            <td>${q.market || '—'}</td>
-            <td>${q.price ? '$' + Number(q.price).toLocaleString() : '—'}</td>
-            <td>${q.dom ?? '—'}</td>
-            <td><span class="badge ${q.type === 'OF' ? 'badge-of' : 'badge-cl'}">${q.type || '—'}</span></td>
-            <td>${q.offer ? '$' + Number(q.offer).toLocaleString() : '—'}</td>
-            <td>${q.agent || '—'}</td>
-            <td>${q.sent || '—'}</td>
-          </tr>`).join('');
-      }
-    } catch(e) { /* no data yet */ }
-  }
-
-  function setText(id, val) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = val;
-  }
-
-  loadRunData();
+loadRunData();
 </script>
 </body>
 </html>
