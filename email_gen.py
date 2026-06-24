@@ -2,6 +2,7 @@ import anthropic
 import logging
 import random
 from config import ANTHROPIC, EMAIL
+from datetime import datetime, timedelta
 
 log = logging.getLogger(__name__)
 
@@ -49,6 +50,9 @@ def generate_emails(listing: dict, offer: dict) -> list:
     # Clean agent name to first name only
     first_name = agent_name.split()[0] if agent_name and agent_name != "there" else "there"
 
+    # Offer deadline — 7 days out, creates urgency per Ron LeGrand / negotiator skill
+    deadline = (datetime.now() + timedelta(days=7)).strftime("%B %d, %Y")
+
     # Subject line rules per Flip Man skill:
     # - Owner finance = NEUTRAL subject — just address, NEVER "seller financing"
     # - Cash = can mention offer type
@@ -72,6 +76,8 @@ def generate_emails(listing: dict, offer: dict) -> list:
         ]
 
     prompt = f"""You are a real estate wholesaler writing to a listing agent about their stale listing.
+
+Offer Deadline: {deadline}
 
 Property: {address}, {city}, {state}
 List Price: ${list_price:,}
@@ -105,6 +111,7 @@ HARD RULES — NEVER break these:
 12. Inject 1 real listing fact as a personal hook (days on market, price, condition language)
 13. Never reveal internal signals (views/day, your spread, the word "motivated")
 14. Sound like a real person texting from their phone — not a corporation
+15. Include a deadline: offer good through {deadline}. One line at the end before sign-off. Creates urgency and lets you walk clean.
 
 Vary tone and structure across 4 emails:
 - Email 1: Direct and confident — lead with commission protection. Agent made whole, seller made whole.
