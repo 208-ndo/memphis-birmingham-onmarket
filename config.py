@@ -11,9 +11,9 @@ MARKETS = {
             "38119","38120","38122","38125","38126","38127","38128",
             "38132","38134","38135","38138","38139","38141"
         ],
-        "gmail_user":         os.environ.get("GMAIL_USER_MEMPHIS"),
+        "gmail_user": os.environ.get("GMAIL_USER_MEMPHIS"),
         "gmail_app_password": os.environ.get("GMAIL_APP_PASSWORD_MEMPHIS"),
-        "ghl_phone_number":   os.environ.get("GHL_PHONE_MEMPHIS"),
+        "ghl_phone_number": os.environ.get("GHL_PHONE_MEMPHIS"),
         "min_price": 30000,
         "max_price": 250000,
     },
@@ -26,15 +26,15 @@ MARKETS = {
             "35217","35218","35221","35222","35223","35224","35226",
             "35228","35233","35234","35235","35242","35244"
         ],
-        "gmail_user":         os.environ.get("GMAIL_USER_BIRMINGHAM"),
+        "gmail_user": os.environ.get("GMAIL_USER_BIRMINGHAM"),
         "gmail_app_password": os.environ.get("GMAIL_APP_PASSWORD_BIRMINGHAM"),
-        "ghl_phone_number":   os.environ.get("GHL_PHONE_BIRMINGHAM"),
+        "ghl_phone_number": os.environ.get("GHL_PHONE_BIRMINGHAM"),
         "min_price": 30000,
         "max_price": 250000,
     },
 }
 
-# ─── SCREENING (Flip Man / Zompz method) ──────────────────────────────────────
+# ─── SCREENING CRITERIA (Flip Man / Zompz method) ─────────────────────────────
 SCREEN = {
     "min_dom": 30,
     "max_views_per_day": 20,
@@ -52,71 +52,76 @@ SCREEN = {
 
 # ─── OFFER LOGIC (Flip Man KISS Method) ───────────────────────────────────────
 OFFER = {
-    # Owner Finance band: $30k-$80k
-    "owner_finance_band_max":  80000,
-    "owner_finance_down_pct":  0.05,    # 5% down covers agent commission
-    "owner_finance_payments":  100,     # 100 monthly payments
-    "owner_finance_interest":  0.0,     # 0% interest free
+    # Owner Finance band: $30k-$75k
+    # Torian hard rule: $75k is the cutoff — above this = cash lowball
+    "owner_finance_band_max": 75000,
+    "owner_finance_down_pct": 0.05,       # 5% down covers agent commission
+    "owner_finance_payments": 100,         # 100 monthly payments
+    "owner_finance_interest": 0.0,         # 0% interest free
 
-    # Cash band: $80k+ KISS tiers
+    # Cash band: $75k+
+    # KISS tiers — 20% is standard on target inventory (Torian hard rule)
+    # Do NOT move off 20% on sub-$75k houses
     "cash_offer_pcts": {
-        150000:  0.40,   # $80k-$150k  -> 40%
-        300000:  0.50,   # $150k-$300k -> 50%
-        750000:  0.60,   # $300k-$750k -> 60%
-        1500000: 0.65,   # $750k-$1.5M -> 65%
+        75000:   0.20,    # ≤$75k  → 20% (Torian: do not move)
+        150000:  0.40,    # $75k–$150k  → 40%
+        300000:  0.50,    # $150k–$300k → 50%
+        750000:  0.60,    # $300k–$750k → 60%
+        1500000: 0.65,    # $750k–$1.5M → 65%
     },
 
-    # Agent flat fee , ensures pitch holds (total to agent >= 3% at-list)
-    "agent_flat_fee_sub50k":   1000,    # sub-$50k listings
-    "agent_flat_fee_50_150k":  1500,    # $50k-$150k listings
+    # Agent flat fee — MUST ensure total to agent >= 3% of list (pitch must hold)
+    # Break-even at $1k flat = list ~$55,556 — above that bump to $1,500
+    "agent_flat_fee_sub50k":  1000,
+    "agent_flat_fee_50_150k": 1500,
 
-    # End buyer / assignment
-    "buyer_down_pct":          0.12,    # charge end buyer 12% down
-    "assignment_fee_target":   10000,   # cash deal target fee
+    # End buyer targets (owner finance wrap)
+    "buyer_down_pct":      0.12,    # Charge end buyer 12% down
+    "buyer_interest_rate": 0.08,    # End buyer pays 8% interest
+    "buyer_loan_months":   360,     # 30 year amortization
+
+    # Cash deal assignment target
+    "assignment_fee_target": 10000,
 
     # Closing terms
-    "earnest_money":           500,
-    "due_diligence_days":      10,
-    "close_days":              21,
+    "earnest_money":       500,
+    "due_diligence_days":  10,
+    "close_days":          21,
 }
 
 # ─── EMAIL SETTINGS ───────────────────────────────────────────────────────────
 EMAIL = {
-    "daily_limit_per_account":   15,
-    "send_hour_am":               8,
-    "send_hour_pm":              14,
-    "delay_between_sends_sec":   90,
-
-    # Subject lines , NO em dashes anywhere (Flip Man hard rule)
-    # Owner finance subjects must be neutral , never mention seller/owner financing
-    # Cash subjects can reference offer type
+    "daily_limit_per_account": 15,
+    "send_hour_am": 8,
+    "send_hour_pm": 14,
+    "delay_between_sends_sec": 90,
     "subject_lines": [
-        "Quick question about {address}",
-        "Interested in {address}, cash offer",    # FIX: was 'em dash cash offer', now comma
+        "Offer on {address}",
+        "Quick offer on {address}",
         "Offer for your listing at {address}",
-        "{address}, can we close in 14 days?",    # FIX: was em dash, now comma
-        "Still available? {address}",
-        "{address}, your seller might like this", # FIX: was em dash, now comma
+        "{address} — offer",
+        "Your listing at {address}",
+        "Interested in {address}",
         "We can close {address} this month",
-        "Your listing at {address}, have a minute?", # FIX: was em dash, now comma
+        "Your listing at {address} — have a minute?",
     ],
 }
 
-# ─── GHL ──────────────────────────────────────────────────────────────────────
+# ─── GHL SETTINGS ─────────────────────────────────────────────────────────────
 GHL = {
-    "api_key":           os.environ.get("GHL_API_KEY"),
-    "location_id":       os.environ.get("GHL_LOCATION_ID"),
-    "text_delay_minutes": 5,            # kept for reference; sleep removed from ghl_push.py
-    "pipeline_name":     "On-Market Wholesale",
-    "stage_name":        "Offer Sent",
+    "api_key":          os.environ.get("GHL_API_KEY"),
+    "location_id":      os.environ.get("GHL_LOCATION_ID"),
+    "text_delay_minutes": 5,
+    "pipeline_name":    "On-Market Wholesale",
+    "stage_name":       "Offer Sent",
 }
 
 # ─── ANTHROPIC ────────────────────────────────────────────────────────────────
 ANTHROPIC = {
-    "api_key":           os.environ.get("ANTHROPIC_API_KEY"),
-    "model":             "claude-sonnet-4-6",
-    "max_tokens":        1500,          # FIX: was 1000, bumped to 1500 to prevent 4th email truncation
-    "email_variations":  4,
+    "api_key":          os.environ.get("ANTHROPIC_API_KEY"),
+    "model":            "claude-sonnet-4-6",
+    "max_tokens":       1000,
+    "email_variations": 4,
 }
 
 # ─── DEDUP ────────────────────────────────────────────────────────────────────
