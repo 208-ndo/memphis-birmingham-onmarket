@@ -61,7 +61,7 @@ def generate_emails(listing: dict, offer: dict) -> list:
             f"Offer on {address}",
             f"Quick offer on {address}",
             f"Offer for your listing at {address}",
-            f"{address} — offer",
+            f"{address}, offer",
             f"Your listing at {address}",
             f"Interested in {address}",
         ]
@@ -69,10 +69,10 @@ def generate_emails(listing: dict, offer: dict) -> list:
         subject_options = [
             f"Cash offer on {address}",
             f"Quick cash offer on {address}",
-            f"{address} — cash offer",
+            f"{address}, cash offer",
             f"Offer on {address}",
             f"Cash offer for {address}",
-            f"{address} — can we close in 14 days?",
+            f"{address}, can we close in 14 days?",
         ]
 
     prompt = f"""You are a real estate wholesaler writing to a listing agent about their stale listing.
