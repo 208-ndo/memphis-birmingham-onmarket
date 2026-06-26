@@ -2,5 +2,6 @@ anthropic>=0.28.0
 playwright==1.44.0
 requests==2.31.0
 fpdf2==2.7.9
+reportlab>=4.0.0
 apify-client==1.7.1
 apify-shared==1.1.2
