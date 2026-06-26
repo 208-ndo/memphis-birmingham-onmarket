@@ -1,15 +1,15 @@
 """
 scraper.py — Apify-powered Zillow scraper
-Replaces Playwright scraper. Calls maxcopell/zillow-scraper via Apify API.
-Output format unchanged — same lead dicts fed into main.py pipeline.
+Calls maxcopell/zillow-scraper via Apify API.
 """
 
 import os
 import time
 import logging
 import re
+import json
 from apify_client import ApifyClient
-from config import MARKETS, DISTRESSED_KEYWORDS, MAX_VIEWS_DAY, OF_MIN_PRICE, OF_MAX_PRICE
+from config import DISTRESSED_KEYWORDS, MAX_VIEWS_DAY
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,6 @@ ACTOR_ID    = "maxcopell/zillow-scraper"
 
 MAX_RESULTS_PER_BAND = 100
 
-# Price bands to scrape — matches OF and Cash Lowball ranges
 PRICE_BANDS = [
     {"min": 30000,  "max": 55000},
     {"min": 55001,  "max": 80000},
@@ -28,7 +27,6 @@ PRICE_BANDS = [
 
 
 def build_zillow_url(city: str, state: str, price_min: int, price_max: int) -> str:
-    """Build a Zillow for-sale search URL filtered by price band and agent-listed only."""
     city_slug   = city.lower().replace(" ", "-")
     state_lower = state.lower()
     return (
@@ -49,19 +47,33 @@ def build_zillow_url(city: str, state: str, price_min: int, price_max: int) -> s
     )
 
 
+def get_all_text(listing: dict) -> str:
+    """Grab every string field from listing and concat for keyword search."""
+    parts = []
+    for v in listing.values():
+        if isinstance(v, str):
+            parts.append(v)
+        elif isinstance(v, list):
+            for item in v:
+                if isinstance(item, str):
+                    parts.append(item)
+                elif isinstance(item, dict):
+                    for sv in item.values():
+                        if isinstance(sv, str):
+                            parts.append(sv)
+    return " ".join(parts).lower()
+
+
 def is_distressed(listing: dict) -> bool:
-    """Check listing text for distressed keywords."""
-    text = " ".join([
-        listing.get("description", "") or "",
-        listing.get("statusText", "") or "",
-        listing.get("brokerName", "") or "",
-        listing.get("listingSubType", "") or "",
-    ]).lower()
-    return any(kw.lower() in text for kw in DISTRESSED_KEYWORDS)
+    """Search ALL string fields in the listing for distressed keywords."""
+    text = get_all_text(listing)
+    matched = [kw for kw in DISTRESSED_KEYWORDS if kw.lower() in text]
+    if matched:
+        logger.debug(f"Distressed match: {matched} in {listing.get('address','?')}")
+    return len(matched) > 0
 
 
 def passes_views_gate(listing: dict) -> bool:
-    """Skip listings with more than MAX_VIEWS_DAY views/day."""
     try:
         views = int(listing.get("pageViewCount") or listing.get("totalViews") or 0)
         days  = listing.get("daysOnZillow") or listing.get("timeOnZillow") or 1
@@ -74,7 +86,6 @@ def passes_views_gate(listing: dict) -> bool:
 
 
 def extract_lead(listing: dict, market: dict) -> dict | None:
-    """Map Apify listing → pipeline lead dict. Returns None if required fields missing."""
     try:
         address  = listing.get("address") or listing.get("streetAddress") or ""
         city     = listing.get("city")    or market.get("city", "")
@@ -89,9 +100,12 @@ def extract_lead(listing: dict, market: dict) -> dict | None:
         if not url and zpid:
             url = f"https://www.zillow.com/homedetails/{zpid}_zpid/"
 
-        agent_name  = listing.get("brokerName")       or listing.get("agentName", "")
-        agent_email = listing.get("agentEmail", "")
-        agent_phone = listing.get("agentPhoneNumber") or listing.get("brokerPhoneNumber", "")
+        # Agent fields — check multiple possible keys
+        agent_name  = (listing.get("brokerName") or listing.get("agentName") or
+                       listing.get("listing_agent") or "")
+        agent_email = (listing.get("agentEmail") or listing.get("agent_email") or "")
+        agent_phone = (listing.get("agentPhoneNumber") or listing.get("brokerPhoneNumber") or
+                       listing.get("agentPhone") or "")
 
         days_on_market = listing.get("daysOnZillow") or listing.get("timeOnZillow") or 0
         if isinstance(days_on_market, str):
@@ -117,6 +131,7 @@ def extract_lead(listing: dict, market: dict) -> dict | None:
             "state":          state,
             "zip":            zipcode,
             "price":          int(price),
+            "list_price":     int(price),
             "zpid":           zpid,
             "url":            url,
             "agent_name":     agent_name,
@@ -127,15 +142,18 @@ def extract_lead(listing: dict, market: dict) -> dict | None:
             "bathrooms":      float(bathrooms),
             "sqft":           int(sqft),
             "photo_url":      photo_url,
-            "market":         market.get("name", city),
+            "market":         market_key_from(market),
         }
     except Exception as e:
         logger.warning(f"Failed to extract lead: {e}")
         return None
 
 
+def market_key_from(market: dict) -> str:
+    return market.get("name", market.get("city", "unknown")).lower()
+
+
 def scrape_market(market: dict) -> list[dict]:
-    """Run Apify actor across all price bands for a market."""
     if not APIFY_TOKEN:
         logger.error("APIFY_API_TOKEN not set — cannot scrape")
         return []
@@ -164,6 +182,11 @@ def scrape_market(market: dict) -> list[dict]:
             items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
             logger.info(f"Band {band_label}: {len(items)} raw results")
 
+            # LOG FIRST ITEM KEYS so we can see what Apify returns
+            if items:
+                first = items[0]
+                logger.info(f"APIFY FIELD SAMPLE: {json.dumps({k: str(v)[:80] for k, v in first.items() if v}, indent=2)[:2000]}")
+
             band_leads = []
             for item in items:
                 # Active listings only
@@ -171,18 +194,19 @@ def scrape_market(market: dict) -> list[dict]:
                 if status and status not in ("FOR_SALE", "ACTIVE", ""):
                     continue
 
-                # Dedup within this run
+                # Dedup within run
                 zpid = str(item.get("zpid") or "")
                 if zpid and zpid in seen_zpids:
                     continue
                 if zpid:
                     seen_zpids.add(zpid)
 
-                # Distressed filter
+                # Distressed filter — now searches ALL fields
                 if not is_distressed(item):
+                    logger.info(f"NO DISTRESSED MATCH: {item.get('address','?')} | keys: {list(item.keys())}")
                     continue
 
-                # Views/day gate
+                # Views gate
                 if not passes_views_gate(item):
                     continue
 
@@ -203,6 +227,5 @@ def scrape_market(market: dict) -> list[dict]:
 
 
 def scrape(market: dict) -> list[dict]:
-    """Public entry point called by main.py — same signature as old scraper."""
     logger.info(f"Starting scrape: {market['city']}, {market['state']} | Source: Zillow via Apify")
     return scrape_market(market)
