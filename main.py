@@ -4,6 +4,7 @@ import sys
 import json
 import os
 from datetime import datetime
+from config import MARKETS
 from scraper import scrape_market
 from offer import calculate_offer
 from email_gen import generate_emails, pick_email
@@ -22,7 +23,8 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 OVERFLOW_FILE = "data/overflow.json"
-DAILY_LIMIT   = 5   # 5 per run x 3 runs/day = 15 total per market per day
+DAILY_LIMIT   = 5  # 5 per run x 3 runs/day = 15 total per market per day
+
 
 def load_overflow() -> list:
     if not os.path.exists(OVERFLOW_FILE):
@@ -35,15 +37,18 @@ def load_overflow() -> list:
     except Exception:
         return []
 
+
 def save_overflow(leads: list):
     os.makedirs("data", exist_ok=True)
     with open(OVERFLOW_FILE, "w") as f:
         json.dump(leads, f, indent=2)
     log.info(f"Saved {len(leads)} leads to overflow for next run")
 
+
 def clear_overflow():
     if os.path.exists(OVERFLOW_FILE):
         os.remove(OVERFLOW_FILE)
+
 
 def save_dashboard_data(market_key: str, leads: list, sent_results: list):
     os.makedirs("data", exist_ok=True)
@@ -62,28 +67,24 @@ def save_dashboard_data(market_key: str, leads: list, sent_results: list):
         address = lead.get("address", "")
         offer   = lead.get("offer", {})
         new_entries.append({
-            "address":             address,
-            "city":                lead.get("city"),
-            "state":               lead.get("state"),
-            "list_price":          lead.get("list_price", 0),
-            "days_on_market":      lead.get("days_on_market", 0),
-            "views_per_day":       lead.get("views_per_day", 0),
-            "has_price_cut":       lead.get("has_price_cut", False),
-            "score":               lead.get("score", 0),
-            "agent_name":          lead.get("listing_agent"),
-            "agent_email":         lead.get("agent_email"),
-            "agent_phone":         lead.get("agent_phone"),
-            "offer_type":          offer.get("offer_type", ""),
+            "address":            address,
+            "city":               lead.get("city"),
+            "state":              lead.get("state"),
+            "list_price":         lead.get("price", 0),
+            "days_on_market":     lead.get("days_on_market", 0),
+            "agent_name":         lead.get("agent_name"),
+            "agent_email":        lead.get("agent_email"),
+            "agent_phone":        lead.get("agent_phone"),
+            "offer_type":         offer.get("offer_type", ""),
             "owner_finance_offer": offer.get("owner_finance_offer", 0),
-            "cash_offer":          offer.get("cash_offer", 0),
-            "monthly_payment":     offer.get("monthly_payment", 0),
-            "your_fee_estimate":   offer.get("your_fee_estimate", 0),
-            "pitch_holds":         offer.get("pitch_holds", False),
-            "down_payment":        offer.get("down_payment", 0),
-            "zillow_url":          lead.get("url"),
-            "email_sent":          address in sent_addresses,
-            "scraped_at":          lead.get("scraped_at"),
-            "pipeline_date":       datetime.now().strftime("%Y-%m-%d"),
+            "cash_offer":         offer.get("cash_offer", 0),
+            "monthly_payment":    offer.get("monthly_payment", 0),
+            "your_fee_estimate":  offer.get("your_fee_estimate", 0),
+            "pitch_holds":        offer.get("pitch_holds", False),
+            "down_payment":       offer.get("down_payment", 0),
+            "zillow_url":         lead.get("url"),
+            "email_sent":         address in sent_addresses,
+            "pipeline_date":      datetime.now().strftime("%Y-%m-%d"),
         })
 
     all_entries = new_entries + [
@@ -94,6 +95,7 @@ def save_dashboard_data(market_key: str, leads: list, sent_results: list):
     with open(dashboard_file, "w") as f:
         json.dump(all_entries, f, indent=2)
     log.info(f"Dashboard data saved: {dashboard_file}")
+
 
 def save_pipeline_log(all_results: dict):
     os.makedirs("data", exist_ok=True)
@@ -137,25 +139,25 @@ def save_pipeline_log(all_results: dict):
             new_queue.append({
                 "address": listing.get("address"),
                 "market":  r["market_label"],
-                "price":   listing.get("list_price", 0),
+                "price":   listing.get("price", 0),
                 "dom":     listing.get("days_on_market", 0),
                 "type":    "OF" if offer.get("offer_type") == "owner_finance" else "CL",
                 "offer":   offer.get("owner_finance_offer") or offer.get("cash_offer", 0),
-                "agent":   listing.get("listing_agent"),
+                "agent":   listing.get("agent_name"),
                 "sent":    run_date,
             })
 
-    combined_runs  = (new_runs + existing_runs)[:30]   # keep last 30 runs
+    combined_runs  = (new_runs + existing_runs)[:30]
     combined_queue = (new_queue + existing_queue)[:200]
 
     log_data = {
         "summary": {
-            "run_date":     run_date,
-            "total_leads":  total_leads,
-            "emails_sent":  total_emails,
-            "ghl_pushed":   total_ghl,
-            "of_deals":     total_of,
-            "cl_deals":     total_cl,
+            "run_date":    run_date,
+            "total_leads": total_leads,
+            "emails_sent": total_emails,
+            "ghl_pushed":  total_ghl,
+            "of_deals":    total_of,
+            "cl_deals":    total_cl,
         },
         "runs":  combined_runs,
         "queue": combined_queue,
@@ -164,9 +166,10 @@ def save_pipeline_log(all_results: dict):
         json.dump(log_data, f, indent=2)
     log.info(f"pipeline_log.json written — {total_emails} emails, {total_leads} leads")
 
+
 def run_market(market_key: str, dry_run: bool = False) -> dict:
-    from config import MARKETS
-    market_label = MARKETS[market_key]["city"] + " " + MARKETS[market_key]["state"]
+    market       = MARKETS[market_key]
+    market_label = f"{market['city']} {market['state']}"
 
     log.info(f"{'='*60}")
     log.info(f"PIPELINE: {market_key.upper()} | {datetime.now().strftime('%Y-%m-%d %H:%M')}")
@@ -183,21 +186,18 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
         "sent_items":   [],
     }
 
-    # Load overflow from previous run first
-    overflow_leads      = load_overflow()
-    overflow_for_market = [l for l in overflow_leads if l.get("market") == market_key]
-    other_overflow      = [l for l in overflow_leads if l.get("market") != market_key]
+    overflow_leads       = load_overflow()
+    overflow_for_market  = [l for l in overflow_leads if l.get("market") == market_key]
+    other_overflow       = [l for l in overflow_leads if l.get("market") != market_key]
 
-    # Scrape fresh leads
+    # FIX: pass market dict, not string key
     log.info(f"[1/5] Scraping Zillow for {market_key}...")
-    fresh_leads = scrape_market(market_key)
+    fresh_leads = scrape_market(market)
     log.info(f"[1/5] {len(fresh_leads)} fresh leads from Zillow")
 
-    # Combine overflow + fresh (overflow first — already screened)
-    all_leads = overflow_for_market + fresh_leads
+    all_leads       = overflow_for_market + fresh_leads
     result["leads"] = len(fresh_leads)
 
-    # Dedup
     fresh_deduped = [l for l in all_leads if should_send(l)]
     log.info(f"[2/5] {len(fresh_deduped)} after dedup")
 
@@ -206,7 +206,6 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
         save_overflow(other_overflow)
         return result
 
-    # Take only DAILY_LIMIT (5) for this run, save rest to overflow
     todays_leads       = fresh_deduped[:DAILY_LIMIT]
     overflow_remaining = fresh_deduped[DAILY_LIMIT:]
     if overflow_remaining:
@@ -215,10 +214,9 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
     else:
         save_overflow(other_overflow)
 
-    # Calculate offers + generate emails
     log.info(f"[3/5] Calculating offers and generating emails...")
-    send_queue       = []
-    skipped_pitch    = 0
+    send_queue      = []
+    skipped_pitch   = 0
     skipped_no_email = 0
 
     for listing in todays_leads:
@@ -226,6 +224,9 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
             if not listing.get("agent_email"):
                 skipped_no_email += 1
                 continue
+
+            # offer.py expects list_price key — map from scraper output
+            listing["list_price"] = listing.get("price", 0)
 
             offer = calculate_offer(listing)
             if not offer:
@@ -247,11 +248,7 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
                 continue
 
             chosen_email = pick_email(emails)
-            send_queue.append({
-                "listing": listing,
-                "offer":   offer,
-                "email":   chosen_email,
-            })
+            send_queue.append({"listing": listing, "offer": offer, "email": chosen_email})
 
             if offer.get("offer_type") == "owner_finance":
                 result["of_deals"] += 1
@@ -261,19 +258,14 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
         except Exception as e:
             log.error(f"Error processing {listing.get('address')}: {e}")
 
-    log.info(
-        f"[3/5] {len(send_queue)} ready | "
-        f"Skipped: {skipped_pitch} pitch + {skipped_no_email} no email"
-    )
+    log.info(f"[3/5] {len(send_queue)} ready | Skipped: {skipped_pitch} pitch + {skipped_no_email} no email")
 
-    # Send emails
     log.info(f"[4/5] Sending emails...")
     sent_results = send_batch(send_queue, market_key, dry_run=dry_run)
     successful   = [r for r in sent_results if r["success"]]
     result["emails_sent"] = len(successful)
     log.info(f"[4/5] {len(successful)} emails sent")
 
-    # GHL push
     log.info(f"[5/5] Pushing to GHL...")
     ghl_count = 0
     for res in successful:
@@ -300,12 +292,10 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
         f"Scraped: {len(fresh_leads)} | Sent: {len(successful)} | "
         f"Pitch skipped: {skipped_pitch} | No email: {skipped_no_email}"
     )
-    log.info(
-        f"All-time: {stats['total_properties_emailed']} properties | "
-        f"{stats['total_agents_contacted']} agents"
-    )
+    log.info(f"All-time: {stats['total_properties_emailed']} properties | {stats['total_agents_contacted']} agents")
     log.info(f"{'='*60}")
     return result
+
 
 def main():
     today   = datetime.now().weekday()  # 0=Mon 1=Tue 2=Wed 3=Thu 4=Fri
@@ -316,7 +306,9 @@ def main():
         log.info(f"Today is {day_names[today]} — pipeline only runs Tue/Wed/Thu/Fri. Exiting.")
         sys.exit(0)
 
-    now_hour = datetime.now().hour
+    os.makedirs("data", exist_ok=True)
+    os.makedirs("data/offers", exist_ok=True)
+
     log.info(
         f"Pipeline starting | Markets: Memphis + Birmingham | "
         f"Dry run: {dry_run} | Limit: {DAILY_LIMIT}/run | "
@@ -325,32 +317,30 @@ def main():
 
     all_results = {}
 
-    # Memphis
     try:
         all_results["memphis"] = run_market("memphis", dry_run=dry_run)
     except Exception as e:
         log.error(f"Memphis pipeline error: {e}")
         all_results["memphis"] = {
-            "market_label":"Memphis TN","leads":0,"emails_sent":0,
-            "ghl_pushed":0,"of_deals":0,"cl_deals":0,"sent_items":[]
+            "market_label": "Memphis TN", "leads": 0, "emails_sent": 0,
+            "ghl_pushed": 0, "of_deals": 0, "cl_deals": 0, "sent_items": []
         }
 
-    # Stagger between markets — looks more human
     log.info("Waiting 3 minutes between markets...")
     time.sleep(180)
 
-    # Birmingham
     try:
         all_results["birmingham"] = run_market("birmingham", dry_run=dry_run)
     except Exception as e:
         log.error(f"Birmingham pipeline error: {e}")
         all_results["birmingham"] = {
-            "market_label":"Birmingham AL","leads":0,"emails_sent":0,
-            "ghl_pushed":0,"of_deals":0,"cl_deals":0,"sent_items":[]
+            "market_label": "Birmingham AL", "leads": 0, "emails_sent": 0,
+            "ghl_pushed": 0, "of_deals": 0, "cl_deals": 0, "sent_items": []
         }
 
     save_pipeline_log(all_results)
     log.info("Both markets complete. Dashboard updated. Check GHL for contacts.")
+
 
 if __name__ == "__main__":
     main()
