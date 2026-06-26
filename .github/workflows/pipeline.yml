@@ -3,28 +3,27 @@ name: Memphis Birmingham On-Market Pipeline
 on:
   schedule:
     # 3 runs per day Tue-Fri — 5 emails per run per market = 15/day
-    # Staggered times look human, not bot-like
     # CDT (summer) = UTC-5
 
     # Tuesday
-    - cron: '0 14 * * 2'   # Tue 9AM CT
-    - cron: '0 17 * * 2'   # Tue 12PM CT
-    - cron: '0 20 * * 2'   # Tue 3PM CT
+    - cron: '0 14 * * 2'  # Tue 9AM CT
+    - cron: '0 17 * * 2'  # Tue 12PM CT
+    - cron: '0 20 * * 2'  # Tue 3PM CT
 
     # Wednesday
-    - cron: '0 14 * * 3'   # Wed 9AM CT
-    - cron: '0 17 * * 3'   # Wed 12PM CT
-    - cron: '0 20 * * 3'   # Wed 3PM CT
+    - cron: '0 14 * * 3'  # Wed 9AM CT
+    - cron: '0 17 * * 3'  # Wed 12PM CT
+    - cron: '0 20 * * 3'  # Wed 3PM CT
 
     # Thursday
-    - cron: '0 14 * * 4'   # Thu 9AM CT
-    - cron: '0 17 * * 4'   # Thu 12PM CT
-    - cron: '0 20 * * 4'   # Thu 3PM CT
+    - cron: '0 14 * * 4'  # Thu 9AM CT
+    - cron: '0 17 * * 4'  # Thu 12PM CT
+    - cron: '0 20 * * 4'  # Thu 3PM CT
 
     # Friday
-    - cron: '0 14 * * 5'   # Fri 9AM CT
-    - cron: '0 17 * * 5'   # Fri 12PM CT
-    - cron: '0 20 * * 5'   # Fri 3PM CT
+    - cron: '0 14 * * 5'  # Fri 9AM CT
+    - cron: '0 17 * * 5'  # Fri 12PM CT
+    - cron: '0 20 * * 5'  # Fri 3PM CT
 
   workflow_dispatch:
     inputs:
@@ -54,15 +53,11 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          playwright install chromium
-          sudo apt-get update -qq
-          sudo apt-get install -y libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 \
-            libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 \
-            libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2 libatspi2.0-0
 
       - name: Run pipeline
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          APIFY_API_TOKEN: ${{ secrets.APIFY_API_TOKEN }}
           GMAIL_USER_MEMPHIS: ${{ secrets.GMAIL_USER_MEMPHIS }}
           GMAIL_APP_PASSWORD_MEMPHIS: ${{ secrets.GMAIL_APP_PASSWORD_MEMPHIS }}
           GMAIL_USER_BIRMINGHAM: ${{ secrets.GMAIL_USER_BIRMINGHAM }}
