@@ -69,3 +69,8 @@ AGENT_COOLDOWN_DAYS  = 7
 AGENT_LIFETIME_CAP   = 3
 BUSINESS_HOURS_START = 8
 BUSINESS_HOURS_END   = 16
+# Playwright browser settings
+SCREEN = {
+    "width": 1920,
+    "height": 1080,
+}
