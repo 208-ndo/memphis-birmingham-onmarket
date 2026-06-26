@@ -1,172 +1,151 @@
-import anthropic
+"""
+Email generator — Flip Man KISS Method
+Owner Finance: 5% down = agent commission (no 6% + flat fee)
+Cash Lowball: 6% of offer + $1,000 flat fee
+"""
+
+import os
+import re
 import logging
-import random
-from config import ANTHROPIC, EMAIL
-from datetime import datetime, timedelta
+from anthropic import Anthropic
 
 log = logging.getLogger(__name__)
+client = Anthropic()
 
-def calculate_agent_commission(list_price: float, rate: float = 0.06) -> float:
-    """
-    Agent commission — 6% of list price.
-    (Was incorrectly set to 5% — corrected to match offer.py and Flip Man method.)
-    """
-    return round(list_price * rate)
+SUBJECTS_OF = [
+    "Offer on {address}",
+    "Quick offer for you — {address}",
+    "Your listing at {address}",
+    "Interested in {address}",
+]
 
-def generate_emails(listing: dict, offer: dict) -> list:
-    """
-    Use Claude API to generate 4 unique email variations per property.
-    Follows Flip Man / Zompz skill rules exactly:
-    - Every email unique — rotate skeletons, subjects, hooks
-    - Agent commission explicitly called out with exact dollar amount
-    - No em dashes anywhere — periods and commas only
-    - Never "seller financing" in subject line for owner finance deals
-    - Short punchy 3-5 sentences max
-    - Soft CTA only — just asking where to send the offer
-    """
-    client = anthropic.Anthropic(api_key=ANTHROPIC["api_key"])
+SUBJECTS_CL = [
+    "Cash offer on {address}",
+    "Quick cash offer — {address}",
+    "Cash offer ready — {address}",
+    "Can we close {address} in 14 days?",
+]
 
-    address      = listing.get("address", "the property")
-    agent_name   = listing.get("listing_agent", "there")
-    city         = listing.get("city", "")
-    state        = listing.get("state", "")
-    dom          = listing.get("days_on_market", 0)
-    list_price   = offer.get("list_price", 0)
-    owner_finance_offer = offer.get("owner_finance_offer", 0)
-    cash_offer   = offer.get("cash_offer", 0)
-    monthly_payment = offer.get("monthly_payment", 0) or offer.get("monthly_payment_estimate", 0)
-    offer_type   = offer.get("offer_type", "owner_finance")
-    total_to_agent   = offer.get("total_to_agent", 0)
-    at_list_commission = offer.get("at_list_commission", 0)
-    down_payment = offer.get("down_payment", 0)
-    agent_flat_fee = offer.get("agent_flat_fee", 1000)
 
-    # ── Agent commission callout — 6% per Flip Man method ──
-    agent_commission   = calculate_agent_commission(list_price)  # 6%
-    total_agent_payout = total_to_agent or (agent_commission + agent_flat_fee)
-    agent_payout_fmt   = f"${int(total_agent_payout):,}"
-    at_list_fmt        = f"${int(at_list_commission):,}"
-
-    # Clean agent name to first name only
-    first_name = agent_name.split()[0] if agent_name and agent_name != "there" else "there"
-
-    # Offer deadline — 7 days out, creates urgency per Ron LeGrand / negotiator skill
-    deadline = (datetime.now() + timedelta(days=7)).strftime("%B %d, %Y")
-
-    # Subject line rules per Flip Man skill:
-    # - Owner finance = NEUTRAL subject — just address, NEVER "seller financing"
-    # - Cash = can mention offer type
+def generate_emails(listing: dict, offer: dict) -> list[dict]:
+    offer_type = offer.get("offer_type")
     if offer_type == "owner_finance":
-        subject_options = [
-            f"Offer on {address}",
-            f"Quick offer on {address}",
-            f"Offer for your listing at {address}",
-            f"{address}, offer",
-            f"Your listing at {address}",
-            f"Interested in {address}",
-        ]
+        return _gen_of_emails(listing, offer)
     else:
-        subject_options = [
-            f"Cash offer on {address}",
-            f"Quick cash offer on {address}",
-            f"{address}, cash offer",
-            f"Offer on {address}",
-            f"Cash offer for {address}",
-            f"{address}, can we close in 14 days?",
-        ]
+        return _gen_cl_emails(listing, offer)
+
+
+def _gen_of_emails(listing: dict, offer: dict) -> list[dict]:
+    address   = listing.get("address", "the property")
+    price     = offer.get("owner_finance_offer", 0)
+    dp        = offer.get("down_payment", 0)
+    dp_pct    = offer.get("down_pct", 5)
+    monthly   = offer.get("monthly_payment", 0)
+    payments  = offer.get("num_payments", 100)
+    agent_comm = offer.get("total_to_agent", 0)  # = 5% down
+    at_list   = offer.get("at_list_commission", 0)
 
     prompt = f"""You are a real estate wholesaler writing to a listing agent about their stale listing.
 
-Offer Deadline: {deadline}
+OFFER TYPE: Creative / Seller Financed
+Property: {address}
+List Price: ${price:,.0f}
+Offer: FULL asking price (${price:,.0f})
+Down Payment: ${dp:,.0f} ({dp_pct:.0f}% — this covers the agent commission at closing)
+Monthly Payment to Seller: ${monthly:,.0f}/mo over {payments} payments at 0% interest
+Agent Commission: ${agent_comm:,.0f} — paid from buyer's down payment at closing
+At-list comparison (3% of list): ${at_list:,.0f}
+Agent nets ${agent_comm - at_list:,.0f} MORE than a traditional full-price sale
 
-Property: {address}, {city}, {state}
-List Price: ${list_price:,}
-Days on Market: {dom}
-Agent First Name: {first_name}
-Offer Type: {offer_type}
+HARD RULES:
+1. NO em dashes anywhere. Periods and commas only.
+2. 3-5 sentences MAX. Short, punchy, handwritten feel.
+3. NEVER say "seller financing" or "owner financing" in subject line or body.
+4. Call out exact agent commission: ${agent_comm:,.0f} paid from buyer's down payment at closing.
+5. Emphasize seller gets FULL asking price of ${price:,.0f}.
+6. Soft CTA only: ask where to send written offer.
+7. Sign off EXACTLY: Torian Wallace | 901-290-8408
+8. V1=direct/confident, V2=empathetic/personal, V3=curiosity hook, V4=ultra short 2-3 sentences only.
+9. Each variation must have a different subject line and different opening line.
+10. Subject line: neutral only. Example: "Offer on {address}". Never mention financing type.
 
-OFFER DETAILS:
-- Owner Finance Offer: ${owner_finance_offer:,} (FULL list price — seller gets full asking price)
-- Down Payment: ${down_payment:,} (5% down — covers agent commission at closing)
-- Monthly Payment: ${monthly_payment:,}/mo for 100 months at 0% interest
-- Cash Offer (if applicable): ${cash_offer:,}
-- Total Agent Payout: {agent_payout_fmt} (6% commission + flat fee)
-- Agent Commission at Full-Price Sale (buyer side only, 3%): {at_list_fmt}
-- NOTE: Agent gets MORE from our offer than from a traditional full-price sale
+Return ONLY a JSON array with no markdown:
+[
+  {{"variation": 1, "subject": "...", "body": "..."}},
+  {{"variation": 2, "subject": "...", "body": "..."}},
+  {{"variation": 3, "subject": "...", "body": "..."}},
+  {{"variation": 4, "subject": "...", "body": "..."}}
+]"""
 
-Write {ANTHROPIC["email_variations"]} completely UNIQUE email variations to this listing agent.
+    return _call_claude(prompt)
 
-HARD RULES — NEVER break these:
-1. NO em dashes anywhere. Use periods and commas ONLY. Never use — or –
-2. NEVER mention "seller financing" or "owner financing" in the subject line
-3. Each email must be 3-5 sentences MAX. Short and punchy.
-4. Feel completely handwritten — NOT like a template or mass email
-5. Lead with the agent's pain — stale listing, commission at risk, seller frustrated
-6. Explicitly say agent will be paid {agent_payout_fmt} — more than the {at_list_fmt} they'd net from a full-price sale
-7. For owner finance: seller gets FULL LIST PRICE — emphasize this. The seller wins.
-8. For cash: emphasize speed, as-is, no contingencies, certainty of close
-9. CTA = soft. Just asking where to send the written offer. Nothing pushy.
-10. NO subject line in the body — body only
-11. Sign off EXACTLY as: Michael | 229 Holdings LLC | 229homebuyers.com
-12. Inject 1 real listing fact as a personal hook (days on market, price, condition language)
-13. Never reveal internal signals (views/day, your spread, the word "motivated")
-14. Sound like a real person texting from their phone — not a corporation
-15. Include a deadline: offer good through {deadline}. One line at the end before sign-off. Creates urgency and lets you walk clean.
 
-Vary tone and structure across 4 emails:
-- Email 1: Direct and confident — lead with commission protection. Agent made whole, seller made whole.
-- Email 2: Empathetic — acknowledge the frustration of {dom} days sitting. You have a solution.
-- Email 3: Curiosity hook — open with a question. Pull them in before revealing the offer.
-- Email 4: Ultra short — 2-3 sentences MAX. Still mention commission and where to send the offer.
+def _gen_cl_emails(listing: dict, offer: dict) -> list[dict]:
+    address     = listing.get("address", "the property")
+    list_price  = listing.get("list_price", 0)
+    cash_offer  = offer.get("cash_offer", 0)
+    tier_pct    = offer.get("kiss_tier_pct", 40)
+    assign_price = offer.get("assign_price", 0)
+    agent_total = offer.get("total_to_agent", 0)
+    at_list     = offer.get("at_list_commission", 0)
 
-Return ONLY a JSON array with 4 objects, each with keys "variation" (1-4) and "body".
-No markdown, no explanation, just the raw JSON array."""
+    prompt = f"""You are a real estate wholesaler writing to a listing agent about their stale listing.
 
+OFFER TYPE: Cash As-Is
+Property: {address}
+List Price: ${list_price:,.0f}
+Cash Offer: ${cash_offer:,.0f} ({tier_pct}% of list price)
+Plan to Sell / Assign Price: ${assign_price:,.0f}
+Agent Commission: ${agent_total:,.0f} (6% of cash offer + $1,000 flat fee, paid at closing)
+At-list comparison (3% of list): ${at_list:,.0f}
+Agent nets ${agent_total - at_list:,.0f} MORE than at-list
+Close: 7-14 days | No repairs | No contingencies | Cash | Earnest $500
+
+HARD RULES:
+1. NO em dashes. Periods and commas only.
+2. 3-5 sentences MAX. Short, punchy, handwritten.
+3. Lead with speed and certainty: cash, as-is, close in 14 days.
+4. Call out exact commission: ${agent_total:,.0f} paid at closing.
+5. Compare to at-list ${at_list:,.0f} — agent wins with your offer.
+6. Soft CTA: ask where to send written offer.
+7. Sign off EXACTLY: Torian Wallace | 901-290-8408
+8. V1=direct/confident, V2=empathetic, V3=curiosity hook, V4=ultra short 2-3 sentences.
+9. Each variation must have different subject and different opening line.
+
+Return ONLY a JSON array with no markdown:
+[
+  {{"variation": 1, "subject": "...", "body": "..."}},
+  {{"variation": 2, "subject": "...", "body": "..."}},
+  {{"variation": 3, "subject": "...", "body": "..."}},
+  {{"variation": 4, "subject": "...", "body": "..."}}
+]"""
+
+    return _call_claude(prompt)
+
+
+def _call_claude(prompt: str) -> list[dict]:
     try:
         response = client.messages.create(
-            model=ANTHROPIC["model"],
-            max_tokens=ANTHROPIC["max_tokens"],
-            messages=[{"role": "user", "content": prompt}]
+            model="claude-sonnet-4-6",
+            max_tokens=1000,
+            messages=[{"role": "user", "content": prompt}],
         )
-
         raw = response.content[0].text.strip()
-
-        # Strip markdown fences if present
-        if raw.startswith("```"):
-            raw = raw.split("```")[1]
-            if raw.startswith("json"):
-                raw = raw[4:]
-            raw = raw.strip()
-
-        import json
-        emails = json.loads(raw)
-
-        # Assign subject lines — rotate from subject options
-        for i, email in enumerate(emails):
-            email["subject"]     = subject_options[i % len(subject_options)]
-            email["address"]     = address
-            email["agent_email"] = listing.get("agent_email")
-            email["agent_phone"] = listing.get("agent_phone")
-            email["market"]      = listing.get("market")
-            email["offer_type"]  = offer_type
-            email["total_to_agent"] = total_agent_payout
-
-        # Final check — strip any em dashes that slipped through
-        for email in emails:
-            body = email.get("body", "")
-            body = body.replace("\u2014", "-").replace("\u2013", "-")
-            email["body"] = body
-
-        log.info(f"Generated {len(emails)} email variations for {address} ({offer_type})")
+        raw = re.sub(r"```json|```", "", raw).strip()
+        emails = __import__("json").loads(raw)
+        # Strip em dashes just in case
+        for e in emails:
+            e["body"] = e["body"].replace("\u2014", ",").replace("\u2013", ",")
+            e["subject"] = e["subject"].replace("\u2014", ",").replace("\u2013", ",")
         return emails
-
-    except Exception as e:
-        log.error(f"Email generation failed for {address}: {e}")
+    except Exception as ex:
+        log.error(f"Email generation failed: {ex}")
         return []
 
 
-def pick_email(emails: list) -> dict:
-    """Randomly pick one of the 4 generated email variations to send."""
+def pick_email(emails: list[dict]) -> dict:
+    """Pick one email variation for sending."""
     if not emails:
         return {}
+    import random
     return random.choice(emails)
