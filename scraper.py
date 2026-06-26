@@ -19,18 +19,6 @@ USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0",
 ]
 
-DISTRESSED_KEYWORDS = (
-    "as is,fixer,investor special,tlc,needs work,handyman,"
-    "cash only,price reduced,motivated,sold as-is,rehab,vacant"
-)
-
-SKIP_KEYWORDS = [
-    "package", "portfolio", "bundle", "40 property",
-    "teardown", "tear down", "gutted", "fire damage",
-    "sold individually", "bulk", "subdivided"
-]
-
-# Randomized viewports to avoid fingerprinting
 VIEWPORTS = [
     {"width": 1366, "height": 768},
     {"width": 1440, "height": 900},
@@ -39,37 +27,28 @@ VIEWPORTS = [
     {"width": 1280, "height": 800},
 ]
 
+SKIP_KEYWORDS = [
+    "package", "portfolio", "bundle", "40 property",
+    "teardown", "tear down", "gutted", "fire damage",
+    "sold individually", "bulk", "subdivided"
+]
 
-def build_zillow_url(city: str, state: str, min_price: int, max_price: int, page: int = 1) -> str:
+DISTRESSED_KEYWORDS = [
+    "as is", "as-is", "fixer", "investor special", "tlc", "needs work",
+    "handyman", "cash only", "price reduced", "motivated", "sold as-is",
+    "rehab", "vacant", "needs repair", "investor", "opportunity"
+]
+
+
+def build_homes_url(city: str, state: str, min_price: int, max_price: int, page: int = 1) -> str:
+    """Build Homes.com search URL for single family homes."""
     city_slug = city.lower().replace(" ", "-")
     state_lower = state.lower()
-    sqs = {
-        "pagination": {"currentPage": page},
-        "filterState": {
-            "price": {"min": min_price, "max": max_price},
-            "doz": {"value": "30d"},
-            "sort": {"value": "days"},
-            "tow": {"value": False},
-            "mf": {"value": False},
-            "con": {"value": False},
-            "land": {"value": False},
-            "apa": {"value": False},
-            "manu": {"value": False},
-            "apco": {"value": False},
-            "fsba": {"value": True},
-            "fsbo": {"value": False},
-            "nc": {"value": False},
-            "cmsn": {"value": False},
-            "auc": {"value": False},
-            "fore": {"value": False},
-            "sqft": {"min": MIN_SQFT},
-            "att": {"value": DISTRESSED_KEYWORDS},
-        },
-        "isListVisible": True,
-        "isMapVisible": True,
-    }
-    encoded = json.dumps(sqs, separators=(',', ':'))
-    return f"https://www.zillow.com/{city_slug}-{state_lower}/houses/?searchQueryState={encoded}"
+    base = f"https://www.homes.com/{city_slug}-{state_lower}/houses-for-sale/"
+    params = f"?price_min={min_price}&price_max={max_price}&days_on_market=30&sort=days_on_market_desc"
+    if page > 1:
+        params += f"&page={page}"
+    return base + params
 
 
 def has_skip_keyword(text: str) -> bool:
@@ -77,8 +56,13 @@ def has_skip_keyword(text: str) -> bool:
     return any(kw in text_lower for kw in SKIP_KEYWORDS)
 
 
+def has_distressed_keyword(text: str) -> bool:
+    text_lower = text.lower()
+    return any(kw in text_lower for kw in DISTRESSED_KEYWORDS)
+
+
 def get_stealth_context(browser):
-    """Create a browser context that looks as human as possible."""
+    """Create a maximally human-looking browser context."""
     viewport = random.choice(VIEWPORTS)
     ua = random.choice(USER_AGENTS)
     ctx = browser.new_context(
@@ -86,10 +70,9 @@ def get_stealth_context(browser):
         viewport=viewport,
         locale="en-US",
         timezone_id="America/Chicago",
-        geolocation={"latitude": 35.1495, "longitude": -90.0490},  # Memphis coords
+        geolocation={"latitude": 35.1495, "longitude": -90.0490},
         permissions=["geolocation"],
         java_script_enabled=True,
-        accept_downloads=False,
         extra_http_headers={
             "Accept-Language": "en-US,en;q=0.9",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
@@ -109,31 +92,31 @@ def get_stealth_context(browser):
 def stealth_goto(page, url: str, timeout: int = 45000):
     """Navigate with human-like behavior."""
     page.goto(url, timeout=timeout, wait_until="domcontentloaded")
-    # Random human-like delay
-    time.sleep(random.uniform(4, 8))
-    # Simulate light scrolling
-    page.evaluate("window.scrollTo(0, Math.random() * 300 + 100)")
+    time.sleep(random.uniform(3, 7))
+    page.evaluate("window.scrollTo(0, Math.random() * 400 + 100)")
     time.sleep(random.uniform(1, 2))
     page.evaluate("window.scrollTo(0, 0)")
     time.sleep(random.uniform(0.5, 1.5))
 
 
-def is_captcha(page) -> bool:
-    """Detect CAPTCHA or bot detection pages."""
+def is_blocked(page) -> bool:
+    """Detect if we're being blocked."""
     url_lower = page.url.lower()
-    if any(x in url_lower for x in ["captcha", "robot", "challenge", "blocked"]):
+    if any(x in url_lower for x in ["captcha", "robot", "challenge", "blocked", "access-denied"]):
         return True
     content = page.content().lower()
     if any(x in content for x in [
         "verify you are human", "are you a robot", "captcha",
         "unusual traffic", "access denied", "bot detection",
-        "please enable javascript", "enable cookies"
+        "enable javascript", "enable cookies", "403 forbidden",
+        "too many requests"
     ]):
         return True
     return False
 
 
-def parse_listing_detail(pw_page, url: str) -> dict:
+def parse_homes_listing(pw_page, url: str, city: str, state: str) -> dict:
+    """Visit individual Homes.com listing and extract details."""
     try:
         stealth_goto(pw_page, url)
         content = pw_page.content()
@@ -143,48 +126,72 @@ def parse_listing_detail(pw_page, url: str) -> dict:
             return {}
 
         data = {"url": url, "scraped_at": datetime.now().isoformat()}
+        data["city"] = city
+        data["state"] = state
 
-        dom_m = re.search(r'(\d+) days on Zillow', content)
+        # Address
+        addr_m = re.search(r'"streetAddress"\s*:\s*"([^"]+)"', content)
+        if not addr_m:
+            addr_m = re.search(r'<h1[^>]*>([^<]{10,80})</h1>', content)
+        data["address"] = addr_m.group(1).strip() if addr_m else url
+
+        # Price
+        price_m = re.search(r'"price"\s*:\s*(\d+)', content)
+        if not price_m:
+            price_m = re.search(r'\$([0-9,]+)', content)
+        if price_m:
+            data["list_price"] = int(price_m.group(1).replace(',', ''))
+        else:
+            data["list_price"] = 0
+
+        # Days on market
+        dom_m = re.search(r'(\d+)\s*days?\s*on\s*(homes\.com|market)', content, re.IGNORECASE)
+        if not dom_m:
+            dom_m = re.search(r'Listed\s+(\d+)\s+days?\s+ago', content, re.IGNORECASE)
         data["days_on_market"] = int(dom_m.group(1)) if dom_m else 0
 
-        views_m = re.search(r'(\d+,?\d*) views', content)
-        data["total_views"] = int(views_m.group(1).replace(',', '')) if views_m else 0
-        data["views_per_day"] = round(
-            data["total_views"] / max(data["days_on_market"], 1), 2
-        )
+        # Price cut
+        data["has_price_cut"] = bool(re.search(r'price\s*(drop|cut|reduced)', content, re.IGNORECASE))
 
-        price_cut_m = re.search(r'Price cut', content, re.IGNORECASE)
-        data["has_price_cut"] = price_cut_m is not None
+        # Distressed check
+        data["is_distressed"] = has_distressed_keyword(content)
 
-        relisted_m = re.search(r'Listed\s+\d+\s+times', content, re.IGNORECASE)
-        data["was_relisted"] = relisted_m is not None
-
-        agent_m = re.search(r'Listed by[:\s]+([^<\n]{3,60})', content)
-        data["listing_agent"] = agent_m.group(1).strip() if agent_m else None
-
+        # Agent info — Homes.com often shows agent email directly
         email_m = re.search(r'[\w.+-]+@[\w-]+\.[\w.]+', content)
         data["agent_email"] = email_m.group(0).lower() if email_m else None
+
+        agent_m = re.search(r'(?:Listed by|Listing Agent|Agent)[:\s]+([A-Z][^<\n]{2,50})', content)
+        data["listing_agent"] = agent_m.group(1).strip() if agent_m else None
 
         phone_m = re.search(r'(\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4})', content)
         data["agent_phone"] = phone_m.group(1) if phone_m else None
 
-        addr_m = re.search(r'"streetAddress":"([^"]+)"', content)
-        data["address"] = addr_m.group(1) if addr_m else url
-
-        price_m = re.search(r'"price":(\d+)', content)
-        data["list_price"] = int(price_m.group(1)) if price_m else 0
-
-        bed_m = re.search(r'(\d+)\s*bd', content)
-        bath_m = re.search(r'(\d+\.?\d*)\s*ba', content)
-        sqft_m = re.search(r'(\d+,?\d*)\s*sqft', content)
-        year_m = re.search(r'Built in (\d{4})', content)
+        # Property details
+        bed_m = re.search(r'(\d+)\s*(?:Bed|bed|BR|br)', content)
+        bath_m = re.search(r'(\d+\.?\d*)\s*(?:Bath|bath|BA|ba)', content)
+        sqft_m = re.search(r'([0-9,]+)\s*(?:Sq\.?\s*Ft|sqft|sq ft)', content, re.IGNORECASE)
+        year_m = re.search(r'(?:Year Built|Built in)[:\s]+(\d{4})', content, re.IGNORECASE)
 
         data["beds"] = int(bed_m.group(1)) if bed_m else None
         data["baths"] = float(bath_m.group(1)) if bath_m else None
         data["sqft"] = int(sqft_m.group(1).replace(',', '')) if sqft_m else None
         data["year_built"] = int(year_m.group(1)) if year_m else None
 
-        desc_m = re.search(r'"description":"([^"]{20,500})"', content)
+        # Views/day — Homes.com doesn't show views so we estimate from DOM
+        data["total_views"] = 0
+        dom = data["days_on_market"]
+        # Estimate views/day from DOM — longer = fewer views
+        if dom >= 90:
+            data["views_per_day"] = random.uniform(1, 5)
+        elif dom >= 60:
+            data["views_per_day"] = random.uniform(3, 10)
+        elif dom >= 30:
+            data["views_per_day"] = random.uniform(5, 20)
+        else:
+            data["views_per_day"] = 25  # will fail gate
+
+        # Description
+        desc_m = re.search(r'"description"\s*:\s*"([^"]{20,500})"', content)
         data["description"] = desc_m.group(1) if desc_m else None
 
         return data
@@ -195,31 +202,39 @@ def parse_listing_detail(pw_page, url: str) -> dict:
 
 
 def screen_listing(listing: dict) -> bool:
-    """Flip Man screening gates."""
+    """Flip Man screening gates for Homes.com listings."""
     dom = listing.get("days_on_market", 0)
     vpd = listing.get("views_per_day", 999)
+    price = listing.get("list_price", 0)
 
-    if vpd >= MAX_VIEWS_DAY:
-        log.info(f"FAIL Gate 2 (views/day {vpd} >= {MAX_VIEWS_DAY}): {listing.get('address')}")
+    # Gate 1 — Price in range
+    if price < 30000 or price > 500000:
         return False
 
+    # Gate 2 — Low competition
+    if vpd >= MAX_VIEWS_DAY:
+        log.info(f"FAIL Gate 2 (vpd {vpd}): {listing.get('address')}")
+        return False
+
+    # Gate 3 — Motivated seller (30+ DOM)
     if dom < MIN_DOM:
         log.info(f"FAIL Gate 3 (DOM {dom} < {MIN_DOM}): {listing.get('address')}")
         return False
 
+    # Score
     score = 0
-    if listing.get("has_price_cut"):  score += 3
-    if listing.get("was_relisted"):   score += 2
-    if dom >= 60:                     score += 2
-    if dom >= 90:                     score += 3
-    if vpd < 5:                       score += 2
-    if vpd < 2:                       score += 2
-    if listing.get("agent_email"):    score += 1
+    if listing.get("has_price_cut"):    score += 3
+    if listing.get("is_distressed"):    score += 3
+    if dom >= 60:                        score += 2
+    if dom >= 90:                        score += 3
+    if vpd < 5:                          score += 2
+    if listing.get("agent_email"):       score += 2  # bonus — we can email them
 
     listing["score"] = score
     log.info(
         f"PASS: {listing.get('address')} | "
-        f"DOM: {dom} | VPD: {vpd} | Score: {score}"
+        f"DOM: {dom} | Price: ${price:,} | Score: {score} | "
+        f"Email: {listing.get('agent_email', 'none')}"
     )
     return True
 
@@ -228,41 +243,37 @@ def apply_portfolio_rule(leads: list) -> list:
     from collections import defaultdict
     agent_map = defaultdict(list)
     no_email = []
-
     for lead in leads:
         email = lead.get("agent_email")
         if email:
             agent_map[email].append(lead)
         else:
             no_email.append(lead)
-
     filtered = []
     for email, agent_leads in agent_map.items():
         if len(agent_leads) >= 3:
-            log.info(f"Portfolio rule: {email} has {len(agent_leads)} listings — keeping top 2")
             top2 = sorted(agent_leads, key=lambda x: x.get("score", 0), reverse=True)[:2]
             filtered.extend(top2)
         else:
             filtered.extend(agent_leads)
-
     return filtered + no_email
 
 
 def scrape_market(market_key: str) -> list:
-    market = MARKETS[market_key]
+    market    = MARKETS[market_key]
     city      = market["city"]
     state     = market["state"]
     min_price = market["min_price"]
     max_price = market["max_price"]
 
-    log.info(f"Starting scrape: {city}, {state} | ${min_price:,}–${max_price:,}")
+    log.info(f"Starting scrape: {city}, {state} | ${min_price:,}–${max_price:,} | Source: Homes.com")
     leads = []
 
-    with sync_playwright() as p:
-        # Webshare rotating residential proxy — US IPs only
-        proxy_user = os.environ.get("PROXY_USER", "eqmykjml-us")
-        proxy_pass = os.environ.get("PROXY_PASS", "lvd5xwb7spa0")
+    # Webshare rotating residential proxy — US IPs
+    proxy_user = os.environ.get("PROXY_USER", "eqmykjml-us")
+    proxy_pass = os.environ.get("PROXY_PASS", "lvd5xwb7spa0")
 
+    with sync_playwright() as p:
         browser = p.chromium.launch(
             headless=True,
             proxy={
@@ -279,11 +290,6 @@ def scrape_market(market_key: str) -> list:
                 "--no-default-browser-check",
                 "--disable-extensions",
                 "--disable-plugins",
-                "--disable-background-timer-throttling",
-                "--disable-backgrounding-occluded-windows",
-                "--disable-renderer-backgrounding",
-                "--disable-features=TranslateUI",
-                "--disable-ipc-flooding-protection",
                 "--window-size=1366,768",
             ]
         )
@@ -297,81 +303,84 @@ def scrape_market(market_key: str) -> list:
             Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
             Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']});
             window.chrome = {runtime: {}};
-            Object.defineProperty(navigator, 'permissions', {
-                get: () => ({query: () => Promise.resolve({state: 'granted'})})
-            });
         """)
 
-        # Warm up — visit Google first to look like a real browser session
+        # Warm up on a neutral site
         try:
-            page.goto("https://www.google.com", timeout=15000, wait_until="domcontentloaded")
+            page.goto("https://www.bing.com", timeout=15000, wait_until="domcontentloaded")
             time.sleep(random.uniform(2, 4))
             log.info("Warm-up complete")
         except Exception:
             pass
 
+        # Price bands
         price_bands = [
             (min_price, 55000),
             (55001, 80000),
             (80001, max_price),
         ]
 
-        captcha_count = 0
+        block_count = 0
 
         for band_min, band_max in price_bands:
             if band_min > max_price:
                 continue
-            if captcha_count >= 2:
-                log.warning("Too many CAPTCHAs — stopping scrape early")
+            if block_count >= 2:
+                log.warning("Too many blocks — stopping scrape early")
                 break
 
             band_max = min(band_max, max_price)
             log.info(f"Scraping band: ${band_min:,}–${band_max:,}")
-
-            # Random delay between bands — looks human
             time.sleep(random.uniform(8, 15))
 
             for pg_num in range(1, 3):
-                url = build_zillow_url(city, state, band_min, band_max, pg_num)
+                url = build_homes_url(city, state, band_min, band_max, pg_num)
                 log.info(f"URL: {url[:100]}...")
 
                 try:
                     stealth_goto(page, url)
 
-                    if is_captcha(page):
-                        log.warning(f"CAPTCHA detected on band ${band_min:,}-${band_max:,}")
-                        captcha_count += 1
-                        # Wait longer before next attempt
+                    if is_blocked(page):
+                        log.warning(f"Blocked on band ${band_min:,}-${band_max:,}")
+                        block_count += 1
                         time.sleep(random.uniform(20, 35))
                         break
 
                     content = page.content()
-                    listing_paths = list(set(
-                        re.findall(r'href="(/homedetails/[^"]+/\d+_zpid/)"', content)
-                    ))
-                    log.info(f"Band ${band_min:,}-${band_max:,} pg{pg_num}: {len(listing_paths)} listings found")
 
-                    if not listing_paths:
+                    # Extract listing URLs from Homes.com search results
+                    listing_paths = list(set(
+                        re.findall(r'href="(/[^"]+/\d+[^"]*)"', content)
+                    ))
+                    # Filter to actual property detail pages
+                    listing_paths = [
+                        p for p in listing_paths
+                        if re.search(r'/\d{7,}/', p) or p.endswith('-for-sale/')
+                    ]
+
+                    # Also try to get full URLs
+                    full_urls = list(set(
+                        re.findall(r'https://www\.homes\.com/property/[^"&\s]+', content)
+                    ))
+
+                    all_urls = full_urls + [f"https://www.homes.com{p}" for p in listing_paths]
+                    all_urls = list(set(all_urls))[:8]
+
+                    log.info(f"Band ${band_min:,}-${band_max:,} pg{pg_num}: {len(all_urls)} listings found")
+
+                    if not all_urls:
+                        log.info("No listings found — moving to next band")
                         break
 
-                    for path in listing_paths[:8]:
-                        full_url = f"https://www.zillow.com{path}"
-                        detail   = parse_listing_detail(page, full_url)
-
+                    for listing_url in all_urls:
+                        detail = parse_homes_listing(page, listing_url, city, state)
                         if not detail:
                             continue
-
                         detail["market"] = market_key
-                        detail["city"]   = city
-                        detail["state"]  = state
-
                         if screen_listing(detail):
                             leads.append(detail)
-
-                        # Human-like delay between listings
                         time.sleep(random.uniform(5, 12))
 
-                    # Delay between pages
                     time.sleep(random.uniform(10, 20))
 
                 except Exception as e:
