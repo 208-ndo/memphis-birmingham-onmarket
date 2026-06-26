@@ -2,7 +2,7 @@ name: Memphis Birmingham On-Market Pipeline
 
 on:
   schedule:
-    - cron: '0 13 * * 2,3,4,5'  # 8AM Central = 1PM UTC, Tue/Wed/Thu
+    - cron: '0 14 * * 2,3,4,5'  # 8AM Central = 1PM UTC, Tue/Wed/Thu
   workflow_dispatch:
     inputs:
       dry_run:
