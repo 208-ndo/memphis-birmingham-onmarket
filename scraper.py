@@ -1,3 +1,4 @@
+import os
 import time
 import json
 import random
@@ -258,8 +259,17 @@ def scrape_market(market_key: str) -> list:
     leads = []
 
     with sync_playwright() as p:
+        # Webshare rotating residential proxy — US IPs only
+        proxy_user = os.environ.get("PROXY_USER", "eqmykjml-us")
+        proxy_pass = os.environ.get("PROXY_PASS", "lvd5xwb7spa0")
+
         browser = p.chromium.launch(
             headless=True,
+            proxy={
+                "server":   "http://p.webshare.io:80",
+                "username": proxy_user,
+                "password": proxy_pass,
+            },
             args=[
                 "--no-sandbox",
                 "--disable-blink-features=AutomationControlled",
