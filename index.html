@@ -90,6 +90,7 @@
     .pitch-check.fail{background:rgba(255,71,87,.1);color:var(--red);border:1px solid rgba(255,71,87,.25)}
     .pitch-breakdown{margin-top:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);line-height:1.9;display:none}
     .pitch-breakdown .hi{color:var(--teal);font-weight:700}.pitch-breakdown .hi.p{color:var(--purple)}
+    .cashflow-note{margin-top:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);line-height:1.8}
     .output-panel{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:28px}
     .output-view-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
     .ovt-btn{font-family:'Space Mono',monospace;font-size:10px;padding:6px 14px;border-radius:4px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .15s;letter-spacing:.5px}
@@ -146,7 +147,7 @@
 <body>
 <header>
   <div class="logo">229 <span>Holdings</span></div>
-  <div class="header-meta"><span class="live-dot"></span>PIPELINE LIVE<br>Memphis TN &amp; Birmingham AL<br>Auto-fires Tue / Wed / Thu 8AM CT</div>
+  <div class="header-meta"><span class="live-dot"></span>PIPELINE LIVE<br>Memphis TN &amp; Birmingham AL<br>Auto-fires Tue / Wed / Thu / Fri 9AM CT</div>
 </header>
 <div class="tab-bar">
   <div class="tab active" onclick="switchTab(event,'all')">All Markets</div>
@@ -167,7 +168,7 @@
   </div>
   <div class="section-header">Recent Pipeline Runs</div>
   <div class="table-wrap"><table><thead><tr><th>Date</th><th>Market</th><th>Leads</th><th>Emails</th><th>OF / CL</th><th>GHL</th><th>Status</th></tr></thead>
-  <tbody id="runs-tbody"><tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px">No run data yet. Pipeline auto-fires Tue/Wed/Thu 8AM CT.</td></tr></tbody></table></div>
+  <tbody id="runs-tbody"><tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px">No run data yet. Pipeline auto-fires Tue/Wed/Thu/Fri 9AM CT.</td></tr></tbody></table></div>
   <div class="section-header">Agent Outreach Queue</div>
   <div class="search-wrap">
     <div class="search-input-wrap">
@@ -222,16 +223,20 @@
     <div class="calc-grid">
       <div class="calc-card" id="of-card">
         <div class="calc-title purple">Creative Offer</div>
-        <div class="calc-subtitle">Seller Finance — Flip Man KISS ($30k–$75k)</div>
+        <div class="calc-subtitle">Seller Finance — Flip Man KISS ($30k–$80k)</div>
         <div class="field-group"><div class="field-label">Property Address <span class="field-hint">for offer doc</span></div><input type="text" id="of-address" placeholder="123 Main St, Memphis TN 38104" /></div>
         <div class="field-group"><div class="field-label">List / Purchase Price ($) <span class="field-hint">offer = full list</span></div><input type="number" id="of-price" placeholder="55000" oninput="clearOF()" /></div>
         <div class="field-row">
-          <div class="field-group" style="flex:1"><div class="field-label">Down % <span class="field-hint">default 5%</span></div><input type="number" id="of-dp-pct" value="5" /></div>
+          <div class="field-group" style="flex:1"><div class="field-label">Down % <span class="field-hint">your 5%</span></div><input type="number" id="of-dp-pct" value="5" /></div>
           <div class="field-group" style="flex:1"><div class="field-label"># Payments <span class="field-hint">default 100</span></div><input type="number" id="of-payments" value="100" /></div>
         </div>
         <div class="field-row">
-          <div class="field-group" style="flex:1"><div class="field-label">Interest % <span class="field-hint">default 0%</span></div><input type="number" id="of-rate" value="0" /></div>
-          <div class="field-group" style="flex:1"><div class="field-label">Buyer Down % <span class="field-hint">resale 12%</span></div><input type="number" id="of-buyer-dp" value="12" /></div>
+          <div class="field-group" style="flex:1"><div class="field-label">Seller Rate % <span class="field-hint">0% default</span></div><input type="number" id="of-rate" value="0" /></div>
+          <div class="field-group" style="flex:1"><div class="field-label">Buyer Down % <span class="field-hint">charge 12%</span></div><input type="number" id="of-buyer-dp" value="12" /></div>
+        </div>
+        <div class="field-row">
+          <div class="field-group" style="flex:1"><div class="field-label">Buyer Rate % <span class="field-hint">charge buyer</span></div><input type="number" id="of-buyer-rate" value="10" /></div>
+          <div class="field-group" style="flex:1"><div class="field-label">Buyer Term (yrs) <span class="field-hint">resale term</span></div><input type="number" id="of-buyer-term" value="15" /></div>
         </div>
         <div class="field-group"><div class="field-label">Listing Agent Name <span class="field-hint">for offer doc</span></div><input type="text" id="of-agent" placeholder="Jane Smith" /></div>
         <button class="calc-btn purple-btn" onclick="calcOF()">Calculate + Generate Offer</button>
@@ -245,15 +250,17 @@
           <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Plan to Sell — What End Buyer Pays</div>
           <div class="result-row hl"><span class="result-label">Plan to Sell (same price)</span><span class="result-value purple" id="of-r-plan-sell">—</span></div>
           <div class="result-row"><span class="result-label">End Buyer Down (12%)</span><span class="result-value teal" id="of-r-buyer-dp">—</span></div>
-          <div class="result-row"><span class="result-label">End Buyer Monthly (8%, 30yr)</span><span class="result-value teal" id="of-r-buyer-monthly">—</span></div>
+          <div class="result-row"><span class="result-label">End Buyer Rate / Term</span><span class="result-value teal" id="of-r-buyer-terms">—</span></div>
+          <div class="result-row"><span class="result-label">End Buyer Monthly</span><span class="result-value teal" id="of-r-buyer-monthly">—</span></div>
           <div class="result-row hl"><span class="result-label">Your Monthly Cashflow</span><span class="result-value green" id="of-r-cashflow">—</span></div>
+          <div class="cashflow-note" id="of-cashflow-note" style="display:none"></div>
           <hr class="divider"/>
           <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Your Profit</div>
-          <div class="result-row hl"><span class="result-label">Your Fee (buyer 12% - your 5%)</span><span class="result-value green" id="of-r-yourfee">—</span></div>
+          <div class="result-row hl"><span class="result-label">Your Fee at Close (buyer 12% - your 5%)</span><span class="result-value green" id="of-r-yourfee">—</span></div>
           <hr class="divider"/>
           <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Agent Pitch</div>
           <div class="result-row hl"><span class="result-label">Agent Commission (6%)</span><span class="result-value yellow" id="of-r-comm">—</span></div>
-          <div class="result-row"><span class="result-label">Agent Flat Fee (auto)</span><span class="result-value yellow" id="of-r-flat">—</span></div>
+          <div class="result-row"><span class="result-label">Agent Flat Fee</span><span class="result-value yellow" id="of-r-flat">—</span></div>
           <div class="result-row hl"><span class="result-label">Total To Agent</span><span class="result-value yellow" id="of-r-agent-total">—</span></div>
           <div class="result-row"><span class="result-label">At-List Baseline (3% of list)</span><span class="result-value muted" id="of-r-atlist">—</span></div>
           <div id="of-pitch" class="pitch-check" style="display:none"></div>
@@ -279,9 +286,9 @@
       </div>
     </div>
     <div class="ref-grid">
-      <div class="ref-card"><div class="ref-title p">Owner Finance Rules</div><div class="ref-body">Band: <span class="val">$30k–$75k</span><br>Offer: <span class="val">FULL list price</span><br>Down: <span class="val">5%</span> covers agent commission at close<br>Balance: <span class="val">100 monthly payments @ 0%</span><br>Earnest: <span class="val">$500</span> | Close: <span class="val">21 days</span><br>Due Diligence: <span class="val">10 days, as-is</span><br>Your fee: <span class="val">12% buyer down - 5% your down</span></div></div>
-      <div class="ref-card"><div class="ref-title p">Plan to Sell</div><div class="ref-body">Sell to end buyer at: <span class="val">same list price</span><br>Buyer down: <span class="val">12%</span> (you put in 5%)<br>Your spread: <span class="val">7% of list price at closing</span><br>Buyer rate: <span class="val">8% interest, 30 year term</span><br>Monthly cashflow: <span class="val">buyer mo. - seller mo.</span><br>Cashflow starts: <span class="val">day 1 after assignment</span></div></div>
-      <div class="ref-card"><div class="ref-title p">Pitch Must Hold</div><div class="ref-body">At-list baseline = <span class="val">3% of list price</span><br>Total to agent must be <span class="val">&ge; 3% of list</span><br>Commission: <span class="val">paid from buyer's down payment</span><br>Subject line: <span class="val">NEVER "seller financing"</span><br>If pitch fails: <span class="val">do not send</span></div></div>
+      <div class="ref-card"><div class="ref-title p">Owner Finance Rules</div><div class="ref-body">Band: <span class="val">$30k–$80k</span><br>Offer: <span class="val">FULL list price</span><br>Down: <span class="val">5%</span> covers agent commission at close<br>Balance: <span class="val">100 monthly payments @ 0%</span><br>Earnest: <span class="val">$500</span> | Close: <span class="val">21 days</span><br>Due Diligence: <span class="val">10 days, as-is</span><br>Your fee: <span class="val">buyer 12% down - your 5% down</span></div></div>
+      <div class="ref-card"><div class="ref-title p">Plan to Sell</div><div class="ref-body">Sell to end buyer at: <span class="val">same list price</span><br>Buyer down: <span class="val">12%</span> (you put in 5%)<br>Your spread at close: <span class="val">7% of list price</span><br>Buyer rate: <span class="val">adjust for positive cashflow</span><br>Monthly cashflow: <span class="val">buyer mo. - seller mo.</span><br>Tip: <span class="val">10%+ rate or 10yr term = positive CF</span></div></div>
+      <div class="ref-card"><div class="ref-title p">Pitch Must Hold</div><div class="ref-body">At-list baseline = <span class="val">3% of list price</span><br>Total to agent must be <span class="val">&ge; 3% of list</span><br>Commission: <span class="val">paid from buyer's down payment</span><br>Flat fee: <span class="val">$1,000 (all price ranges)</span><br>Subject line: <span class="val">NEVER "seller financing"</span><br>If pitch fails: <span class="val">do not send</span></div></div>
       <div class="ref-card"><div class="ref-title p">Email Hard Rules</div><div class="ref-body">Length: <span class="val">3-5 sentences max</span><br>Em dashes: <span class="val">NEVER</span><br>Commission: <span class="val">exact dollar always</span><br>Seller wins: <span class="val">emphasize full asking price</span><br>CTA: <span class="val">soft - ask where to send offer</span><br>Sign off: <span class="val">Michael | 229 Holdings LLC</span></div></div>
     </div>
   </div>
@@ -291,7 +298,7 @@
     <div class="calc-grid">
       <div class="calc-card teal-card" id="cl-card">
         <div class="calc-title teal">Cash Lowball</div>
-        <div class="calc-subtitle">Flip Man KISS Tiers — $75k+</div>
+        <div class="calc-subtitle">Flip Man KISS Tiers — $80k+</div>
         <div class="field-group"><div class="field-label">Property Address <span class="field-hint" style="color:var(--teal)">for offer doc</span></div><input type="text" id="cl-address" placeholder="456 Oak Ave, Birmingham AL 35203" /></div>
         <div class="field-group"><div class="field-label">List Price ($) <span class="field-hint" style="color:var(--teal)">KISS tier auto-selects</span></div><input type="number" id="cl-list" placeholder="120000" oninput="clearCL()" /></div>
         <div class="field-group"><div class="field-label">ARV — After Repair Value ($) <span class="field-hint" style="color:var(--teal)">for buyer MAO check</span></div><input type="number" id="cl-arv" placeholder="150000" oninput="clearCL()" /></div>
@@ -314,7 +321,7 @@
           <hr class="divider"/>
           <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Agent Pitch</div>
           <div class="result-row hl"><span class="result-label">Agent Commission (6% of offer)</span><span class="result-value yellow" id="cl-r-comm">—</span></div>
-          <div class="result-row"><span class="result-label">Agent Flat Fee (auto)</span><span class="result-value yellow" id="cl-r-flat">—</span></div>
+          <div class="result-row"><span class="result-label">Agent Flat Fee</span><span class="result-value yellow" id="cl-r-flat">—</span></div>
           <div class="result-row hl"><span class="result-label">Total To Agent</span><span class="result-value yellow" id="cl-r-agent-total">—</span></div>
           <div class="result-row"><span class="result-label">At-List Baseline (3% of list)</span><span class="result-value muted" id="cl-r-atlist">—</span></div>
           <div id="cl-pitch" class="pitch-check" style="display:none"></div>
@@ -343,9 +350,9 @@
       </div>
     </div>
     <div class="ref-grid">
-      <div class="ref-card"><div class="ref-title t">KISS Cash Tiers</div><div class="ref-body">$75k–$150k: <span class="val">40% of list price</span><br>$150k–$300k: <span class="val">50% of list price</span><br>$300k–$750k: <span class="val">60% of list price</span><br>Sub-$75k: <span class="val">use Owner Finance instead</span><br>Assign at contract: <span class="val">+$10k fee</span></div></div>
+      <div class="ref-card"><div class="ref-title t">KISS Cash Tiers</div><div class="ref-body">$80k–$150k: <span class="val">40% of list price</span><br>$150k–$300k: <span class="val">50% of list price</span><br>$300k–$750k: <span class="val">60% of list price</span><br>Sub-$80k: <span class="val">use Owner Finance instead</span><br>Assign at contract: <span class="val">+$10k fee</span></div></div>
       <div class="ref-card"><div class="ref-title t">Buyer MAO Check</div><div class="ref-body">Buyer MAO = <span class="val">ARV x 80% - Repairs</span><br>Assign price must be: <span class="val">&lt; Buyer MAO</span><br>If no room: <span class="val">pass or renegotiate</span><br>Buyer needs: <span class="val">20%+ equity to move</span><br>Your assign price: <span class="val">cash offer + $10k</span></div></div>
-      <div class="ref-card"><div class="ref-title t">Cash Deal Rules</div><div class="ref-body">Agent: <span class="val">6% of cash offer + flat fee</span><br>Flat fee: <span class="val">$1k sub-$50k / $1.5k up to $150k</span><br>Pitch: <span class="val">total &ge; 3% of list price</span><br>Close: <span class="val">7-14 days, as-is, no contingencies</span><br>Earnest: <span class="val">$500</span> | Inspection: <span class="val">10 days</span></div></div>
+      <div class="ref-card"><div class="ref-title t">Cash Deal Rules</div><div class="ref-body">Agent: <span class="val">6% of cash offer + flat fee</span><br>Flat fee: <span class="val">$1,000 flat (all ranges)</span><br>Pitch: <span class="val">total &ge; 3% of list price</span><br>Close: <span class="val">7-14 days, as-is, no contingencies</span><br>Earnest: <span class="val">$500</span> | Inspection: <span class="val">10 days</span></div></div>
       <div class="ref-card"><div class="ref-title t">Email Hard Rules</div><div class="ref-body">Lead: <span class="val">speed + certainty of close</span><br>As-is: <span class="val">no repairs, no contingencies</span><br>Commission: <span class="val">exact dollar always</span><br>Em dashes: <span class="val">NEVER</span><br>Sign off: <span class="val">Michael | 229 Holdings LLC</span></div></div>
     </div>
   </div>
@@ -355,7 +362,6 @@
 <script>
 var ofData=null,clData=null,ofEmails=[],clEmails=[],_rawQueue=[],_rawRuns=[];
 var fmt=function(v){return '$'+Math.round(v).toLocaleString();};
-var fmtP=function(v){return v.toFixed(1)+'%';};
 function today(){var d=new Date();return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}
 function coeDate(days){var d=new Date();d.setDate(d.getDate()+(days||21));return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}
 function setEl(id,val,cls){var el=document.getElementById(id);if(!el)return;el.textContent=val;el.className='result-value'+(cls?' '+cls:'');}
@@ -376,12 +382,17 @@ function switchSubTab(name){
 function clearOF(){document.getElementById('of-results').style.display='none';document.getElementById('of-output-panel').style.display='none';ofData=null;ofEmails=[];}
 function clearCL(){document.getElementById('cl-results').style.display='none';document.getElementById('cl-output-panel').style.display='none';clData=null;clEmails=[];}
 
+// Flat fee: $1,000 flat across all ranges
+function flatFee(price){ return 1000; }
+
 function calcOF(){
   var price=parseFloat(document.getElementById('of-price').value)||0;
   var dpPct=parseFloat(document.getElementById('of-dp-pct').value)||5;
   var pmts=parseFloat(document.getElementById('of-payments').value)||100;
   var rate=parseFloat(document.getElementById('of-rate').value)||0;
   var buyerDp=parseFloat(document.getElementById('of-buyer-dp').value)||12;
+  var buyerRate=parseFloat(document.getElementById('of-buyer-rate').value)||10;
+  var buyerTermYrs=parseFloat(document.getElementById('of-buyer-term').value)||15;
   var address=document.getElementById('of-address').value.trim()||'Property Address';
   var agent=document.getElementById('of-agent').value.trim()||'Listing Agent';
   if(!price){alert('Enter a list price.');return;}
@@ -391,21 +402,19 @@ function calcOF(){
   var balance=price-dp;
   var monthly=rate===0?balance/pmts:(balance*(rate/100/12))/(1-Math.pow(1+rate/100/12,-pmts));
 
-  // Buyer side (end buyer pays same price, 12% down, 8% 30yr)
+  // Buyer side — use editable rate and term
   var buyerDown=price*(buyerDp/100);
   var buyerBal=price-buyerDown;
-  var r30=0.08/12,n30=360;
-  var buyerMo=buyerBal>0?(buyerBal*r30)/(1-Math.pow(1+r30,-n30)):0;
+  var rB=buyerRate/100/12;
+  var nB=buyerTermYrs*12;
+  var buyerMo=buyerBal>0&&buyerRate>0?(buyerBal*rB)/(1-Math.pow(1+rB,-nB)):buyerBal/nB;
 
-  // Your cashflow = what buyer pays you monthly - what you pay seller monthly
   var yourCashflow=buyerMo-monthly;
-
-  // Your fee = buyer down - your down
   var yourFee=price*((buyerDp-dpPct)/100);
 
-  // Agent pitch
+  // Agent pitch — $1,000 flat fee across all ranges
   var comm=price*0.06;
-  var flat=price<50000?1000:(price<=150000?1500:2000);
+  var flat=flatFee(price);
   var agentTotal=comm+flat;
   var atList=price*0.03;
   var pitchOk=agentTotal>=atList;
@@ -413,7 +422,7 @@ function calcOF(){
   var termYears=Math.floor(pmts/12),termMos=pmts%12;
   var termStr=(termYears>0?termYears+' year'+(termYears>1?'s':'')+', ':'')+(termMos>0?termMos+' month'+(termMos!==1?'s':''):'');
 
-  ofData={price:price,dpPct:dpPct,pmts:pmts,rate:rate,buyerDp:buyerDp,dp:dp,balance:balance,monthly:monthly,comm:comm,flat:flat,agentTotal:agentTotal,atList:atList,pitchOk:pitchOk,yourFee:yourFee,buyerDown:buyerDown,buyerMo:buyerMo,yourCashflow:yourCashflow,address:address,agent:agent,termStr:termStr};
+  ofData={price:price,dpPct:dpPct,pmts:pmts,rate:rate,buyerDp:buyerDp,buyerRate:buyerRate,buyerTermYrs:buyerTermYrs,dp:dp,balance:balance,monthly:monthly,comm:comm,flat:flat,agentTotal:agentTotal,atList:atList,pitchOk:pitchOk,yourFee:yourFee,buyerDown:buyerDown,buyerBal:buyerBal,buyerMo:buyerMo,yourCashflow:yourCashflow,address:address,agent:agent,termStr:termStr};
 
   setEl('of-r-price',fmt(price),'purple');
   setEl('of-r-dp',fmt(dp),'purple');
@@ -421,11 +430,23 @@ function calcOF(){
   setEl('of-r-monthly',fmt(monthly)+'/mo','');
   setEl('of-r-plan-sell',fmt(price),'purple');
   setEl('of-r-buyer-dp',fmt(buyerDown),'teal');
+  setEl('of-r-buyer-terms',buyerRate+'% / '+buyerTermYrs+' yr','teal');
   setEl('of-r-buyer-monthly',fmt(buyerMo)+'/mo','teal');
 
   var cfEl=document.getElementById('of-r-cashflow');
   cfEl.textContent=fmt(yourCashflow)+'/mo';
   cfEl.className='result-value '+(yourCashflow>=0?'green':'red');
+
+  // Cashflow note
+  var cfNote=document.getElementById('of-cashflow-note');
+  cfNote.style.display='block';
+  if(yourCashflow<0){
+    cfNote.innerHTML='Cashflow is negative at '+buyerRate+'% / '+buyerTermYrs+'yr. Try raising the buyer rate or shortening the term. Example: 12% / 10yr = +'+fmt(buyerBal*((0.12/12)/(1-Math.pow(1+0.12/12,-120)))-monthly)+'/mo.';
+    cfNote.style.borderColor='var(--red)';cfNote.style.color='var(--red)';
+  } else {
+    cfNote.innerHTML='Cashflow positive. Over '+pmts+' seller payments you collect '+fmt(yourCashflow*pmts)+' total spread, then buyer continues paying you.';
+    cfNote.style.borderColor='var(--green)';cfNote.style.color='var(--green)';
+  }
 
   setEl('of-r-yourfee',fmt(yourFee),'green');
   setEl('of-r-comm',fmt(comm),'yellow');
@@ -448,17 +469,16 @@ function calcOF(){
 
 function renderOFOffer(){
   var d=ofData;if(!d)return;
-  document.getElementById('of-exec-doc').innerHTML='<div class="od-header"><div><div class="od-brand">229 <span>HOLDINGS LLC</span></div><div style="font-family:Space Mono,monospace;font-size:9px;color:#7a7a9a;margin-top:4px">229homebuyers.com</div></div><div class="od-type">SELLER FINANCED OFFER<br>'+today()+'</div></div><div class="od-address">'+d.address+'</div><div class="od-date">Presented to: '+d.agent+'</div><div class="od-comm-banner"><div class="od-comm-title">&#10003; AGENT COMMISSION FULLY PROTECTED</div><div class="od-comm-body">Total Commission to Listing Agent: <strong style="color:#00d4aa">'+fmt(d.agentTotal)+'</strong> &nbsp;|&nbsp; Covered by Buyer\'s Down Payment at Closing<br>Agent nets '+fmt(d.agentTotal)+' vs '+fmt(d.atList)+' from a traditional full-price sale.</div></div><div class="od-grid"><div class="od-box"><div class="od-label">Purchase Price</div><div class="od-value">'+fmt(d.price)+'</div><div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:Space Mono,monospace">Seller receives full asking price</div></div><div class="od-box teal-box"><div class="od-label">Down Payment</div><div class="od-value teal">'+fmt(d.dp)+'</div><div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:Space Mono,monospace">'+d.dpPct+'% covers agent commission</div></div></div><div class="od-grid-3"><div class="od-box"><div class="od-label">Financed Amount</div><div class="od-value dark">'+fmt(d.balance)+'</div></div><div class="od-box"><div class="od-label">Monthly Payment</div><div class="od-value dark">'+fmt(d.monthly)+'/mo</div></div><div class="od-box"><div class="od-label">Term</div><div class="od-value dark" style="font-size:14px">'+d.pmts+' months</div><div style="font-size:10px;color:#7a7a9a;font-family:Space Mono,monospace">'+d.termStr+'</div></div></div><div class="od-grid-3"><div class="od-box"><div class="od-label">Interest Rate</div><div class="od-value dark">'+(d.rate===0?'0% Interest Free':d.rate+'%')+'</div></div><div class="od-box"><div class="od-label">Earnest Money</div><div class="od-value dark">$500</div></div><div class="od-box"><div class="od-label">Close of Escrow</div><div class="od-value dark" style="font-size:13px">'+coeDate(21)+'</div></div></div><div class="od-legal"><strong>AGENT COMMISSION:</strong> The Seller\'s agent commission is negotiable and shall be paid out of the Buyer\'s down payment at the time of closing. The total commission amount shall be '+fmt(d.agentTotal)+', or a mutually agreed upon flat fee negotiated between the parties, to be deducted from the closing proceeds. In the event of dual agency, the Buyer consents to the agent representing both parties, subject to state regulations.<br><br><strong>TERMS:</strong> Due Diligence 10 Days. As-Is subject to walk-through. Buyer pays all closing costs minus unpaid mortgages, taxes, or liens. Buyer will select closing attorney / title company / escrow company. Buyer reserves right to assign contract.</div><div class="od-sig"><div><div class="od-sig-name">Michael</div><div class="od-sig-co">229 Holdings LLC | 229homebuyers.com</div></div><div style="text-align:right;font-family:Space Mono,monospace;font-size:10px;color:#7a7a9a">Date: ___________________<br>Seller Signature: ___________________</div></div>';
-  document.getElementById('of-direct-doc').textContent='SELLER FINANCED OFFER - 229 Holdings LLC\n'+d.address+'\n'+today()+'\nPresented to: '+d.agent+'\n\nPURCHASE PRICE: '+fmt(d.price)+'\n(Seller receives full asking price)\n\nDOWN PAYMENT: '+fmt(d.dp)+' ('+d.dpPct+'%)\nFINANCED AMOUNT: '+fmt(d.balance)+'\nMONTHLY PAYMENT TO SELLER: '+fmt(d.monthly)+'/mo\nTERM: '+d.pmts+' months ('+d.termStr+') @ '+(d.rate===0?'0% interest free':d.rate+'%')+'\n\nPLAN TO SELL:\nEnd Buyer Price: '+fmt(d.price)+' (same price)\nEnd Buyer Down (12%): '+fmt(d.buyerDown)+'\nEnd Buyer Monthly (8%, 30yr): '+fmt(d.buyerMo)+'/mo\nYour Monthly Cashflow: '+fmt(d.yourCashflow)+'/mo\nYour Fee at Close: '+fmt(d.yourFee)+'\n\nAGENT COMMISSION: '+fmt(d.agentTotal)+'\nPaid from Buyer\'s down payment at closing.\n'+fmt(d.agentTotal)+' is more than the '+fmt(d.atList)+' from a traditional full-price sale.\n\nCLOSING TERMS:\n- Earnest Money: $500\n- Due Diligence: 10 Days | As-Is, subject to walk-through\n- Close of Escrow: '+coeDate(21)+'\n- Buyer pays all closing costs minus unpaid mortgages, taxes, or liens\n- Buyer will select closing attorney / title company / escrow company\n- Buyer reserves right to assign contract\n\nMichael | 229 Holdings LLC | 229homebuyers.com';
+  document.getElementById('of-exec-doc').innerHTML='<div class="od-header"><div><div class="od-brand">229 <span>HOLDINGS LLC</span></div><div style="font-family:Space Mono,monospace;font-size:9px;color:#7a7a9a;margin-top:4px">229homebuyers.com</div></div><div class="od-type">SELLER FINANCED OFFER<br>'+today()+'</div></div><div class="od-address">'+d.address+'</div><div class="od-date">Presented to: '+d.agent+'</div><div class="od-comm-banner"><div class="od-comm-title">&#10003; AGENT COMMISSION FULLY PROTECTED</div><div class="od-comm-body">Total Commission to Listing Agent: <strong style="color:#00d4aa">'+fmt(d.agentTotal)+'</strong> &nbsp;|&nbsp; Covered by Buyer\'s Down Payment at Closing<br>Agent nets '+fmt(d.agentTotal)+' vs '+fmt(d.atList)+' from a traditional full-price sale.</div></div><div class="od-grid"><div class="od-box"><div class="od-label">Purchase Price</div><div class="od-value">'+fmt(d.price)+'</div><div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:Space Mono,monospace">Seller receives full asking price</div></div><div class="od-box teal-box"><div class="od-label">Down Payment</div><div class="od-value teal">'+fmt(d.dp)+'</div><div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:Space Mono,monospace">'+d.dpPct+'% covers agent commission</div></div></div><div class="od-grid-3"><div class="od-box"><div class="od-label">Financed Amount</div><div class="od-value dark">'+fmt(d.balance)+'</div></div><div class="od-box"><div class="od-label">Monthly Payment</div><div class="od-value dark">'+fmt(d.monthly)+'/mo</div></div><div class="od-box"><div class="od-label">Term</div><div class="od-value dark" style="font-size:14px">'+d.pmts+' months</div><div style="font-size:10px;color:#7a7a9a;font-family:Space Mono,monospace">'+d.termStr+'</div></div></div><div class="od-grid-3"><div class="od-box"><div class="od-label">Interest Rate</div><div class="od-value dark">'+(d.rate===0?'0% Interest Free':d.rate+'%')+'</div></div><div class="od-box"><div class="od-label">Earnest Money</div><div class="od-value dark">$500</div></div><div class="od-box"><div class="od-label">Close of Escrow</div><div class="od-value dark" style="font-size:13px">'+coeDate(21)+'</div></div></div><div class="od-legal"><strong>AGENT COMMISSION:</strong> The Seller\'s agent commission is negotiable and shall be paid out of the Buyer\'s down payment at the time of closing. The total commission amount shall be '+fmt(d.agentTotal)+', to be deducted from the closing proceeds. In the event of dual agency, the Buyer consents to the agent representing both parties, subject to state regulations.<br><br><strong>TERMS:</strong> Due Diligence 10 Days. As-Is subject to walk-through. Buyer pays all closing costs minus unpaid mortgages, taxes, or liens. Buyer will select closing attorney / title company / escrow company. Buyer reserves right to assign contract.</div><div class="od-sig"><div><div class="od-sig-name">Michael</div><div class="od-sig-co">229 Holdings LLC | 229homebuyers.com</div></div><div style="text-align:right;font-family:Space Mono,monospace;font-size:10px;color:#7a7a9a">Date: ___________________<br>Seller Signature: ___________________</div></div>';
+  document.getElementById('of-direct-doc').textContent='SELLER FINANCED OFFER - 229 Holdings LLC\n'+d.address+'\n'+today()+'\nPresented to: '+d.agent+'\n\nPURCHASE PRICE: '+fmt(d.price)+'\n(Seller receives full asking price)\n\nDOWN PAYMENT: '+fmt(d.dp)+' ('+d.dpPct+'%)\nFINANCED AMOUNT: '+fmt(d.balance)+'\nMONTHLY PAYMENT TO SELLER: '+fmt(d.monthly)+'/mo\nTERM: '+d.pmts+' months ('+d.termStr+') @ '+(d.rate===0?'0% interest free':d.rate+'%')+'\n\nPLAN TO SELL:\nEnd Buyer Price: '+fmt(d.price)+' (same price)\nEnd Buyer Down ('+d.buyerDp+'%): '+fmt(d.buyerDown)+'\nEnd Buyer Rate / Term: '+d.buyerRate+'% / '+d.buyerTermYrs+' years\nEnd Buyer Monthly: '+fmt(d.buyerMo)+'/mo\nYour Monthly Cashflow: '+fmt(d.yourCashflow)+'/mo\nYour Fee at Close: '+fmt(d.yourFee)+'\n\nAGENT COMMISSION: '+fmt(d.agentTotal)+'\nPaid from Buyer\'s down payment at closing.\n'+fmt(d.agentTotal)+' is more than the '+fmt(d.atList)+' from a traditional full-price sale.\n\nCLOSING TERMS:\n- Earnest Money: $500\n- Due Diligence: 10 Days | As-Is, subject to walk-through\n- Close of Escrow: '+coeDate(21)+'\n- Buyer pays all closing costs minus unpaid mortgages, taxes, or liens\n- Buyer will select closing attorney / title company / escrow company\n- Buyer reserves right to assign contract\n\nMichael | 229 Holdings LLC | 229homebuyers.com';
 }
 
-// KISS tier lookup
 function kissOffer(listPrice){
-  if(listPrice<75000)return{pct:20,label:'20% (sub-$75k — use OF instead)'};
-  if(listPrice<150000)return{pct:40,label:'40% ($75k–$150k tier)'};
+  if(listPrice<80000)return{pct:20,label:'20% (sub-$80k — use OF instead)'};
+  if(listPrice<150000)return{pct:40,label:'40% ($80k–$150k tier)'};
   if(listPrice<300000)return{pct:50,label:'50% ($150k–$300k tier)'};
   if(listPrice<750000)return{pct:60,label:'60% ($300k–$750k tier)'};
-  return{pct:60,label:'60% ($750k+ tier)'};
+  return{pct:65,label:'65% ($750k+ tier)'};
 }
 
 function calcCL(){
@@ -474,14 +494,13 @@ function calcCL(){
   var assignFee=10000;
   var assignPrice=offer+assignFee;
 
-  // Buyer MAO check
   var buyerMAO=arv>0?(arv*0.80)-repair:null;
   var hasRoom=buyerMAO!==null?assignPrice<buyerMAO:null;
   var roomDelta=buyerMAO!==null?buyerMAO-assignPrice:null;
 
-  // Agent pitch
+  // Agent pitch — $1,000 flat fee
   var comm=offer*0.06;
-  var flat=offer<50000?1000:(offer<=150000?1500:2000);
+  var flat=flatFee(offer);
   var agentTotal=comm+flat;
   var atList=listPrice*0.03;
   var pitchOk=agentTotal>=atList&&offer>0;
@@ -555,7 +574,7 @@ async function generateOFEmails(){
   if(!ofData)return;
   var d=ofData;
   var subjects=['Offer on your listing','Quick offer for you','Your listing - offer inside','Interested in your property'];
-  var prompt='You are a real estate wholesaler writing to a listing agent about their stale listing.\n\nOFFER TYPE: Seller Finance / Creative\nProperty: '+d.address+'\nList Price: '+fmt(d.price)+'\nDown Payment: '+fmt(d.dp)+' ('+d.dpPct+'% - covers commission at closing)\nMonthly Payment to Seller: '+fmt(d.monthly)+'/mo | Term: '+d.pmts+' payments | Interest: '+(d.rate===0?'0% interest free':d.rate+'%')+'\nSeller receives: FULL ASKING PRICE\nAgent total payout: '+fmt(d.agentTotal)+' (6% commission + flat fee, paid from buyer down payment)\nAt-list comparison (3% of list): '+fmt(d.atList)+'\nAgent nets '+(d.agentTotal>=d.atList?'+'+fmt(d.agentTotal-d.atList)+' MORE':fmt(d.agentTotal-d.atList)+' LESS')+' than a full-price sale\n\nHARD RULES:\n1. NO em dashes. Commas and periods only.\n2. 3-5 sentences MAX. Short, punchy, handwritten feel.\n3. Never say "seller financing" or "owner financing"\n4. Call out exact commission: '+fmt(d.agentTotal)+' paid from buyer down payment\n5. Emphasize seller gets FULL asking price\n6. Soft CTA: ask where to send written offer\n7. Sign off EXACTLY: Michael | 229 Holdings LLC | 229homebuyers.com\n8. V1=direct/confident, V2=empathetic, V3=curiosity hook, V4=ultra short 2-3 sentences\n\nReturn ONLY a JSON array: [{"variation":1,"body":"..."},...] Raw JSON only.';
+  var prompt='You are a real estate wholesaler writing to a listing agent about their stale listing.\n\nOFFER TYPE: Seller Finance / Creative\nProperty: '+d.address+'\nList Price: '+fmt(d.price)+'\nDown Payment: '+fmt(d.dp)+' ('+d.dpPct+'% - covers commission at closing)\nMonthly Payment to Seller: '+fmt(d.monthly)+'/mo | Term: '+d.pmts+' payments | Interest: '+(d.rate===0?'0% interest free':d.rate+'%')+'\nSeller receives: FULL ASKING PRICE\nAgent total payout: '+fmt(d.agentTotal)+' (6% commission + $1,000 flat fee, paid from buyer down payment)\nAt-list comparison (3% of list): '+fmt(d.atList)+'\nAgent nets '+(d.agentTotal>=d.atList?'+'+fmt(d.agentTotal-d.atList)+' MORE':fmt(d.agentTotal-d.atList)+' LESS')+' than a full-price sale\n\nHARD RULES:\n1. NO em dashes. Commas and periods only.\n2. 3-5 sentences MAX. Short, punchy, handwritten feel.\n3. Never say "seller financing" or "owner financing"\n4. Call out exact commission: '+fmt(d.agentTotal)+' paid from buyer down payment\n5. Emphasize seller gets FULL asking price\n6. Soft CTA: ask where to send written offer\n7. Sign off EXACTLY: Michael | 229 Holdings LLC | 229homebuyers.com\n8. V1=direct/confident, V2=empathetic, V3=curiosity hook, V4=ultra short 2-3 sentences\n\nReturn ONLY a JSON array: [{"variation":1,"body":"..."},...] Raw JSON only.';
   showEmailLoading('of');
   try{
     var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
@@ -572,7 +591,7 @@ async function generateCLEmails(){
   if(!clData)return;
   var d=clData;
   var subjects=['Cash offer on your listing','Quick cash offer - as-is','Cash offer ready to send','Can we close this in 14 days?'];
-  var prompt='You are a real estate wholesaler writing to a listing agent about their stale listing.\n\nOFFER TYPE: Cash As-Is\nProperty: '+d.address+'\nList Price: '+fmt(d.listPrice)+'\nKISS Tier: '+d.tier.label+'\nCash Offer: '+fmt(d.offer)+'\nPlan to Sell (Assign Price): '+fmt(d.assignPrice)+'\nAgent total payout: '+fmt(d.agentTotal)+' (6% + flat fee)\nAt-list comparison (3% of list): '+fmt(d.atList)+'\nAgent nets '+(d.agentTotal>=d.atList?'+'+fmt(d.agentTotal-d.atList)+' MORE':fmt(d.agentTotal-d.atList)+' LESS')+' than a full-price sale\nClose: 7-14 days | No repairs | No contingencies | Cash | Earnest $500\n\nHARD RULES:\n1. NO em dashes. Commas and periods only.\n2. 3-5 sentences MAX. Short, punchy, handwritten.\n3. Lead with speed + certainty - cash, as-is, close in 14 days\n4. Call out exact commission: '+fmt(d.agentTotal)+'\n5. Compare to at-list '+fmt(d.atList)+' - agent wins with your offer\n6. Soft CTA: ask where to send written offer\n7. Sign off EXACTLY: Michael | 229 Holdings LLC | 229homebuyers.com\n8. V1=direct/confident, V2=empathetic, V3=curiosity hook, V4=ultra short 2-3 sentences\n\nReturn ONLY a JSON array: [{"variation":1,"body":"..."},...] Raw JSON only.';
+  var prompt='You are a real estate wholesaler writing to a listing agent about their stale listing.\n\nOFFER TYPE: Cash As-Is\nProperty: '+d.address+'\nList Price: '+fmt(d.listPrice)+'\nKISS Tier: '+d.tier.label+'\nCash Offer: '+fmt(d.offer)+'\nPlan to Sell (Assign Price): '+fmt(d.assignPrice)+'\nAgent total payout: '+fmt(d.agentTotal)+' (6% + $1,000 flat fee)\nAt-list comparison (3% of list): '+fmt(d.atList)+'\nAgent nets '+(d.agentTotal>=d.atList?'+'+fmt(d.agentTotal-d.atList)+' MORE':fmt(d.agentTotal-d.atList)+' LESS')+' than a full-price sale\nClose: 7-14 days | No repairs | No contingencies | Cash | Earnest $500\n\nHARD RULES:\n1. NO em dashes. Commas and periods only.\n2. 3-5 sentences MAX. Short, punchy, handwritten.\n3. Lead with speed + certainty - cash, as-is, close in 14 days\n4. Call out exact commission: '+fmt(d.agentTotal)+'\n5. Compare to at-list '+fmt(d.atList)+' - agent wins with your offer\n6. Soft CTA: ask where to send written offer\n7. Sign off EXACTLY: Michael | 229 Holdings LLC | 229homebuyers.com\n8. V1=direct/confident, V2=empathetic, V3=curiosity hook, V4=ultra short 2-3 sentences\n\nReturn ONLY a JSON array: [{"variation":1,"body":"..."},...] Raw JSON only.';
   showEmailLoading('cl');
   try{
     var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
