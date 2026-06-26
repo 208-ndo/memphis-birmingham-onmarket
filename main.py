@@ -326,12 +326,12 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
     return result
 
 def main():
-    today   = datetime.now().weekday()  # 0=Mon 1=Tue 2=Wed 3=Thu
+    today   = datetime.now().weekday()  # 0=Mon 1=Tue 2=Wed 3=Thu 4=Fri
     dry_run = "--dry-run" in sys.argv
 
-    if today not in [1, 2, 3]:
+    if today not in [1, 2, 3, 4]:
         day_names = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
-        log.info(f"Today is {day_names[today]} — pipeline only runs Tue/Wed/Thu. Exiting.")
+        log.info(f"Today is {day_names[today]} — pipeline only runs Tue/Wed/Thu/Fri. Exiting.")
         sys.exit(0)
 
     log.info(f"Pipeline starting | Markets: Memphis + Birmingham | Dry run: {dry_run}")
