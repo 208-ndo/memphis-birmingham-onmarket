@@ -2,7 +2,30 @@ name: Memphis Birmingham On-Market Pipeline
 
 on:
   schedule:
-    - cron: '0 14 * * 2,3,4,5'  # 8AM Central = 1PM UTC, Tue/Wed/Thu
+    # 3 runs per day Tue-Fri — 5 emails per run per market = 15/day
+    # Staggered times look human, not bot-like
+    # CDT (summer) = UTC-5
+
+    # Tuesday
+    - cron: '0 14 * * 2'   # Tue 9AM CT
+    - cron: '0 17 * * 2'   # Tue 12PM CT
+    - cron: '0 20 * * 2'   # Tue 3PM CT
+
+    # Wednesday
+    - cron: '0 14 * * 3'   # Wed 9AM CT
+    - cron: '0 17 * * 3'   # Wed 12PM CT
+    - cron: '0 20 * * 3'   # Wed 3PM CT
+
+    # Thursday
+    - cron: '0 14 * * 4'   # Thu 9AM CT
+    - cron: '0 17 * * 4'   # Thu 12PM CT
+    - cron: '0 20 * * 4'   # Thu 3PM CT
+
+    # Friday
+    - cron: '0 14 * * 5'   # Fri 9AM CT
+    - cron: '0 17 * * 5'   # Fri 12PM CT
+    - cron: '0 20 * * 5'   # Fri 3PM CT
+
   workflow_dispatch:
     inputs:
       dry_run:
@@ -15,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     permissions:
-      contents: write  # needed to commit dedup log + pipeline_log back to repo
+      contents: write
 
     steps:
       - name: Checkout repo
@@ -39,15 +62,15 @@ jobs:
 
       - name: Run pipeline
         env:
-          ANTHROPIC_API_KEY:        ${{ secrets.ANTHROPIC_API_KEY }}
-          GMAIL_USER_MEMPHIS:       ${{ secrets.GMAIL_USER_MEMPHIS }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GMAIL_USER_MEMPHIS: ${{ secrets.GMAIL_USER_MEMPHIS }}
           GMAIL_APP_PASSWORD_MEMPHIS: ${{ secrets.GMAIL_APP_PASSWORD_MEMPHIS }}
-          GMAIL_USER_BIRMINGHAM:    ${{ secrets.GMAIL_USER_BIRMINGHAM }}
+          GMAIL_USER_BIRMINGHAM: ${{ secrets.GMAIL_USER_BIRMINGHAM }}
           GMAIL_APP_PASSWORD_BIRMINGHAM: ${{ secrets.GMAIL_APP_PASSWORD_BIRMINGHAM }}
-          GHL_API_KEY:              ${{ secrets.GHL_API_KEY }}
-          GHL_LOCATION_ID:          ${{ secrets.GHL_LOCATION_ID }}
-          GHL_PHONE_MEMPHIS:        ${{ secrets.GHL_PHONE_MEMPHIS }}
-          GHL_PHONE_BIRMINGHAM:     ${{ secrets.GHL_PHONE_BIRMINGHAM }}
+          GHL_API_KEY: ${{ secrets.GHL_API_KEY }}
+          GHL_LOCATION_ID: ${{ secrets.GHL_LOCATION_ID }}
+          GHL_PHONE_MEMPHIS: ${{ secrets.GHL_PHONE_MEMPHIS }}
+          GHL_PHONE_BIRMINGHAM: ${{ secrets.GHL_PHONE_BIRMINGHAM }}
         run: |
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             python main.py --dry-run
@@ -58,7 +81,7 @@ jobs:
       - name: Commit dedup log + dashboard data to repo
         if: always()
         run: |
-          git config user.name  "github-actions[bot]"
+          git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/sent_leads.json data/pipeline_log.json data/memphis_leads.json data/birmingham_leads.json || true
           git diff --staged --quiet || git commit -m "Pipeline run $(date +'%Y-%m-%d %H:%M') — auto update"
