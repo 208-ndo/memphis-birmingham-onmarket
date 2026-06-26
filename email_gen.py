@@ -6,11 +6,11 @@ Cash Lowball: 6% of offer + $1,000 flat fee
 
 import os
 import re
+import json
+import random
 import logging
-from anthropic import Anthropic
 
 log = logging.getLogger(__name__)
-client = Anthropic()
 
 SUBJECTS_OF = [
     "Offer on {address}",
@@ -36,14 +36,14 @@ def generate_emails(listing: dict, offer: dict) -> list[dict]:
 
 
 def _gen_of_emails(listing: dict, offer: dict) -> list[dict]:
-    address   = listing.get("address", "the property")
-    price     = offer.get("owner_finance_offer", 0)
-    dp        = offer.get("down_payment", 0)
-    dp_pct    = offer.get("down_pct", 5)
-    monthly   = offer.get("monthly_payment", 0)
-    payments  = offer.get("num_payments", 100)
-    agent_comm = offer.get("total_to_agent", 0)  # = 5% down
-    at_list   = offer.get("at_list_commission", 0)
+    address     = listing.get("address", "the property")
+    price       = offer.get("owner_finance_offer", 0)
+    dp          = offer.get("down_payment", 0)
+    dp_pct      = offer.get("down_pct", 5)
+    monthly     = offer.get("monthly_payment", 0)
+    payments    = offer.get("num_payments", 100)
+    agent_comm  = offer.get("total_to_agent", 0)
+    at_list     = offer.get("at_list_commission", 0)
 
     prompt = f"""You are a real estate wholesaler writing to a listing agent about their stale listing.
 
@@ -81,13 +81,13 @@ Return ONLY a JSON array with no markdown:
 
 
 def _gen_cl_emails(listing: dict, offer: dict) -> list[dict]:
-    address     = listing.get("address", "the property")
-    list_price  = listing.get("list_price", 0)
-    cash_offer  = offer.get("cash_offer", 0)
-    tier_pct    = offer.get("kiss_tier_pct", 40)
+    address      = listing.get("address", "the property")
+    list_price   = listing.get("list_price", 0) or listing.get("price", 0)
+    cash_offer   = offer.get("cash_offer", 0)
+    tier_pct     = offer.get("kiss_tier_pct", 40)
     assign_price = offer.get("assign_price", 0)
-    agent_total = offer.get("total_to_agent", 0)
-    at_list     = offer.get("at_list_commission", 0)
+    agent_total  = offer.get("total_to_agent", 0)
+    at_list      = offer.get("at_list_commission", 0)
 
     prompt = f"""You are a real estate wholesaler writing to a listing agent about their stale listing.
 
@@ -125,6 +125,8 @@ Return ONLY a JSON array with no markdown:
 
 def _call_claude(prompt: str) -> list[dict]:
     try:
+        from anthropic import Anthropic
+        client = Anthropic()
         response = client.messages.create(
             model="claude-sonnet-4-6",
             max_tokens=1000,
@@ -132,10 +134,10 @@ def _call_claude(prompt: str) -> list[dict]:
         )
         raw = response.content[0].text.strip()
         raw = re.sub(r"```json|```", "", raw).strip()
-        emails = __import__("json").loads(raw)
+        emails = json.loads(raw)
         # Strip em dashes just in case
         for e in emails:
-            e["body"] = e["body"].replace("\u2014", ",").replace("\u2013", ",")
+            e["body"]    = e["body"].replace("\u2014", ",").replace("\u2013", ",")
             e["subject"] = e["subject"].replace("\u2014", ",").replace("\u2013", ",")
         return emails
     except Exception as ex:
@@ -147,5 +149,4 @@ def pick_email(emails: list[dict]) -> dict:
     """Pick one email variation for sending."""
     if not emails:
         return {}
-    import random
     return random.choice(emails)
