@@ -2,28 +2,22 @@ name: Memphis Birmingham On-Market Pipeline
 
 on:
   schedule:
-    # 3 runs per day Tue-Fri — 5 emails per run per market = 15/day
-    # CDT (summer) = UTC-5
-
     # Tuesday
-    - cron: '0 14 * * 2'  # Tue 9AM CT
-    - cron: '0 17 * * 2'  # Tue 12PM CT
-    - cron: '0 20 * * 2'  # Tue 3PM CT
-
+    - cron: '0 14 * * 2'
+    - cron: '0 17 * * 2'
+    - cron: '0 20 * * 2'
     # Wednesday
-    - cron: '0 14 * * 3'  # Wed 9AM CT
-    - cron: '0 17 * * 3'  # Wed 12PM CT
-    - cron: '0 20 * * 3'  # Wed 3PM CT
-
+    - cron: '0 14 * * 3'
+    - cron: '0 17 * * 3'
+    - cron: '0 20 * * 3'
     # Thursday
-    - cron: '0 14 * * 4'  # Thu 9AM CT
-    - cron: '0 17 * * 4'  # Thu 12PM CT
-    - cron: '0 20 * * 4'  # Thu 3PM CT
-
+    - cron: '0 14 * * 4'
+    - cron: '0 17 * * 4'
+    - cron: '0 20 * * 4'
     # Friday
-    - cron: '0 14 * * 5'  # Fri 9AM CT
-    - cron: '0 17 * * 5'  # Fri 12PM CT
-    - cron: '0 20 * * 5'  # Fri 3PM CT
+    - cron: '0 14 * * 5'
+    - cron: '0 17 * * 5'
+    - cron: '0 20 * * 5'
 
   workflow_dispatch:
     inputs:
@@ -31,6 +25,10 @@ on:
         description: 'Dry run (no emails sent)'
         required: false
         default: 'false'
+      force_run:
+        description: 'Force run on any day (bypass day gate)'
+        required: false
+        default: 'true'
 
 jobs:
   run-pipeline:
@@ -51,8 +49,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Run pipeline
         env:
@@ -66,6 +63,7 @@ jobs:
           GHL_LOCATION_ID: ${{ secrets.GHL_LOCATION_ID }}
           GHL_PHONE_MEMPHIS: ${{ secrets.GHL_PHONE_MEMPHIS }}
           GHL_PHONE_BIRMINGHAM: ${{ secrets.GHL_PHONE_BIRMINGHAM }}
+          FORCE_RUN: ${{ github.event.inputs.force_run || 'false' }}
         run: |
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             python main.py --dry-run
