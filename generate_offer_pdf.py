@@ -70,8 +70,7 @@ def _header(styles, offer_type):
     label = "PURCHASE OFFER" if offer_type == "owner_finance" else "CASH PURCHASE OFFER"
     data = [[
         Paragraph(
-            '<font color="#6c63ff"><b>229 HOLDINGS LLC</b></font>'
-            '<br/><font size="8" color="#7a7a9a">229homebuyers.com</font>',
+            '<font color="#6c63ff"><b>229 HOLDINGS LLC</b></font>',
             styles["Normal"]
         ),
         Paragraph(
@@ -204,8 +203,7 @@ def _banner(title: str, body: str, styles) -> Table:
 def _signature() -> list:
     data = [[
         Paragraph(
-            '<b>Torian Wallace</b><br/>'
-            '<font size="9" color="#7a7a9a">229 Holdings LLC | 229homebuyers.com | 901-290-8408</font>',
+            '<b>229 Holdings LLC</b>',
             getSampleStyleSheet()["Normal"]
         ),
         Paragraph(
