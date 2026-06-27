@@ -1,6 +1,5 @@
 """
-scraper.py — Apify Zillow scraper
-Fixed: price parsing, distressed filter uses DOM + hdpData instead of keywords only
+scraper.py — Apify Zillow scraper with Zillow Detail lookup for agent emails
 """
 
 import os
@@ -15,10 +14,12 @@ from config import DISTRESSED_KEYWORDS, MAX_VIEWS_DAY
 
 logger = logging.getLogger(__name__)
 
-APIFY_TOKEN = os.environ.get("APIFY_API_TOKEN")
-ACTOR_ID    = "maxcopell/zillow-scraper"
+APIFY_TOKEN     = os.environ.get("APIFY_API_TOKEN")
+ACTOR_ID        = "maxcopell/zillow-scraper"
+DETAIL_ACTOR_ID = "maxcopell/zillow-detail-scraper"
 
-MAX_RESULTS_PER_BAND = 50  # Reduced to stay within free plan limits
+MAX_RESULTS_PER_BAND = 50
+MIN_DOM = 30
 
 PRICE_BANDS = [
     {"min": 30000,  "max": 55000},
@@ -28,15 +29,12 @@ PRICE_BANDS = [
 ]
 
 MARKET_BOUNDS = {
-    "Memphis": {"west": -90.3, "east": -89.7, "south": 35.0, "north": 35.3},
+    "Memphis":    {"west": -90.3, "east": -89.7, "south": 35.0, "north": 35.3},
     "Birmingham": {"west": -87.0, "east": -86.6, "south": 33.4, "north": 33.7},
 }
 
-MIN_DOM = 30  # Only want listings 30+ days on market
-
 
 def parse_price(val) -> int:
-    """Parse price whether it's int, float, or string like '$44,000'."""
     if not val:
         return 0
     if isinstance(val, (int, float)):
@@ -78,14 +76,14 @@ def build_zillow_url(city: str, price_min: int, price_max: int) -> str:
 
 
 def get_dom(listing: dict) -> int:
-    """Extract days on market from listing. Check multiple fields including hdpData."""
-    # Direct fields first
+    """Extract days on market — handle millisecond timestamps from flexFieldText."""
+    # Direct integer fields
     for key in ["daysOnZillow", "timeOnZillow", "days_on_zillow"]:
         val = listing.get(key)
-        if val:
-            return parse_int(val)
+        if val and isinstance(val, int) and val < 10000:
+            return val
 
-    # Try hdpData which is a nested dict serialized as string
+    # hdpData nested dict
     hdp_raw = listing.get("hdpData", "")
     if hdp_raw:
         try:
@@ -93,17 +91,20 @@ def get_dom(listing: dict) -> int:
             home_info = hdp.get("homeInfo", {})
             for key in ["daysOnZillow", "timeOnZillow"]:
                 val = home_info.get(key)
-                if val:
-                    return parse_int(val)
+                if val and isinstance(val, (int, float)) and val < 10000:
+                    return int(val)
         except Exception:
             pass
 
-    # Fall back to flexFieldText e.g. "22 hours ago", "3 days ago", "Listed 45 days ago"
-    flex = listing.get("flexFieldText", "")
-    if flex:
-        m = re.search(r"(\d+)\s*day", flex, re.IGNORECASE)
-        if m:
-            return int(m.group(1))
+    # flexFieldText: "22 hours ago", "3 days ago", "Listed 45 days ago"
+    # Also handles millisecond values stored as string like "65441000"
+    flex = str(listing.get("flexFieldText", ""))
+    day_match = re.search(r"(\d+)\s*day", flex, re.IGNORECASE)
+    if day_match:
+        return int(day_match.group(1))
+    hour_match = re.search(r"(\d+)\s*hour", flex, re.IGNORECASE)
+    if hour_match:
+        return 0  # Listed today — too fresh
 
     return 0
 
@@ -125,16 +126,9 @@ def get_all_text(listing: dict) -> str:
 
 
 def is_distressed(listing: dict) -> bool:
-    """
-    Primary filter: 30+ days on market (stale = motivated seller).
-    Secondary: keyword check across all fields.
-    Either condition passes the listing through.
-    """
     dom = get_dom(listing)
     if dom >= MIN_DOM:
         return True
-
-    # Also pass if distressed keyword found anywhere in the listing
     text = get_all_text(listing)
     return any(kw.lower() in text for kw in DISTRESSED_KEYWORDS)
 
@@ -146,6 +140,33 @@ def passes_views_gate(listing: dict) -> bool:
         return (views / days) <= MAX_VIEWS_DAY
     except Exception:
         return True
+
+
+def fetch_agent_email(zpid: str, client: ApifyClient) -> str:
+    """
+    Use maxcopell/zillow-detail-scraper to get agent email from listing detail page.
+    Returns email string or empty string.
+    """
+    if not zpid:
+        return ""
+    try:
+        url = f"https://www.zillow.com/homedetails/{zpid}_zpid/"
+        run = client.actor(DETAIL_ACTOR_ID).call(
+            run_input={"startUrls": [{"url": url}]},
+            timeout_secs=60
+        )
+        items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
+        if items:
+            detail = items[0]
+            email = (detail.get("agentEmail") or detail.get("listingAgent", {}).get("email", "")
+                     if isinstance(detail.get("listingAgent"), dict) else "")
+            phone = (detail.get("agentPhoneNumber") or
+                     detail.get("listingAgent", {}).get("phoneNumber", "")
+                     if isinstance(detail.get("listingAgent"), dict) else "")
+            return email or "", phone or ""
+    except Exception as e:
+        logger.debug(f"Detail scrape failed for zpid {zpid}: {e}")
+    return "", ""
 
 
 def extract_lead(listing: dict, market: dict) -> dict | None:
@@ -165,14 +186,12 @@ def extract_lead(listing: dict, market: dict) -> dict | None:
 
         agent_name  = listing.get("brokerName") or listing.get("agentName") or ""
         agent_email = listing.get("agentEmail") or listing.get("agent_email") or ""
-        agent_phone = (listing.get("agentPhoneNumber") or listing.get("brokerPhoneNumber") or
-                       listing.get("agentPhone") or "")
+        agent_phone = (listing.get("agentPhoneNumber") or listing.get("brokerPhoneNumber") or "")
 
         dom       = get_dom(listing)
         bedrooms  = parse_int(listing.get("beds") or listing.get("bedrooms"))
         bathrooms = float(parse_int(listing.get("baths") or listing.get("bathrooms")))
         sqft      = parse_int(listing.get("area") or listing.get("livingArea"))
-
         photo_url = listing.get("imgSrc") or ""
         if isinstance(photo_url, list):
             photo_url = photo_url[0] if photo_url else ""
@@ -224,11 +243,10 @@ def scrape_market(market: dict) -> list[dict]:
         logger.info(f"URL: {search_url[:150]}...")
 
         try:
-            run_input = {
-                "searchUrls": [{"url": search_url}],
-                "maxItems":   MAX_RESULTS_PER_BAND,
-            }
-            run   = client.actor(ACTOR_ID).call(run_input=run_input, timeout_secs=180)
+            run   = client.actor(ACTOR_ID).call(
+                run_input={"searchUrls": [{"url": search_url}], "maxItems": MAX_RESULTS_PER_BAND},
+                timeout_secs=180
+            )
             items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
             logger.info(f"Band {band_label}: {len(items)} raw results")
 
@@ -240,33 +258,42 @@ def scrape_market(market: dict) -> list[dict]:
 
             band_leads = []
             for item in real_items:
-                # Active only
                 status = (item.get("statusType") or item.get("rawHomeStatusCd") or "").upper()
                 if status and status not in ("FOR_SALE", "FORSALE", "ACTIVE", ""):
                     continue
 
-                # Dedup
                 zpid = str(item.get("zpid") or "")
                 if zpid and zpid in seen_zpids:
                     continue
                 if zpid:
                     seen_zpids.add(zpid)
 
-                # DOM or distressed keyword filter
                 if not is_distressed(item):
                     continue
 
-                # Views gate
                 if not passes_views_gate(item):
                     continue
 
                 lead = extract_lead(item, market)
                 if lead:
-                    dom = lead.get("days_on_market", 0)
-                    logger.info(f"LEAD: {lead['address']} | ${lead['price']:,} | DOM: {dom} | Agent: {lead['agent_name']} | Email: {lead['agent_email'] or 'NONE'}")
                     band_leads.append(lead)
 
+            # Fetch agent emails for leads that don't have one
+            logger.info(f"Band {band_label}: {len(band_leads)} candidates — fetching agent emails...")
+            for lead in band_leads:
+                if not lead.get("agent_email") and lead.get("zpid"):
+                    email, phone = fetch_agent_email(lead["zpid"], client)
+                    if email:
+                        lead["agent_email"] = email
+                        logger.info(f"Got email for {lead['address']}: {email}")
+                    if phone and not lead.get("agent_phone"):
+                        lead["agent_phone"] = phone
+                    time.sleep(2)  # Be gentle on API
+
             logger.info(f"Band {band_label}: {len(band_leads)} leads passed screening")
+            for lead in band_leads:
+                dom = lead.get("days_on_market", 0)
+                logger.info(f"LEAD: {lead['address']} | ${lead['price']:,} | DOM: {dom} | Agent: {lead['agent_name']} | Email: {lead['agent_email'] or 'NONE'}")
             leads.extend(band_leads)
             time.sleep(5)
 
