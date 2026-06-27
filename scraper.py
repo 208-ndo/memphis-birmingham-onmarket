@@ -1,6 +1,6 @@
 """
-scraper.py — Apify-powered Zillow scraper
-Uses simple Zillow search URLs that actually work with maxcopell/zillow-scraper
+scraper.py — Apify Zillow scraper using map bounds + searchQueryState
+Correct URL format per maxcopell/zillow-scraper official docs.
 """
 
 import os
@@ -8,6 +8,7 @@ import time
 import logging
 import re
 import json
+from urllib.parse import quote
 from apify_client import ApifyClient
 from config import DISTRESSED_KEYWORDS, MAX_VIEWS_DAY
 
@@ -25,24 +26,57 @@ PRICE_BANDS = [
     {"min": 150001, "max": 300000},
 ]
 
+# Map bounding boxes for each market
+MARKET_BOUNDS = {
+    "Memphis": {
+        "west":  -90.3,
+        "east":  -89.7,
+        "south":  35.0,
+        "north":  35.3,
+    },
+    "Birmingham": {
+        "west":  -87.0,
+        "east":  -86.6,
+        "south":  33.4,
+        "north":  33.7,
+    },
+}
 
-def build_zillow_url(city: str, state: str, price_min: int, price_max: int) -> str:
+
+def build_zillow_url(city: str, price_min: int, price_max: int) -> str:
     """
-    Build a simple Zillow search URL.
-    Format: zillow.com/{city}-{state}/houses/?price_min=X&price_max=Y
-    This is the format maxcopell/zillow-scraper expects.
+    Build Zillow searchQueryState URL with map bounds + price filter.
+    This is the format maxcopell/zillow-scraper actually works with.
     """
-    city_slug  = city.lower().replace(" ", "-")
-    state_abbr = state.lower()
-    return (
-        f"https://www.zillow.com/{city_slug}-{state_abbr}/houses/"
-        f"?price_min={price_min}&price_max={price_max}"
-        f"&days_on_zillow=30"
-    )
+    bounds = MARKET_BOUNDS.get(city, MARKET_BOUNDS["Memphis"])
+
+    state_obj = {
+        "isMapVisible": True,
+        "mapBounds": {
+            "west":  bounds["west"],
+            "east":  bounds["east"],
+            "south": bounds["south"],
+            "north": bounds["north"],
+        },
+        "filterState": {
+            "price": {"min": price_min, "max": price_max},
+            "beds":  {"min": 1},
+            "sqft":  {"min": 750},
+            "isForSaleByAgent":  {"value": True},
+            "isForSaleByOwner":  {"value": False},
+            "isNewConstruction": {"value": False},
+            "isAuction":         {"value": False},
+            "isMakeMeMove":      {"value": False},
+            "sort":              {"value": "days"},
+        },
+        "isListVisible": True,
+    }
+
+    encoded = quote(json.dumps(state_obj, separators=(",", ":")))
+    return f"https://www.zillow.com/homes/for_sale/?searchQueryState={encoded}"
 
 
 def get_all_text(listing: dict) -> str:
-    """Grab every string value from listing dict for keyword searching."""
     parts = []
     for v in listing.values():
         if isinstance(v, str):
@@ -59,9 +93,8 @@ def get_all_text(listing: dict) -> str:
 
 
 def is_distressed(listing: dict) -> bool:
-    text    = get_all_text(listing)
-    matched = [kw for kw in DISTRESSED_KEYWORDS if kw.lower() in text]
-    return len(matched) > 0
+    text = get_all_text(listing)
+    return any(kw.lower() in text for kw in DISTRESSED_KEYWORDS)
 
 
 def passes_views_gate(listing: dict) -> bool:
@@ -146,7 +179,6 @@ def scrape_market(market: dict) -> list[dict]:
 
     client     = ApifyClient(APIFY_TOKEN)
     city       = market["city"]
-    state      = market["state"]
     leads      = []
     seen_zpids = set()
 
@@ -156,8 +188,8 @@ def scrape_market(market: dict) -> list[dict]:
         band_label = f"${price_min:,}-${price_max:,}"
         logger.info(f"Scraping band: {band_label}")
 
-        search_url = build_zillow_url(city, state, price_min, price_max)
-        logger.info(f"URL: {search_url}")
+        search_url = build_zillow_url(city, price_min, price_max)
+        logger.info(f"URL: {search_url[:150]}...")
 
         try:
             run_input = {
@@ -168,37 +200,32 @@ def scrape_market(market: dict) -> list[dict]:
             items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
             logger.info(f"Band {band_label}: {len(items)} raw results")
 
-            # Log first real result so we can see field names
+            # Log first real result fields
             real_items = [i for i in items if "error" not in i]
             if real_items:
                 first = real_items[0]
-                logger.info(f"FIELD SAMPLE: {json.dumps({k: str(v)[:60] for k, v in first.items() if v}, indent=2)[:1500]}")
+                logger.info(f"FIELD SAMPLE: {json.dumps({k: str(v)[:60] for k, v in first.items() if v}, indent=2)[:2000]}")
             elif items:
-                logger.warning(f"All results are errors: {items[0]}")
+                logger.warning(f"Result: {items[0]}")
 
             band_leads = []
             for item in items:
-                # Skip error objects
                 if "error" in item:
                     continue
 
-                # Active only
                 status = (item.get("homeStatus") or item.get("statusType") or "").upper()
                 if status and status not in ("FOR_SALE", "ACTIVE", ""):
                     continue
 
-                # Dedup within run
                 zpid = str(item.get("zpid") or "")
                 if zpid and zpid in seen_zpids:
                     continue
                 if zpid:
                     seen_zpids.add(zpid)
 
-                # Distressed filter
                 if not is_distressed(item):
                     continue
 
-                # Views gate
                 if not passes_views_gate(item):
                     continue
 
