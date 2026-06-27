@@ -1,0 +1,376 @@
+2026-06-27 21:42:25,036 INFO Pipeline starting | Markets: Memphis + Birmingham | Dry run: True | Force: True | Limit: 5/run | Time: 21:42 UTC
+2026-06-27 21:42:25,036 INFO ============================================================
+2026-06-27 21:42:25,036 INFO PIPELINE: MEMPHIS | 2026-06-27 21:42
+2026-06-27 21:42:25,036 INFO DRY RUN: True | LIMIT: 5 emails this run
+2026-06-27 21:42:25,036 INFO ============================================================
+2026-06-27 21:42:25,036 INFO [1/5] Scraping Zillow for memphis...
+2026-06-27 21:42:25,081 INFO Scraping band: $30,000-$55,000
+2026-06-27 21:42:25,082 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-06-27 21:42:25,529 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-06-27 21:42:26,618 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/XudgNwk47SsaLKq0p?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:42:33,443 INFO HTTP Request: GET https://api.apify.com/v2/datasets/hfPhifUTx6b7weRU1/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:42:33,449 INFO Band $30,000-$55,000: 27 raw results
+2026-06-27 21:42:33,450 INFO Band $30,000-$55,000: 0 candidates before email enrichment
+2026-06-27 21:42:38,450 INFO Scraping band: $55,001-$80,000
+2026-06-27 21:42:38,450 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-06-27 21:42:38,948 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-06-27 21:42:40,020 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/QK1bXaE9CaheFTNhv?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:42:48,141 INFO HTTP Request: GET https://api.apify.com/v2/datasets/nphVzgREsCdPLC1Cv/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:42:48,220 INFO Band $55,001-$80,000: 37 raw results
+2026-06-27 21:42:48,220 INFO Band $55,001-$80,000: 1 candidates before email enrichment
+2026-06-27 21:42:53,221 INFO Scraping band: $80,001-$150,000
+2026-06-27 21:42:53,221 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-06-27 21:42:53,682 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-06-27 21:42:54,749 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/eoyIS7mMrNyagtoYb?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:43:07,882 INFO HTTP Request: GET https://api.apify.com/v2/datasets/VEVxI0eRm6AhOTnjl/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:43:08,059 INFO Band $80,001-$150,000: 215 raw results
+2026-06-27 21:43:08,061 INFO Band $80,001-$150,000: 4 candidates before email enrichment
+2026-06-27 21:43:13,061 INFO Scraping band: $150,001-$300,000
+2026-06-27 21:43:13,061 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-06-27 21:43:13,496 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-06-27 21:43:14,561 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/sus2kUt6kh6CMqCi9?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:43:22,835 INFO HTTP Request: GET https://api.apify.com/v2/datasets/pJ9Pb3PSeSe6rgjnn/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:43:23,104 INFO Band $150,001-$300,000: 339 raw results
+2026-06-27 21:43:23,108 INFO Band $150,001-$300,000: 14 candidates before email enrichment
+2026-06-27 21:43:28,108 INFO Starting email enrichment for 19 leads...
+2026-06-27 21:43:28,108 INFO Email lookup: 19 leads need emails, 0 already have one
+2026-06-27 21:43:28,571 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:43:29,638 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/ODo8KkVu4oIR0m6dS?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:43:34,388 INFO HTTP Request: GET https://api.apify.com/v2/datasets/06cM2PP5NWLQAZzDs/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:43:34,391 INFO Found email via Google: contact@thehomepartnersrealty.com for The Home Partners Realty / The Home Partners Realty
+2026-06-27 21:43:35,664 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:43:36,733 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/9Qdbb5YZySUwnN665?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:43:41,373 INFO HTTP Request: GET https://api.apify.com/v2/datasets/48D2kaA8QDxaTscdk/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:43:43,690 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:43:44,770 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/dHzkKQkFSSqhuUfje?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:43:49,910 INFO HTTP Request: GET https://api.apify.com/v2/datasets/5NIpbb9iSbydqJdQR/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:43:49,914 INFO Found email via Google: info@renshawcompany.com for Renshaw Company, REALTORS / Renshaw Company, REALTORS
+2026-06-27 21:43:51,151 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:43:52,220 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/An51biQ0n2VyWh8pg?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:43:55,648 INFO HTTP Request: GET https://api.apify.com/v2/datasets/9HXeDD1gLN5C8AeWK/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:43:55,650 INFO Found email via Google: Juan@torres-realestate.com for Fast Track Realty, LLC / Fast Track Realty, LLC
+2026-06-27 21:43:56,895 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:43:57,967 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/LosDQ3nkcVroBWRvr?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:44:07,790 INFO HTTP Request: GET https://api.apify.com/v2/datasets/tZYgh7dQ0yNDyCyFR/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:44:07,793 INFO Found email via Google: info@reindiana.com for Trelora Realty / Trelora Realty
+2026-06-27 21:44:09,050 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:44:10,118 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/NTWsTiNDWuvWGK22I?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:44:16,973 INFO HTTP Request: GET https://api.apify.com/v2/datasets/ktN4xeLPLp3MRxq1G/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:44:16,975 INFO Found email via Google: ZachC@ChurcheyGroup.com for Churchey Realty / Churchey Realty
+2026-06-27 21:44:18,267 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:44:19,336 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/s1qMNsjzc5WSAYOpv?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:44:25,479 INFO HTTP Request: GET https://api.apify.com/v2/datasets/EOrCWpYgPmlOreK7Z/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:44:25,482 INFO Found email via Google: Paige@PaigeArnold.com for Crye-Leike, Inc., REALTORS / Crye-Leike, Inc., REALTORS
+2026-06-27 21:44:26,482 INFO Reused cached email for Crye-Leike, Inc., REALTORS: paige@paigearnold.com
+2026-06-27 21:44:26,482 INFO No email found for  / 
+2026-06-27 21:44:27,482 INFO Reused cached email for Trelora Realty: info@reindiana.com
+2026-06-27 21:44:27,768 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:44:28,838 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/BHC1bcqUnJbPbxhi8?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:44:36,278 INFO HTTP Request: GET https://api.apify.com/v2/datasets/MR3X4r8ZfkAmAZJIA/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:44:38,525 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:44:39,602 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/JKZo9VVzIWSfA7qnT?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:44:44,221 INFO HTTP Request: GET https://api.apify.com/v2/datasets/Ozoyvsx6cvzub0sac/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:44:46,511 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:44:47,581 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/U6mquLOG92h3gxTHW?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:44:52,995 INFO HTTP Request: GET https://api.apify.com/v2/datasets/cRNjUuzde6qoieQYm/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:44:52,997 INFO No email found for CB Properties of Memphis, LLC / CB Properties of Memphis, LLC
+2026-06-27 21:44:54,264 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:44:55,340 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/FWVbmAPVZ3GUwlf7q?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:45:08,820 INFO HTTP Request: GET https://api.apify.com/v2/datasets/hHzOvVaFKYMRzqMMT/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:45:08,823 INFO Found email via Google: lindacrawford@kw.com for Keller Williams / Keller Williams
+2026-06-27 21:45:09,823 INFO Reused cached email for Fast Track Realty, LLC: juan@torres-realestate.com
+2026-06-27 21:45:10,113 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:45:11,185 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/OIhoV2pDjM3ZOB2DW?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:45:17,315 INFO HTTP Request: GET https://api.apify.com/v2/datasets/sxVvxD0nzQLCBhu4I/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:45:19,642 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:45:20,712 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/vgJk0BbIWuZwP6hRe?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:45:27,426 INFO HTTP Request: GET https://api.apify.com/v2/datasets/IAScSvIru7Po4vMD4/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:45:27,430 INFO Found email via Google: athena.barnhart@exprealty.net for eXp Realty, LLC / eXp Realty, LLC
+2026-06-27 21:45:28,733 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:45:29,799 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/ExK0xLDfeMLhXddOd?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:45:34,169 INFO HTTP Request: GET https://api.apify.com/v2/datasets/yiy6cvOMBwi9e3e7N/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:45:36,408 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:45:37,490 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/od523jISXbNjopDxT?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:45:43,398 INFO HTTP Request: GET https://api.apify.com/v2/datasets/S5jAc9N4539v41Ljz/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:45:45,857 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:45:46,930 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/RdEwG5nl2bV1L6E1R?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:45:49,282 INFO HTTP Request: GET https://api.apify.com/v2/datasets/wmI7bYyHTHh7X8rEd/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:45:49,286 INFO No email found for John Green & Co., REALTORS / John Green & Co., REALTORS
+2026-06-27 21:45:50,536 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:45:51,606 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/2f2ijeYU4nYylIUTX?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:45:56,918 INFO HTTP Request: GET https://api.apify.com/v2/datasets/caO77fqUbxx05qiii/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:45:59,196 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:46:00,267 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/5GM0Xh5TWCqbhjaQ0?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:46:07,192 INFO HTTP Request: GET https://api.apify.com/v2/datasets/i6j6Jl5KffDMYtbNT/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:46:09,464 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:46:10,541 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/4EWmFdvHBMfG3EFkh?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:46:13,694 INFO HTTP Request: GET https://api.apify.com/v2/datasets/VBgyzOCHa2orUX1K2/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:46:13,696 INFO No email found for C21 Patterson & Assoc. Real Es / C21 Patterson & Assoc. Real Es
+2026-06-27 21:46:14,697 INFO Reused cached email for eXp Realty, LLC: athena.barnhart@exprealty.net
+2026-06-27 21:46:15,012 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:46:16,079 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/Bgt69E0Qjg466YIQ8?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:46:22,555 INFO HTTP Request: GET https://api.apify.com/v2/datasets/JQ8R0Os9jXKPrnAmT/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:46:22,557 INFO Found email via Google: ginny@johngreen.com for Marathon REALTORS, LLC / Marathon REALTORS, LLC
+2026-06-27 21:46:23,803 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:46:24,872 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/peb5aVaZhUpyhdBnT?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:46:30,040 INFO HTTP Request: GET https://api.apify.com/v2/datasets/DFrJuevZWbqjUnKu5/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:46:32,323 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:46:33,393 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/fPthXLDeX8PIjUQFN?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:46:38,785 INFO HTTP Request: GET https://api.apify.com/v2/datasets/KNBaofLzseYKKe3Gf/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:46:38,787 INFO Found email via Google: help@renowned.com for Southeast Investors, LLC / Southeast Investors, LLC
+2026-06-27 21:46:40,024 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 21:46:41,091 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/2gkBcWgTeKCpec439?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 21:46:44,493 INFO HTTP Request: GET https://api.apify.com/v2/datasets/E0NtqLIJEvoNbpFfx/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 21:46:44,497 INFO Found email via Google: gabrielle@hhrgteam.Read for Harris & Harris Realty Group, / Harris & Harris Realty Group,
+2026-06-27 21:46:45,498 INFO Email enrichment complete: found 15/19 emails
+2026-06-27 21:46:45,498 INFO LEAD: 2276 Redwood Ave, Memphis, TN 38108 | $72,000 | DOM: 30 | Agent: The Home Partners Realty | Email: contact@thehomepartnersrealty.com
+2026-06-27 21:46:45,498 INFO LEAD: 4400 Poplar Ave APT 21, Memphis, TN 38117 | $129,900 | DOM: 30 | Agent: Renshaw Company, REALTORS | Email: info@renshawcompany.com
+2026-06-27 21:46:45,498 INFO LEAD: 1672 Clancy St, Memphis, TN 38106 | $90,000 | DOM: 30 | Agent: Fast Track Realty, LLC | Email: juan@torres-realestate.com
+2026-06-27 21:46:45,498 INFO LEAD: 3194 Aden St, Memphis, TN 38127 | $89,900 | DOM: 30 | Agent: Trelora Realty | Email: info@reindiana.com
+2026-06-27 21:46:45,498 INFO LEAD: 2939 Mountain Terrace St, Memphis, TN 38127 | $135,000 | DOM: 30 | Agent: Churchey Realty | Email: zachc@churcheygroup.com
+2026-06-27 21:46:45,498 INFO LEAD: 826 N Watkins St, Memphis, TN 38107 | $243,000 | DOM: 30 | Agent: Crye-Leike, Inc., REALTORS | Email: paige@paigearnold.com
+2026-06-27 21:46:45,498 INFO LEAD: 9768 Riggin Dr, Cordova, TN 38016 | $285,000 | DOM: 30 | Agent: Crye-Leike, Inc., REALTORS | Email: paige@paigearnold.com
+2026-06-27 21:46:45,498 INFO LEAD: 105 Shiloh Dr, Marion, AR 72364 | $295,000 | DOM: 30 | Agent:  | Email: NONE
+2026-06-27 21:46:45,498 INFO LEAD: 4709 Raleigh Lagrange Rd, Memphis, TN 38128 | $189,900 | DOM: 30 | Agent: Trelora Realty | Email: info@reindiana.com
+2026-06-27 21:46:45,498 INFO LEAD: 1703 Dorset Dr, Memphis, TN 38119 | $208,000 | DOM: 30 | Agent: CB Properties of Memphis, LLC | Email: NONE
+2026-06-27 21:46:45,498 INFO LEAD: 4596 Crossover Ln, Memphis, TN 38117 | $235,000 | DOM: 30 | Agent: Keller Williams | Email: lindacrawford@kw.com
+2026-06-27 21:46:45,498 INFO LEAD: 3280 Carnes Ave, Memphis, TN 38111 | $265,000 | DOM: 30 | Agent: Fast Track Realty, LLC | Email: juan@torres-realestate.com
+2026-06-27 21:46:45,498 INFO LEAD: 4532 Janice Ave, Memphis, TN 38122 | $199,900 | DOM: 30 | Agent: eXp Realty, LLC | Email: athena.barnhart@exprealty.net
+2026-06-27 21:46:45,498 INFO LEAD: 4264 Eastern Cv, Memphis, TN 38122 | $210,000 | DOM: 30 | Agent: John Green & Co., REALTORS | Email: NONE
+2026-06-27 21:46:45,498 INFO LEAD: 7118 Reese Rd, Bartlett, TN 38133 | $215,000 | DOM: 30 | Agent: C21 Patterson & Assoc. Real Es | Email: NONE
+2026-06-27 21:46:45,498 INFO LEAD: 810 N Walnut Bend Rd, Cordova, TN 38018 | $285,000 | DOM: 30 | Agent: eXp Realty, LLC | Email: athena.barnhart@exprealty.net
+2026-06-27 21:46:45,498 INFO LEAD: 2331 Eastover Dr, Memphis, TN 38119 | $259,900 | DOM: 10 | Agent: Marathon REALTORS, LLC | Email: ginny@johngreen.com
+2026-06-27 21:46:45,498 INFO LEAD: 4278 Auburn Rd, Memphis, TN 38116 | $169,000 | DOM: 9 | Agent: Southeast Investors, LLC | Email: help@renowned.com
+2026-06-27 21:46:45,498 INFO LEAD: 4546 Hughes Meadow Dr, Memphis, TN 38125 | $265,000 | DOM: 30 | Agent: Harris & Harris Realty Group, | Email: gabrielle@hhrgteam.read
+2026-06-27 21:46:45,498 INFO Scrape complete: Memphis | 19 leads passed all screening gates
+2026-06-27 21:46:45,500 INFO [1/5] 19 fresh leads from Zillow
+2026-06-27 21:46:45,500 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,500 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,500 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,500 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,500 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,500 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,501 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,501 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,501 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,501 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,501 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,501 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,501 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,501 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,501 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,501 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,501 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,501 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,501 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 21:46:45,501 INFO [2/5] 19 after dedup
+2026-06-27 21:46:45,501 INFO Saved 14 leads to overflow for next run
+2026-06-27 21:46:45,501 INFO Saved 14 leads to overflow for next run
+2026-06-27 21:46:45,501 INFO [3/5] Calculating offers and generating emails...
+2026-06-27 21:46:55,373 INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-06-27 21:47:05,424 INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-06-27 21:47:13,887 INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-06-27 21:47:23,858 INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-06-27 21:47:33,810 INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-06-27 21:47:33,811 INFO [3/5] 5 ready | Skipped: 0 pitch + 0 no email
+2026-06-27 21:47:33,811 INFO [4/5] Sending emails...
+2026-06-27 21:47:33,811 INFO Starting batch | Market: memphis | Leads: 5 | Limit: 15/day
+2026-06-27 21:47:33,824 INFO PDF ready for 2276 Redwood Ave, Memphis, TN 38108
+2026-06-27 21:47:33,824 INFO [DRY RUN] Would send to contact@thehomepartnersrealty.com | Subject: Buyer ready for 2276 Redwood Ave, Memphis, TN 38108 | PDF: True
+2026-06-27 21:47:33,824 INFO Waiting 194s before next send (1/15 sent)...
+2026-06-27 21:50:47,730 INFO PDF ready for 4400 Poplar Ave APT 21, Memphis, TN 38117
+2026-06-27 21:50:47,730 INFO [DRY RUN] Would send to info@renshawcompany.com | Subject: APT 21 , Cash, As-Is, 14 Days | PDF: True
+2026-06-27 21:50:47,730 INFO Waiting 172s before next send (2/15 sent)...
+2026-06-27 21:53:39,972 INFO PDF ready for 1672 Clancy St, Memphis, TN 38106
+2026-06-27 21:53:39,972 INFO [DRY RUN] Would send to juan@torres-realestate.com | Subject: Cash Offer, 1672 Clancy St, Close in 14 Days | PDF: True
+2026-06-27 21:53:39,972 INFO Waiting 201s before next send (3/15 sent)...
+2026-06-27 21:57:00,716 INFO PDF ready for 3194 Aden St, Memphis, TN 38127
+2026-06-27 21:57:00,716 INFO [DRY RUN] Would send to info@reindiana.com | Subject: I Know This Listing Needs the Right Buyer | PDF: True
+2026-06-27 21:57:00,716 INFO Waiting 200s before next send (4/15 sent)...
+2026-06-27 22:00:20,742 INFO PDF ready for 2939 Mountain Terrace St, Memphis, TN 38127
+2026-06-27 22:00:20,742 INFO [DRY RUN] Would send to zachc@churcheygroup.com | Subject: Something Worth a Look on 2939 Mountain Terrace St | PDF: True
+2026-06-27 22:00:20,742 INFO Waiting 189s before next send (5/15 sent)...
+2026-06-27 22:03:29,811 INFO Batch complete | Sent: 5 | Failed: 0 | Market: memphis
+2026-06-27 22:03:29,811 INFO [4/5] 5 emails sent
+2026-06-27 22:03:29,811 INFO [5/5] Pushing to GHL...
+2026-06-27 22:03:29,811 INFO Logged: 2276 Redwood Ave, Memphis, TN 38108 | Agent: contact@thehomepartnersrealty.com | Total: 1/3
+2026-06-27 22:03:29,811 INFO [DRY RUN] GHL skipped: 2276 Redwood Ave, Memphis, TN 38108
+2026-06-27 22:03:29,812 INFO Logged: 4400 Poplar Ave APT 21, Memphis, TN 38117 | Agent: info@renshawcompany.com | Total: 1/3
+2026-06-27 22:03:29,812 INFO [DRY RUN] GHL skipped: 4400 Poplar Ave APT 21, Memphis, TN 38117
+2026-06-27 22:03:29,812 INFO Logged: 1672 Clancy St, Memphis, TN 38106 | Agent: juan@torres-realestate.com | Total: 1/3
+2026-06-27 22:03:29,812 INFO [DRY RUN] GHL skipped: 1672 Clancy St, Memphis, TN 38106
+2026-06-27 22:03:29,812 INFO Logged: 3194 Aden St, Memphis, TN 38127 | Agent: info@reindiana.com | Total: 1/3
+2026-06-27 22:03:29,812 INFO [DRY RUN] GHL skipped: 3194 Aden St, Memphis, TN 38127
+2026-06-27 22:03:29,812 INFO Logged: 2939 Mountain Terrace St, Memphis, TN 38127 | Agent: zachc@churcheygroup.com | Total: 1/3
+2026-06-27 22:03:29,812 INFO [DRY RUN] GHL skipped: 2939 Mountain Terrace St, Memphis, TN 38127
+2026-06-27 22:03:29,813 INFO Dashboard data saved: data/memphis_leads.json
+2026-06-27 22:03:29,813 INFO ============================================================
+2026-06-27 22:03:29,813 INFO COMPLETE: MEMPHIS | Scraped: 19 | Sent: 5 | Pitch skipped: 0 | No email: 0
+2026-06-27 22:03:29,813 INFO All-time: 5 properties | 5 agents
+2026-06-27 22:03:29,813 INFO ============================================================
+2026-06-27 22:03:29,813 INFO Waiting 3 minutes between markets...
+2026-06-27 22:06:29,813 INFO ============================================================
+2026-06-27 22:06:29,813 INFO PIPELINE: BIRMINGHAM | 2026-06-27 22:06
+2026-06-27 22:06:29,813 INFO DRY RUN: True | LIMIT: 5 emails this run
+2026-06-27 22:06:29,813 INFO ============================================================
+2026-06-27 22:06:29,814 INFO Loaded 14 overflow leads from previous run
+2026-06-27 22:06:29,814 INFO [1/5] Scraping Zillow for birmingham...
+2026-06-27 22:06:29,835 INFO Scraping band: $30,000-$55,000
+2026-06-27 22:06:29,835 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-06-27 22:06:30,325 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-06-27 22:06:31,400 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/PoyQsD0bxogx2I1Gn?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 22:06:37,234 INFO HTTP Request: GET https://api.apify.com/v2/datasets/yiPs3JUA1Lj6Hxnqf/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 22:06:37,238 INFO Band $30,000-$55,000: 18 raw results
+2026-06-27 22:06:37,238 INFO Band $30,000-$55,000: 2 candidates before email enrichment
+2026-06-27 22:06:42,238 INFO Scraping band: $55,001-$80,000
+2026-06-27 22:06:42,238 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-06-27 22:06:42,707 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-06-27 22:06:43,772 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/6dJoZAcJ1gguHwpkh?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 22:06:48,584 INFO HTTP Request: GET https://api.apify.com/v2/datasets/Snyb1ECVxugIjmA59/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 22:06:48,640 INFO Band $55,001-$80,000: 28 raw results
+2026-06-27 22:06:48,640 INFO Band $55,001-$80,000: 1 candidates before email enrichment
+2026-06-27 22:06:53,641 INFO Scraping band: $80,001-$150,000
+2026-06-27 22:06:53,641 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-06-27 22:06:54,069 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-06-27 22:06:55,134 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/XRVB2ZF40QPZe6O65?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 22:07:06,101 INFO HTTP Request: GET https://api.apify.com/v2/datasets/1qltDURrgMZbjHRPo/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 22:07:06,213 INFO Band $80,001-$150,000: 152 raw results
+2026-06-27 22:07:06,215 INFO Band $80,001-$150,000: 6 candidates before email enrichment
+2026-06-27 22:07:11,215 INFO Scraping band: $150,001-$300,000
+2026-06-27 22:07:11,215 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-06-27 22:07:11,727 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-06-27 22:07:12,801 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/40MOjgHxJVdl71EWg?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 22:08:13,130 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/40MOjgHxJVdl71EWg?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 22:08:13,967 INFO HTTP Request: GET https://api.apify.com/v2/datasets/62X2wEbB6hVyqQmj2/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 22:08:14,157 INFO Band $150,001-$300,000: 185 raw results
+2026-06-27 22:08:14,159 INFO Band $150,001-$300,000: 7 candidates before email enrichment
+2026-06-27 22:08:19,159 INFO Starting email enrichment for 16 leads...
+2026-06-27 22:08:19,159 INFO Email lookup: 16 leads need emails, 0 already have one
+2026-06-27 22:08:19,737 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 22:08:20,800 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/GUeQK13DWS4Gbe0hm?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 22:08:28,591 INFO HTTP Request: GET https://api.apify.com/v2/datasets/Bar0gWjrHxb1AZazt/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 22:08:28,594 INFO Found email via Google: dnolen@arcrealtyco.com for Sell Your Home Services / Sell Your Home Services
+2026-06-27 22:08:29,870 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 22:08:30,936 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/Qhezos4EUCKmj37rD?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 22:08:44,413 INFO HTTP Request: GET https://api.apify.com/v2/datasets/5EUlrNsic6OoIkANH/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 22:08:44,416 INFO Found email via Google: help@renowned.com for LPT Realty LLC / LPT Realty LLC
+2026-06-27 22:08:45,658 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 22:08:46,721 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/itDJPYDmZZTxyy08u?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 22:09:01,579 INFO HTTP Request: GET https://api.apify.com/v2/datasets/jx3KpFJl77pOBYsOn/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 22:09:03,873 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 22:09:04,943 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/hOdkGGIqjF9VsVOAT?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 22:09:10,478 INFO HTTP Request: GET https://api.apify.com/v2/datasets/PK85xOVQNYVVht1YT/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 22:09:10,481 INFO Found email via Google: oakgroup@trelora.com for Trelora Realty, INC / Trelora Realty, INC
+2026-06-27 22:09:11,481 INFO Reused cached email for Trelora Realty, INC: oakgroup@trelora.com
+2026-06-27 22:09:11,481 INFO Reused cached email for Trelora Realty, INC: oakgroup@trelora.com
+2026-06-27 22:09:11,481 INFO Reused cached email for Trelora Realty, INC: oakgroup@trelora.com
+2026-06-27 22:09:11,769 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 22:09:12,851 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/gLy7QujLTKtoA6ykB?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 22:09:38,108 INFO HTTP Request: GET https://api.apify.com/v2/datasets/DnghP0T82behlhnG1/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 22:09:38,110 INFO Found email via Google: frontdesk494@kw.com for Keller Williams Realty Vestavia / Keller Williams Realty Vestavia
+2026-06-27 22:09:39,363 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 22:09:40,430 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/R44p6ED66SJRVQTii?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 22:09:45,339 INFO HTTP Request: GET https://api.apify.com/v2/datasets/EnewiVKFGnkIeu6Tu/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 22:09:45,342 INFO Found email via Google: info@exitrealtybham.com for EXIT Realty Birmingham / EXIT Realty Birmingham
+2026-06-27 22:09:46,593 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 22:09:47,659 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/eR3NL5kpOnEiXaTBf?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 22:09:53,529 INFO HTTP Request: GET https://api.apify.com/v2/datasets/7aGG5JEkqPLGBLH3c/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 22:09:53,531 INFO Found email via Google: klrw494@kw.com for Keller Williams / Keller Williams
+2026-06-27 22:09:54,532 INFO Reused cached email for Trelora Realty, INC: oakgroup@trelora.com
+2026-06-27 22:09:54,532 INFO Reused cached email for Trelora Realty, INC: oakgroup@trelora.com
+2026-06-27 22:09:54,532 INFO Reused cached email for Trelora Realty, INC: oakgroup@trelora.com
+2026-06-27 22:09:54,837 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 22:09:55,907 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/mbjifb8gqjGE95Of0?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 22:10:06,062 INFO HTTP Request: GET https://api.apify.com/v2/datasets/HTjIkm0vwNDNo6C8v/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 22:10:06,066 INFO Found email via Google: tammy@valleymls.com for eXp Realty, LLC Central / eXp Realty, LLC Central
+2026-06-27 22:10:07,350 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 22:10:08,411 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/BpcpXHAHvgoyeybH6?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 22:10:15,152 INFO HTTP Request: GET https://api.apify.com/v2/datasets/ItI5f3rwzoBatZtrC/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 22:10:15,157 INFO Found email via Google: Ejemison@norhuxercalty.com for Norluxe Realty Birmingham LLC / Norluxe Realty Birmingham LLC
+2026-06-27 22:10:16,158 INFO Reused cached email for eXp Realty, LLC Central: tammy@valleymls.com
+2026-06-27 22:10:16,422 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-27 22:10:17,517 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/UZdyfj3AQOceSui0B?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-27 22:10:22,528 INFO HTTP Request: GET https://api.apify.com/v2/datasets/jna3fxdxkavmvqwaX/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-27 22:10:22,531 INFO Found email via Google: Doris@LoKationRE.com for Lokation Real Estate LLC / Lokation Real Estate LLC
+2026-06-27 22:10:23,531 INFO Email enrichment complete: found 16/16 emails
+2026-06-27 22:10:23,531 INFO LEAD: 3633 Oak Ave SW, Birmingham, AL 35221 | $38,500 | DOM: 30 | Agent: Sell Your Home Services | Email: dnolen@arcrealtyco.com
+2026-06-27 22:10:23,531 INFO LEAD: 4306 8th Ave, Birmingham, AL 35224 | $55,000 | DOM: 30 | Agent: LPT Realty LLC | Email: help@renowned.com
+2026-06-27 22:10:23,531 INFO LEAD: 817 79th Pl S, Birmingham, AL 35206 | $79,900 | DOM: 30 | Agent: Trelora Realty, INC | Email: oakgroup@trelora.com
+2026-06-27 22:10:23,531 INFO LEAD: 204 E Haven Dr, Birmingham, AL 35215 | $114,900 | DOM: 30 | Agent: Trelora Realty, INC | Email: oakgroup@trelora.com
+2026-06-27 22:10:23,531 INFO LEAD: 408 Crest Dr, Fairfield, AL 35064 | $84,900 | DOM: 30 | Agent: Trelora Realty, INC | Email: oakgroup@trelora.com
+2026-06-27 22:10:23,531 INFO LEAD: 5760 King Dr, Birmingham, AL 35228 | $104,900 | DOM: 30 | Agent: Trelora Realty, INC | Email: oakgroup@trelora.com
+2026-06-27 22:10:23,531 INFO LEAD: 7113 Canada Ave, Birmingham, AL 35224 | $140,000 | DOM: 30 | Agent: Keller Williams Realty Vestavia | Email: frontdesk494@kw.com
+2026-06-27 22:10:23,531 INFO LEAD: 2537 Dawson Ave SW, Birmingham, AL 35211 | $125,000 | DOM: 30 | Agent: EXIT Realty Birmingham | Email: info@exitrealtybham.com
+2026-06-27 22:10:23,531 INFO LEAD: 300 Huntsville Ave, Trussville, AL 35173 | $114,900 | DOM: 30 | Agent: Keller Williams | Email: klrw494@kw.com
+2026-06-27 22:10:23,531 INFO LEAD: 600 Country View Ter, Birmingham, AL 35215 | $164,900 | DOM: 30 | Agent: Trelora Realty, INC | Email: oakgroup@trelora.com
+2026-06-27 22:10:23,531 INFO LEAD: 572 Sun Valley Rd, Birmingham, AL 35215 | $159,900 | DOM: 30 | Agent: Trelora Realty, INC | Email: oakgroup@trelora.com
+2026-06-27 22:10:23,531 INFO LEAD: 5836 Willow Ridge Rd, Pinson, AL 35126 | $154,900 | DOM: 30 | Agent: Trelora Realty, INC | Email: oakgroup@trelora.com
+2026-06-27 22:10:23,531 INFO LEAD: 2119 Willow Glenn Dr, Birmingham, AL 35215 | $208,000 | DOM: 30 | Agent: eXp Realty, LLC Central | Email: tammy@valleymls.com
+2026-06-27 22:10:23,531 INFO LEAD: 300 34th Ave NE, Center Point, AL 35215 | $230,000 | DOM: 30 | Agent: Norluxe Realty Birmingham LLC | Email: ejemison@norhuxercalty.com
+2026-06-27 22:10:23,531 INFO LEAD: 3329 32nd Pl N, Birmingham, AL 35207 | $169,000 | DOM: 30 | Agent: eXp Realty, LLC Central | Email: tammy@valleymls.com
+2026-06-27 22:10:23,531 INFO LEAD: 4605 Hillman Dr, Birmingham, AL 35221 | $210,000 | DOM: 30 | Agent: Lokation Real Estate LLC | Email: doris@lokationre.com
+2026-06-27 22:10:23,531 INFO Scrape complete: Birmingham | 16 leads passed all screening gates
+2026-06-27 22:10:23,533 INFO [1/5] 16 fresh leads from Zillow
+2026-06-27 22:10:23,533 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 22:10:23,533 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 22:10:23,533 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 22:10:23,533 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 22:10:23,534 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 22:10:23,534 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 22:10:23,534 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 22:10:23,534 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 22:10:23,534 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 22:10:23,534 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 22:10:23,534 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 22:10:23,535 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 22:10:23,535 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 22:10:23,535 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 22:10:23,535 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 22:10:23,535 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-27 22:10:23,535 INFO [2/5] 16 after dedup
+2026-06-27 22:10:23,536 INFO Saved 25 leads to overflow for next run
+2026-06-27 22:10:23,536 INFO Saved 11 leads to overflow for next run
+2026-06-27 22:10:23,536 INFO [3/5] Calculating offers and generating emails...
+2026-06-27 22:10:32,734 INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-06-27 22:10:42,228 INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-06-27 22:10:50,818 INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-06-27 22:11:01,065 INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-06-27 22:11:11,516 INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-06-27 22:11:11,517 INFO [3/5] 5 ready | Skipped: 0 pitch + 0 no email
+2026-06-27 22:11:11,517 INFO [4/5] Sending emails...
+2026-06-27 22:11:11,517 INFO Starting batch | Market: birmingham | Leads: 5 | Limit: 15/day
+2026-06-27 22:11:11,528 INFO PDF ready for 3633 Oak Ave SW, Birmingham, AL 35221
+2026-06-27 22:11:11,528 INFO [DRY RUN] Would send to dnolen@arcrealtyco.com | Subject: Quick question on 3633 Oak Ave SW, Birmingham, AL 35221 | PDF: True
+2026-06-27 22:11:11,528 INFO Waiting 177s before next send (1/15 sent)...
+2026-06-27 22:14:08,213 INFO PDF ready for 4306 8th Ave, Birmingham, AL 35224
+2026-06-27 22:14:08,213 INFO [DRY RUN] Would send to help@renowned.com | Subject: Quick question on 4306 8th Ave, Birmingham, AL 35224 | PDF: True
+2026-06-27 22:14:08,213 INFO Waiting 194s before next send (2/15 sent)...
+2026-06-27 22:17:22,637 INFO PDF ready for 817 79th Pl S, Birmingham, AL 35206
+2026-06-27 22:17:22,637 INFO [DRY RUN] Would send to oakgroup@trelora.com | Subject: Quick question on 817 79th Pl S, Birmingham, AL 35206 | PDF: True
+2026-06-27 22:17:22,637 INFO Waiting 185s before next send (3/15 sent)...
+2026-06-27 22:20:27,690 INFO PDF ready for 204 E Haven Dr, Birmingham, AL 35215
+2026-06-27 22:20:27,690 INFO [DRY RUN] Would send to oakgroup@trelora.com | Subject: Quick Cash Offer on 204 E Haven Dr | PDF: True
+2026-06-27 22:20:27,690 INFO Waiting 166s before next send (4/15 sent)...
+2026-06-27 22:23:14,058 INFO PDF ready for 408 Crest Dr, Fairfield, AL 35064
+2026-06-27 22:23:14,058 INFO [DRY RUN] Would send to oakgroup@trelora.com | Subject: Making It Easy on 408 Crest Dr | PDF: True
+2026-06-27 22:23:14,058 INFO Waiting 189s before next send (5/15 sent)...
+2026-06-27 22:26:22,665 INFO Batch complete | Sent: 5 | Failed: 0 | Market: birmingham
+2026-06-27 22:26:22,666 INFO [4/5] 5 emails sent
+2026-06-27 22:26:22,666 INFO [5/5] Pushing to GHL...
+2026-06-27 22:26:22,666 INFO Logged: 3633 Oak Ave SW, Birmingham, AL 35221 | Agent: dnolen@arcrealtyco.com | Total: 1/3
+2026-06-27 22:26:22,666 INFO [DRY RUN] GHL skipped: 3633 Oak Ave SW, Birmingham, AL 35221
+2026-06-27 22:26:22,666 INFO Logged: 4306 8th Ave, Birmingham, AL 35224 | Agent: help@renowned.com | Total: 1/3
+2026-06-27 22:26:22,666 INFO [DRY RUN] GHL skipped: 4306 8th Ave, Birmingham, AL 35224
+2026-06-27 22:26:22,667 INFO Logged: 817 79th Pl S, Birmingham, AL 35206 | Agent: oakgroup@trelora.com | Total: 1/3
+2026-06-27 22:26:22,667 INFO [DRY RUN] GHL skipped: 817 79th Pl S, Birmingham, AL 35206
+2026-06-27 22:26:22,667 INFO Logged: 204 E Haven Dr, Birmingham, AL 35215 | Agent: oakgroup@trelora.com | Total: 2/3
+2026-06-27 22:26:22,667 INFO [DRY RUN] GHL skipped: 204 E Haven Dr, Birmingham, AL 35215
+2026-06-27 22:26:22,667 INFO Logged: 408 Crest Dr, Fairfield, AL 35064 | Agent: oakgroup@trelora.com | Total: 3/3
+2026-06-27 22:26:22,667 INFO [DRY RUN] GHL skipped: 408 Crest Dr, Fairfield, AL 35064
+2026-06-27 22:26:22,668 INFO Dashboard data saved: data/birmingham_leads.json
+2026-06-27 22:26:22,668 INFO ============================================================
+2026-06-27 22:26:22,668 INFO COMPLETE: BIRMINGHAM | Scraped: 16 | Sent: 5 | Pitch skipped: 0 | No email: 0
+2026-06-27 22:26:22,668 INFO All-time: 10 properties | 8 agents
+2026-06-27 22:26:22,668 INFO ============================================================
+2026-06-27 22:26:22,668 INFO pipeline_log.json written — 10 emails, 35 leads
+2026-06-27 22:26:22,668 INFO Both markets complete. Dashboard updated. Check GHL for contacts.

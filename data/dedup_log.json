@@ -1,0 +1,184 @@
+{
+  "properties": {
+    "2276 redwood ave, memphis, tn 38108": {
+      "address": "2276 Redwood Ave, Memphis, TN 38108",
+      "market": "memphis",
+      "agent_email": "contact@thehomepartnersrealty.com",
+      "list_price": 72000,
+      "days_on_market": 30,
+      "sent_at": "2026-06-27T22:03:29.811595",
+      "subject": "Buyer ready for 2276 Redwood Ave, Memphis, TN 38108",
+      "offer_type": "owner_finance",
+      "zillow_url": "https://www.zillow.com/homedetails/2276-Redwood-Ave-Memphis-TN-38108/42157772_zpid/"
+    },
+    "4400 poplar ave apt 21, memphis, tn 38117": {
+      "address": "4400 Poplar Ave APT 21, Memphis, TN 38117",
+      "market": "memphis",
+      "agent_email": "info@renshawcompany.com",
+      "list_price": 129900,
+      "days_on_market": 30,
+      "sent_at": "2026-06-27T22:03:29.811962",
+      "subject": "APT 21 , Cash, As-Is, 14 Days",
+      "offer_type": "cash_lowball",
+      "zillow_url": "https://www.zillow.com/homedetails/4400-Poplar-Ave-APT-21-Memphis-TN-38117/42188740_zpid/"
+    },
+    "1672 clancy st, memphis, tn 38106": {
+      "address": "1672 Clancy St, Memphis, TN 38106",
+      "market": "memphis",
+      "agent_email": "juan@torres-realestate.com",
+      "list_price": 90000,
+      "days_on_market": 30,
+      "sent_at": "2026-06-27T22:03:29.812247",
+      "subject": "Cash Offer, 1672 Clancy St, Close in 14 Days",
+      "offer_type": "cash_lowball",
+      "zillow_url": "https://www.zillow.com/homedetails/1672-Clancy-St-Memphis-TN-38106/42147192_zpid/"
+    },
+    "3194 aden st, memphis, tn 38127": {
+      "address": "3194 Aden St, Memphis, TN 38127",
+      "market": "memphis",
+      "agent_email": "info@reindiana.com",
+      "list_price": 89900,
+      "days_on_market": 30,
+      "sent_at": "2026-06-27T22:03:29.812506",
+      "subject": "I Know This Listing Needs the Right Buyer",
+      "offer_type": "cash_lowball",
+      "zillow_url": "https://www.zillow.com/homedetails/3194-Aden-St-Memphis-TN-38127/42226155_zpid/"
+    },
+    "2939 mountain terrace st, memphis, tn 38127": {
+      "address": "2939 Mountain Terrace St, Memphis, TN 38127",
+      "market": "memphis",
+      "agent_email": "zachc@churcheygroup.com",
+      "list_price": 135000,
+      "days_on_market": 30,
+      "sent_at": "2026-06-27T22:03:29.812749",
+      "subject": "Something Worth a Look on 2939 Mountain Terrace St",
+      "offer_type": "cash_lowball",
+      "zillow_url": "https://www.zillow.com/homedetails/2939-Mountain-Terrace-St-Memphis-TN-38127/42227477_zpid/"
+    },
+    "3633 oak ave sw, birmingham, al 35221": {
+      "address": "3633 Oak Ave SW, Birmingham, AL 35221",
+      "market": "birmingham",
+      "agent_email": "dnolen@arcrealtyco.com",
+      "list_price": 38500,
+      "days_on_market": 30,
+      "sent_at": "2026-06-27T22:26:22.666305",
+      "subject": "Quick question on 3633 Oak Ave SW, Birmingham, AL 35221",
+      "offer_type": "owner_finance",
+      "zillow_url": "https://www.zillow.com/homedetails/3633-Oak-Ave-SW-Birmingham-AL-35221/1010755_zpid/"
+    },
+    "4306 8th ave, birmingham, al 35224": {
+      "address": "4306 8th Ave, Birmingham, AL 35224",
+      "market": "birmingham",
+      "agent_email": "help@renowned.com",
+      "list_price": 55000,
+      "days_on_market": 30,
+      "sent_at": "2026-06-27T22:26:22.666702",
+      "subject": "Quick question on 4306 8th Ave, Birmingham, AL 35224",
+      "offer_type": "owner_finance",
+      "zillow_url": "https://www.zillow.com/homedetails/4306-8th-Ave-Birmingham-AL-35224/1018785_zpid/"
+    },
+    "817 79th pl s, birmingham, al 35206": {
+      "address": "817 79th Pl S, Birmingham, AL 35206",
+      "market": "birmingham",
+      "agent_email": "oakgroup@trelora.com",
+      "list_price": 79900,
+      "days_on_market": 30,
+      "sent_at": "2026-06-27T22:26:22.666977",
+      "subject": "Quick question on 817 79th Pl S, Birmingham, AL 35206",
+      "offer_type": "owner_finance",
+      "zillow_url": "https://www.zillow.com/homedetails/817-79th-Pl-S-Birmingham-AL-35206/951218_zpid/"
+    },
+    "204 e haven dr, birmingham, al 35215": {
+      "address": "204 E Haven Dr, Birmingham, AL 35215",
+      "market": "birmingham",
+      "agent_email": "oakgroup@trelora.com",
+      "list_price": 114900,
+      "days_on_market": 30,
+      "sent_at": "2026-06-27T22:26:22.667303",
+      "subject": "Quick Cash Offer on 204 E Haven Dr",
+      "offer_type": "cash_lowball",
+      "zillow_url": "https://www.zillow.com/homedetails/204-E-Haven-Dr-Birmingham-AL-35215/892832_zpid/"
+    },
+    "408 crest dr, fairfield, al 35064": {
+      "address": "408 Crest Dr, Fairfield, AL 35064",
+      "market": "birmingham",
+      "agent_email": "oakgroup@trelora.com",
+      "list_price": 84900,
+      "days_on_market": 30,
+      "sent_at": "2026-06-27T22:26:22.667636",
+      "subject": "Making It Easy on 408 Crest Dr",
+      "offer_type": "cash_lowball",
+      "zillow_url": "https://www.zillow.com/homedetails/408-Crest-Dr-Fairfield-AL-35064/1025679_zpid/"
+    }
+  },
+  "agents": {
+    "contact@thehomepartnersrealty.com": {
+      "total_contacted": 1,
+      "properties": [
+        "2276 redwood ave, memphis, tn 38108"
+      ],
+      "first_contact": "2026-06-27T22:03:29.811595",
+      "last_sent": "2026-06-27T22:03:29.811595"
+    },
+    "info@renshawcompany.com": {
+      "total_contacted": 1,
+      "properties": [
+        "4400 poplar ave apt 21, memphis, tn 38117"
+      ],
+      "first_contact": "2026-06-27T22:03:29.811962",
+      "last_sent": "2026-06-27T22:03:29.811962"
+    },
+    "juan@torres-realestate.com": {
+      "total_contacted": 1,
+      "properties": [
+        "1672 clancy st, memphis, tn 38106"
+      ],
+      "first_contact": "2026-06-27T22:03:29.812247",
+      "last_sent": "2026-06-27T22:03:29.812247"
+    },
+    "info@reindiana.com": {
+      "total_contacted": 1,
+      "properties": [
+        "3194 aden st, memphis, tn 38127"
+      ],
+      "first_contact": "2026-06-27T22:03:29.812506",
+      "last_sent": "2026-06-27T22:03:29.812506"
+    },
+    "zachc@churcheygroup.com": {
+      "total_contacted": 1,
+      "properties": [
+        "2939 mountain terrace st, memphis, tn 38127"
+      ],
+      "first_contact": "2026-06-27T22:03:29.812749",
+      "last_sent": "2026-06-27T22:03:29.812749"
+    },
+    "dnolen@arcrealtyco.com": {
+      "total_contacted": 1,
+      "properties": [
+        "3633 oak ave sw, birmingham, al 35221"
+      ],
+      "first_contact": "2026-06-27T22:26:22.666305",
+      "last_sent": "2026-06-27T22:26:22.666305"
+    },
+    "help@renowned.com": {
+      "total_contacted": 1,
+      "properties": [
+        "4306 8th ave, birmingham, al 35224"
+      ],
+      "first_contact": "2026-06-27T22:26:22.666702",
+      "last_sent": "2026-06-27T22:26:22.666702"
+    },
+    "oakgroup@trelora.com": {
+      "total_contacted": 3,
+      "properties": [
+        "817 79th pl s, birmingham, al 35206",
+        "204 e haven dr, birmingham, al 35215",
+        "408 crest dr, fairfield, al 35064"
+      ],
+      "first_contact": "2026-06-27T22:26:22.666977",
+      "last_sent": "2026-06-27T22:26:22.667636"
+    }
+  },
+  "opted_out": [],
+  "bad_emails": []
+}

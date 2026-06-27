@@ -1,0 +1,134 @@
+{
+  "summary": {
+    "run_date": "2026-06-27 22:26",
+    "total_leads": 35,
+    "emails_sent": 10,
+    "ghl_pushed": 0,
+    "of_deals": 4,
+    "cl_deals": 6
+  },
+  "runs": [
+    {
+      "date": "2026-06-27 22:26",
+      "market": "Memphis TN",
+      "leads": 19,
+      "emails": 5,
+      "of": 1,
+      "cl": 4,
+      "ghl": 0,
+      "status": "OK"
+    },
+    {
+      "date": "2026-06-27 22:26",
+      "market": "Birmingham AL",
+      "leads": 16,
+      "emails": 5,
+      "of": 3,
+      "cl": 2,
+      "ghl": 0,
+      "status": "OK"
+    }
+  ],
+  "queue": [
+    {
+      "address": "2276 Redwood Ave, Memphis, TN 38108",
+      "market": "Memphis TN",
+      "price": 72000,
+      "dom": 30,
+      "type": "OF",
+      "offer": 72000,
+      "agent": "The Home Partners Realty",
+      "sent": "2026-06-27 22:26"
+    },
+    {
+      "address": "4400 Poplar Ave APT 21, Memphis, TN 38117",
+      "market": "Memphis TN",
+      "price": 129900,
+      "dom": 30,
+      "type": "CL",
+      "offer": 51960.0,
+      "agent": "Renshaw Company, REALTORS",
+      "sent": "2026-06-27 22:26"
+    },
+    {
+      "address": "1672 Clancy St, Memphis, TN 38106",
+      "market": "Memphis TN",
+      "price": 90000,
+      "dom": 30,
+      "type": "CL",
+      "offer": 36000.0,
+      "agent": "Fast Track Realty, LLC",
+      "sent": "2026-06-27 22:26"
+    },
+    {
+      "address": "3194 Aden St, Memphis, TN 38127",
+      "market": "Memphis TN",
+      "price": 89900,
+      "dom": 30,
+      "type": "CL",
+      "offer": 35960.0,
+      "agent": "Trelora Realty",
+      "sent": "2026-06-27 22:26"
+    },
+    {
+      "address": "2939 Mountain Terrace St, Memphis, TN 38127",
+      "market": "Memphis TN",
+      "price": 135000,
+      "dom": 30,
+      "type": "CL",
+      "offer": 54000.0,
+      "agent": "Churchey Realty",
+      "sent": "2026-06-27 22:26"
+    },
+    {
+      "address": "3633 Oak Ave SW, Birmingham, AL 35221",
+      "market": "Birmingham AL",
+      "price": 38500,
+      "dom": 30,
+      "type": "OF",
+      "offer": 38500,
+      "agent": "Sell Your Home Services",
+      "sent": "2026-06-27 22:26"
+    },
+    {
+      "address": "4306 8th Ave, Birmingham, AL 35224",
+      "market": "Birmingham AL",
+      "price": 55000,
+      "dom": 30,
+      "type": "OF",
+      "offer": 55000,
+      "agent": "LPT Realty LLC",
+      "sent": "2026-06-27 22:26"
+    },
+    {
+      "address": "817 79th Pl S, Birmingham, AL 35206",
+      "market": "Birmingham AL",
+      "price": 79900,
+      "dom": 30,
+      "type": "OF",
+      "offer": 79900,
+      "agent": "Trelora Realty, INC",
+      "sent": "2026-06-27 22:26"
+    },
+    {
+      "address": "204 E Haven Dr, Birmingham, AL 35215",
+      "market": "Birmingham AL",
+      "price": 114900,
+      "dom": 30,
+      "type": "CL",
+      "offer": 45960.0,
+      "agent": "Trelora Realty, INC",
+      "sent": "2026-06-27 22:26"
+    },
+    {
+      "address": "408 Crest Dr, Fairfield, AL 35064",
+      "market": "Birmingham AL",
+      "price": 84900,
+      "dom": 30,
+      "type": "CL",
+      "offer": 33960.0,
+      "agent": "Trelora Realty, INC",
+      "sent": "2026-06-27 22:26"
+    }
+  ]
+}
