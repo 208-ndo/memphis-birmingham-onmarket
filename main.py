@@ -23,7 +23,7 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 OVERFLOW_FILE = "data/overflow.json"
-DAILY_LIMIT   = 5  # 5 per run x 3 runs/day = 15 total per market per day
+DAILY_LIMIT   = 5
 
 
 def load_overflow() -> list:
@@ -45,11 +45,6 @@ def save_overflow(leads: list):
     log.info(f"Saved {len(leads)} leads to overflow for next run")
 
 
-def clear_overflow():
-    if os.path.exists(OVERFLOW_FILE):
-        os.remove(OVERFLOW_FILE)
-
-
 def save_dashboard_data(market_key: str, leads: list, sent_results: list):
     os.makedirs("data", exist_ok=True)
     dashboard_file = f"data/{market_key}_leads.json"
@@ -67,24 +62,24 @@ def save_dashboard_data(market_key: str, leads: list, sent_results: list):
         address = lead.get("address", "")
         offer   = lead.get("offer", {})
         new_entries.append({
-            "address":            address,
-            "city":               lead.get("city"),
-            "state":              lead.get("state"),
-            "list_price":         lead.get("price", 0),
-            "days_on_market":     lead.get("days_on_market", 0),
-            "agent_name":         lead.get("agent_name"),
-            "agent_email":        lead.get("agent_email"),
-            "agent_phone":        lead.get("agent_phone"),
-            "offer_type":         offer.get("offer_type", ""),
+            "address":             address,
+            "city":                lead.get("city"),
+            "state":               lead.get("state"),
+            "list_price":          lead.get("price", 0),
+            "days_on_market":      lead.get("days_on_market", 0),
+            "agent_name":          lead.get("agent_name"),
+            "agent_email":         lead.get("agent_email"),
+            "agent_phone":         lead.get("agent_phone"),
+            "offer_type":          offer.get("offer_type", ""),
             "owner_finance_offer": offer.get("owner_finance_offer", 0),
-            "cash_offer":         offer.get("cash_offer", 0),
-            "monthly_payment":    offer.get("monthly_payment", 0),
-            "your_fee_estimate":  offer.get("your_fee_estimate", 0),
-            "pitch_holds":        offer.get("pitch_holds", False),
-            "down_payment":       offer.get("down_payment", 0),
-            "zillow_url":         lead.get("url"),
-            "email_sent":         address in sent_addresses,
-            "pipeline_date":      datetime.now().strftime("%Y-%m-%d"),
+            "cash_offer":          offer.get("cash_offer", 0),
+            "monthly_payment":     offer.get("monthly_payment", 0),
+            "your_fee_estimate":   offer.get("your_fee_estimate", 0),
+            "pitch_holds":         offer.get("pitch_holds", False),
+            "down_payment":        offer.get("down_payment", 0),
+            "zillow_url":          lead.get("url"),
+            "email_sent":          address in sent_addresses,
+            "pipeline_date":       datetime.now().strftime("%Y-%m-%d"),
         })
 
     all_entries = new_entries + [
@@ -186,11 +181,10 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
         "sent_items":   [],
     }
 
-    overflow_leads       = load_overflow()
-    overflow_for_market  = [l for l in overflow_leads if l.get("market") == market_key]
-    other_overflow       = [l for l in overflow_leads if l.get("market") != market_key]
+    overflow_leads      = load_overflow()
+    overflow_for_market = [l for l in overflow_leads if l.get("market") == market_key]
+    other_overflow      = [l for l in overflow_leads if l.get("market") != market_key]
 
-    # FIX: pass market dict, not string key
     log.info(f"[1/5] Scraping Zillow for {market_key}...")
     fresh_leads = scrape_market(market)
     log.info(f"[1/5] {len(fresh_leads)} fresh leads from Zillow")
@@ -215,8 +209,8 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
         save_overflow(other_overflow)
 
     log.info(f"[3/5] Calculating offers and generating emails...")
-    send_queue      = []
-    skipped_pitch   = 0
+    send_queue       = []
+    skipped_pitch    = 0
     skipped_no_email = 0
 
     for listing in todays_leads:
@@ -225,9 +219,7 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
                 skipped_no_email += 1
                 continue
 
-            # offer.py expects list_price key — map from scraper output
             listing["list_price"] = listing.get("price", 0)
-
             offer = calculate_offer(listing)
             if not offer:
                 continue
@@ -298,12 +290,15 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
 
 
 def main():
-    today   = datetime.now().weekday()  # 0=Mon 1=Tue 2=Wed 3=Thu 4=Fri
-    dry_run = "--dry-run" in sys.argv
+    today        = datetime.now().weekday()  # 0=Mon 1=Tue 2=Wed 3=Thu 4=Fri 5=Sat 6=Sun
+    dry_run      = "--dry-run" in sys.argv
+    force_run    = "--force" in sys.argv or os.environ.get("FORCE_RUN", "").lower() == "true"
 
-    if today not in [1, 2, 3, 4]:
+    # Skip day gate if manually forced
+    if not force_run and today not in [1, 2, 3, 4]:
         day_names = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
         log.info(f"Today is {day_names[today]} — pipeline only runs Tue/Wed/Thu/Fri. Exiting.")
+        log.info("Tip: use --force flag or set FORCE_RUN=true to run on any day.")
         sys.exit(0)
 
     os.makedirs("data", exist_ok=True)
@@ -311,7 +306,7 @@ def main():
 
     log.info(
         f"Pipeline starting | Markets: Memphis + Birmingham | "
-        f"Dry run: {dry_run} | Limit: {DAILY_LIMIT}/run | "
+        f"Dry run: {dry_run} | Force: {force_run} | Limit: {DAILY_LIMIT}/run | "
         f"Time: {datetime.now().strftime('%H:%M UTC')}"
     )
 
