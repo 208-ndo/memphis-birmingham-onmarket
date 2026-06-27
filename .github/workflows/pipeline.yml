@@ -22,7 +22,7 @@ on:
   workflow_dispatch:
     inputs:
       dry_run:
-        description: 'Dry run (no emails sent)'
+        description: 'Dry run — scrape + generate but NO emails sent'
         required: false
         default: 'false'
       force_run:
@@ -71,12 +71,12 @@ jobs:
             python main.py
           fi
 
-      - name: Commit dedup log + dashboard data to repo
+      - name: Commit dashboard data to repo
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/sent_leads.json data/pipeline_log.json data/memphis_leads.json data/birmingham_leads.json || true
+          git add data/ || true
           git diff --staged --quiet || git commit -m "Pipeline run $(date +'%Y-%m-%d %H:%M') — auto update"
           git push || true
 
