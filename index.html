@@ -310,8 +310,10 @@
 
           <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Step 1 — Buyer MAO</div>
           <div class="result-row"><span class="result-label">ARV</span><span class="result-value teal" id="cl-r-arv">—</span></div>
+          <div class="result-row"><span class="result-label">Estimated Repairs</span><span class="result-value" id="cl-r-repairs-raw">—</span></div>
+          <div class="result-row"><span class="result-label">Effective Repairs (max of: est, ARV×5%, $10k)</span><span class="result-value yellow" id="cl-r-eff-repairs">—</span></div>
           <div class="result-row"><span class="result-label">ARV × 90%</span><span class="result-value teal" id="cl-r-arv90">—</span></div>
-          <div class="result-row"><span class="result-label">Repairs × 2</span><span class="result-value red" id="cl-r-repairs2">—</span></div>
+          <div class="result-row"><span class="result-label">Eff. Repairs × 2</span><span class="result-value red" id="cl-r-repairs2">—</span></div>
           <div class="result-row hl"><span class="result-label">Buyer MAO</span><span class="result-value teal" id="cl-r-buyer-mao">—</span></div>
 
           <hr class="divider"/>
@@ -331,13 +333,15 @@
           <div class="result-row hl"><span class="result-label">Final Contract MAO (min of both caps)</span><span class="result-value green" id="cl-r-final-mao">—</span></div>
 
           <hr class="divider"/>
-          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Step 5 — Your Offer</div>
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Step 5 — Offer Range</div>
           <div class="result-row hl"><span class="result-label">Initial Offer (85% of MAO)</span><span class="result-value teal" id="cl-r-offer">—</span></div>
-          <div class="result-row"><span class="result-label">Max Offer (92% of MAO)</span><span class="result-value" id="cl-r-max-offer">—</span></div>
-          <div class="result-row"><span class="result-label">Assign Price (offer + fee)</span><span class="result-value green" id="cl-r-plan-sell">—</span></div>
-          <div class="result-row"><span class="result-label">Visible Spread at Initial Offer</span><span class="result-value" id="cl-r-vis-spread">—</span></div>
+          <div class="result-row"><span class="result-label">Max Counter (90% of MAO)</span><span class="result-value yellow" id="cl-r-max-offer">—</span></div>
+          <div class="result-row"><span class="result-label">True Walkaway (100% — internal only)</span><span class="result-value muted" id="cl-r-true-walkaway">—</span></div>
+          <div class="result-row"><span class="result-label">Buyer All-In Price (offer + fee)</span><span class="result-value" id="cl-r-plan-sell">—</span></div>
+          <div class="result-row"><span class="result-label">Visible Spread</span><span class="result-value" id="cl-r-vis-spread">—</span></div>
           <div class="result-row"><span class="result-label">Spread Check</span><span id="cl-r-spread-status">—</span></div>
           <div class="result-row"><span class="result-label">Buyer Has Room</span><span id="cl-r-room">—</span></div>
+          <div class="result-row"><span class="result-label">Limiting Factor</span><span class="result-value muted" id="cl-r-limiting">—</span></div>
 
           <hr class="divider"/>
           <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Commission</div>
@@ -498,10 +502,13 @@ function calcCL(){
     return;
   }
 
-  // Step 1: Buyer MAO = ARV * 0.90 - (repairs * 2)
-  var buyerMAO = Math.max(0, arv*0.90 - repair*2);
-  // Step 2: Assignment fee = clamp(ARV*8%, 7500, 30000)
-  var assignFee = assignOverride || Math.max(7500, Math.min(30000, arv*0.08));
+  // Step 1: Effective repairs = max(est_repairs, arv*5%, 10000)
+  var effRepairs = Math.max(repair, arv*0.05, 10000);
+  // Step 2: Buyer MAO = ARV * 0.90 - (eff_repairs * 2)
+  var buyerMAO = Math.max(0, arv*0.90 - effRepairs*2);
+  // Step 3: Assignment fee = clamp(ARV*8%, min/max), small-deal override
+  var baseFee = arv*0.08;
+  var assignFee = assignOverride || (buyerMAO<50000 ? Math.max(5000,Math.min(7500,baseFee)) : Math.max(7500,Math.min(30000,baseFee)));
   var closingBuffer = Math.max(2500, buyerMAO*0.02);
   var buyerMathCap = buyerMAO - assignFee - closingBuffer;
 
@@ -522,8 +529,10 @@ function calcCL(){
     document.getElementById('cl-results').style.display='block';
     // Show the chain
     setEl('cl-r-arv',fmt(arv),'teal');
+    setEl('cl-r-repairs-raw',fmt(repair),'');
+    setEl('cl-r-eff-repairs',fmt(effRepairs),'yellow');
     setEl('cl-r-arv90',fmt(arv*0.90),'teal');
-    setEl('cl-r-repairs2',fmt(repair*2),'red');
+    setEl('cl-r-repairs2',fmt(effRepairs*2),'red');
     setEl('cl-r-buyer-mao',fmt(buyerMAO),'teal');
     setEl('cl-r-assign-fee',fmt(assignFee),'');
     setEl('cl-r-buffer',fmt(closingBuffer),'');
@@ -540,20 +549,25 @@ function calcCL(){
 
   // Step 5: Initial and max offer
   var initialOffer=Math.floor(finalMAO*0.85/1000)*1000;
-  var maxOffer=Math.floor(finalMAO*0.92/1000)*1000;
+  var maxOffer=Math.floor(finalMAO*0.90/1000)*1000;
+  var trueWalkaway=Math.floor(finalMAO/1000)*1000;
   var cashOffer=Math.max(initialOffer,1000);
   var assignPrice=cashOffer+assignFee;
-  var visibleSpread=listPrice-(cashOffer+assignFee);
+  var buyerAllIn=cashOffer+assignFee;
+  var visibleSpread=listPrice-buyerAllIn;
   var spreadOk=visibleSpread>=reqSpread;
-  var buyerHasRoom=assignPrice<buyerMAO;
-  var roomDelta=buyerMAO-assignPrice;
+  var buyerHasRoom=buyerAllIn<buyerMAO;
+  var roomDelta=buyerMAO-buyerAllIn;
 
-  clData={listPrice:listPrice,arv:arv,repair:repair,cashOffer:cashOffer,initialOffer:initialOffer,maxOffer:maxOffer,assignFee:assignFee,assignPrice:assignPrice,buyerMAO:buyerMAO,closingBuffer:closingBuffer,buyerMathCap:buyerMathCap,spreadCap:spreadCap,finalMAO:finalMAO,reqSpread:reqSpread,visibleSpread:visibleSpread,spreadOk:spreadOk,buyerHasRoom:buyerHasRoom,roomDelta:roomDelta,address:address,agent:agent};
+  var limitingFactor=buyerMathCap<=spreadCap?"Buyer math is limiting the deal.":"Visible spread is limiting the deal.";
+  clData={listPrice:listPrice,arv:arv,repair:repair,effRepairs:effRepairs,cashOffer:cashOffer,initialOffer:initialOffer,maxOffer:maxOffer,trueWalkaway:trueWalkaway,buyerAllIn:buyerAllIn,assignFee:assignFee,assignPrice:buyerAllIn,buyerMAO:buyerMAO,closingBuffer:closingBuffer,buyerMathCap:buyerMathCap,spreadCap:spreadCap,finalMAO:finalMAO,reqSpread:reqSpread,visibleSpread:visibleSpread,spreadOk:spreadOk,buyerHasRoom:buyerHasRoom,roomDelta:roomDelta,limitingFactor:limitingFactor,address:address,agent:agent};
 
   // Render chain
   setEl('cl-r-arv',fmt(arv),'teal');
+  setEl('cl-r-repairs-raw',fmt(repair),'');
+  setEl('cl-r-eff-repairs',fmt(effRepairs),'yellow');
   setEl('cl-r-arv90',fmt(arv*0.90),'teal');
-  setEl('cl-r-repairs2',fmt(repair*2),'red');
+  setEl('cl-r-repairs2',fmt(effRepairs*2),'red');
   setEl('cl-r-buyer-mao',fmt(buyerMAO),'teal');
   setEl('cl-r-assign-fee',fmt(assignFee),'');
   setEl('cl-r-buffer',fmt(closingBuffer),'');
@@ -562,12 +576,14 @@ function calcCL(){
   setEl('cl-r-req-spread',fmt(reqSpread),'yellow');
   setEl('cl-r-spread-cap',fmt(spreadCap),'purple');
   setEl('cl-r-final-mao',fmt(finalMAO),'green');
-  setEl('cl-r-offer',fmt(cashOffer)+' (initial)','teal');
-  setEl('cl-r-max-offer',fmt(maxOffer),'');
-  setEl('cl-r-plan-sell',fmt(assignPrice),'green');
+  setEl('cl-r-offer',fmt(cashOffer),'teal');
+  setEl('cl-r-max-offer',fmt(maxOffer),'yellow');
+  if(document.getElementById('cl-r-true-walkaway'))document.getElementById('cl-r-true-walkaway').textContent=fmt(trueWalkaway)+' (do not share)';
+  setEl('cl-r-plan-sell',fmt(buyerAllIn),'green');
   setEl('cl-r-vis-spread',fmt(visibleSpread),spreadOk?'green':'red');
   setEl('cl-r-fee',fmt(assignFee),'green');
 
+  if(document.getElementById('cl-r-limiting'))document.getElementById('cl-r-limiting').textContent=limitingFactor;
   document.getElementById('cl-r-spread-status').innerHTML=
     '<span class="room-check '+(spreadOk?'yes':'no')+'">'+(spreadOk?'&#10003; PASS':'&#10007; NO ARBITRAGE')+'</span>';
   document.getElementById('cl-r-room').innerHTML=
@@ -578,8 +594,8 @@ function calcCL(){
   pitchEl.style.display='flex';
   pitchEl.className='pitch-check '+(allGood?'pass':'fail');
   pitchEl.innerHTML=allGood
-    ?'&#10003; DEAL PENCILS — Spread '+fmt(visibleSpread)+' | Buyer room +'+fmt(roomDelta)
-    :'&#10007; '+(spreadOk?'BUYER NO ROOM':'NO ARBITRAGE')+' — Reconsider or skip';
+    ?'&#10003; DEAL PENCILS — Initial: '+fmt(cashOffer)+' | Max Counter: '+fmt(maxOffer)+' | Spread: '+fmt(visibleSpread)
+    :'&#10007; '+(spreadOk?'BUYER NO ROOM — '+limitingFactor:'NO ARBITRAGE — '+limitingFactor);
 
   document.getElementById('cl-results').style.display='block';
   renderCLOffer();
@@ -591,8 +607,8 @@ function renderCLOffer(){
   var d=clData;if(!d)return;
   var roomLine='Buyer MAO: '+fmt(d.buyerMAO)+' | Assign: '+fmt(d.assignPrice)+' | Room: '+(d.buyerHasRoom?'YES (+'+fmt(d.roomDelta)+')':'NO');
   var spreadLine='Visible Spread: '+fmt(d.visibleSpread)+' vs Required: '+fmt(d.reqSpread)+' — '+(d.spreadOk?'PASS':'NO ARBITRAGE');
-  document.getElementById('cl-exec-doc').innerHTML='<div class="od-header"><div><div class="od-brand">229 <span>HOLDINGS LLC</span></div><div style="font-family:Space Mono,monospace;font-size:9px;color:#7a7a9a;margin-top:4px"></div></div><div class="od-type">CASH AS-IS OFFER<br>'+today()+'</div></div><div class="od-address">'+d.address+'</div><div class="od-date">Presented to: '+d.agent+'</div><div class="od-comm-banner"><div class="od-comm-title">&#10003; AGENT COMMISSION PROTECTED — CASH CLOSE</div><div class="od-comm-body">Total Commission: <strong style="color:#00d4aa">'+fmt(d.agentTotal)+'</strong> ('+fmt(d.comm)+' + $1,000 flat fee) paid at closing.<br>Agent nets '+fmt(d.agentTotal)+' vs '+fmt(d.atList)+' at-list baseline.</div></div><div class="od-grid"><div class="od-box teal-box"><div class="od-label">Cash Offer</div><div class="od-value teal">'+fmt(d.offer)+'</div><div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:Space Mono,monospace"></div></div><div class="od-box"><div class="od-label">Assign Price</div><div class="od-value dark">'+fmt(d.assignPrice)+'</div><div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:Space Mono,monospace">Cash close offer</div></div></div><div class="od-grid-3"><div class="od-box"><div class="od-label">Your Fee</div><div class="od-value dark" style="color:#00e676">'+fmt(d.assignFee)+'</div></div><div class="od-box"><div class="od-label">Earnest Money</div><div class="od-value dark">$500</div></div><div class="od-box"><div class="od-label">Close of Escrow</div><div class="od-value dark" style="font-size:13px">'+coeDate(14)+'</div></div></div><div class="od-legal"><strong>TERMS:</strong> As-Is. No repairs. No financing contingency. Cash close. Buyer pays all closing costs minus unpaid mortgages, taxes, or liens. Buyer reserves right to assign contract.<br><br><strong>COMMISSION:</strong> '+fmt(d.agentTotal)+' ('+fmt(d.comm)+' + $1,000 flat fee) paid at closing.<br><br><strong>BUYER CHECK:</strong> '+roomLine+'</div><div class="od-sig"><div><div class="od-sig-name">229 Holdings LLC</div></div><div style="text-align:right;font-family:Space Mono,monospace;font-size:10px;color:#7a7a9a">Date: ___________________<br>Seller Signature: ___________________</div></div>';
-  document.getElementById('cl-direct-doc').textContent='CASH AS-IS OFFER - 229 Holdings LLC\n'+d.address+'\n'+today()+'\nPresented to: '+d.agent+'\n\nCASH OFFER: '+fmt(d.offer)+'\nList Price: '+fmt(d.listPrice)+'\n\nPLAN TO SELL: '+fmt(d.assignPrice)+' (offer + $10k assignment fee)\nYour Fee: '+fmt(d.assignFee)+'\n\nBUYER MAO CHECK:\n'+(d.buyerMAO!==null?'ARV x 80%: '+fmt(d.arv*0.80)+'\nRepairs: '+fmt(d.repair)+'\nBuyer MAO: '+fmt(d.buyerMAO)+'\nRoom: '+(d.hasRoom?'YES (+'+fmt(d.roomDelta)+')':'NO'):'Enter ARV to check')+'\n\nAGENT COMMISSION: '+fmt(d.agentTotal)+' ('+fmt(d.comm)+' + $1,000 flat fee) paid at closing.\n\nCLOSING TERMS:\n- Earnest: $500 | Inspection: 10 Days | As-Is\n- Close of Escrow: '+coeDate(14)+'\n- Cash close, no contingencies\n- Buyer pays all closing costs minus mortgages, taxes, liens\n- Buyer reserves right to assign contract\n\n229 Holdings LLC';
+  document.getElementById('cl-exec-doc').innerHTML='<div class="od-header"><div><div class="od-brand">229 <span>HOLDINGS LLC</span></div><div style="font-family:Space Mono,monospace;font-size:9px;color:#7a7a9a;margin-top:4px"></div></div><div class="od-type">CASH AS-IS OFFER<br>'+today()+'</div></div><div class="od-address">'+d.address+'</div><div class="od-date">Presented to: '+d.agent+'</div><div class="od-comm-banner"><div class="od-comm-title">&#10003; AGENT COMMISSION PROTECTED — CASH CLOSE</div><div class="od-comm-body">Total Commission: <strong style="color:#00d4aa">'+fmt(d.agentTotal)+'</strong> ('+fmt(d.comm)+Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.</div></div><div class="od-grid"><div class="od-box teal-box"><div class="od-label">Cash Offer</div><div class="od-value teal">'+fmt(d.offer)+'</div><div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:Space Mono,monospace"></div></div><div class="od-box"><div class="od-label">Assign Price</div><div class="od-value dark">'+fmt(d.assignPrice)+'</div><div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:Space Mono,monospace">Cash close offer</div></div></div><div class="od-grid-3"><div class="od-box"><div class="od-label">Your Fee</div><div class="od-value dark" style="color:#00e676">'+fmt(d.assignFee)+'</div></div><div class="od-box"><div class="od-label">Earnest Money</div><div class="od-value dark">$500</div></div><div class="od-box"><div class="od-label">Close of Escrow</div><div class="od-value dark" style="font-size:13px">'+coeDate(14)+'</div></div></div><div class="od-legal"><strong>TERMS:</strong> As-Is. No repairs. No financing contingency. Cash close. Buyer pays all closing costs minus unpaid mortgages, taxes, or liens. Buyer reserves right to assign contract.<br><br><strong>COMMISSION:</strong> '+fmt(d.agentTotal)+' ('+fmt(d.comm)+Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.<br><br><strong>BUYER CHECK:</strong> '+roomLine+'</div><div class="od-sig"><div><div class="od-sig-name">229 Holdings LLC</div></div><div style="text-align:right;font-family:Space Mono,monospace;font-size:10px;color:#7a7a9a">Date: ___________________<br>Seller Signature: ___________________</div></div>';
+  document.getElementById('cl-direct-doc').textContent='CASH AS-IS OFFER - 229 Holdings LLC\n'+d.address+'\n'+today()+'\nPresented to: '+d.agent+'\n\nCASH OFFER: '+fmt(d.offer)+'\nList Price: '+fmt(d.listPrice)+'\n\nPLAN TO SELL: '+fmt(d.assignPrice)+' (offer + $10k assignment fee)\nYour Fee: '+fmt(d.assignFee)+'\n\nBUYER MAO CHECK:\n'+(d.buyerMAO!==null?'ARV x 80%: '+fmt(d.arv*0.80)+'\nRepairs: '+fmt(d.repair)+'\nBuyer MAO: '+fmt(d.buyerMAO)+'\nRoom: '+(d.hasRoom?'YES (+'+fmt(d.roomDelta)+')':'NO'):'Enter ARV to check')+'\n\nAGENT COMMISSION: '+fmt(d.agentTotal)+' ('+fmt(d.comm)+' Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.\n\nCLOSING TERMS:\n- Earnest: $500 | Inspection: 10 Days | As-Is\n- Close of Escrow: '+coeDate(14)+'\n- Cash close, no contingencies\n- Buyer pays all closing costs minus mortgages, taxes, liens\n- Buyer reserves right to assign contract\n\n229 Holdings LLC';
 }
 
 function showOfferView(e,prefix,view){
@@ -623,7 +639,7 @@ async function generateOFEmails(){
 async function generateCLEmails(){
   if(!clData)return;
   var d=clData;
-  var prompt='You are a real estate wholesaler writing to a listing agent about their stale listing.\n\nOFFER TYPE: Cash As-Is\nProperty: '+d.address+'\nList Price: '+fmt(d.listPrice)+'\nCash Offer: '+fmt(d.offer)+'\nAssign Price: '+fmt(d.assignPrice)+'\nAgent Commission: '+fmt(d.agentTotal)+' (6% + $1,000 flat fee) paid at closing\nAt-list comparison (3%): '+fmt(d.atList)+'\nClose: 7-14 days | As-Is | No contingencies | Cash | Earnest $500\n\nHARD RULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. Lead with speed and certainty.\n4. Exact commission: '+fmt(d.agentTotal)+'.\n5. Compare to at-list '+fmt(d.atList)+'.\n6. Soft CTA: where to send written offer.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. V1=direct, V2=empathetic, V3=curiosity, V4=ultra short.\n\nReturn ONLY raw JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
+  var prompt='You are a real estate wholesaler writing to a listing agent about their stale listing.\n\nOFFER TYPE: Cash As-Is\nProperty: '+d.address+'\nList Price: '+fmt(d.listPrice)+'\nCash Offer: '+fmt(d.offer)+'\nAssign Price: '+fmt(d.assignPrice)+'\nCOMMISSION: Seller pays listing broker per existing listing agreement from seller proceeds. Buyer is not offering an agent bonus.\nClose: 7-14 days | As-Is | No contingencies | Cash | $500 earnest\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. Lead with speed and certainty.\n4. Exact commission: '+fmt(d.agentTotal)+'.\n5. Compare to at-list '+fmt(d.atList)+'.\n6. Soft CTA: where to send written offer.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. V1=direct, V2=empathetic, V3=curiosity, V4=ultra short.\n\nReturn ONLY raw JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
   showEmailLoading('cl');
   try{
     var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
@@ -1017,7 +1033,7 @@ function downloadModalPDF(type){
     var agentComm=lead.total_to_agent||dp;
     var atList=lead.at_list_commission||(price*0.03);
     html2+='<div class="banner"><b>✓ AGENT COMMISSION FULLY PROTECTED</b>';
-    html2+='<span>Agent receives $'+Math.round(agentComm).toLocaleString()+' at closing, paid from buyer down payment. That is $'+Math.round(agentComm-atList).toLocaleString()+' more than a standard full-price sale commission.</span></div>';
+    html2+='<span>Agent receives $'+Math.round(agentComm).toLocaleString()+' at closing, paid from buyer down payment. Paid from buyer down payment at closing.</span></div>';
     html2+='<div class="grid grid-2"><div class="cell"><div class="cell-label">Purchase Price</div><div class="cell-value purple">$'+Math.round(price).toLocaleString()+'</div><div style="font-size:10px;color:#7a7a9a">Full asking price</div></div>';
     html2+='<div class="cell"><div class="cell-label">Down Payment</div><div class="cell-value teal">$'+Math.round(dp).toLocaleString()+'</div><div style="font-size:10px;color:#7a7a9a">Paid at closing</div></div></div>';
     html2+='<div class="grid grid-3"><div class="cell"><div class="cell-label">Financed Balance</div><div class="cell-value" style="font-size:15px">$'+Math.round(bal).toLocaleString()+'</div></div>';
@@ -1034,12 +1050,12 @@ function downloadModalPDF(type){
     var atList3=lead.at_list_commission||(price*0.03);
     var comm=Math.round(cashOffer*0.06);
     html2+='<div class="banner"><b>✓ AGENT COMMISSION PROTECTED — CASH CLOSE</b>';
-    html2+='<span>Agent receives $'+Math.round(agentTotal).toLocaleString()+' (commission + flat fee) at closing. $'+Math.round(agentTotal-atList3).toLocaleString()+' more than a standard at-list commission.</span></div>';
+    html2+='<span>Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.</span></div>';
     html2+='<div class="grid grid-3"><div class="cell"><div class="cell-label">Cash Offer</div><div class="cell-value teal">$'+Math.round(cashOffer).toLocaleString()+'</div></div>';
     html2+='<div class="cell"><div class="cell-label">Earnest Money</div><div class="cell-value" style="font-size:15px">$500</div></div>';
     html2+='<div class="cell"><div class="cell-label">Close of Escrow</div><div class="cell-value" style="font-size:12px">'+coe14s+'</div></div></div>';
     html2+='<div class="legal"><b>TERMS:</b> As-Is. No repairs. No financing contingency. Cash close. Buyer pays all closing costs minus unpaid mortgages, taxes, or liens. Buyer reserves right to assign contract.<br><br>';
-    html2+='<b>COMMISSION:</b> $'+Math.round(agentTotal).toLocaleString()+' total ($'+Math.round(comm).toLocaleString()+' commission + $1,000 flat fee) paid at closing.</div>';
+    html2+='<b>COMMISSION:</b> Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.</div>';
   }
   html2+='<div class="sig"><div><b>229 Holdings LLC</b></div>';
   html2+='<div style="text-align:right;">Date: ___________________<br>Seller Signature: ___________________</div></div>';
