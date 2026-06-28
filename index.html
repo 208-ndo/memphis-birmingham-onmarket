@@ -109,6 +109,51 @@
     .room-check{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:4px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px}
     .room-check.yes{background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.3)}.room-check.no{background:rgba(255,71,87,.1);color:var(--red);border:1px solid rgba(255,71,87,.3)}
     footer{text-align:center;padding:24px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);border-top:1px solid var(--border)}
+
+    /* ── Property Modal ─────────────────────────────────────────── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:900px;padding:32px;position:relative;animation:slideUp .2s ease;}
+    @keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .modal-close{position:absolute;top:16px;right:16px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-size:18px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;transition:color .2s;}
+    .modal-close:hover{color:var(--text);}
+    .modal-address{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text);margin-bottom:6px;}
+    .modal-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+    .modal-meta-item{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);}
+    .modal-meta-item span{color:var(--text);}
+    .zillow-link{font-family:'Space Mono',monospace;font-size:11px;color:var(--teal);text-decoration:none;border:1px solid var(--teal);border-radius:4px;padding:4px 10px;transition:background .2s;}
+    .zillow-link:hover{background:rgba(0,212,170,.1);}
+    .modal-tabs{display:flex;gap:8px;margin-bottom:24px;}
+    .modal-tab{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:8px 16px;border-radius:6px;border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .2s;background:var(--bg3);}
+    .modal-tab.active-of{background:rgba(108,99,255,.15);color:var(--purple);border-color:var(--purple);}
+    .modal-tab.active-cl{background:rgba(0,212,170,.15);color:var(--teal);border-color:var(--teal);}
+    .modal-tab.active-sent{background:rgba(255,215,0,.1);color:var(--yellow);border-color:var(--yellow);}
+    .modal-body{display:none;}.modal-body.active{display:block;}
+    .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+    @media(max-width:640px){.modal-grid{grid-template-columns:1fr;}}
+    .modal-section{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:18px;}
+    .modal-section-title{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;}
+    .modal-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);}
+    .modal-row:last-child{border-bottom:none;}
+    .modal-row-label{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);}
+    .modal-row-value{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);}
+    .modal-row-value.purple{color:var(--purple);}
+    .modal-row-value.teal{color:var(--teal);}
+    .modal-row-value.green{color:var(--green);}
+    .modal-row-value.yellow{color:var(--yellow);}
+    .modal-pitch-badge{display:inline-block;padding:3px 10px;border-radius:4px;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;}
+    .modal-pitch-ok{background:rgba(0,230,118,.15);color:var(--green);}
+    .modal-pitch-fail{background:rgba(255,71,87,.15);color:var(--red);}
+    .modal-sent-box{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:16px;}
+    .modal-sent-subject{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--yellow);margin-bottom:10px;}
+    .modal-sent-body{font-family:'Space Mono',monospace;font-size:11px;color:var(--text);line-height:1.7;white-space:pre-wrap;}
+    .modal-btn{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:10px 18px;border-radius:8px;border:none;cursor:pointer;transition:all .2s;}
+    .modal-btn-purple{background:var(--purple);color:#fff;}.modal-btn-purple:hover{background:var(--purple2);}
+    .modal-btn-teal{background:var(--teal);color:#000;}.modal-btn-teal:hover{background:var(--teal2);}
+    .modal-btn-ghost{background:var(--bg3);border:1px solid var(--border);color:var(--text);}.modal-btn-ghost:hover{border-color:var(--text);}
+    .modal-btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
+    tbody tr.clickable-row{cursor:pointer;}
+    tbody tr.clickable-row:hover td:first-child{color:var(--teal);}
   </style>
 </head>
 <body>
@@ -511,8 +556,323 @@ function filterTable(tbodyId,rawRows,q){var tbody=document.getElementById(tbodyI
 function clearSearch(){var inp=document.getElementById('queue-search');inp.value='';document.getElementById('search-clear').style.display='none';searchQueue('');inp.focus();}
 function updateSearchCount(){var q=(document.getElementById('queue-search')?.value||'').trim().toLowerCase();var el=document.getElementById('search-count');if(!el)return;if(!q||!_rawQueue.length){el.textContent=_rawQueue.length?_rawQueue.length+' leads':'';return;}el.textContent=_rawQueue.filter(function(r){return r.replace(/<[^>]+>/g,'').toLowerCase().includes(q);}).length+' of '+_rawQueue.length+' leads';}
 
-async function loadRunData(){try{var res=await fetch('./data/pipeline_log.json');if(!res.ok)return;var d=await res.json();if(d.summary){var s=d.summary;[['s-total',s.total_leads],['s-emails',s.emails_sent],['s-ghl',s.ghl_pushed],['s-of',s.of_deals],['s-cl',s.cl_deals],['s-last',s.run_date]].forEach(function(pair){var el=document.getElementById(pair[0]);if(el)el.textContent=pair[1]!=null?pair[1]:'--';});}if(d.runs&&d.runs.length){_rawRuns=d.runs.map(function(r){return'<tr><td>'+(r.date||'--')+'</td><td>'+(r.market||'--')+'</td><td>'+(r.leads!=null?r.leads:'--')+'</td><td>'+(r.emails!=null?r.emails:'--')+'</td><td>'+(r.of||0)+'/'+(r.cl||0)+'</td><td>'+(r.ghl!=null?r.ghl:'--')+'</td><td><span class="badge '+(r.status==='OK'?'badge-new':'badge-of')+'">'+(r.status||'--')+'</span></td></tr>';});document.getElementById('runs-tbody').innerHTML=_rawRuns.join('');}if(d.queue&&d.queue.length){_rawQueue=d.queue.map(function(q){return'<tr><td>'+(q.address||'--')+'</td><td>'+(q.market||'--')+'</td><td>'+(q.price?'$'+Number(q.price).toLocaleString():'--')+'</td><td>'+(q.dom!=null?q.dom:'--')+'</td><td><span class="badge '+(q.type==='OF'?'badge-of':'badge-cl')+'">'+(q.type||'--')+'</span></td><td>'+(q.offer?'$'+Number(q.offer).toLocaleString():'--')+'</td><td>'+(q.agent||'--')+'</td><td>'+(q.sent||'--')+'</td></tr>';});document.getElementById('queue-tbody').innerHTML=_rawQueue.join('');updateSearchCount();}}catch(e){}}
+async function loadRunData(){try{var res=await fetch('./data/pipeline_log.json');if(!res.ok)return;var d=await res.json();if(d.summary){var s=d.summary;[['s-total',s.total_leads],['s-emails',s.emails_sent],['s-ghl',s.ghl_pushed],['s-of',s.of_deals],['s-cl',s.cl_deals],['s-last',s.run_date]].forEach(function(pair){var el=document.getElementById(pair[0]);if(el)el.textContent=pair[1]!=null?pair[1]:'--';});}if(d.runs&&d.runs.length){_rawRuns=d.runs.map(function(r){return'<tr><td>'+(r.date||'--')+'</td><td>'+(r.market||'--')+'</td><td>'+(r.leads!=null?r.leads:'--')+'</td><td>'+(r.emails!=null?r.emails:'--')+'</td><td>'+(r.of||0)+'/'+(r.cl||0)+'</td><td>'+(r.ghl!=null?r.ghl:'--')+'</td><td><span class="badge '+(r.status==='OK'?'badge-new':'badge-of')+'">'+(r.status||'--')+'</span></td></tr>';});document.getElementById('runs-tbody').innerHTML=_rawRuns.join('');}if(d.queue&&d.queue.length){_rawQueue=d.queue.map(function(q){var encoded=encodeURIComponent(JSON.stringify(q));return'<tr class="clickable-row" onclick="openPropModal(JSON.parse(decodeURIComponent(''+encoded+'')))" style="cursor:pointer"><td style="color:var(--teal)">'+(q.address||'--')+'</td><td>'+(q.market||'--')+'</td><td>'+(q.price?'$'+Number(q.price).toLocaleString():'--')+'</td><td>'+(q.dom!=null?q.dom:'--')+'</td><td><span class="badge '+(q.type==='OF'?'badge-of':'badge-cl')+'">'+(q.type||'--')+'</span></td><td>'+(q.offer?'$'+Number(q.offer).toLocaleString():'--')+'</td><td>'+(q.agent||'--')+'</td><td>'+(q.sent||'--')+'</td></tr>';});document.getElementById('queue-tbody').innerHTML=_rawQueue.join('');updateSearchCount();}}catch(e){}}
 loadRunData();
+</script>
+
+<!-- Property Modal -->
+<div class="modal-overlay" id="prop-modal" onclick="if(event.target===this)closePropModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closePropModal()">&#x2715;</button>
+    <div class="modal-address" id="m-address">—</div>
+    <div class="modal-meta">
+      <div class="modal-meta-item">Market: <span id="m-market">—</span></div>
+      <div class="modal-meta-item">List Price: <span id="m-price">—</span></div>
+      <div class="modal-meta-item">DOM: <span id="m-dom">—</span></div>
+      <div class="modal-meta-item">Agent: <span id="m-agent">—</span></div>
+      <div class="modal-meta-item">Sent: <span id="m-sent">—</span></div>
+      <a class="zillow-link" id="m-zillow" href="#" target="_blank">&#x1F517; View on Zillow</a>
+    </div>
+    <div class="modal-tabs">
+      <div class="modal-tab active-sent" id="mtab-sent" onclick="switchModalTab('sent')">&#x2709; Offer Sent</div>
+      <div class="modal-tab" id="mtab-of" onclick="switchModalTab('of')">&#x1F3E0; Owner Finance</div>
+      <div class="modal-tab" id="mtab-cl" onclick="switchModalTab('cl')">&#x1F4B5; Cash Lowball</div>
+    </div>
+
+    <!-- Sent Email Tab -->
+    <div class="modal-body active" id="mbody-sent">
+      <div class="modal-sent-box">
+        <div class="modal-sent-subject" id="m-email-subject">—</div>
+        <div class="modal-sent-body" id="m-email-body">—</div>
+      </div>
+      <div class="modal-btn-row">
+        <button class="modal-btn modal-btn-ghost" onclick="copyModalEmail()">&#x1F4CB; Copy Email</button>
+      </div>
+    </div>
+
+    <!-- OF Tab -->
+    <div class="modal-body" id="mbody-of">
+      <div class="modal-grid">
+        <div class="modal-section">
+          <div class="modal-section-title">&#x1F512; Your Internal Numbers</div>
+          <div class="modal-row"><span class="modal-row-label">Offer (Full List)</span><span class="modal-row-value purple" id="m-of-price">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Down Payment (5%)</span><span class="modal-row-value teal" id="m-of-dp">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Monthly to Seller</span><span class="modal-row-value" id="m-of-monthly">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Term</span><span class="modal-row-value" id="m-of-term">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Agent Gets</span><span class="modal-row-value teal" id="m-of-agent">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Pitch Holds</span><span id="m-of-pitch">—</span></div>
+        </div>
+        <div class="modal-section">
+          <div class="modal-section-title">&#x1F4B0; Your Deal Numbers</div>
+          <div class="modal-row"><span class="modal-row-label">Buyer Down (12%)</span><span class="modal-row-value green" id="m-of-buyer-dp">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Your Fee at Close</span><span class="modal-row-value green" id="m-of-fee">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Your Monthly Cashflow</span><span class="modal-row-value green" id="m-of-cashflow">—</span></div>
+        </div>
+      </div>
+      <div class="modal-btn-row">
+        <button class="modal-btn modal-btn-purple" onclick="downloadModalPDF('of')">&#x2B07; Download OF Offer PDF</button>
+        <button class="modal-btn modal-btn-ghost" onclick="genModalEmails('of')">&#x2728; Generate Fresh Emails</button>
+      </div>
+      <div id="m-of-emails" style="display:none;margin-top:16px;">
+        <div class="modal-sent-box">
+          <div class="modal-sent-subject" id="m-of-email-subject">—</div>
+          <div class="modal-sent-body" id="m-of-email-body">—</div>
+        </div>
+        <div class="modal-btn-row">
+          <div id="m-of-email-tabs" style="display:flex;gap:6px;"></div>
+          <button class="modal-btn modal-btn-ghost" onclick="copyText('m-of-email-body')">&#x1F4CB; Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CL Tab -->
+    <div class="modal-body" id="mbody-cl">
+      <div class="modal-grid">
+        <div class="modal-section">
+          <div class="modal-section-title">&#x1F512; Your Internal Numbers</div>
+          <div class="modal-row"><span class="modal-row-label">List Price</span><span class="modal-row-value" id="m-cl-list">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Cash Offer</span><span class="modal-row-value teal" id="m-cl-offer">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Agent Gets</span><span class="modal-row-value teal" id="m-cl-agent">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">At-List Baseline</span><span class="modal-row-value" id="m-cl-atlist">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Pitch Holds</span><span id="m-cl-pitch">—</span></div>
+        </div>
+        <div class="modal-section">
+          <div class="modal-section-title">&#x1F4B0; Your Deal Numbers</div>
+          <div class="modal-row"><span class="modal-row-label">Assign Price</span><span class="modal-row-value green" id="m-cl-assign">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Your Fee</span><span class="modal-row-value green" id="m-cl-fee">—</span></div>
+        </div>
+      </div>
+      <div class="modal-btn-row">
+        <button class="modal-btn modal-btn-teal" onclick="downloadModalPDF('cl')">&#x2B07; Download CL Offer PDF</button>
+        <button class="modal-btn modal-btn-ghost" onclick="genModalEmails('cl')">&#x2728; Generate Fresh Emails</button>
+      </div>
+      <div id="m-cl-emails" style="display:none;margin-top:16px;">
+        <div class="modal-sent-box">
+          <div class="modal-sent-subject" id="m-cl-email-subject">—</div>
+          <div class="modal-sent-body" id="m-cl-email-body">—</div>
+        </div>
+        <div class="modal-btn-row">
+          <div id="m-cl-email-tabs" style="display:flex;gap:6px;"></div>
+          <button class="modal-btn modal-btn-ghost" onclick="copyText('m-cl-email-body')">&#x1F4CB; Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+// ── Property Modal ────────────────────────────────────────────────
+var _modalLead = null;
+var _modalOFEmails = [], _modalCLEmails = [];
+var fmt2 = function(v){return v?'$'+Math.round(v).toLocaleString():'—';};
+
+function openPropModal(lead){
+  _modalLead = lead;
+  _modalOFEmails = []; _modalCLEmails = [];
+  document.getElementById('m-address').textContent = lead.address||'—';
+  document.getElementById('m-market').textContent  = lead.market||'—';
+  document.getElementById('m-price').textContent   = fmt2(lead.price);
+  document.getElementById('m-dom').textContent     = (lead.dom!=null?lead.dom+'d':'—');
+  document.getElementById('m-agent').textContent   = lead.agent||'—';
+  document.getElementById('m-sent').textContent    = lead.sent||'—';
+  var zlink = document.getElementById('m-zillow');
+  if(lead.zillow_url){zlink.href=lead.zillow_url;zlink.style.display='inline';}
+  else{zlink.style.display='none';}
+  // Sent email
+  document.getElementById('m-email-subject').textContent = lead.email_subject||'(no subject saved)';
+  document.getElementById('m-email-body').textContent    = lead.email_body||'(email body not saved — run pipeline again to capture)';
+  // OF numbers
+  document.getElementById('m-of-price').textContent    = fmt2(lead.price);
+  document.getElementById('m-of-dp').textContent       = fmt2(lead.down_payment);
+  document.getElementById('m-of-monthly').textContent  = lead.monthly_payment?fmt2(lead.monthly_payment)+'/mo':'—';
+  document.getElementById('m-of-term').textContent     = lead.num_payments?(lead.num_payments+' payments @ 0%'):'—';
+  document.getElementById('m-of-agent').textContent    = fmt2(lead.total_to_agent);
+  var buyerDp = lead.price ? Math.round(lead.price * 0.12) : 0;
+  document.getElementById('m-of-buyer-dp').textContent = fmt2(buyerDp);
+  document.getElementById('m-of-fee').textContent      = fmt2(lead.your_fee || (buyerDp - (lead.down_payment||0)));
+  document.getElementById('m-of-cashflow').textContent = lead.your_monthly_cashflow ? fmt2(lead.your_monthly_cashflow)+'/mo' : '—';
+  var ofPitch = lead.pitch_holds!==undefined ? lead.pitch_holds : (lead.total_to_agent >= lead.at_list_commission);
+  document.getElementById('m-of-pitch').innerHTML = ofPitch
+    ? '<span class="modal-pitch-badge modal-pitch-ok">&#x2713; HOLDS</span>'
+    : '<span class="modal-pitch-badge modal-pitch-fail">&#x2715; FAILS</span>';
+  // CL numbers
+  var assignPrice = (lead.cash_offer||lead.offer||0) + 10000;
+  document.getElementById('m-cl-list').textContent   = fmt2(lead.price);
+  document.getElementById('m-cl-offer').textContent  = fmt2(lead.cash_offer||lead.offer);
+  document.getElementById('m-cl-agent').textContent  = fmt2(lead.total_to_agent);
+  document.getElementById('m-cl-atlist').textContent = fmt2(lead.at_list_commission);
+  document.getElementById('m-cl-assign').textContent = fmt2(lead.assign_price||assignPrice);
+  document.getElementById('m-cl-fee').textContent    = fmt2(lead.your_fee||10000);
+  var clPitch = lead.total_to_agent >= lead.at_list_commission;
+  document.getElementById('m-cl-pitch').innerHTML = clPitch
+    ? '<span class="modal-pitch-badge modal-pitch-ok">&#x2713; HOLDS</span>'
+    : '<span class="modal-pitch-badge modal-pitch-fail">&#x2715; FAILS</span>';
+  // Hide email sections
+  document.getElementById('m-of-emails').style.display='none';
+  document.getElementById('m-cl-emails').style.display='none';
+  // Default to sent tab
+  switchModalTab('sent');
+  document.getElementById('prop-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closePropModal(){
+  document.getElementById('prop-modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function switchModalTab(name){
+  ['sent','of','cl'].forEach(function(t){
+    document.getElementById('mtab-'+t).className='modal-tab';
+    document.getElementById('mbody-'+t).classList.remove('active');
+  });
+  document.getElementById('mtab-'+name).classList.add('active-'+name);
+  document.getElementById('mbody-'+name).classList.add('active');
+}
+
+function copyModalEmail(){
+  var subj = document.getElementById('m-email-subject').textContent;
+  var body = document.getElementById('m-email-body').textContent;
+  navigator.clipboard.writeText('Subject: '+subj+'\n\n'+body);
+  var btn = event.currentTarget; btn.textContent='✓ Copied!';
+  setTimeout(function(){btn.textContent='📋 Copy Email';},2000);
+}
+
+function copyText(id){
+  var el = document.getElementById(id);
+  navigator.clipboard.writeText(el.textContent);
+  var btn = event.currentTarget; var orig=btn.textContent;
+  btn.textContent='✓ Copied!';
+  setTimeout(function(){btn.textContent=orig;},2000);
+}
+
+async function genModalEmails(type){
+  var lead = _modalLead;
+  if(!lead)return;
+  var prefix = type==='of'?'m-of':'m-cl';
+  document.getElementById(prefix+'-emails').style.display='block';
+  document.getElementById(prefix+'-email-subject').textContent='Generating...';
+  document.getElementById(prefix+'-email-body').textContent='';
+  var price = lead.price||0;
+  var prompt;
+  if(type==='of'){
+    var dp = lead.down_payment||(price*0.05);
+    var monthly = lead.monthly_payment||Math.round((price-dp)/100);
+    var agentComm = lead.total_to_agent||dp;
+    var atList = lead.at_list_commission||(price*0.03);
+    prompt='You are a real estate investor writing to a listing agent.\n\nPROPERTY: '+lead.address+'\nOFFER: Full asking price '+fmt2(price)+'\nSTRUCTURE: '+fmt2(dp)+' down at closing, '+fmt2(monthly)+'/month over 100 months at 0% interest\nAGENT GETS: '+fmt2(agentComm)+' paid at closing from buyer down payment. That is '+fmt2(agentComm-atList)+' MORE than a standard full-price sale.\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. NEVER say seller financing or owner financing in subject or body.\n4. NEVER mention percentages, assignment fees, or wholesaling.\n5. Mention exact agent commission: '+fmt2(agentComm)+' paid at closing.\n6. Seller gets FULL asking price.\n7. Soft CTA only.\n8. Sign off EXACTLY: Torian Wallace | 901-290-8408\n9. 4 variations. Different subject and opening each time.\n10. Subject: neutral only.\n\nReturn ONLY a JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
+  } else {
+    var cashOffer = lead.cash_offer||lead.offer||0;
+    var agentTotal = lead.total_to_agent||0;
+    var atList2 = lead.at_list_commission||(price*0.03);
+    prompt='You are a real estate investor writing to a listing agent.\n\nPROPERTY: '+lead.address+'\nLIST PRICE: '+fmt2(price)+'\nCASH OFFER: '+fmt2(cashOffer)+'\nCLOSE: 7-14 days, as-is, no repairs, no contingencies, cash, $500 earnest\nAGENT GETS: '+fmt2(agentTotal)+' paid at closing. That is '+fmt2(agentTotal-atList2)+' MORE than at-list.\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. Lead with speed and certainty.\n4. NEVER mention percentages, assignment fees, or wholesaling.\n5. Mention exact commission: '+fmt2(agentTotal)+'.\n6. Soft CTA only.\n7. Sign off EXACTLY: Torian Wallace | 901-290-8408\n8. 4 variations. Different subject and opening each time.\n\nReturn ONLY a JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
+  }
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    var data=await res.json();
+    var raw=data.content[0].text.trim().replace(/```json|```/g,'').trim();
+    var emails=JSON.parse(raw);
+    emails.forEach(function(e){e.body=e.body.replace(/—/g,',').replace(/–/g,',');});
+    if(type==='of') _modalOFEmails=emails; else _modalCLEmails=emails;
+    // Render tabs
+    var tabsEl=document.getElementById(prefix+'-email-tabs');
+    tabsEl.innerHTML='';
+    emails.forEach(function(e,i){
+      var btn=document.createElement('button');
+      btn.className='modal-btn modal-btn-ghost'+(i===0?' active':'');
+      btn.style.padding='6px 12px';btn.style.fontSize='10px';
+      btn.textContent='V'+(i+1);
+      btn.onclick=function(){
+        tabsEl.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
+        btn.classList.add('active');
+        document.getElementById(prefix+'-email-subject').textContent=emails[i].subject||'';
+        document.getElementById(prefix+'-email-body').textContent=emails[i].body||'';
+      };
+      tabsEl.appendChild(btn);
+    });
+    document.getElementById(prefix+'-email-subject').textContent=emails[0].subject||'';
+    document.getElementById(prefix+'-email-body').textContent=emails[0].body||'';
+  }catch(err){
+    document.getElementById(prefix+'-email-subject').textContent='Generation failed';
+    document.getElementById(prefix+'-email-body').textContent='Try again.';
+  }
+}
+
+function downloadModalPDF(type){
+  var lead=_modalLead;if(!lead)return;
+  var price=lead.price||0;
+  var today2=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  var coe14=new Date();coe14.setDate(coe14.getDate()+14);var coe14s=coe14.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  var coe21=new Date();coe21.setDate(coe21.getDate()+21);var coe21s=coe21.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  var html2='<!DOCTYPE html><html><head><meta charset="UTF-8"><style>';
+  html2+='body{font-family:Arial,sans-serif;font-size:13px;color:#1a1a1a;margin:0;padding:40px;}';
+  html2+='.header{display:flex;justify-content:space-between;margin-bottom:24px;}';
+  html2+='.brand{color:#6c63ff;font-size:16px;font-weight:bold;}';
+  html2+='.hr{border:none;border-top:2px solid #6c63ff;margin:16px 0;}';
+  html2+='.addr{font-size:22px;font-weight:bold;margin-bottom:4px;}';
+  html2+='.meta{font-size:11px;color:#7a7a9a;margin-bottom:20px;}';
+  html2+='.banner{background:#1a1a26;color:#00d4aa;padding:12px 16px;border-radius:6px;margin-bottom:16px;font-size:12px;}';
+  html2+='.banner b{display:block;margin-bottom:4px;}';
+  html2+='.banner span{color:#a0a0c0;font-size:11px;}';
+  html2+='.grid{display:grid;gap:1px;border:1px solid #e8e4ff;margin-bottom:8px;}';
+  html2+='.grid-2{grid-template-columns:1fr 1fr;}';
+  html2+='.grid-3{grid-template-columns:1fr 1fr 1fr;}';
+  html2+='.cell{background:#f8f7ff;padding:10px 12px;border:1px solid #e8e4ff;}';
+  html2+='.cell-label{font-size:9px;color:#7a7a9a;text-transform:uppercase;margin-bottom:4px;}';
+  html2+='.cell-value{font-size:18px;font-weight:bold;}';
+  html2+='.purple{color:#6c63ff;}.teal{color:#00d4aa;}';
+  html2+='.legal{font-size:10px;color:#7a7a9a;margin-top:16px;line-height:1.6;}';
+  html2+='.sig{display:flex;justify-content:space-between;margin-top:40px;padding-top:16px;border-top:1px solid #e8e8f0;font-size:11px;}';
+  html2+='</style></head><body>';
+  html2+='<div class="header"><div class="brand">229 HOLDINGS LLC</div>';
+  html2+='<div style="font-size:10px;color:#7a7a9a;text-align:right;">'+(type==='of'?'PURCHASE OFFER':'CASH PURCHASE OFFER')+'<br>'+today2+'</div></div>';
+  html2+='<hr class="hr">';
+  html2+='<div class="addr">'+lead.address+'</div>';
+  html2+='<div class="meta">Presented to: Listing Agent</div>';
+  if(type==='of'){
+    var dp=lead.down_payment||(price*0.05);
+    var bal=lead.financed_balance||(price-dp);
+    var mo=lead.monthly_payment||Math.round(bal/100);
+    var agentComm=lead.total_to_agent||dp;
+    var atList=lead.at_list_commission||(price*0.03);
+    html2+='<div class="banner"><b>✓ AGENT COMMISSION FULLY PROTECTED</b>';
+    html2+='<span>Agent receives $'+Math.round(agentComm).toLocaleString()+' at closing, paid from buyer's down payment. That's $'+Math.round(agentComm-atList).toLocaleString()+' more than a standard full-price sale commission.</span></div>';
+    html2+='<div class="grid grid-2"><div class="cell"><div class="cell-label">Purchase Price</div><div class="cell-value purple">$'+Math.round(price).toLocaleString()+'</div><div style="font-size:10px;color:#7a7a9a">Full asking price</div></div>';
+    html2+='<div class="cell"><div class="cell-label">Down Payment</div><div class="cell-value teal">$'+Math.round(dp).toLocaleString()+'</div><div style="font-size:10px;color:#7a7a9a">Paid at closing</div></div></div>';
+    html2+='<div class="grid grid-3"><div class="cell"><div class="cell-label">Financed Balance</div><div class="cell-value" style="font-size:15px">$'+Math.round(bal).toLocaleString()+'</div></div>';
+    html2+='<div class="cell"><div class="cell-label">Monthly Payment</div><div class="cell-value" style="font-size:15px">$'+Math.round(mo).toLocaleString()+'/mo</div></div>';
+    html2+='<div class="cell"><div class="cell-label">Term</div><div class="cell-value" style="font-size:15px">100 payments</div></div></div>';
+    html2+='<div class="grid grid-3"><div class="cell"><div class="cell-label">Interest Rate</div><div class="cell-value" style="font-size:14px">0% — Interest Free</div></div>';
+    html2+='<div class="cell"><div class="cell-label">Earnest Money</div><div class="cell-value" style="font-size:14px">$500</div></div>';
+    html2+='<div class="cell"><div class="cell-label">Close of Escrow</div><div class="cell-value" style="font-size:12px">'+coe21s+'</div></div></div>';
+    html2+='<div class="legal"><b>TERMS:</b> As-Is subject to walk-through. Due diligence period: 10 days. Buyer pays all closing costs minus unpaid mortgages, taxes, or liens. Buyer will select closing attorney. Buyer reserves right to assign contract.<br><br>';
+    html2+='<b>AGENT COMMISSION:</b> $'+Math.round(agentComm).toLocaleString()+' paid from buyer's down payment at closing. Seller carries zero commission obligation.</div>';
+  } else {
+    var cashOffer=lead.cash_offer||lead.offer||0;
+    var agentTotal=lead.total_to_agent||0;
+    var atList3=lead.at_list_commission||(price*0.03);
+    var comm=Math.round(cashOffer*0.06);
+    html2+='<div class="banner"><b>✓ AGENT COMMISSION PROTECTED — CASH CLOSE</b>';
+    html2+='<span>Agent receives $'+Math.round(agentTotal).toLocaleString()+' (commission + flat fee) at closing. $'+Math.round(agentTotal-atList3).toLocaleString()+' more than a standard at-list commission.</span></div>';
+    html2+='<div class="grid grid-3"><div class="cell"><div class="cell-label">Cash Offer</div><div class="cell-value teal">$'+Math.round(cashOffer).toLocaleString()+'</div></div>';
+    html2+='<div class="cell"><div class="cell-label">Earnest Money</div><div class="cell-value" style="font-size:15px">$500</div></div>';
+    html2+='<div class="cell"><div class="cell-label">Close of Escrow</div><div class="cell-value" style="font-size:12px">'+coe14s+'</div></div></div>';
+    html2+='<div class="legal"><b>TERMS:</b> As-Is. No repairs. No financing contingency. Cash close. Buyer pays all closing costs minus unpaid mortgages, taxes, or liens. Buyer reserves right to assign contract.<br><br>';
+    html2+='<b>COMMISSION:</b> $'+Math.round(agentTotal).toLocaleString()+' total ($'+Math.round(comm).toLocaleString()+' commission + $1,000 flat fee) paid at closing.</div>';
+  }
+  html2+='<div class="sig"><div><b>229 Holdings LLC</b></div>';
+  html2+='<div style="text-align:right;">Date: ___________________<br>Seller Signature: ___________________</div></div>';
+  html2+='</body></html>';
+  var win=window.open('','_blank');
+  win.document.write(html2);
+  win.document.close();
+  setTimeout(function(){win.print();},500);
+}
+
+// Keyboard close
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closePropModal();});
+
 </script>
 </body>
 </html>
