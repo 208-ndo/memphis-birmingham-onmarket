@@ -477,8 +477,7 @@ function renderOFOffer(){
   document.getElementById('of-direct-doc').textContent='SELLER FINANCED OFFER - 229 Holdings LLC\n'+d.address+'\n'+today()+'\nPresented to: '+d.agent+'\n\nPURCHASE PRICE: '+fmt(d.price)+' (Seller receives full asking price)\n\nDOWN PAYMENT: '+fmt(d.dp)+' ('+d.dpPct+'% = Agent Commission)\nPaid from buyer\'s down payment at closing. Seller owes nothing at closing.\n\nFINANCED AMOUNT: '+fmt(d.balance)+'\nMONTHLY PAYMENT TO SELLER: '+fmt(d.monthly)+'/mo\nTERM: '+d.pmts+' months @ 0% interest\n\nAGENT COMMISSION: '+fmt(d.agentComm)+'\nPaid from buyer\'s down payment. Above the '+fmt(d.atList)+' at-list baseline.\n\nPLAN TO SELL:\nEnd Buyer Down ('+d.buyerDp+'%): '+fmt(d.buyerDown)+'\nEnd Buyer Rate / Term: '+d.buyerRate+'% / '+d.buyerTermYrs+' years\nEnd Buyer Monthly: '+fmt(d.buyerMo)+'/mo\nYour Monthly Cashflow: '+fmt(d.yourCashflow)+'/mo\nYour Fee at Close: '+fmt(d.yourFee)+'\n\nCLOSING TERMS:\n- Earnest Money: $500\n- Due Diligence: 10 Days | As-Is, walk-through\n- Close of Escrow: '+coeDate(21)+'\n- Buyer pays all closing costs minus unpaid mortgages, taxes, liens\n- Buyer selects closing attorney / title / escrow\n- Buyer reserves right to assign contract\n\n229 Holdings LLC';
 }
 
-function kissOffer(p){
-  if(p<80000)return{pct:20,label:'20% (sub-$80k — use OF instead)'};
+/* kissOffer removed — replaced by MAO engine */;
   if(p<150000)return{pct:40,label:'40% ($80k–$150k tier)'};
   if(p<300000)return{pct:50,label:'50% ($150k–$300k tier)'};
   if(p<750000)return{pct:60,label:'60% ($300k–$750k tier)'};
