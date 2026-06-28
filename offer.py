@@ -15,6 +15,7 @@ from config import (
     CLOSING_BUFFER_MIN, CLOSING_BUFFER_PCT,
     INITIAL_OFFER_LOW, INITIAL_OFFER_HIGH,
     CASH_MAX_AUTO, SPREAD_RULES, COMMISSION_LANGUAGE,
+    ASSIGNMENT_FEE_MIN_SMALL, ASSIGNMENT_FEE_MAX_SMALL, TRUE_WALKAWAY_PCT,
 )
 
 
@@ -24,11 +25,19 @@ def round_down_1k(val: float) -> float:
     return float(int(val / 1000) * 1000)
 
 
-def calc_assignment_fee(arv: float, override: float = None) -> float:
-    """ARV * 8%, clamped to [7500, 30000]. Override allowed for small deals."""
+def calc_effective_repairs(repairs: float, arv: float) -> float:
+    """effective_repairs = max(estimated_repairs, arv * 0.05, 10000)"""
+    return max(repairs, arv * 0.05, 10000.0)
+
+
+def calc_assignment_fee(arv: float, buyer_mao: float = 0, override: float = None) -> float:
+    """ARV * 8%, clamped. Small-deal override if buyer_mao < 50k."""
     if override:
         return float(override)
-    return max(ASSIGNMENT_FEE_MIN, min(ASSIGNMENT_FEE_MAX, arv * ASSIGNMENT_FEE_PCT))
+    base = arv * ASSIGNMENT_FEE_PCT
+    if buyer_mao > 0 and buyer_mao < 50000:
+        return max(ASSIGNMENT_FEE_MIN_SMALL, min(ASSIGNMENT_FEE_MAX_SMALL, base))
+    return max(ASSIGNMENT_FEE_MIN, min(ASSIGNMENT_FEE_MAX, base))
 
 
 def calc_buyer_mao(arv: float, repairs: float) -> float:
@@ -134,7 +143,7 @@ def _calc_cash_lowball(listing: dict, list_price: float) -> dict:
         return {
             "offer_type":         "no_arv",
             "list_price":         list_price,
-            "skip_reason":        "NO ARV — cash offer requires ARV input. Use owner finance or manual review.",
+            "skip_reason":        "ARV REQUIRED — no cash offer generated. Use owner finance or manual review.",
             "pitch_holds":        False,
             "commission_language": COMMISSION_LANGUAGE,
         }
@@ -164,12 +173,12 @@ def _calc_cash_lowball(listing: dict, list_price: float) -> dict:
     final_contract_mao = min(buyer_math_cap, spread_cap)
 
     if final_contract_mao <= 0:
-        visible_spread_at_zero = calc_visible_spread(list_price, 0, assignment_fee)
         return {
             "offer_type":          "skip",
             "list_price":          list_price,
             "arv":                 arv,
             "repairs":             repairs,
+            "effective_repairs":   eff_repairs,
             "buyer_mao":           buyer_mao,
             "assignment_fee":      assignment_fee,
             "closing_buffer":      closing_buffer,
@@ -177,30 +186,38 @@ def _calc_cash_lowball(listing: dict, list_price: float) -> dict:
             "spread_cap":          spread_cap,
             "required_spread":     req_spread,
             "final_contract_mao":  final_contract_mao,
-            "skip_reason":         "SKIP — numbers do not pencil. Final contract MAO is zero or negative.",
+            "skip_reason":         "SKIP — MAO BELOW ZERO. Numbers do not pencil.",
             "pitch_holds":         False,
             "commission_language": COMMISSION_LANGUAGE,
         }
 
-    # ── Step 5: Initial offer = final_contract_mao * 85–92% ──────────────────
-    initial_offer = round_down_1k(final_contract_mao * INITIAL_OFFER_LOW)
-    max_offer     = round_down_1k(final_contract_mao * INITIAL_OFFER_HIGH)
-    cash_offer    = initial_offer
+    # ── Step 5: Offer range ───────────────────────────────────────────────────
+    initial_offer  = round_down_1k(final_contract_mao * INITIAL_OFFER_LOW)   # 85%
+    max_counter    = round_down_1k(final_contract_mao * INITIAL_OFFER_HIGH)  # 90%
+    true_walkaway  = round_down_1k(final_contract_mao * TRUE_WALKAWAY_PCT)   # 100% internal
+    cash_offer     = initial_offer
 
-    # ── Step 6: Visible spread check at initial offer ─────────────────────────
-    visible_spread  = calc_visible_spread(list_price, cash_offer, assignment_fee)
+    # ── Step 6: Visible spread and buyer room check ────────────────────────────
+    buyer_all_in    = cash_offer + assignment_fee
+    visible_spread  = list_price - buyer_all_in
     spread_ok       = visible_spread >= req_spread
     spread_status   = "PASS" if spread_ok else "NO ARBITRAGE"
 
-    assign_price    = cash_offer + assignment_fee
-    buyer_has_room  = assign_price < buyer_mao
-    room_delta      = buyer_mao - assign_price
+    buyer_has_room  = buyer_all_in < buyer_mao
+    room_delta      = buyer_mao - buyer_all_in
+
+    # ── Step 7: Limiting factor ────────────────────────────────────────────────
+    if buyer_math_cap <= spread_cap:
+        limiting_factor = "Buyer math is limiting the deal."
+    else:
+        limiting_factor = "Visible spread is limiting the deal."
 
     return {
         "offer_type":          "cash_lowball",
         "list_price":          list_price,
         "arv":                 arv,
         "repairs":             repairs,
+        "effective_repairs":   eff_repairs,
         # MAO chain
         "buyer_mao":           buyer_mao,
         "assignment_fee":      assignment_fee,
@@ -209,12 +226,15 @@ def _calc_cash_lowball(listing: dict, list_price: float) -> dict:
         # Spread chain
         "required_spread":     req_spread,
         "spread_cap":          spread_cap,
+        "limiting_factor":     limiting_factor,
         # Final
         "final_contract_mao":  final_contract_mao,
         "cash_offer":          cash_offer,
         "initial_offer":       initial_offer,
-        "max_offer":           max_offer,
-        "assign_price":        assign_price,
+        "max_counter":         max_counter,
+        "true_walkaway":       true_walkaway,
+        "buyer_all_in":        buyer_all_in,
+        "assign_price":        buyer_all_in,
         "visible_spread":      visible_spread,
         "spread_status":       spread_status,
         "spread_ok":           spread_ok,
