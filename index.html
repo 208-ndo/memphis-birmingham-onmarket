@@ -253,12 +253,8 @@
           <div class="result-row"><span class="result-label">Financed Balance</span><span class="result-value" id="of-r-bal">—</span></div>
           <div class="result-row"><span class="result-label">Monthly Payment to Seller</span><span class="result-value" id="of-r-monthly">—</span></div>
           <hr class="divider"/>
-          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Agent Commission</div>
-          <div class="result-row hl"><span class="result-label">Agent Gets (= your 5% down)</span><span class="result-value yellow" id="of-r-comm">—</span></div>
-          <div class="result-row"><span class="result-label">At-List Baseline (3% of list)</span><span class="result-value muted" id="of-r-atlist">—</span></div>
-          <div class="result-row"><span class="result-label">Agent Nets vs At-List</span><span class="result-value green" id="of-r-comm-delta">—</span></div>
-          <div class="result-row" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);padding:6px 0">Paid from buyer's down payment at closing. Seller covers zero.</div>
-          <div id="of-pitch" class="pitch-check" style="display:none"></div>
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Commission</div>
+          <div class="result-row" style="padding:8px 0"><span class="result-label" style="line-height:1.6;max-width:90%">Seller pays listing broker per existing listing agreement from seller proceeds. Buyer is not offering an agent bonus.</span></div>
           <hr class="divider"/>
           <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Assign Price — What End Buyer Pays</div>
           <div class="result-row hl"><span class="result-label">Assign Price (same price)</span><span class="result-value purple" id="of-r-plan-sell">—</span></div>
@@ -292,9 +288,9 @@
     </div>
     <div class="ref-grid">
       <div class="ref-card"><div class="ref-title p">Owner Finance Rules</div><div class="ref-body">Band: <span class="val">$30k–$80k</span><br>Offer: <span class="val">FULL list price</span><br>Down: <span class="val">5% = agent commission (nothing else)</span><br>Agent gets: <span class="val">exactly 5% of purchase price</span><br>Seller covers: <span class="val">ZERO at closing</span><br>Balance: <span class="val">100 payments @ 0% interest</span><br>Earnest: <span class="val">$500</span> | Close: <span class="val">21 days</span> | DD: <span class="val">10 days</span></div></div>
-      <div class="ref-card"><div class="ref-title p">How Commission Works</div><div class="ref-body">5% down from end buyer <span class="val">= agent commission</span><br>Paid at closing from buyer's down payment<br>No separate 6% line. No flat fee.<br>Seller carries: <span class="val">balance ÷ 100 payments</span><br>At-list baseline: <span class="val">3% of list price</span><br>5% always beats 3% — <span class="val">pitch always holds</span></div></div>
+      <div class="ref-card"><div class="ref-title p">How Commission Works</div><div class="ref-body">Commission: <span class="val">seller pays per existing listing agreement</span><br>No buyer bonus. No 6% pitch added.<br>Seller carries: <span class="val">balance ÷ 100 payments</span><br>5% down covers typical listing commission<br>Seller nets: <span class="val">full price via monthly payments</span></div></div>
       <div class="ref-card"><div class="ref-title p">Assign Price</div><div class="ref-body">Sell to end buyer at: <span class="val">same list price</span><br>Buyer down: <span class="val">12%</span> (you put in 5%)<br>Your spread at close: <span class="val">7% of list price</span><br>Buyer rate: <span class="val">12% / 10yr = positive cashflow</span><br>Monthly cashflow: <span class="val">buyer mo. - seller mo.</span><br>End buyer: <span class="val">owner occupant, no bank needed</span></div></div>
-      <div class="ref-card"><div class="ref-title p">Email Hard Rules</div><div class="ref-body">Length: <span class="val">3-5 sentences max</span><br>Em dashes: <span class="val">NEVER</span><br>Subject: <span class="val">NEVER "seller financing"</span><br>Commission: <span class="val">exact dollar always</span><br>Seller wins: <span class="val">emphasize full asking price</span><br>Sign off: <span class="val">Torian Wallace | 901-290-8408</span></div></div>
+      <div class="ref-card"><div class="ref-title p">Email Hard Rules</div><div class="ref-body">Length: <span class="val">3-5 sentences max</span><br>Em dashes: <span class="val">NEVER</span><br>Subject: <span class="val">NEVER "seller financing"</span><br>Commission: <span class="val">exact dollar always</span><br>Seller wins: <span class="val">emphasize full asking price</span><br>Sign off: <span class="val">Michael B. | 229 Holdings LLC</span></div></div>
     </div>
   </div>
 
@@ -302,36 +298,53 @@
     <div class="calc-grid">
       <div class="calc-card teal-card" id="cl-card">
         <div class="calc-title teal">Cash Lowball</div>
-        <div class="calc-subtitle">Cash Lowball — $80k+</div>
+        <div class="calc-subtitle">Listed Property Visible Spread + MAO Engine</div>
         <div class="field-group"><div class="field-label">Property Address <span class="field-hint" style="color:var(--teal)">for offer doc</span></div><input type="text" id="cl-address" placeholder="456 Oak Ave, Birmingham AL 35203" /></div>
-        <div class="field-group"><div class="field-label">List Price ($) <span class="field-hint" style="color:var(--teal)">tier auto-selects</span></div><input type="number" id="cl-list" placeholder="120000" oninput="clearCL()" /></div>
-        <div class="field-group"><div class="field-label">ARV ($) <span class="field-hint" style="color:var(--teal)">for buyer MAO check</span></div><input type="number" id="cl-arv" placeholder="150000" oninput="clearCL()" /></div>
-        <div class="field-group"><div class="field-label">Estimated Repairs ($) <span class="field-hint" style="color:var(--teal)">for buyer MAO check</span></div><input type="number" id="cl-repair" placeholder="25000" oninput="clearCL()" /></div>
+        <div class="field-group"><div class="field-label">List Price ($) <span class="field-hint" style="color:var(--teal)">required</span></div><input type="number" id="cl-list" placeholder="120000" oninput="clearCL()" /></div>
+        <div class="field-group"><div class="field-label">ARV ($) <span class="field-hint" style="color:var(--teal)">required — no ARV = no cash offer</span></div><input type="number" id="cl-arv" placeholder="160000" oninput="clearCL()" /></div>
+        <div class="field-group"><div class="field-label">Estimated Repairs ($) <span class="field-hint" style="color:var(--teal)">used as repairs × 2 in buyer MAO</span></div><input type="number" id="cl-repair" placeholder="25000" oninput="clearCL()" /></div>
+        <div class="field-group"><div class="field-label">Assignment Fee Override ($) <span class="field-hint" style="color:var(--teal)">optional — default ARV × 8%</span></div><input type="number" id="cl-assign-override" placeholder="leave blank for auto" oninput="clearCL()" /></div>
         <div class="field-group"><div class="field-label">Listing Agent Name <span class="field-hint" style="color:var(--teal)">for offer doc</span></div><input type="text" id="cl-agent" placeholder="John Davis" /></div>
-        <button class="calc-btn teal-btn" onclick="calcCL()">Calculate + Generate Offer</button>
+        <button class="calc-btn teal-btn" onclick="calcCL()">Calculate + Check Spread</button>
         <div class="results-box" id="cl-results">
-          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Offer</div>
-          <div class="result-row"><span class="result-label">List Price</span><span class="result-value teal" id="cl-r-list">—</span></div>
-          <div class="result-row"><span class="result-label">Tier Applied</span><span class="result-value teal" id="cl-r-tier">—</span></div>
-          <div class="result-row hl"><span class="result-label">Cash Offer</span><span class="result-value teal" id="cl-r-offer">—</span></div>
-          <div class="result-row hl"><span class="result-label">Assign Price (offer + $10k)</span><span class="result-value green" id="cl-r-plan-sell">—</span></div>
+
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Step 1 — Buyer MAO</div>
+          <div class="result-row"><span class="result-label">ARV</span><span class="result-value teal" id="cl-r-arv">—</span></div>
+          <div class="result-row"><span class="result-label">ARV × 90%</span><span class="result-value teal" id="cl-r-arv90">—</span></div>
+          <div class="result-row"><span class="result-label">Repairs × 2</span><span class="result-value red" id="cl-r-repairs2">—</span></div>
+          <div class="result-row hl"><span class="result-label">Buyer MAO</span><span class="result-value teal" id="cl-r-buyer-mao">—</span></div>
+
           <hr class="divider"/>
-          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Buyer MAO Check</div>
-          <div class="result-row"><span class="result-label">ARV x 80%</span><span class="result-value teal" id="cl-r-arv80">—</span></div>
-          <div class="result-row"><span class="result-label">Minus Repairs</span><span class="result-value red" id="cl-r-repairs">—</span></div>
-          <div class="result-row hl"><span class="result-label">Buyer MAO Ceiling</span><span class="result-value teal" id="cl-r-buyer-mao">—</span></div>
-          <div class="result-row"><span class="result-label">Your Assign Price vs Buyer MAO</span><span class="result-value" id="cl-r-room-val">—</span></div>
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Step 2 — Assignment Fee + Buffer</div>
+          <div class="result-row"><span class="result-label">Assignment Fee (ARV × 8%, clamped)</span><span class="result-value" id="cl-r-assign-fee">—</span></div>
+          <div class="result-row"><span class="result-label">Closing Buffer (max 2500, MAO × 2%)</span><span class="result-value" id="cl-r-buffer">—</span></div>
+          <div class="result-row hl"><span class="result-label">Buyer Math Contract Cap</span><span class="result-value purple" id="cl-r-buyer-cap">—</span></div>
+
+          <hr class="divider"/>
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Step 3 — Visible Spread Arbitrage</div>
+          <div class="result-row"><span class="result-label">List Price</span><span class="result-value" id="cl-r-list">—</span></div>
+          <div class="result-row"><span class="result-label">Required Visible Spread</span><span class="result-value yellow" id="cl-r-req-spread">—</span></div>
+          <div class="result-row hl"><span class="result-label">Spread Contract Cap</span><span class="result-value purple" id="cl-r-spread-cap">—</span></div>
+
+          <hr class="divider"/>
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Step 4 — Final Contract MAO</div>
+          <div class="result-row hl"><span class="result-label">Final Contract MAO (min of both caps)</span><span class="result-value green" id="cl-r-final-mao">—</span></div>
+
+          <hr class="divider"/>
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Step 5 — Your Offer</div>
+          <div class="result-row hl"><span class="result-label">Initial Offer (85% of MAO)</span><span class="result-value teal" id="cl-r-offer">—</span></div>
+          <div class="result-row"><span class="result-label">Max Offer (92% of MAO)</span><span class="result-value" id="cl-r-max-offer">—</span></div>
+          <div class="result-row"><span class="result-label">Assign Price (offer + fee)</span><span class="result-value green" id="cl-r-plan-sell">—</span></div>
+          <div class="result-row"><span class="result-label">Visible Spread at Initial Offer</span><span class="result-value" id="cl-r-vis-spread">—</span></div>
+          <div class="result-row"><span class="result-label">Spread Check</span><span id="cl-r-spread-status">—</span></div>
           <div class="result-row"><span class="result-label">Buyer Has Room</span><span id="cl-r-room">—</span></div>
+
           <hr class="divider"/>
-          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Agent Pitch</div>
-          <div class="result-row hl"><span class="result-label">Agent Commission (6% of offer)</span><span class="result-value yellow" id="cl-r-comm">—</span></div>
-          <div class="result-row"><span class="result-label">Agent Flat Fee</span><span class="result-value yellow" id="cl-r-flat">—</span></div>
-          <div class="result-row hl"><span class="result-label">Total To Agent</span><span class="result-value yellow" id="cl-r-agent-total">—</span></div>
-          <div class="result-row"><span class="result-label">At-List Baseline (3% of list)</span><span class="result-value muted" id="cl-r-atlist">—</span></div>
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Commission</div>
+          <div class="result-row" style="padding:8px 0"><span class="result-label" style="line-height:1.6;max-width:90%">Seller pays listing broker per existing listing agreement from seller proceeds. Buyer is not offering an agent bonus.</span></div>
+          <hr class="divider"/>
+          <div class="result-row hl"><span class="result-label">Your Assignment Fee</span><span class="result-value green" id="cl-r-fee">—</span></div>
           <div id="cl-pitch" class="pitch-check" style="display:none"></div>
-          <div class="pitch-breakdown" id="cl-breakdown"></div>
-          <hr class="divider"/>
-          <div class="result-row hl"><span class="result-label">Your Fee</span><span class="result-value green" id="cl-r-fee">—</span></div>
         </div>
       </div>
       <div class="output-panel" id="cl-output-panel" style="display:none">
@@ -353,10 +366,10 @@
       </div>
     </div>
     <div class="ref-grid">
-      <div class="ref-card"><div class="ref-title t">Cash Tiers</div><div class="ref-body">$80k–$150k: <span class="val">40% of list price</span><br>$150k–$300k: <span class="val">50% of list price</span><br>$300k–$750k: <span class="val">60% of list price</span><br>$750k+: <span class="val">65% of list price</span><br>Sub-$80k: <span class="val">use Owner Finance instead</span><br></div></div>
-      <div class="ref-card"><div class="ref-title t">Buyer MAO Check</div><div class="ref-body">Buyer MAO = <span class="val">ARV x 80% - Repairs</span><br>Assign price must be: <span class="val">&lt; Buyer MAO</span><br>If no room: <span class="val">pass or renegotiate</span><br>Your assign price: <span class="val">cash offer + $10k</span></div></div>
-      <div class="ref-card"><div class="ref-title t">Cash Agent Commission</div><div class="ref-body">Cash side only: <span class="val">6% of cash offer + $1,000 flat fee</span><br>NOTE: OF side is different (5% down only)<br>Pitch: <span class="val">total &ge; 3% of list price</span><br>Close: <span class="val">7-14 days, as-is, no contingencies</span><br>Earnest: <span class="val">$500</span></div></div>
-      <div class="ref-card"><div class="ref-title t">Email Hard Rules</div><div class="ref-body">Lead: <span class="val">speed + certainty of close</span><br>Commission: <span class="val">exact dollar always</span><br>Em dashes: <span class="val">NEVER</span><br>Sign off: <span class="val">Torian Wallace | 901-290-8408</span></div></div>
+      <div class="ref-card"><div class="ref-title t">Cash Tiers</div><div class="ref-body">$30k–$80k: <span class="val">OF first, cash 20%–25% anchor, 30% max</span><br>$80k–$150k: <span class="val">35%–40% anchor, 45% max</span><br>$150k–$300k: <span class="val">45%–50% anchor, 55% max</span><br>$300k–$500k: <span class="val">50%–55% anchor, 60% max</span><br>$500k+: <span class="val">manual review only</span><br>All cash offers MAO-capped: <span class="val">ARV × 70% − repairs − fees</span><br></div></div>
+      <div class="ref-card"><div class="ref-title t">Buyer MAO Check</div><div class="ref-body">MAO formula: <span class="val">ARV × 70% − repairs − $10k fee − $5k buffer</span><br>Initial offer: <span class="val">min(list × tier%, MAO × 90%)</span><br>Max offer: <span class="val">min(list × max tier%, MAO)</span><br>Always round down to nearest $1,000<br>If MAO too low: <span class="val">skip the property</span></div></div>
+      <div class="ref-card"><div class="ref-title t">Cash Agent Commission</div><div class="ref-body">Commission: <span class="val">seller pays per listing agreement from seller proceeds</span><br>No buyer agent bonus. No 6% pitch. No flat fee.<br>Close: <span class="val">7-14 days, as-is, no contingencies</span><br>Earnest: <span class="val">$500</span></div></div>
+      <div class="ref-card"><div class="ref-title t">Email Hard Rules</div><div class="ref-body">Lead: <span class="val">speed + certainty of close</span><br>Commission: <span class="val">exact dollar always</span><br>Em dashes: <span class="val">NEVER</span><br>Sign off: <span class="val">Michael B. | 229 Holdings LLC</span></div></div>
     </div>
   </div>
 </div>
@@ -472,36 +485,112 @@ function calcCL(){
   var listPrice=parseFloat(document.getElementById('cl-list').value)||0;
   var arv=parseFloat(document.getElementById('cl-arv').value)||0;
   var repair=parseFloat(document.getElementById('cl-repair').value)||0;
+  var assignOverride=parseFloat(document.getElementById('cl-assign-override').value)||0;
   var address=document.getElementById('cl-address').value.trim()||'Property Address';
   var agent=document.getElementById('cl-agent').value.trim()||'Listing Agent';
   if(!listPrice){alert('Enter a list price.');return;}
-  var tier=kissOffer(listPrice);
-  var offer=listPrice*(tier.pct/100);
-  var assignFee=10000;
-  var assignPrice=offer+assignFee;
-  var buyerMAO=arv>0?(arv*0.80)-repair:null;
-  var hasRoom=buyerMAO!==null?assignPrice<buyerMAO:null;
-  var roomDelta=buyerMAO!==null?buyerMAO-assignPrice:null;
-  var comm=offer*0.06;
-  var flat=1000;
-  var agentTotal=comm+flat;
-  var atList=listPrice*0.03;
-  var pitchOk=agentTotal>=atList&&offer>0;
-  clData={listPrice:listPrice,arv:arv,repair:repair,offer:offer,assignFee:assignFee,assignPrice:assignPrice,buyerMAO:buyerMAO,hasRoom:hasRoom,roomDelta:roomDelta,comm:comm,flat:flat,agentTotal:agentTotal,atList:atList,pitchOk:pitchOk,tier:tier,address:address,agent:agent};
-  setEl('cl-r-list',fmt(listPrice),'teal');setEl('cl-r-tier',tier.label,'teal');setEl('cl-r-offer',fmt(offer),'teal');setEl('cl-r-plan-sell',fmt(assignPrice),'green');
-  if(buyerMAO!==null){setEl('cl-r-arv80',fmt(arv*0.80),'teal');setEl('cl-r-repairs',fmt(repair),'red');setEl('cl-r-buyer-mao',fmt(buyerMAO),'teal');setEl('cl-r-room-val',(roomDelta>=0?'+':'')+fmt(roomDelta),roomDelta>=0?'green':'red');document.getElementById('cl-r-room').innerHTML='<span class="room-check '+(hasRoom?'yes':'no')+'">'+(hasRoom?'&#10003; YES':'&#10007; NO')+'</span>';}
-  else{setEl('cl-r-arv80','Enter ARV','muted');setEl('cl-r-repairs','—','muted');setEl('cl-r-buyer-mao','Enter ARV','muted');setEl('cl-r-room-val','—','muted');document.getElementById('cl-r-room').innerHTML='<span class="result-value muted">Enter ARV to check</span>';}
-  setEl('cl-r-comm',fmt(comm),'yellow');setEl('cl-r-flat',fmt(flat),'yellow');setEl('cl-r-agent-total',fmt(agentTotal),'yellow');setEl('cl-r-atlist',fmt(atList),'muted');setEl('cl-r-fee',fmt(assignFee),'green');
-  var pitchEl=document.getElementById('cl-pitch');pitchEl.style.display='flex';pitchEl.className='pitch-check '+(pitchOk?'pass':'fail');
-  pitchEl.innerHTML=pitchOk?'&#10003; PITCH HOLDS — Agent nets '+fmt(agentTotal)+' vs '+fmt(atList)+' at-list':'&#10007; PITCH FAILS';
-  var bd=document.getElementById('cl-breakdown');bd.style.display='block';
-  bd.innerHTML='List: <span class="hi">'+fmt(listPrice)+'</span> | Tier: <span class="hi">'+tier.label+'</span><br>Offer: <span class="hi">'+fmt(offer)+'</span> | Assign: <span class="hi">'+fmt(assignPrice)+'</span><br>Agent: <span class="hi">'+fmt(agentTotal)+'</span> vs at-list <span class="hi p">'+fmt(atList)+'</span>';
-  document.getElementById('cl-results').style.display='block';renderCLOffer();document.getElementById('cl-output-panel').style.display='block';generateCLEmails();
+  if(!arv){alert('ARV is required for cash offers. Enter ARV or use Owner Finance.');return;}
+  if(listPrice>=500000){
+    document.getElementById('cl-results').style.display='block';
+    document.getElementById('cl-pitch').style.display='flex';
+    document.getElementById('cl-pitch').className='pitch-check fail';
+    document.getElementById('cl-pitch').innerHTML='&#x26A0; MANUAL REVIEW — $500k+ requires manual underwriting';
+    return;
+  }
+
+  // Step 1: Buyer MAO = ARV * 0.90 - (repairs * 2)
+  var buyerMAO = Math.max(0, arv*0.90 - repair*2);
+  // Step 2: Assignment fee = clamp(ARV*8%, 7500, 30000)
+  var assignFee = assignOverride || Math.max(7500, Math.min(30000, arv*0.08));
+  var closingBuffer = Math.max(2500, buyerMAO*0.02);
+  var buyerMathCap = buyerMAO - assignFee - closingBuffer;
+
+  // Step 3: Required visible spread
+  var SPREAD_RULES=[[0,80000,15000,0.25],[80000,150000,25000,0.20],[150000,300000,30000,0.15],[300000,500000,40000,0.12]];
+  var reqSpread=0;
+  for(var i=0;i<SPREAD_RULES.length;i++){
+    if(listPrice>=SPREAD_RULES[i][0]&&listPrice<SPREAD_RULES[i][1]){
+      reqSpread=Math.max(SPREAD_RULES[i][2],listPrice*SPREAD_RULES[i][3]);break;
+    }
+  }
+  var spreadCap = listPrice - assignFee - reqSpread;
+
+  // Step 4: Final contract MAO
+  var finalMAO = Math.min(buyerMathCap, spreadCap);
+
+  if(finalMAO<=0){
+    document.getElementById('cl-results').style.display='block';
+    // Show the chain
+    setEl('cl-r-arv',fmt(arv),'teal');
+    setEl('cl-r-arv90',fmt(arv*0.90),'teal');
+    setEl('cl-r-repairs2',fmt(repair*2),'red');
+    setEl('cl-r-buyer-mao',fmt(buyerMAO),'teal');
+    setEl('cl-r-assign-fee',fmt(assignFee),'');
+    setEl('cl-r-buffer',fmt(closingBuffer),'');
+    setEl('cl-r-buyer-cap',fmt(buyerMathCap),buyerMathCap>0?'purple':'red');
+    setEl('cl-r-list',fmt(listPrice),'');
+    setEl('cl-r-req-spread',fmt(reqSpread),'yellow');
+    setEl('cl-r-spread-cap',fmt(spreadCap),spreadCap>0?'purple':'red');
+    setEl('cl-r-final-mao',fmt(finalMAO),'red');
+    document.getElementById('cl-pitch').style.display='flex';
+    document.getElementById('cl-pitch').className='pitch-check fail';
+    document.getElementById('cl-pitch').innerHTML='&#x2715; SKIP — Numbers do not pencil. Final contract MAO is '+fmt(finalMAO)+'.';
+    return;
+  }
+
+  // Step 5: Initial and max offer
+  var initialOffer=Math.floor(finalMAO*0.85/1000)*1000;
+  var maxOffer=Math.floor(finalMAO*0.92/1000)*1000;
+  var cashOffer=Math.max(initialOffer,1000);
+  var assignPrice=cashOffer+assignFee;
+  var visibleSpread=listPrice-(cashOffer+assignFee);
+  var spreadOk=visibleSpread>=reqSpread;
+  var buyerHasRoom=assignPrice<buyerMAO;
+  var roomDelta=buyerMAO-assignPrice;
+
+  clData={listPrice:listPrice,arv:arv,repair:repair,cashOffer:cashOffer,initialOffer:initialOffer,maxOffer:maxOffer,assignFee:assignFee,assignPrice:assignPrice,buyerMAO:buyerMAO,closingBuffer:closingBuffer,buyerMathCap:buyerMathCap,spreadCap:spreadCap,finalMAO:finalMAO,reqSpread:reqSpread,visibleSpread:visibleSpread,spreadOk:spreadOk,buyerHasRoom:buyerHasRoom,roomDelta:roomDelta,address:address,agent:agent};
+
+  // Render chain
+  setEl('cl-r-arv',fmt(arv),'teal');
+  setEl('cl-r-arv90',fmt(arv*0.90),'teal');
+  setEl('cl-r-repairs2',fmt(repair*2),'red');
+  setEl('cl-r-buyer-mao',fmt(buyerMAO),'teal');
+  setEl('cl-r-assign-fee',fmt(assignFee),'');
+  setEl('cl-r-buffer',fmt(closingBuffer),'');
+  setEl('cl-r-buyer-cap',fmt(buyerMathCap),'purple');
+  setEl('cl-r-list',fmt(listPrice),'');
+  setEl('cl-r-req-spread',fmt(reqSpread),'yellow');
+  setEl('cl-r-spread-cap',fmt(spreadCap),'purple');
+  setEl('cl-r-final-mao',fmt(finalMAO),'green');
+  setEl('cl-r-offer',fmt(cashOffer)+' (initial)','teal');
+  setEl('cl-r-max-offer',fmt(maxOffer),'');
+  setEl('cl-r-plan-sell',fmt(assignPrice),'green');
+  setEl('cl-r-vis-spread',fmt(visibleSpread),spreadOk?'green':'red');
+  setEl('cl-r-fee',fmt(assignFee),'green');
+
+  document.getElementById('cl-r-spread-status').innerHTML=
+    '<span class="room-check '+(spreadOk?'yes':'no')+'">'+(spreadOk?'&#10003; PASS':'&#10007; NO ARBITRAGE')+'</span>';
+  document.getElementById('cl-r-room').innerHTML=
+    '<span class="room-check '+(buyerHasRoom?'yes':'no')+'">'+(buyerHasRoom?'&#10003; YES +'+fmt(roomDelta):'&#10007; NO '+fmt(roomDelta))+'</span>';
+
+  var allGood=spreadOk&&buyerHasRoom;
+  var pitchEl=document.getElementById('cl-pitch');
+  pitchEl.style.display='flex';
+  pitchEl.className='pitch-check '+(allGood?'pass':'fail');
+  pitchEl.innerHTML=allGood
+    ?'&#10003; DEAL PENCILS — Spread '+fmt(visibleSpread)+' | Buyer room +'+fmt(roomDelta)
+    :'&#10007; '+(spreadOk?'BUYER NO ROOM':'NO ARBITRAGE')+' — Reconsider or skip';
+
+  document.getElementById('cl-results').style.display='block';
+  renderCLOffer();
+  document.getElementById('cl-output-panel').style.display='block';
+  generateCLEmails();
 }
 
 function renderCLOffer(){
   var d=clData;if(!d)return;
-  var roomLine=d.buyerMAO!==null?'Buyer MAO: '+fmt(d.buyerMAO)+' | Assign: '+fmt(d.assignPrice)+' | Room: '+(d.hasRoom?'YES':' NO'):'Enter ARV to check';
+  var roomLine='Buyer MAO: '+fmt(d.buyerMAO)+' | Assign: '+fmt(d.assignPrice)+' | Room: '+(d.buyerHasRoom?'YES (+'+fmt(d.roomDelta)+')':'NO');
+  var spreadLine='Visible Spread: '+fmt(d.visibleSpread)+' vs Required: '+fmt(d.reqSpread)+' — '+(d.spreadOk?'PASS':'NO ARBITRAGE');
   document.getElementById('cl-exec-doc').innerHTML='<div class="od-header"><div><div class="od-brand">229 <span>HOLDINGS LLC</span></div><div style="font-family:Space Mono,monospace;font-size:9px;color:#7a7a9a;margin-top:4px"></div></div><div class="od-type">CASH AS-IS OFFER<br>'+today()+'</div></div><div class="od-address">'+d.address+'</div><div class="od-date">Presented to: '+d.agent+'</div><div class="od-comm-banner"><div class="od-comm-title">&#10003; AGENT COMMISSION PROTECTED — CASH CLOSE</div><div class="od-comm-body">Total Commission: <strong style="color:#00d4aa">'+fmt(d.agentTotal)+'</strong> ('+fmt(d.comm)+' + $1,000 flat fee) paid at closing.<br>Agent nets '+fmt(d.agentTotal)+' vs '+fmt(d.atList)+' at-list baseline.</div></div><div class="od-grid"><div class="od-box teal-box"><div class="od-label">Cash Offer</div><div class="od-value teal">'+fmt(d.offer)+'</div><div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:Space Mono,monospace"></div></div><div class="od-box"><div class="od-label">Assign Price</div><div class="od-value dark">'+fmt(d.assignPrice)+'</div><div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:Space Mono,monospace">Cash close offer</div></div></div><div class="od-grid-3"><div class="od-box"><div class="od-label">Your Fee</div><div class="od-value dark" style="color:#00e676">'+fmt(d.assignFee)+'</div></div><div class="od-box"><div class="od-label">Earnest Money</div><div class="od-value dark">$500</div></div><div class="od-box"><div class="od-label">Close of Escrow</div><div class="od-value dark" style="font-size:13px">'+coeDate(14)+'</div></div></div><div class="od-legal"><strong>TERMS:</strong> As-Is. No repairs. No financing contingency. Cash close. Buyer pays all closing costs minus unpaid mortgages, taxes, or liens. Buyer reserves right to assign contract.<br><br><strong>COMMISSION:</strong> '+fmt(d.agentTotal)+' ('+fmt(d.comm)+' + $1,000 flat fee) paid at closing.<br><br><strong>BUYER CHECK:</strong> '+roomLine+'</div><div class="od-sig"><div><div class="od-sig-name">229 Holdings LLC</div></div><div style="text-align:right;font-family:Space Mono,monospace;font-size:10px;color:#7a7a9a">Date: ___________________<br>Seller Signature: ___________________</div></div>';
   document.getElementById('cl-direct-doc').textContent='CASH AS-IS OFFER - 229 Holdings LLC\n'+d.address+'\n'+today()+'\nPresented to: '+d.agent+'\n\nCASH OFFER: '+fmt(d.offer)+'\nList Price: '+fmt(d.listPrice)+'\n\nPLAN TO SELL: '+fmt(d.assignPrice)+' (offer + $10k assignment fee)\nYour Fee: '+fmt(d.assignFee)+'\n\nBUYER MAO CHECK:\n'+(d.buyerMAO!==null?'ARV x 80%: '+fmt(d.arv*0.80)+'\nRepairs: '+fmt(d.repair)+'\nBuyer MAO: '+fmt(d.buyerMAO)+'\nRoom: '+(d.hasRoom?'YES (+'+fmt(d.roomDelta)+')':'NO'):'Enter ARV to check')+'\n\nAGENT COMMISSION: '+fmt(d.agentTotal)+' ('+fmt(d.comm)+' + $1,000 flat fee) paid at closing.\n\nCLOSING TERMS:\n- Earnest: $500 | Inspection: 10 Days | As-Is\n- Close of Escrow: '+coeDate(14)+'\n- Cash close, no contingencies\n- Buyer pays all closing costs minus mortgages, taxes, liens\n- Buyer reserves right to assign contract\n\n229 Holdings LLC';
 }
@@ -518,7 +607,7 @@ function copyEl(id,btn){var el=document.getElementById(id);var text=el.innerText
 async function generateOFEmails(){
   if(!ofData)return;
   var d=ofData;
-  var prompt='You are a real estate wholesaler writing to a listing agent about their stale listing.\n\nOFFER TYPE: Creative / Seller Financed\nProperty: '+d.address+'\nList Price: '+fmt(d.price)+'\nOffer: FULL asking price\nDown Payment: '+fmt(d.dp)+' ('+d.dpPct+'%) — this IS the agent commission, paid from buyer down at closing\nMonthly to Seller: '+fmt(d.monthly)+'/mo over '+d.pmts+' payments at 0% interest\nAgent Commission: '+fmt(d.agentComm)+' — paid at closing from buyer down. Seller owes nothing.\nAt-list comparison (3%): '+fmt(d.atList)+'\nAgent nets '+(d.agentComm>=d.atList?'+':'')+fmt(d.agentComm-d.atList)+' vs full-price sale\n\nHARD RULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. NEVER say "seller financing" or "owner financing" anywhere.\n4. Call out exact commission: '+fmt(d.agentComm)+' paid from buyer down at closing.\n5. Seller gets FULL asking price '+fmt(d.price)+'.\n6. Soft CTA: ask where to send written offer.\n7. Sign off EXACTLY: Torian Wallace | 901-290-8408\n8. V1=direct, V2=empathetic, V3=curiosity hook, V4=ultra short 2-3 sentences.\n9. Different subject and opening line for each variation.\n10. Subject: neutral only, never mention financing type.\n\nReturn ONLY raw JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
+  var prompt='You are a real estate wholesaler writing to a listing agent about their stale listing.\n\nOFFER TYPE: Creative / Seller Financed\nProperty: '+d.address+'\nList Price: '+fmt(d.price)+'\nOffer: FULL asking price\nDown Payment: '+fmt(d.dp)+' ('+d.dpPct+'%) — this IS the agent commission, paid from buyer down at closing\nMonthly to Seller: '+fmt(d.monthly)+'/mo over '+d.pmts+' payments at 0% interest\nAgent Commission: '+fmt(d.agentComm)+' — paid at closing from buyer down. Seller owes nothing.\nAt-list comparison (3%): '+fmt(d.atList)+'\nAgent nets '+(d.agentComm>=d.atList?'+':'')+fmt(d.agentComm-d.atList)+' vs full-price sale\n\nHARD RULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. NEVER say "seller financing" or "owner financing" anywhere.\n4. Call out exact commission: '+fmt(d.agentComm)+' paid from buyer down at closing.\n5. Seller gets FULL asking price '+fmt(d.price)+'.\n6. Soft CTA: ask where to send written offer.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. V1=direct, V2=empathetic, V3=curiosity hook, V4=ultra short 2-3 sentences.\n9. Different subject and opening line for each variation.\n10. Subject: neutral only, never mention financing type.\n\nReturn ONLY raw JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
   showEmailLoading('of');
   try{
     var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
@@ -534,7 +623,7 @@ async function generateOFEmails(){
 async function generateCLEmails(){
   if(!clData)return;
   var d=clData;
-  var prompt='You are a real estate wholesaler writing to a listing agent about their stale listing.\n\nOFFER TYPE: Cash As-Is\nProperty: '+d.address+'\nList Price: '+fmt(d.listPrice)+'\nCash Offer: '+fmt(d.offer)+'\nAssign Price: '+fmt(d.assignPrice)+'\nAgent Commission: '+fmt(d.agentTotal)+' (6% + $1,000 flat fee) paid at closing\nAt-list comparison (3%): '+fmt(d.atList)+'\nClose: 7-14 days | As-Is | No contingencies | Cash | Earnest $500\n\nHARD RULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. Lead with speed and certainty.\n4. Exact commission: '+fmt(d.agentTotal)+'.\n5. Compare to at-list '+fmt(d.atList)+'.\n6. Soft CTA: where to send written offer.\n7. Sign off EXACTLY: Torian Wallace | 901-290-8408\n8. V1=direct, V2=empathetic, V3=curiosity, V4=ultra short.\n\nReturn ONLY raw JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
+  var prompt='You are a real estate wholesaler writing to a listing agent about their stale listing.\n\nOFFER TYPE: Cash As-Is\nProperty: '+d.address+'\nList Price: '+fmt(d.listPrice)+'\nCash Offer: '+fmt(d.offer)+'\nAssign Price: '+fmt(d.assignPrice)+'\nAgent Commission: '+fmt(d.agentTotal)+' (6% + $1,000 flat fee) paid at closing\nAt-list comparison (3%): '+fmt(d.atList)+'\nClose: 7-14 days | As-Is | No contingencies | Cash | Earnest $500\n\nHARD RULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. Lead with speed and certainty.\n4. Exact commission: '+fmt(d.agentTotal)+'.\n5. Compare to at-list '+fmt(d.atList)+'.\n6. Soft CTA: where to send written offer.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. V1=direct, V2=empathetic, V3=curiosity, V4=ultra short.\n\nReturn ONLY raw JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
   showEmailLoading('cl');
   try{
     var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
@@ -619,11 +708,31 @@ function filterRunsByMarket() {
 
     <!-- Sent Email Tab -->
     <div class="modal-body active" id="mbody-sent">
+      <!-- Offer Summary Bar -->
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;align-items:center;">
+        <span id="m-offer-badge" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;padding:4px 12px;border-radius:4px;">—</span>
+        <span style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--teal)" id="m-offer-amount">—</span>
+        <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted)" id="m-offer-terms">—</span>
+        <span id="m-sent-pitch" style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:3px 10px;border-radius:4px;">—</span>
+      </div>
+      <!-- Agent Contact Bar -->
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:16px;">
+        <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted)">Agent:</span>
+        <span style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text)" id="m-agent-name-full">—</span>
+        <a id="m-agent-email-link" href="#" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--teal);text-decoration:none;">—</a>
+        <a id="m-agent-phone-link" href="#" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--purple);text-decoration:none;border:1px solid var(--purple);border-radius:4px;padding:3px 10px;">📞 Call</a>
+      </div>
+      <!-- Email Sent -->
       <div class="modal-sent-box">
         <div class="modal-sent-subject" id="m-email-subject">—</div>
         <div class="modal-sent-body" id="m-email-body">—</div>
       </div>
-      <div class="modal-btn-row">
+      <!-- Notes Field -->
+      <div style="margin-top:12px;">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Notes — What Agent Said</div>
+        <textarea id="m-notes" placeholder="Agent said..." style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'Space Mono',monospace;font-size:11px;line-height:1.6;resize:vertical;min-height:60px;outline:none;" oninput="saveModalNote()"></textarea>
+      </div>
+      <div class="modal-btn-row" style="margin-top:12px;">
         <button class="modal-btn modal-btn-ghost" onclick="copyModalEmail()">&#x1F4CB; Copy Email</button>
       </div>
     </div>
@@ -720,6 +829,39 @@ function openPropModal(idx){var lead=_queueData[idx];if(!lead)return;
   // Sent email
   document.getElementById('m-email-subject').textContent = lead.email_subject||'(no subject saved)';
   document.getElementById('m-email-body').textContent    = lead.email_body||'(email body not saved — run pipeline again to capture)';
+  // Offer summary bar
+  var isOF = lead.type==='OF';
+  var offerAmt = isOF ? (lead.price||0) : (lead.cash_offer||lead.offer||0);
+  var badge = document.getElementById('m-offer-badge');
+  badge.textContent = isOF ? 'OWNER FINANCE' : 'CASH LOWBALL';
+  badge.style.background = isOF ? 'rgba(108,99,255,.2)' : 'rgba(0,212,170,.2)';
+  badge.style.color = isOF ? 'var(--purple)' : 'var(--teal)';
+  document.getElementById('m-offer-amount').textContent = offerAmt ? '$'+Math.round(offerAmt).toLocaleString() : '—';
+  var termsStr = isOF
+    ? (lead.down_payment ? '5% down, '+Math.round((lead.price||0)-lead.down_payment)+' over 100 mo @ 0%' : 'Full list, 5% down, 100 payments @ 0%')
+    : ('Cash, close in 14 days, as-is');
+  document.getElementById('m-offer-terms').textContent = termsStr;
+  var agentGets = lead.total_to_agent||0;
+  var atList = lead.at_list_commission||(( lead.price||0)*0.03);
+  var pitchOk = agentGets >= atList;
+  var pitchBadge = document.getElementById('m-sent-pitch');
+  pitchBadge.textContent = pitchOk ? '✓ PITCH HOLDS' : '✗ PITCH FAILS';
+  pitchBadge.style.background = pitchOk ? 'rgba(0,230,118,.15)' : 'rgba(255,71,87,.15)';
+  pitchBadge.style.color = pitchOk ? 'var(--green)' : 'var(--red)';
+  // Agent contact
+  document.getElementById('m-agent-name-full').textContent = lead.agent||'—';
+  var emailLink = document.getElementById('m-agent-email-link');
+  var email = lead.agent_email||'';
+  if(email){emailLink.href='mailto:'+email;emailLink.textContent=email;emailLink.style.display='inline';}
+  else{emailLink.textContent='No email saved';emailLink.href='#';emailLink.style.color='var(--muted)';}
+  var phoneLink = document.getElementById('m-agent-phone-link');
+  var phone = lead.agent_phone||'';
+  if(phone){phoneLink.href='tel:'+phone.replace(/[^0-9+]/g,'');phoneLink.style.display='inline';phoneLink.title=phone;}
+  else{phoneLink.style.display='none';}
+  // Notes - load saved note for this address
+  var noteKey = 'note_'+(lead.address||'').replace(/\s+/g,'_');
+  document.getElementById('m-notes').value = localStorage.getItem(noteKey)||'';
+  document.getElementById('m-notes').dataset.key = noteKey;
   // OF numbers
   document.getElementById('m-of-price').textContent    = fmt2(lead.price);
   document.getElementById('m-of-dp').textContent       = fmt2(lead.down_payment);
@@ -799,12 +941,12 @@ async function genModalEmails(type){
     var monthly = lead.monthly_payment||Math.round((price-dp)/100);
     var agentComm = lead.total_to_agent||dp;
     var atList = lead.at_list_commission||(price*0.03);
-    prompt='You are a real estate investor writing to a listing agent.\n\nPROPERTY: '+lead.address+'\nOFFER: Full asking price '+fmt2(price)+'\nSTRUCTURE: '+fmt2(dp)+' down at closing, '+fmt2(monthly)+'/month over 100 months at 0% interest\nAGENT GETS: '+fmt2(agentComm)+' paid at closing from buyer down payment. That is '+fmt2(agentComm-atList)+' MORE than a standard full-price sale.\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. NEVER say seller financing or owner financing in subject or body.\n4. NEVER mention percentages, assignment fees, or wholesaling.\n5. Mention exact agent commission: '+fmt2(agentComm)+' paid at closing.\n6. Seller gets FULL asking price.\n7. Soft CTA only.\n8. Sign off EXACTLY: Torian Wallace | 901-290-8408\n9. 4 variations. Different subject and opening each time.\n10. Subject: neutral only.\n\nReturn ONLY a JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
+    prompt='You are a real estate investor writing to a listing agent.\n\nPROPERTY: '+lead.address+'\nOFFER: Full asking price '+fmt2(price)+'\nSTRUCTURE: '+fmt2(dp)+' down at closing, '+fmt2(monthly)+'/month over 100 months at 0% interest\nAGENT GETS: '+fmt2(agentComm)+' paid at closing from buyer down payment. That is '+fmt2(agentComm-atList)+' MORE than a standard full-price sale.\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. NEVER say seller financing or owner financing in subject or body.\n4. NEVER mention percentages, assignment fees, or wholesaling.\n5. Mention exact agent commission: '+fmt2(agentComm)+' paid at closing.\n6. Seller gets FULL asking price.\n7. Soft CTA only.\n8. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n9. 4 variations. Different subject and opening each time.\n10. Subject: neutral only.\n\nReturn ONLY a JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
   } else {
     var cashOffer = lead.cash_offer||lead.offer||0;
     var agentTotal = lead.total_to_agent||0;
     var atList2 = lead.at_list_commission||(price*0.03);
-    prompt='You are a real estate investor writing to a listing agent.\n\nPROPERTY: '+lead.address+'\nLIST PRICE: '+fmt2(price)+'\nCASH OFFER: '+fmt2(cashOffer)+'\nCLOSE: 7-14 days, as-is, no repairs, no contingencies, cash, $500 earnest\nAGENT GETS: '+fmt2(agentTotal)+' paid at closing. That is '+fmt2(agentTotal-atList2)+' MORE than at-list.\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. Lead with speed and certainty.\n4. NEVER mention percentages, assignment fees, or wholesaling.\n5. Mention exact commission: '+fmt2(agentTotal)+'.\n6. Soft CTA only.\n7. Sign off EXACTLY: Torian Wallace | 901-290-8408\n8. 4 variations. Different subject and opening each time.\n\nReturn ONLY a JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
+    prompt='You are a real estate investor writing to a listing agent.\n\nPROPERTY: '+lead.address+'\nLIST PRICE: '+fmt2(price)+'\nCASH OFFER: '+fmt2(cashOffer)+'\nCLOSE: 7-14 days, as-is, no repairs, no contingencies, cash, $500 earnest\nAGENT GETS: '+fmt2(agentTotal)+' paid at closing. That is '+fmt2(agentTotal-atList2)+' MORE than at-list.\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. Lead with speed and certainty.\n4. NEVER mention percentages, assignment fees, or wholesaling.\n5. Mention exact commission: '+fmt2(agentTotal)+'.\n6. Soft CTA only.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. 4 variations. Different subject and opening each time.\n\nReturn ONLY a JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
   }
   try{
     var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
@@ -908,6 +1050,10 @@ function downloadModalPDF(type){
   setTimeout(function(){win.print();},500);
 }
 
+function saveModalNote(){
+  var el = document.getElementById('m-notes');
+  if(el && el.dataset.key) localStorage.setItem(el.dataset.key, el.value);
+}
 // Keyboard close
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closePropModal();});
 
