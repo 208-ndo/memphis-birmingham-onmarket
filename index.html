@@ -163,8 +163,8 @@
 </header>
 <div class="tab-bar">
   <div id="tab-all" class="tab active" onclick="switchTab(event,'all');setMarketFilter('all')">All Markets</div>
-  <div id="tab-memphis" class="tab" onclick="switchTab(event,'memphis');setMarketFilter('memphis')">Memphis TN</div>
-  <div id="tab-birmingham" class="tab" onclick="switchTab(event,'birmingham');setMarketFilter('birmingham')">Birmingham AL</div>
+  <div id="tab-memphis" class="tab" onclick="switchTab(event,'all');setMarketFilter('memphis')">Memphis TN</div>
+  <div id="tab-birmingham" class="tab" onclick="switchTab(event,'all');setMarketFilter('birmingham')">Birmingham AL</div>
   <div class="tab deal-tab" onclick="switchTab(event,'analyzer')">Deal Analyzer</div>
 </div>
 
@@ -563,32 +563,37 @@ loadRunData();
 var _activeMarket = 'all';
 function setMarketFilter(market) {
   _activeMarket = market;
-  // Update tab styles
-  ['all','memphis','birmingham'].forEach(function(m) {
-    var tab = document.getElementById('tab-' + m);
-    if(tab) tab.classList.toggle('active', m === market);
-  });
-  // Filter queue
+  document.querySelectorAll('.tab-bar .tab').forEach(function(t){t.classList.remove('active');});
+  var activeTab = document.getElementById('tab-' + (market==='all'?'all':market));
+  if(activeTab) activeTab.classList.add('active');
   filterQueueByMarket();
   filterRunsByMarket();
 }
 function filterQueueByMarket() {
   var tbody = document.getElementById('queue-tbody');
-  if(!tbody || !_rawQueue.length) return;
-  var filtered = _activeMarket === 'all' ? _rawQueue : _rawQueue.filter(function(r) {
-    return r.toLowerCase().includes(_activeMarket === 'memphis' ? 'memphis' : 'birmingham');
-  });
-  tbody.innerHTML = filtered.join('');
-  var countEl = document.getElementById('search-count');
-  if(countEl) countEl.textContent = filtered.length + ' leads';
+  if(!tbody) return;
+  if(!_rawQueue.length){tbody.innerHTML='<tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">Queue populates after first live run.</td></tr>';return;}
+  var filtered;
+  if(_activeMarket==='all'){filtered=_rawQueue;}
+  else{
+    filtered=_rawQueue.filter(function(r,i){
+      var q=_queueData[i];
+      if(!q)return false;
+      var m=(q.market||'').toLowerCase();
+      return _activeMarket==='memphis'?m.indexOf('memphis')>=0:m.indexOf('birmingham')>=0;
+    });
+  }
+  tbody.innerHTML=filtered.length?filtered.join(''):'<tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">No leads for this market yet.</td></tr>';
+  var countEl=document.getElementById('search-count');
+  if(countEl)countEl.textContent=filtered.length+' leads';
 }
 function filterRunsByMarket() {
   var tbody = document.getElementById('runs-tbody');
-  if(!tbody || !_rawRuns.length) return;
-  var filtered = _activeMarket === 'all' ? _rawRuns : _rawRuns.filter(function(r) {
-    return r.toLowerCase().includes(_activeMarket === 'memphis' ? 'memphis' : 'birmingham');
+  if(!tbody||!_rawRuns.length)return;
+  var filtered=_activeMarket==='all'?_rawRuns:_rawRuns.filter(function(r){
+    return _activeMarket==='memphis'?r.toLowerCase().indexOf('memphis')>=0:r.toLowerCase().indexOf('birmingham')>=0;
   });
-  tbody.innerHTML = filtered.join('');
+  tbody.innerHTML=filtered.length?filtered.join(''):'<tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px">No runs for this market yet.</td></tr>';
 }
 
 </script>
@@ -880,7 +885,7 @@ function downloadModalPDF(type){
     html2+='<div class="cell"><div class="cell-label">Earnest Money</div><div class="cell-value" style="font-size:14px">$500</div></div>';
     html2+='<div class="cell"><div class="cell-label">Close of Escrow</div><div class="cell-value" style="font-size:12px">'+coe21s+'</div></div></div>';
     html2+='<div class="legal"><b>TERMS:</b> As-Is subject to walk-through. Due diligence period: 10 days. Buyer pays all closing costs minus unpaid mortgages, taxes, or liens. Buyer will select closing attorney. Buyer reserves right to assign contract.<br><br>';
-    html2+='<b>AGENT COMMISSION:</b> $'+Math.round(agentComm).toLocaleString()+' paid from buyer's down payment at closing. Seller carries zero commission obligation.</div>';
+    html2+='<b>AGENT COMMISSION:</b> $'+Math.round(agentComm).toLocaleString()+' paid from buyer down payment at closing. Seller carries zero commission obligation.</div>';
   } else {
     var cashOffer=lead.cash_offer||lead.offer||0;
     var agentTotal=lead.total_to_agent||0;
