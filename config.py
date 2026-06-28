@@ -1,31 +1,23 @@
 """
 229 Holdings LLC — Pipeline Config
-Flip Man KISS Method
+Two offer lanes: Owner Finance + Cash Lowball (MAO + Visible Spread)
 """
 import os
 
 # ─── Markets ───────────────────────────────────────────────────────────────────
 MARKETS = {
     "memphis": {
-        "city": "Memphis",
-        "state": "TN",
-        "zip_codes": [],
-        "price_min": 30000,
-        "price_max": 500000,
-        "min_price": 30000,
-        "max_price": 500000,
+        "city": "Memphis", "state": "TN", "zip_codes": [],
+        "price_min": 30000, "price_max": 500000,
+        "min_price": 30000, "max_price": 500000,
         "gmail_user": os.environ.get("GMAIL_USER_MEMPHIS", ""),
         "gmail_app_password": os.environ.get("GMAIL_APP_PASSWORD_MEMPHIS", ""),
         "ghl_phone_number": os.environ.get("GHL_PHONE_MEMPHIS", ""),
     },
     "birmingham": {
-        "city": "Birmingham",
-        "state": "AL",
-        "zip_codes": [],
-        "price_min": 30000,
-        "price_max": 500000,
-        "min_price": 30000,
-        "max_price": 500000,
+        "city": "Birmingham", "state": "AL", "zip_codes": [],
+        "price_min": 30000, "price_max": 500000,
+        "min_price": 30000, "max_price": 500000,
         "gmail_user": os.environ.get("GMAIL_USER_BIRMINGHAM", ""),
         "gmail_app_password": os.environ.get("GMAIL_APP_PASSWORD_BIRMINGHAM", ""),
         "ghl_phone_number": os.environ.get("GHL_PHONE_BIRMINGHAM", ""),
@@ -54,33 +46,46 @@ DEDUP = {
     "business_hours_end":   16,
 }
 
-# ─── Owner Finance (Flip Man KISS) ─────────────────────────────────────────────
-# 5% down = agent commission — nothing else
+# ─── Owner Finance ─────────────────────────────────────────────────────────────
 OF_MIN_PRICE      = 30000
 OF_MAX_PRICE      = 80000
 OF_DOWN_PCT       = 0.05
 OF_NUM_PAYMENTS   = 100
 OF_SELLER_RATE    = 0.0
 OF_BUYER_DOWN_PCT = 0.12
-OF_BUYER_RATE     = 0.12
-OF_BUYER_TERM_YRS = 10
+OF_BUYER_RATE     = 0.08
+OF_BUYER_TERM_YRS = 30
 OF_EARNEST        = 500
 OF_CLOSE_DAYS     = 21
 OF_DD_DAYS        = 10
 
-# ─── Cash Lowball KISS Tiers ───────────────────────────────────────────────────
-KISS_TIERS = {
-    75000:   20,
-    150000:  40,
-    300000:  50,
-    750000:  60,
-    1500000: 65,
-}
+# ─── Cash Lowball — Buyer MAO ──────────────────────────────────────────────────
+BUYER_MAO_MULTIPLIER = 0.90          # Buyer MAO = ARV * 0.90
+REPAIR_MULTIPLIER    = 2.0           # effective_repairs * 2 in buyer MAO
+ASSIGNMENT_FEE_MIN   = 7_500
+ASSIGNMENT_FEE_MAX   = 30_000
+ASSIGNMENT_FEE_PCT   = 0.08          # ARV * 8%, clamped to min/max
+CLOSING_BUFFER_MIN   = 2_500
+CLOSING_BUFFER_PCT   = 0.02          # max(2500, buyer_mao * 2%)
+INITIAL_OFFER_LOW    = 0.85          # initial = final_contract_mao * 85–92%
+INITIAL_OFFER_HIGH   = 0.92
+CASH_MAX_AUTO        = 500_000       # above this: manual review
 
-CL_AGENT_COMM_PCT = 0.06
-CL_FLAT_FEE       = 1000
-ASSIGNMENT_FEE    = 10000
-AT_LIST_PCT       = 0.03
+# ─── Visible Spread Requirements ───────────────────────────────────────────────
+# visible_spread = list_price - (contract_price + assignment_fee)
+SPREAD_RULES = [
+    # (min_price, max_price, flat_min, pct_of_list)
+    (0,       80_000,  15_000, 0.25),
+    (80_000,  150_000, 25_000, 0.20),
+    (150_000, 300_000, 30_000, 0.15),
+    (300_000, 500_000, 40_000, 0.12),
+]
+
+# ─── Commission (public-facing) ────────────────────────────────────────────────
+COMMISSION_LANGUAGE = (
+    "Seller to pay any listing broker compensation per the existing listing agreement "
+    "from seller proceeds at closing. Buyer is not offering an agent bonus."
+)
 
 # ─── Scraper ───────────────────────────────────────────────────────────────────
 DISTRESSED_KEYWORDS = [
@@ -92,14 +97,8 @@ MIN_SQFT      = 750
 MAX_VIEWS_DAY = 25
 MIN_DOM       = 30
 
-# Legacy flat names for backwards compat
 AGENT_COOLDOWN_DAYS  = 7
 AGENT_LIFETIME_CAP   = 3
 BUSINESS_HOURS_START = 8
 BUSINESS_HOURS_END   = 16
-
-# ─── Playwright ────────────────────────────────────────────────────────────────
-SCREEN = {
-    "width":  1920,
-    "height": 1080,
-}
+SCREEN = {"width": 1920, "height": 1080}
