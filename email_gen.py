@@ -1,6 +1,7 @@
 """
 Email generator — 229 Holdings LLC
-Emails are agent-facing only. No strategy, percentages, or assignment fees exposed.
+No 6% commission pitch. No agent bonus.
+Commission language: seller pays per existing listing agreement.
 """
 
 import re
@@ -10,46 +11,47 @@ import logging
 
 log = logging.getLogger(__name__)
 
+SIGN_OFF = "Michael B. | 229 Holdings LLC"
+
 
 def generate_emails(listing: dict, offer: dict) -> list[dict]:
     offer_type = offer.get("offer_type")
     if offer_type == "owner_finance":
         return _gen_of_emails(listing, offer)
-    else:
+    elif offer_type == "cash_lowball":
         return _gen_cl_emails(listing, offer)
+    return []
 
 
 def _gen_of_emails(listing: dict, offer: dict) -> list[dict]:
-    address    = listing.get("address", "the property")
-    price      = offer.get("owner_finance_offer", 0)
-    dp         = offer.get("down_payment", 0)
-    monthly    = offer.get("monthly_payment", 0)
-    payments   = offer.get("num_payments", 100)
-    agent_comm = offer.get("total_to_agent", 0)
-    at_list    = offer.get("at_list_commission", 0)
+    address   = listing.get("address", "the property")
+    price     = offer.get("owner_finance_offer", 0)
+    dp        = offer.get("down_payment", 0)
+    monthly   = offer.get("monthly_payment", 0)
+    payments  = offer.get("num_payments", 100)
 
     prompt = f"""You are a real estate investor writing to a listing agent about their listing.
 
 PROPERTY: {address}
 OFFER: Full asking price of ${price:,.0f}
-STRUCTURE: ${dp:,.0f} down at closing, ${monthly:,.0f}/month over {payments} months to seller at 0% interest
-AGENT GETS: ${agent_comm:,.0f} paid at closing from buyer's down payment
-THAT IS: ${agent_comm - at_list:,.0f} MORE than the agent would net on a standard full-price sale
+STRUCTURE: ${dp:,.0f} down at closing (5%), seller carries ${price-dp:,.0f} balance over {payments} monthly payments at 0% interest
+COMMISSION: Seller pays listing broker per existing listing agreement from seller proceeds. No buyer agent bonus.
+CLOSE: 21 days | As-Is subject to walk-through | $500 earnest | 10-day due diligence
 
-RULES — follow every one:
-1. NO em dashes anywhere. Periods and commas only.
-2. 3-5 sentences MAX. Short, handwritten feel.
-3. NEVER say "seller financing", "owner financing", "creative financing", or any financing type in subject or body.
-4. NEVER mention percentages, assignment fees, or wholesaling.
-5. Mention exact agent commission: ${agent_comm:,.0f} paid at closing.
-6. Mention seller gets full asking price.
+RULES:
+1. NO em dashes. Periods and commas only.
+2. 3-5 sentences MAX. Short, conversational, handwritten feel.
+3. NEVER say "seller financing" or "owner financing" in subject or body.
+4. NEVER mention percentages, assignment fees, wholesaling, or commission amounts.
+5. DO NOT pitch the agent on their commission. Keep focus on the seller getting full price.
+6. Seller gets FULL asking price of ${price:,.0f}.
 7. Soft CTA only: ask where to send written offer.
-8. Sign off EXACTLY: Torian Wallace | 901-290-8408
+8. Sign off EXACTLY: {SIGN_OFF}
 9. Write 4 variations: V1=direct, V2=empathetic, V3=curiosity hook, V4=ultra short (2 sentences max).
 10. Each variation must have a DIFFERENT subject line and DIFFERENT opening line.
-11. Subject line must be neutral. Example: "Offer on {address}" or "Quick question on {address}". Never hint at the structure.
+11. Subject: neutral only. Example: "Offer on {address}". Never hint at structure.
 
-Return ONLY a JSON array, no markdown, no extra text:
+Return ONLY a JSON array, no markdown:
 [
   {{"variation": 1, "subject": "...", "body": "..."}},
   {{"variation": 2, "subject": "...", "body": "..."}},
@@ -61,33 +63,30 @@ Return ONLY a JSON array, no markdown, no extra text:
 
 
 def _gen_cl_emails(listing: dict, offer: dict) -> list[dict]:
-    address     = listing.get("address", "the property")
-    list_price  = listing.get("list_price", 0) or listing.get("price", 0)
-    cash_offer  = offer.get("cash_offer", 0)
-    agent_total = offer.get("total_to_agent", 0)
-    at_list     = offer.get("at_list_commission", 0)
+    address    = listing.get("address", "the property")
+    list_price = listing.get("list_price", 0) or listing.get("price", 0)
+    cash_offer = offer.get("cash_offer", 0)
 
     prompt = f"""You are a real estate investor writing to a listing agent about their listing.
 
 PROPERTY: {address}
 LIST PRICE: ${list_price:,.0f}
 CASH OFFER: ${cash_offer:,.0f}
-CLOSE: 7-14 days, as-is, no repairs, no contingencies, cash, $500 earnest
-AGENT GETS: ${agent_total:,.0f} paid at closing
-THAT IS: ${agent_total - at_list:,.0f} MORE than the agent would net on a standard at-list commission
+COMMISSION: Seller pays listing broker per existing listing agreement from seller proceeds. No buyer agent bonus.
+CLOSE: 7-14 days | As-Is | No repairs | No contingencies | Cash | $500 earnest
 
-RULES — follow every one:
-1. NO em dashes anywhere. Periods and commas only.
-2. 3-5 sentences MAX. Short, handwritten feel.
+RULES:
+1. NO em dashes. Periods and commas only.
+2. 3-5 sentences MAX. Short, conversational.
 3. Lead with speed and certainty: cash, as-is, close in 14 days.
-4. NEVER mention percentages, assignment fees, or wholesaling.
-5. Mention exact agent commission: ${agent_total:,.0f} paid at closing.
+4. NEVER mention percentages, assignment fees, wholesaling, or commission amounts.
+5. DO NOT pitch the agent on their commission.
 6. Soft CTA only: ask where to send written offer.
-7. Sign off EXACTLY: Torian Wallace | 901-290-8408
+7. Sign off EXACTLY: {SIGN_OFF}
 8. Write 4 variations: V1=direct, V2=empathetic, V3=curiosity hook, V4=ultra short (2 sentences max).
 9. Each variation must have a DIFFERENT subject line and DIFFERENT opening line.
 
-Return ONLY a JSON array, no markdown, no extra text:
+Return ONLY a JSON array, no markdown:
 [
   {{"variation": 1, "subject": "...", "body": "..."}},
   {{"variation": 2, "subject": "...", "body": "..."}},
