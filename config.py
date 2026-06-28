@@ -62,13 +62,16 @@ OF_DD_DAYS        = 10
 # ─── Cash Lowball — Buyer MAO ──────────────────────────────────────────────────
 BUYER_MAO_MULTIPLIER = 0.90          # Buyer MAO = ARV * 0.90
 REPAIR_MULTIPLIER    = 2.0           # effective_repairs * 2 in buyer MAO
-ASSIGNMENT_FEE_MIN   = 7_500
+ASSIGNMENT_FEE_MIN        = 7_500
+ASSIGNMENT_FEE_MIN_SMALL = 5_000   # small deal: buyer_mao < 50k
+ASSIGNMENT_FEE_MAX_SMALL = 7_500
 ASSIGNMENT_FEE_MAX   = 30_000
 ASSIGNMENT_FEE_PCT   = 0.08          # ARV * 8%, clamped to min/max
 CLOSING_BUFFER_MIN   = 2_500
 CLOSING_BUFFER_PCT   = 0.02          # max(2500, buyer_mao * 2%)
 INITIAL_OFFER_LOW    = 0.85          # initial = final_contract_mao * 85–92%
-INITIAL_OFFER_HIGH   = 0.92
+INITIAL_OFFER_HIGH   = 0.90   # max counter
+TRUE_WALKAWAY_PCT    = 1.00   # internal only — do not share with agent
 CASH_MAX_AUTO        = 500_000       # above this: manual review
 
 # ─── Visible Spread Requirements ───────────────────────────────────────────────
