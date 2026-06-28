@@ -69,7 +69,7 @@ ASSIGNMENT_FEE_MAX   = 30_000
 ASSIGNMENT_FEE_PCT   = 0.08          # ARV * 8%, clamped to min/max
 CLOSING_BUFFER_MIN   = 2_500
 CLOSING_BUFFER_PCT   = 0.02          # max(2500, buyer_mao * 2%)
-INITIAL_OFFER_LOW    = 0.85          # initial = final_contract_mao * 85–92%
+INITIAL_OFFER_LOW    = 0.85          # initial offer = final_contract_mao * 85%
 INITIAL_OFFER_HIGH   = 0.90   # max counter
 TRUE_WALKAWAY_PCT    = 1.00   # internal only — do not share with agent
 CASH_MAX_AUTO        = 500_000       # above this: manual review
