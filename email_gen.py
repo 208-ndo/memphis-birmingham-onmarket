@@ -35,7 +35,7 @@ def _gen_of_emails(listing: dict, offer: dict) -> list[dict]:
 PROPERTY: {address}
 OFFER: Full asking price of ${price:,.0f}
 STRUCTURE: ${dp:,.0f} down at closing (5%), seller carries ${price-dp:,.0f} balance over {payments} monthly payments at 0% interest
-COMMISSION: Seller pays listing broker per existing listing agreement from seller proceeds. No buyer agent bonus.
+COMMISSION: Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.
 CLOSE: 21 days | As-Is subject to walk-through | $500 earnest | 10-day due diligence
 
 RULES:
@@ -72,7 +72,7 @@ def _gen_cl_emails(listing: dict, offer: dict) -> list[dict]:
 PROPERTY: {address}
 LIST PRICE: ${list_price:,.0f}
 CASH OFFER: ${cash_offer:,.0f}
-COMMISSION: Seller pays listing broker per existing listing agreement from seller proceeds. No buyer agent bonus.
+COMMISSION: Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.
 CLOSE: 7-14 days | As-Is | No repairs | No contingencies | Cash | $500 earnest
 
 RULES:
