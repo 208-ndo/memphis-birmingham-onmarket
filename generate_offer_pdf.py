@@ -135,7 +135,7 @@ def _cl_body(offer: dict, styles) -> list:
     legal = Paragraph(
         f'<font size="9" color="#7a7a9a">'
         f'<b>TERMS:</b> As-Is. No repairs. No financing contingency. Cash close. '
-        f'Buyer pays all closing costs minus unpaid mortgages, taxes, or liens. '
+        f'Buyer to pay standard buyer closing costs. Seller to satisfy any existing mortgages, taxes, liens, or title-clearing items from seller proceeds unless otherwise agreed in writing. '
         f'Buyer reserves right to assign contract without seller consent.<br/><br/>'
         f'<b>COMMISSION:</b> {COMMISSION_LINE}'
         f'</font>',
