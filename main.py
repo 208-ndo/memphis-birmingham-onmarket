@@ -131,15 +131,32 @@ def save_pipeline_log(all_results: dict):
         for item in r.get("sent_items", []):
             listing = item["listing"]
             offer   = item["offer"]
+            sent_email = item.get("email", {})
             new_queue.append({
-                "address": listing.get("address"),
-                "market":  r["market_label"],
-                "price":   listing.get("price", 0),
-                "dom":     listing.get("days_on_market", 0),
-                "type":    "OF" if offer.get("offer_type") == "owner_finance" else "CL",
-                "offer":   offer.get("owner_finance_offer") or offer.get("cash_offer", 0),
-                "agent":   listing.get("agent_name"),
-                "sent":    run_date,
+                "address":      listing.get("address"),
+                "market":       r["market_label"],
+                "price":        listing.get("price", 0),
+                "dom":          listing.get("days_on_market", 0),
+                "type":         "OF" if offer.get("offer_type") == "owner_finance" else "CL",
+                "offer":        offer.get("owner_finance_offer") or offer.get("cash_offer", 0),
+                "agent":        listing.get("agent_name"),
+                "agent_email":  listing.get("agent_email"),
+                "agent_phone":  listing.get("agent_phone"),
+                "sent":         run_date,
+                "zillow_url":   listing.get("url"),
+                "email_subject": sent_email.get("subject"),
+                "email_body":   sent_email.get("body"),
+                "down_payment":       offer.get("down_payment", 0),
+                "monthly_payment":    offer.get("monthly_payment", 0),
+                "num_payments":       offer.get("num_payments", 100),
+                "financed_balance":   offer.get("financed_balance", 0),
+                "cash_offer":         offer.get("cash_offer", 0),
+                "total_to_agent":     offer.get("total_to_agent", 0),
+                "at_list_commission": offer.get("at_list_commission", 0),
+                "your_fee":           offer.get("your_fee_estimate", 0),
+                "your_monthly_cashflow": offer.get("your_monthly_cashflow", 0),
+                "assign_price":       offer.get("assign_price", 0),
+                "pitch_holds":        offer.get("pitch_holds", False),
             })
 
     combined_runs  = (new_runs + existing_runs)[:30]
