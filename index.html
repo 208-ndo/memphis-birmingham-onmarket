@@ -162,9 +162,9 @@
   <div class="header-meta"><span class="live-dot"></span>PIPELINE LIVE<br>Memphis TN &amp; Birmingham AL<br>Auto-fires Tue/Wed/Thu/Fri 9AM CT</div>
 </header>
 <div class="tab-bar">
-  <div class="tab active" onclick="switchTab(event,'all')">All Markets</div>
-  <div class="tab" onclick="switchTab(event,'memphis')">Memphis TN</div>
-  <div class="tab" onclick="switchTab(event,'birmingham')">Birmingham AL</div>
+  <div id="tab-all" class="tab active" onclick="switchTab(event,'all');setMarketFilter('all')">All Markets</div>
+  <div id="tab-memphis" class="tab" onclick="switchTab(event,'memphis');setMarketFilter('memphis')">Memphis TN</div>
+  <div id="tab-birmingham" class="tab" onclick="switchTab(event,'birmingham');setMarketFilter('birmingham')">Birmingham AL</div>
   <div class="tab deal-tab" onclick="switchTab(event,'analyzer')">Deal Analyzer</div>
 </div>
 
@@ -556,8 +556,41 @@ function filterTable(tbodyId,rawRows,q){var tbody=document.getElementById(tbodyI
 function clearSearch(){var inp=document.getElementById('queue-search');inp.value='';document.getElementById('search-clear').style.display='none';searchQueue('');inp.focus();}
 function updateSearchCount(){var q=(document.getElementById('queue-search')?.value||'').trim().toLowerCase();var el=document.getElementById('search-count');if(!el)return;if(!q||!_rawQueue.length){el.textContent=_rawQueue.length?_rawQueue.length+' leads':'';return;}el.textContent=_rawQueue.filter(function(r){return r.replace(/<[^>]+>/g,'').toLowerCase().includes(q);}).length+' of '+_rawQueue.length+' leads';}
 
-async function loadRunData(){try{var res=await fetch('./data/pipeline_log.json');if(!res.ok)return;var d=await res.json();if(d.summary){var s=d.summary;[['s-total',s.total_leads],['s-emails',s.emails_sent],['s-ghl',s.ghl_pushed],['s-of',s.of_deals],['s-cl',s.cl_deals],['s-last',s.run_date]].forEach(function(pair){var el=document.getElementById(pair[0]);if(el)el.textContent=pair[1]!=null?pair[1]:'--';});}if(d.runs&&d.runs.length){_rawRuns=d.runs.map(function(r){return'<tr><td>'+(r.date||'--')+'</td><td>'+(r.market||'--')+'</td><td>'+(r.leads!=null?r.leads:'--')+'</td><td>'+(r.emails!=null?r.emails:'--')+'</td><td>'+(r.of||0)+'/'+(r.cl||0)+'</td><td>'+(r.ghl!=null?r.ghl:'--')+'</td><td><span class="badge '+(r.status==='OK'?'badge-new':'badge-of')+'">'+(r.status||'--')+'</span></td></tr>';});document.getElementById('runs-tbody').innerHTML=_rawRuns.join('');}if(d.queue&&d.queue.length){_rawQueue=d.queue.map(function(q){var encoded=encodeURIComponent(JSON.stringify(q));return'<tr class="clickable-row" onclick="openPropModal(JSON.parse(decodeURIComponent(\'' +encoded+ '\')))" style="cursor:pointer"><td style="color:var(--teal)">'+(q.address||'--')+'</td><td>'+(q.market||'--')+'</td><td>'+(q.price?'$'+Number(q.price).toLocaleString():'--')+'</td><td>'+(q.dom!=null?q.dom:'--')+'</td><td><span class="badge '+(q.type==='OF'?'badge-of':'badge-cl')+'">'+(q.type||'--')+'</span></td><td>'+(q.offer?'$'+Number(q.offer).toLocaleString():'--')+'</td><td>'+(q.agent||'--')+'</td><td>'+(q.sent||'--')+'</td></tr>';});document.getElementById('queue-tbody').innerHTML=_rawQueue.join('');updateSearchCount();}}catch(e){}}
+async function loadRunData(){try{var res=await fetch('./data/pipeline_log.json');if(!res.ok)return;var d=await res.json();if(d.summary){var s=d.summary;[['s-total',s.total_leads],['s-emails',s.emails_sent],['s-ghl',s.ghl_pushed],['s-of',s.of_deals],['s-cl',s.cl_deals],['s-last',s.run_date]].forEach(function(pair){var el=document.getElementById(pair[0]);if(el)el.textContent=pair[1]!=null?pair[1]:'--';});}if(d.runs&&d.runs.length){_rawRuns=d.runs.map(function(r){return'<tr><td>'+(r.date||'--')+'</td><td>'+(r.market||'--')+'</td><td>'+(r.leads!=null?r.leads:'--')+'</td><td>'+(r.emails!=null?r.emails:'--')+'</td><td>'+(r.of||0)+'/'+(r.cl||0)+'</td><td>'+(r.ghl!=null?r.ghl:'--')+'</td><td><span class="badge '+(r.status==='OK'?'badge-new':'badge-of')+'">'+(r.status||'--')+'</span></td></tr>';});document.getElementById('runs-tbody').innerHTML=_rawRuns.join('');}if(d.queue&&d.queue.length){_queueData = d.queue;
+_rawQueue=d.queue.map(function(q,idx){return'<tr class="clickable-row" onclick="openPropModal('+idx+')" style="cursor:pointer"><td style="color:var(--teal);text-decoration:underline">'+(q.address||'--')+'</td><td>'+(q.market||'--')+'</td><td>'+(q.price?'$'+Number(q.price).toLocaleString():'--')+'</td><td>'+(q.dom!=null?q.dom:'--')+'</td><td><span class="badge '+(q.type==='OF'?'badge-of':'badge-cl')+'">'+(q.type||'--')+'</span></td><td>'+(q.offer?'$'+Number(q.offer).toLocaleString():'--')+'</td><td>'+(q.agent||'--')+'</td><td>'+(q.sent||'--')+'</td></tr>';});document.getElementById('queue-tbody').innerHTML=_rawQueue.join('');updateSearchCount();}}catch(e){}}
 loadRunData();
+
+var _activeMarket = 'all';
+function setMarketFilter(market) {
+  _activeMarket = market;
+  // Update tab styles
+  ['all','memphis','birmingham'].forEach(function(m) {
+    var tab = document.getElementById('tab-' + m);
+    if(tab) tab.classList.toggle('active', m === market);
+  });
+  // Filter queue
+  filterQueueByMarket();
+  filterRunsByMarket();
+}
+function filterQueueByMarket() {
+  var tbody = document.getElementById('queue-tbody');
+  if(!tbody || !_rawQueue.length) return;
+  var filtered = _activeMarket === 'all' ? _rawQueue : _rawQueue.filter(function(r) {
+    return r.toLowerCase().includes(_activeMarket === 'memphis' ? 'memphis' : 'birmingham');
+  });
+  tbody.innerHTML = filtered.join('');
+  var countEl = document.getElementById('search-count');
+  if(countEl) countEl.textContent = filtered.length + ' leads';
+}
+function filterRunsByMarket() {
+  var tbody = document.getElementById('runs-tbody');
+  if(!tbody || !_rawRuns.length) return;
+  var filtered = _activeMarket === 'all' ? _rawRuns : _rawRuns.filter(function(r) {
+    return r.toLowerCase().includes(_activeMarket === 'memphis' ? 'memphis' : 'birmingham');
+  });
+  tbody.innerHTML = filtered.join('');
+}
+
 </script>
 
 <!-- Property Modal -->
@@ -667,7 +700,7 @@ var _modalLead = null;
 var _modalOFEmails = [], _modalCLEmails = [];
 var fmt2 = function(v){return v?'$'+Math.round(v).toLocaleString():'—';};
 
-function openPropModal(lead){
+function openPropModal(idx){var lead=_queueData[idx];if(!lead)return;
   _modalLead = lead;
   _modalOFEmails = []; _modalCLEmails = [];
   document.getElementById('m-address').textContent = lead.address||'—';
