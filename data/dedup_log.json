@@ -109,6 +109,83 @@
       "subject": "Making It Easy on 408 Crest Dr",
       "offer_type": "cash_lowball",
       "zillow_url": "https://www.zillow.com/homedetails/408-Crest-Dr-Fairfield-AL-35064/1025679_zpid/"
+    },
+    "826 n watkins st, memphis, tn 38107": {
+      "address": "826 N Watkins St, Memphis, TN 38107",
+      "market": "memphis",
+      "agent_email": "paige@paigearnold.com",
+      "list_price": 243000,
+      "days_on_market": 30,
+      "sent_at": "2026-06-28T06:31:37.567663",
+      "subject": "Cash Offer Ready for 826 N Watkins",
+      "offer_type": "cash_lowball",
+      "zillow_url": "https://www.zillow.com/homedetails/826-N-Watkins-St-Memphis-TN-38107/42149092_zpid/"
+    },
+    "9768 riggin dr, cordova, tn 38016": {
+      "address": "9768 Riggin Dr, Cordova, TN 38016",
+      "market": "memphis",
+      "agent_email": "paige@paigearnold.com",
+      "list_price": 285000,
+      "days_on_market": 30,
+      "sent_at": "2026-06-28T06:31:37.756368",
+      "subject": "Something Worth a Look on Riggin Dr",
+      "offer_type": "cash_lowball",
+      "zillow_url": "https://www.zillow.com/homedetails/9768-Riggin-Dr-Cordova-TN-38016/401115467_zpid/"
+    },
+    "4596 crossover ln, memphis, tn 38117": {
+      "address": "4596 Crossover Ln, Memphis, TN 38117",
+      "market": "memphis",
+      "agent_email": "lindacrawford@kw.com",
+      "list_price": 235000,
+      "days_on_market": 30,
+      "sent_at": "2026-06-28T06:31:37.922631",
+      "subject": "Cash Offer, 14 Days to Close, 4596 Crossover Ln",
+      "offer_type": "cash_lowball",
+      "zillow_url": "https://www.zillow.com/homedetails/4596-Crossover-Ln-Memphis-TN-38117/42208587_zpid/"
+    },
+    "2537 dawson ave sw, birmingham, al 35211": {
+      "address": "2537 Dawson Ave SW, Birmingham, AL 35211",
+      "market": "birmingham",
+      "agent_email": "info@exitrealtybham.com",
+      "list_price": 125000,
+      "days_on_market": 30,
+      "sent_at": "2026-06-28T06:48:36.493812",
+      "subject": "What If You Could Close 2537 Dawson in Two Weeks?",
+      "offer_type": "cash_lowball",
+      "zillow_url": "https://www.zillow.com/homedetails/2537-Dawson-Ave-SW-Birmingham-AL-35211/1008189_zpid/"
+    },
+    "300 huntsville ave, trussville, al 35173": {
+      "address": "300 Huntsville Ave, Trussville, AL 35173",
+      "market": "birmingham",
+      "agent_email": "klrw494@kw.com",
+      "list_price": 114900,
+      "days_on_market": 30,
+      "sent_at": "2026-06-28T06:48:36.742281",
+      "subject": "300 Huntsville Ave. You Actually Net More With This Offer",
+      "offer_type": "cash_lowball",
+      "zillow_url": "https://www.zillow.com/homedetails/300-Huntsville-Ave-Trussville-AL-35173/968371_zpid/"
+    },
+    "2119 willow glenn dr, birmingham, al 35215": {
+      "address": "2119 Willow Glenn Dr, Birmingham, AL 35215",
+      "market": "birmingham",
+      "agent_email": "tammy@valleymls.com",
+      "list_price": 208000,
+      "days_on_market": 30,
+      "sent_at": "2026-06-28T06:48:36.898249",
+      "subject": "I Know This Listing Has Been a Journey",
+      "offer_type": "cash_lowball",
+      "zillow_url": "https://www.zillow.com/homedetails/2119-Willow-Glenn-Dr-Birmingham-AL-35215/80751329_zpid/"
+    },
+    "300 34th ave ne, center point, al 35215": {
+      "address": "300 34th Ave NE, Center Point, AL 35215",
+      "market": "birmingham",
+      "agent_email": "ejemison@norhuxercalty.com",
+      "list_price": 230000,
+      "days_on_market": 30,
+      "sent_at": "2026-06-28T06:48:37.055284",
+      "subject": "Quick Close on 300 34th Ave NE. Good for Your Seller?",
+      "offer_type": "cash_lowball",
+      "zillow_url": "https://www.zillow.com/homedetails/300-34th-Ave-NE-Center-Point-AL-35215/886172_zpid/"
     }
   },
   "agents": {
@@ -177,6 +254,55 @@
       ],
       "first_contact": "2026-06-27T22:26:22.666977",
       "last_sent": "2026-06-27T22:26:22.667636"
+    },
+    "paige@paigearnold.com": {
+      "total_contacted": 2,
+      "properties": [
+        "826 n watkins st, memphis, tn 38107",
+        "9768 riggin dr, cordova, tn 38016"
+      ],
+      "first_contact": "2026-06-28T06:31:37.567663",
+      "last_sent": "2026-06-28T06:31:37.756368"
+    },
+    "lindacrawford@kw.com": {
+      "total_contacted": 1,
+      "properties": [
+        "4596 crossover ln, memphis, tn 38117"
+      ],
+      "first_contact": "2026-06-28T06:31:37.922631",
+      "last_sent": "2026-06-28T06:31:37.922631"
+    },
+    "info@exitrealtybham.com": {
+      "total_contacted": 1,
+      "properties": [
+        "2537 dawson ave sw, birmingham, al 35211"
+      ],
+      "first_contact": "2026-06-28T06:48:36.493812",
+      "last_sent": "2026-06-28T06:48:36.493812"
+    },
+    "klrw494@kw.com": {
+      "total_contacted": 1,
+      "properties": [
+        "300 huntsville ave, trussville, al 35173"
+      ],
+      "first_contact": "2026-06-28T06:48:36.742281",
+      "last_sent": "2026-06-28T06:48:36.742281"
+    },
+    "tammy@valleymls.com": {
+      "total_contacted": 1,
+      "properties": [
+        "2119 willow glenn dr, birmingham, al 35215"
+      ],
+      "first_contact": "2026-06-28T06:48:36.898249",
+      "last_sent": "2026-06-28T06:48:36.898249"
+    },
+    "ejemison@norhuxercalty.com": {
+      "total_contacted": 1,
+      "properties": [
+        "300 34th ave ne, center point, al 35215"
+      ],
+      "first_contact": "2026-06-28T06:48:37.055284",
+      "last_sent": "2026-06-28T06:48:37.055284"
     }
   },
   "opted_out": [],
