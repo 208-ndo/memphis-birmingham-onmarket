@@ -1,131 +1,226 @@
 """
-Offer calculator — Flip Man KISS Method
-
-OWNER FINANCE ($30k-$80k):
-  - Offer = full list price
-  - Down = 5% — this IS the agent commission, nothing else
-  - Balance = 100 payments at 0% interest to seller
-  - Agent gets: exactly 5% of purchase price at closing from buyer's down
-  - No separate 6% commission. No flat fee. Seller covers nothing.
-  - Pitch check: 5% down >= 3% of list (always passes)
-  - Your fee: buyer 12% down - your 5% down = 7% spread
-  - Buyer terms: 12% rate / 10yr for positive cashflow
-
-CASH LOWBALL ($80k+):
-  - Offer = KISS tier % of list price
-  - Agent: 6% of cash offer + $1,000 flat fee
-  - Assign at +$10k
+offer.py — 229 Holdings LLC
+Two offer lanes:
+  1. Owner Finance: full list, 5% down, seller carries, no buyer agent bonus
+  2. Cash Lowball:  MAO-capped + Listed Property Visible Spread Rule
+                    ARV required — no ARV = no cash offer
 """
 
 from config import (
-    MARKETS, OF_MAX_PRICE, OF_DOWN_PCT, OF_NUM_PAYMENTS, OF_SELLER_RATE,
-    OF_BUYER_DOWN_PCT, OF_BUYER_RATE, OF_BUYER_TERM_YRS, OF_EARNEST,
-    OF_CLOSE_DAYS, OF_DD_DAYS, KISS_TIERS, CL_AGENT_COMM_PCT, CL_FLAT_FEE,
-    ASSIGNMENT_FEE, AT_LIST_PCT
+    OF_MIN_PRICE, OF_MAX_PRICE, OF_DOWN_PCT, OF_NUM_PAYMENTS,
+    OF_SELLER_RATE, OF_BUYER_DOWN_PCT, OF_BUYER_RATE, OF_BUYER_TERM_YRS,
+    OF_EARNEST, OF_CLOSE_DAYS, OF_DD_DAYS,
+    BUYER_MAO_MULTIPLIER, REPAIR_MULTIPLIER,
+    ASSIGNMENT_FEE_MIN, ASSIGNMENT_FEE_MAX, ASSIGNMENT_FEE_PCT,
+    CLOSING_BUFFER_MIN, CLOSING_BUFFER_PCT,
+    INITIAL_OFFER_LOW, INITIAL_OFFER_HIGH,
+    CASH_MAX_AUTO, SPREAD_RULES, COMMISSION_LANGUAGE,
 )
 
 
+# ── Helpers ────────────────────────────────────────────────────────────────────
+
+def round_down_1k(val: float) -> float:
+    return float(int(val / 1000) * 1000)
+
+
+def calc_assignment_fee(arv: float, override: float = None) -> float:
+    """ARV * 8%, clamped to [7500, 30000]. Override allowed for small deals."""
+    if override:
+        return float(override)
+    return max(ASSIGNMENT_FEE_MIN, min(ASSIGNMENT_FEE_MAX, arv * ASSIGNMENT_FEE_PCT))
+
+
+def calc_buyer_mao(arv: float, repairs: float) -> float:
+    """Buyer MAO = ARV * 0.90 - (repairs * 2)"""
+    return max(0.0, arv * BUYER_MAO_MULTIPLIER - repairs * REPAIR_MULTIPLIER)
+
+
+def calc_closing_buffer(buyer_mao: float) -> float:
+    """max(2500, buyer_mao * 2%)"""
+    return max(CLOSING_BUFFER_MIN, buyer_mao * CLOSING_BUFFER_PCT)
+
+
+def required_visible_spread(list_price: float) -> float:
+    """Return required visible spread for a given list price."""
+    for (lo, hi, flat, pct) in SPREAD_RULES:
+        if lo <= list_price < hi:
+            return max(flat, list_price * pct)
+    return None  # 500k+ manual review
+
+
+def calc_visible_spread(list_price: float, contract_price: float,
+                         assignment_fee: float) -> float:
+    """visible_spread = list_price - (contract_price + assignment_fee)"""
+    return list_price - (contract_price + assignment_fee)
+
+
+# ── Main entry point ───────────────────────────────────────────────────────────
+
 def calculate_offer(listing: dict) -> dict | None:
-    price = listing.get("list_price", 0)
-    if not price:
+    list_price = float(listing.get("list_price") or listing.get("price") or 0)
+    if not list_price:
         return None
-    if price <= OF_MAX_PRICE:
-        return _owner_finance(listing, price)
-    else:
-        return _cash_lowball(listing, price)
+
+    # Lane 1 — Owner Finance
+    if OF_MIN_PRICE <= list_price <= OF_MAX_PRICE:
+        return _calc_owner_finance(listing, list_price)
+
+    # Lane 2 — Cash
+    if list_price > OF_MAX_PRICE:
+        if list_price >= CASH_MAX_AUTO:
+            return {
+                "offer_type":         "manual_review",
+                "list_price":         list_price,
+                "skip_reason":        "MANUAL REVIEW — $500k+ requires manual underwriting",
+                "pitch_holds":        False,
+                "commission_language": COMMISSION_LANGUAGE,
+            }
+        return _calc_cash_lowball(listing, list_price)
+
+    return None
 
 
-def _owner_finance(listing: dict, price: float) -> dict:
-    """
-    Flip Man KISS Owner Finance.
-    5% down = agent commission. That is all.
-    """
-    dp      = price * OF_DOWN_PCT           # 5% = agent commission
-    balance = price - dp
-    monthly = balance / OF_NUM_PAYMENTS     # 0% interest
+# ── Lane 1: Owner Finance ──────────────────────────────────────────────────────
 
-    # Agent gets exactly the 5% down — no more, no less
-    agent_commission = dp
-    at_list          = price * AT_LIST_PCT
-    pitch_holds      = agent_commission >= at_list  # always true at 5%
+def _calc_owner_finance(listing: dict, list_price: float) -> dict:
+    offer_price = list_price
+    dp          = offer_price * OF_DOWN_PCT
+    balance     = offer_price - dp
+    monthly     = balance / OF_NUM_PAYMENTS   # 0% interest
 
-    # Plan to sell — end buyer at 12% down, 12%/10yr
-    buyer_down = price * OF_BUYER_DOWN_PCT
-    buyer_bal  = price - buyer_down
+    # End buyer resale
+    buyer_down = offer_price * OF_BUYER_DOWN_PCT
+    buyer_bal  = offer_price - buyer_down
     r          = OF_BUYER_RATE / 12
     n          = OF_BUYER_TERM_YRS * 12
-    buyer_mo   = buyer_bal * r / (1 - (1 + r) ** -n)
-
-    your_cashflow = buyer_mo - monthly
-    your_fee      = buyer_down - dp   # 7% spread at closing
+    buyer_mo   = (buyer_bal * r) / (1 - (1 + r) ** -n) if r > 0 else buyer_bal / n
+    your_cf    = buyer_mo - monthly
+    your_fee   = buyer_down - dp
 
     return {
-        "offer_type":           "owner_finance",
-        "owner_finance_offer":  price,
-        "cash_offer":           0,
-        "down_payment":         dp,
-        "down_pct":             OF_DOWN_PCT * 100,
-        "financed_balance":     balance,
-        "monthly_payment":      monthly,
-        "num_payments":         OF_NUM_PAYMENTS,
-        "seller_rate":          OF_SELLER_RATE,
-        # Agent — 5% down IS the commission, nothing else
-        "agent_commission":     agent_commission,
-        "flat_fee":             0,
-        "total_to_agent":       agent_commission,
-        "at_list_commission":   at_list,
-        "pitch_holds":          pitch_holds,
-        # Plan to sell
-        "buyer_down":           buyer_down,
-        "buyer_balance":        buyer_bal,
-        "buyer_monthly":        buyer_mo,
-        "buyer_rate":           OF_BUYER_RATE * 100,
-        "buyer_term_yrs":       OF_BUYER_TERM_YRS,
-        "your_cashflow":        your_cashflow,
-        "your_fee_estimate":    your_fee,
-        # Closing
-        "earnest":              OF_EARNEST,
-        "due_diligence_days":   OF_DD_DAYS,
-        "close_days":           OF_CLOSE_DAYS,
+        "offer_type":            "owner_finance",
+        "list_price":            list_price,
+        "owner_finance_offer":   offer_price,
+        "down_payment":          dp,
+        "down_pct":              OF_DOWN_PCT * 100,
+        "financed_balance":      balance,
+        "monthly_payment":       monthly,
+        "num_payments":          OF_NUM_PAYMENTS,
+        "seller_rate":           OF_SELLER_RATE,
+        "earnest":               OF_EARNEST,
+        "close_days":            OF_CLOSE_DAYS,
+        "due_diligence_days":    OF_DD_DAYS,
+        "buyer_down_pct":        OF_BUYER_DOWN_PCT * 100,
+        "buyer_down":            buyer_down,
+        "buyer_rate":            OF_BUYER_RATE * 100,
+        "buyer_term_yrs":        OF_BUYER_TERM_YRS,
+        "buyer_monthly":         buyer_mo,
+        "your_monthly_cashflow": your_cf,
+        "your_fee_estimate":     your_fee,
+        "pitch_holds":           True,
+        "commission_language":   COMMISSION_LANGUAGE,
     }
 
 
-def _cash_lowball(listing: dict, price: float) -> dict:
-    """
-    Flip Man KISS Cash Lowball.
-    Agent: 6% of cash offer + $1,000 flat fee (separate from OF structure).
-    """
-    tier_pct     = _kiss_tier(price)
-    offer        = price * (tier_pct / 100)
-    assign_price = offer + ASSIGNMENT_FEE
+# ── Lane 2: Cash Lowball ───────────────────────────────────────────────────────
 
-    comm        = offer * CL_AGENT_COMM_PCT
-    flat        = CL_FLAT_FEE
-    agent_total = comm + flat
-    at_list     = price * AT_LIST_PCT
-    pitch_holds = agent_total >= at_list
+def _calc_cash_lowball(listing: dict, list_price: float) -> dict:
+    arv     = float(listing.get("arv") or 0)
+    repairs = float(listing.get("repairs") or 0)
+
+    # ARV required for cash offers
+    if not arv:
+        return {
+            "offer_type":         "no_arv",
+            "list_price":         list_price,
+            "skip_reason":        "NO ARV — cash offer requires ARV input. Use owner finance or manual review.",
+            "pitch_holds":        False,
+            "commission_language": COMMISSION_LANGUAGE,
+        }
+
+    # ── Step 1: Buyer MAO ──────────────────────────────────────────────────────
+    buyer_mao      = calc_buyer_mao(arv, repairs)
+    assignment_fee = calc_assignment_fee(arv, listing.get("assignment_fee_override"))
+    closing_buffer = calc_closing_buffer(buyer_mao)
+
+    # ── Step 2: Contract MAO by buyer math ────────────────────────────────────
+    buyer_math_cap = buyer_mao - assignment_fee - closing_buffer
+
+    # ── Step 3: Contract MAO by visible spread arbitrage ─────────────────────
+    req_spread = required_visible_spread(list_price)
+    if req_spread is None:
+        return {
+            "offer_type":         "manual_review",
+            "list_price":         list_price,
+            "skip_reason":        "MANUAL REVIEW — $500k+ requires manual underwriting",
+            "pitch_holds":        False,
+            "commission_language": COMMISSION_LANGUAGE,
+        }
+
+    spread_cap = list_price - assignment_fee - req_spread
+
+    # ── Step 4: Final max contract price ─────────────────────────────────────
+    final_contract_mao = min(buyer_math_cap, spread_cap)
+
+    if final_contract_mao <= 0:
+        visible_spread_at_zero = calc_visible_spread(list_price, 0, assignment_fee)
+        return {
+            "offer_type":          "skip",
+            "list_price":          list_price,
+            "arv":                 arv,
+            "repairs":             repairs,
+            "buyer_mao":           buyer_mao,
+            "assignment_fee":      assignment_fee,
+            "closing_buffer":      closing_buffer,
+            "buyer_math_cap":      buyer_math_cap,
+            "spread_cap":          spread_cap,
+            "required_spread":     req_spread,
+            "final_contract_mao":  final_contract_mao,
+            "skip_reason":         "SKIP — numbers do not pencil. Final contract MAO is zero or negative.",
+            "pitch_holds":         False,
+            "commission_language": COMMISSION_LANGUAGE,
+        }
+
+    # ── Step 5: Initial offer = final_contract_mao * 85–92% ──────────────────
+    initial_offer = round_down_1k(final_contract_mao * INITIAL_OFFER_LOW)
+    max_offer     = round_down_1k(final_contract_mao * INITIAL_OFFER_HIGH)
+    cash_offer    = initial_offer
+
+    # ── Step 6: Visible spread check at initial offer ─────────────────────────
+    visible_spread  = calc_visible_spread(list_price, cash_offer, assignment_fee)
+    spread_ok       = visible_spread >= req_spread
+    spread_status   = "PASS" if spread_ok else "NO ARBITRAGE"
+
+    assign_price    = cash_offer + assignment_fee
+    buyer_has_room  = assign_price < buyer_mao
+    room_delta      = buyer_mao - assign_price
 
     return {
-        "offer_type":           "cash_lowball",
-        "owner_finance_offer":  0,
-        "cash_offer":           offer,
-        "kiss_tier_pct":        tier_pct,
-        "assign_fee":           ASSIGNMENT_FEE,
-        "assign_price":         assign_price,
-        "agent_commission":     comm,
-        "flat_fee":             flat,
-        "total_to_agent":       agent_total,
-        "at_list_commission":   at_list,
-        "pitch_holds":          pitch_holds,
-        "your_fee_estimate":    ASSIGNMENT_FEE,
-        "earnest":              500,
-        "due_diligence_days":   10,
-        "close_days":           14,
+        "offer_type":          "cash_lowball",
+        "list_price":          list_price,
+        "arv":                 arv,
+        "repairs":             repairs,
+        # MAO chain
+        "buyer_mao":           buyer_mao,
+        "assignment_fee":      assignment_fee,
+        "closing_buffer":      closing_buffer,
+        "buyer_math_cap":      buyer_math_cap,
+        # Spread chain
+        "required_spread":     req_spread,
+        "spread_cap":          spread_cap,
+        # Final
+        "final_contract_mao":  final_contract_mao,
+        "cash_offer":          cash_offer,
+        "initial_offer":       initial_offer,
+        "max_offer":           max_offer,
+        "assign_price":        assign_price,
+        "visible_spread":      visible_spread,
+        "spread_status":       spread_status,
+        "spread_ok":           spread_ok,
+        "buyer_has_room":      buyer_has_room,
+        "room_delta":          room_delta,
+        "your_fee_estimate":   assignment_fee,
+        "pitch_holds":         spread_ok and buyer_has_room,
+        "commission_language": COMMISSION_LANGUAGE,
     }
-
-
-def _kiss_tier(price: float) -> int:
-    for max_price, pct in sorted(KISS_TIERS.items()):
-        if price <= max_price:
-            return pct
-    return 65
