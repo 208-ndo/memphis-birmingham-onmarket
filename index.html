@@ -420,7 +420,7 @@ function calcOF(){
   var termYears=Math.floor(pmts/12),termMos=pmts%12;
   var termStr=(termYears>0?termYears+'yr ':'')+( termMos>0?termMos+'mo':'');
 
-  ofData={price:price,dpPct:dpPct,pmts:pmts,buyerDp:buyerDp,buyerRate:buyerRate,buyerTermYrs:buyerTermYrs,dp:dp,balance:balance,monthly:monthly,agentComm:agentComm,atList:atList,pitchOk:pitchOk,yourFee:yourFee,buyerDown:buyerDown,buyerBal:buyerBal,buyerMo:buyerMo,yourCashflow:yourCashflow,address:address,agent:agent,termStr:termStr};
+  ofData={price:price,dpPct:dpPct,pmts:pmts,buyerDp:buyerDp,buyerRate:buyerRate,buyerTermYrs:buyerTermYrs,dp:dp,balance:balance,monthly:monthly,yourFee:yourFee,buyerDown:buyerDown,buyerBal:buyerBal,buyerMo:buyerMo,yourCashflow:yourCashflow,address:address,agent:agent,termStr:termStr};
 
   setEl('of-r-price',fmt(price),'purple');
   setEl('of-r-dp',fmt(dp)+' ('+dpPct+'% = agent commission)','purple');
@@ -609,7 +609,8 @@ function copyEl(id,btn){var el=document.getElementById(id);var text=el.innerText
 async function generateOFEmails(){
   if(!ofData)return;
   var d=ofData;
-  var prompt='You are a real estate investor writing to a listing agent.\n\nPROPERTY: '+d.address+'\nOFFER: Full asking price of '+fmt(d.price)+'\nSTRUCTURE: '+fmt(d.dp)+' down at closing (5%), seller carries balance over '+d.pmts+' payments at 0% interest\nCOMMISSION: Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.\nCLOSE: 21 days | As-Is, subject to walkthrough | $500 earnest | 10-day due diligence\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX. Short, conversational.\n3. NEVER say seller financing or owner financing in subject or body.\n4. NEVER mention commission amounts, percentages, assignment fees, or wholesaling.\n5. Seller gets FULL asking price '+fmt(d.price)+'.\n6. Soft CTA only: ask where to send written offer.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. V1=direct, V2=empathetic, V3=curiosity hook, V4=ultra short 2 sentences max.\n9. Different subject and opening each time. Subject neutral only.\n\nReturn ONLY raw JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
+  var prompt='You are a real estate wholesaler writing to a listing agent about their stale listing.\n\nOFFER TYPE: Creative / Seller Financed\nProperty: '+d.address+'\nList Price: '+fmt(d.price)+'\nOffer: FULL asking price\nDown Payment: '+fmt(d.dp)+' ('+d.dpPct+'%) — this IS the agent commission, paid from buyer down at closing\nMonthly to Seller: '+fmt(d.monthly)+'/mo over '+d.pmts+' payments at 0% interest\nAgent Commission: '+fmt(d.agentComm)+' — paid at closing from buyer down. Seller owes nothing.\n\nHARD RULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. NEVER say "seller financing" or "owner financing" anywhere.\n4. Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.
+5. Seller gets FULL asking price '+fmt(d.price)+'.\n6. Soft CTA: ask where to send written offer.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. V1=direct, V2=empathetic, V3=curiosity hook, V4=ultra short 2-3 sentences.\n9. Different subject and opening line for each variation.\n10. Subject: neutral only, never mention financing type.\n\nReturn ONLY raw JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
   showEmailLoading('of');
   try{
     var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
@@ -625,8 +626,7 @@ async function generateOFEmails(){
 async function generateCLEmails(){
   if(!clData)return;
   var d=clData;
-  var prompt='You are a real estate wholesaler writing to a listing agent about their stale listing.\n\nOFFER TYPE: Cash As-Is\nProperty: '+d.address+'\nList Price: '+fmt(d.listPrice)+'\nCash Offer: '+fmt(d.offer)+'\nAssign Price: '+fmt(d.assignPrice)+'\nCOMMISSION: Seller pays listing broker per existing listing agreement from seller proceeds. Buyer is not offering an agent bonus.\nClose: 7-14 days | As-Is, no repair requests, subject to standard due diligence | Cash | $500 earnest\n\nRULES:\n1. NO em dashes. Periods and co4. Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.
-5. Soft CTA only: ask where to send written offer.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. V1=direct, V2=empathetic, V3=curiosity, V4=ultra short.\n\nReturn ONLY raw JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
+  var prompt='You are a real estate wholesaler writing to a listing agent about their stale listing.\n\nOFFER TYPE: Cash As-Is\nProperty: '+d.address+'\nList Price: '+fmt(d.listPrice)+'\nCash Offer: '+fmt(d.offer)+'\nAssign Price: '+fmt(d.assignPrice)+'\nCOMMISSION: Seller pays listing broker per existing listing agreement from seller proceeds. Buyer is not offering an agent bonus.\nClose: 7-14 days | As-Is, no repair requests, subject to standard due diligence | Cash | $500 earnest\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. Lead with speed and certainty.\n4. NEVER mention commission amounts, percentages, assignment fees, or wholesaling.\n5. Do NOT pitch the agent on their commission.\n6. Soft CTA only.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. V1=direct, V2=empathetic, V3=curiosity, V4=ultra short.\n\nReturn ONLY raw JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
   showEmailLoading('cl');
   try{
     var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
@@ -885,7 +885,8 @@ function openPropModal(idx){var lead=_queueData[idx];if(!lead)return;
   document.getElementById('m-of-buyer-dp').textContent = fmt2(buyerDp);
   document.getElementById('m-of-fee').textContent      = fmt2(lead.your_fee || (buyerDp - (lead.down_payment||0)));
   document.getElementById('m-of-cashflow').textContent = lead.your_monthly_cashflow ? fmt2(lead.your_monthly_cashflow)+'/mo' : '—';
-  docum// CL numbers — full MAO engine
+    // OF numbers done
+  // CL numbers — full MAO engine
   var lp=lead.price||0,arv=lead.arv||0,repairs=lead.repairs||0;
   var arvReqEl=document.getElementById('m-cl-arv-required');
   var clGrid=document.getElementById('m-cl-grid');
@@ -922,7 +923,7 @@ function openPropModal(idx){var lead=_queueData[idx];if(!lead)return;
     var ssEl=document.getElementById('m-cl-spread-status');
     if(ssEl)ssEl.innerHTML=fMAO<=0?'<span class="modal-pitch-badge modal-pitch-fail">SKIP</span>':(spOk?'<span class="modal-pitch-badge modal-pitch-ok">&#x2713; PASS</span>':'<span class="modal-pitch-badge modal-pitch-fail">&#x2715; NO ARBITRAGE</span>');
   }
-  // CL numbers complete
+
   // Hide email sections
   document.getElementById('m-of-emails').style.display='none';
   document.getElementById('m-cl-emails').style.display='none';
@@ -938,7 +939,7 @@ function closePropModal(){
 }
 
 function switchModalTab(name){
-  ['sent','of','cl'].forEach(function(t){COMMISSION: t.getElementById('mtab-'+t).className='modal-tab';
+  ['sent','of','cl'].forEach(function(t){document.getElementById('mtab-'+t).className='modal-tab';
     document.getElementById('mbody-'+t).classList.remove('active');
   });
   document.getElementById('mtab-'+name).classList.add('active-'+name);
@@ -967,7 +968,9 @@ async function genModalEmails(type){
   var prefix = type==='of'?'m-of':'m-cl';
   document.getElementById(prefix+'-emails').style.display='block';
   document.getElementById(prefix+'-email-subject').textContent='Generating...';
-  document.getElementByI7-14 days, as-is, no repair requests, subject to standard due diligence, cash, $500 earnest0;
+  document.getElementById(prefix+'-email-body').textContent='';
+  var price=lead.price||0;
+  // CLOSE: 7-14 days, as-is, no repair requests, subject to standard due diligence, cash, $500 earnest0;
   var prompt;
   if(type==='of'){
     var dp = lead.down_payment||(price*0.05);
