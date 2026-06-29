@@ -80,7 +80,7 @@ def _gen_cl_email(listing: dict, offer: dict) -> dict:
 
     return {
         "variation": 1,
-        "subject": f"Cash offer for {address}",
+        "subject": f"Offer on {address}",
         "body": body,
     }
 
@@ -126,7 +126,7 @@ def _gen_of_email(listing: dict, offer: dict) -> dict:
 
     return {
         "variation": 1,
-        "subject": f"Seller-financed offer for {address}",
+        "subject": f"Offer on {address}",
         "body": body,
     }
 
