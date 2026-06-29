@@ -478,7 +478,7 @@ function renderOFOffer(){
   +'<div class="od-legal"><strong>BROKER COMPENSATION:</strong> Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.</div>'
   +'<div class="od-sig"><div><div class="od-sig-name">229 Holdings LLC</div></div><div style="text-align:right;font-family:Space Mono,monospace;font-size:10px;color:#7a7a9a">Date: ___________________<br>Seller Signature: ___________________</div></div>';
 
-  document.getElementById('of-direct-doc').textContent='Seller-financed offer - 229 Holdings LLC\n\nProperty: '+d.address+'\n\nPurchase Price: '+fmt(d.price)+'\nDown Payment: '+fmt(d.dp)+' ('+d.dpPct+'%)\nSeller-Financed Balance: '+fmt(d.balance)+'\nMonthly Payment: '+fmt(d.monthly)+'/mo\nTerm: '+d.pmts+' months\nInterest Rate: '+d.sellerRate+'%\nEarnest Money: $500\nDue Diligence: 10 days\nClose Timeline: 21-30 days\n\nAs-is, no repair requests, subject to standard due diligence.\n\nSeller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.\n\nMichael B. | 229 Holdings LLC';
+  document.getElementById('of-direct-doc').textContent='Purchase Offer - 229 Holdings LLC\n\nProperty: '+d.address+'\n\nPurchase Price: '+fmt(d.price)+'\nDown Payment: '+fmt(d.dp)+' ('+d.dpPct+'%)\nSeller-Financed Balance: '+fmt(d.balance)+'\nMonthly Payment: '+fmt(d.monthly)+'/mo\nTerm: '+d.pmts+' months\nInterest Rate: '+d.sellerRate+'%\nEarnest Money: $500\nDue Diligence: 10 days\nClose Timeline: 21-30 days\n\nAs-is, no repair requests, subject to standard due diligence.\n\nSeller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.\n\nMichael B. | 229 Holdings LLC';
 }
 
 /* kissOffer removed */
@@ -666,16 +666,16 @@ function generateCLEmails(){
   var sign='Michael B. | 229 Holdings LLC';
   clEmails=[
     {variation:1,
-     subject:'Cash offer on '+addr,
+     subject:'Offer on '+addr,
      body:'Hi, I have a cash offer for '+addr+': '+offer+', $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests, no financing contingency. '+broker+' '+invest+' Where can I send the written offer?\n\n'+sign},
     {variation:2,
-     subject:'Cash offer on '+addr,
+     subject:'Offer on '+addr,
      body:'Hi, wanted to get a cash offer to you on '+addr+'. '+offer+' cash, $500 earnest, close by '+coe+', 10-day due diligence, as-is. '+broker+' '+invest+' Let me know where to send the agreement.\n\n'+sign},
     {variation:3,
-     subject:'Written cash offer for '+addr,
+     subject:'Offer on '+addr,
      body:'Hi, I have a written cash offer prepared for '+addr+' at '+offer+'. Terms: $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests, no financing contingency. '+broker+' '+invest+' Where should I send it?\n\n'+sign},
     {variation:4,
-     subject:'Cash offer on '+addr,
+     subject:'Offer on '+addr,
      body:'Hi, cash offer on '+addr+': '+offer+', close by '+coe+', as-is. '+broker+' Where can I send the written offer?\n\n'+sign}
   ];
   renderEmailTabs('cl',clEmails);showEmail('cl',0);
@@ -1029,10 +1029,10 @@ function genModalEmails(type){
   } else {
     var cashOffer=fmt2(lead.cash_offer||lead.offer||0);
     emails=[
-      {variation:1,subject:'Cash offer on '+addr,body:'Hi, I have a cash offer for '+addr+': '+cashOffer+', $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests, no financing contingency. '+broker+' '+invest+' Where can I send the written offer?\n\n'+sign},
-      {variation:2,subject:'Cash offer on '+addr,body:'Hi, wanted to get a cash offer to you on '+addr+'. '+cashOffer+' cash, $500 earnest, close by '+coe+', 10-day due diligence, as-is. '+broker+' '+invest+' Let me know where to send the agreement.\n\n'+sign},
-      {variation:3,subject:'Written cash offer for '+addr,body:'Hi, I have a written cash offer prepared for '+addr+' at '+cashOffer+'. Terms: $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests, no financing contingency. '+broker+' '+invest+' Where should I send it?\n\n'+sign},
-      {variation:4,subject:'Cash offer on '+addr,body:'Hi, cash offer on '+addr+': '+cashOffer+', close by '+coe+', as-is. '+broker+' Where can I send the written offer?\n\n'+sign}
+      {variation:1,subject:'Offer on '+addr,body:'Hi, I have a cash offer for '+addr+': '+cashOffer+', $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests, no financing contingency. '+broker+' '+invest+' Where can I send the written offer?\n\n'+sign},
+      {variation:2,subject:'Offer on '+addr,body:'Hi, wanted to get a cash offer to you on '+addr+'. '+cashOffer+' cash, $500 earnest, close by '+coe+', 10-day due diligence, as-is. '+broker+' '+invest+' Let me know where to send the agreement.\n\n'+sign},
+      {variation:3,subject:'Offer on '+addr,body:'Hi, I have a written cash offer prepared for '+addr+' at '+cashOffer+'. Terms: $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests, no financing contingency. '+broker+' '+invest+' Where should I send it?\n\n'+sign},
+      {variation:4,subject:'Offer on '+addr,body:'Hi, cash offer on '+addr+': '+cashOffer+', close by '+coe+', as-is. '+broker+' Where can I send the written offer?\n\n'+sign}
     ];
   }
   if(type==='of') _modalOFEmails=emails; else _modalCLEmails=emails;
