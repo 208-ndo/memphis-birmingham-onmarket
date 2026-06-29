@@ -18,7 +18,8 @@ logger = logging.getLogger(__name__)
 APIFY_TOKEN = os.environ.get("APIFY_API_TOKEN")
 ACTOR_ID    = "maxcopell/zillow-scraper"
 
-MAX_RESULTS_PER_BAND = 50
+MAX_RESULTS_OF_BAND = 200  # sub-$80k owner-finance bands — deeper fetch for stale leads
+MAX_RESULTS_CL_BAND = 50   # $80k+ cash bands — no ARV available, no auto-send benefit
 MIN_DOM = 30
 
 # Owner-finance price ceiling — below this, dom-unknown leads get OF fallback
@@ -258,8 +259,10 @@ def scrape_market(market: dict) -> list[dict]:
         logger.info(f"URL: {search_url[:120]}...")
 
         try:
+            max_results = MAX_RESULTS_OF_BAND if price_max <= 80000 else MAX_RESULTS_CL_BAND
+            logger.info(f"Band {band_label}: maxResults={max_results}")
             run   = client.actor(ACTOR_ID).call(
-                run_input={"searchUrls": [{"url": search_url}], "maxItems": MAX_RESULTS_PER_BAND},
+                run_input={"searchUrls": [{"url": search_url}], "maxResults": max_results},
                 timeout_secs=180
             )
             items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
