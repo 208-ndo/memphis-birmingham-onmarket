@@ -260,7 +260,7 @@
           <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Internal Broker Comp Estimate</div>
           <div class="result-row"><span class="result-label">Estimated Broker Compensation</span><span class="result-value" id="of-r-broker">—</span></div>
           <div class="result-row"><span class="result-label">Estimated Seller Cash After Broker Comp</span><span class="result-value" id="of-r-seller-cash">—</span></div>
-          <div class="result-row" style="padding:8px 0"><span class="result-label" style="line-height:1.6;max-width:90%">Seller pays listing broker per existing listing agreement from seller proceeds. Buyer is not offering an agent bonus.</span></div>
+          <div class="result-row" style="padding:8px 0"><span class="result-label" style="line-height:1.6;max-width:90%">Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.</span></div>
           <hr class="divider"/>
           <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Assign Price — What End Buyer Pays</div>
           <div class="result-row hl"><span class="result-label">Assign Price (same price)</span><span class="result-value purple" id="of-r-plan-sell">—</span></div>
@@ -278,11 +278,11 @@
         <div class="calc-title purple" style="margin-bottom:4px">Offer Output</div>
         <div class="calc-subtitle" style="margin-bottom:16px">Seller Financed Offer — 229 Holdings LLC</div>
         <div class="output-view-tabs">
-          <button class="ovt-btn active" onclick="showOfferView(event,'of','executive')">Executive</button>
-          <button class="ovt-btn" onclick="showOfferView(event,'of','direct')">Direct (Paste)</button>
+          <button class="ovt-btn" onclick="showOfferView(event,'of','executive')">Internal Analysis</button>
+          <button class="ovt-btn active" onclick="showOfferView(event,'of','direct')">Agent Paste</button>
         </div>
-        <div id="of-view-executive"><div class="offer-doc" id="of-exec-doc"></div><button class="copy-btn" onclick="copyEl('of-exec-doc',this)">&#128203; Copy Offer</button></div>
-        <div id="of-view-direct" style="display:none"><div class="offer-direct" id="of-direct-doc"></div><button class="copy-btn" onclick="copyEl('of-direct-doc',this)">&#128203; Copy Text</button></div>
+        <div id="of-view-executive" style="display:none"><div class="offer-doc" id="of-exec-doc"></div></div>
+        <div id="of-view-direct"><div class="offer-direct" id="of-direct-doc"></div><button class="copy-btn" onclick="copyEl('of-direct-doc',this)">&#128203; Copy Agent Message</button></div>
         <div class="email-gen-section" id="of-email-section" style="display:none">
           <div class="section-header" style="font-size:11px;margin-bottom:12px">AI Email — 4 Variations</div>
           <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px">Rotate before sending. Agent-facing copy only.</div>
@@ -294,7 +294,7 @@
     </div>
     <div class="ref-grid">
       <div class="ref-card"><div class="ref-title p">Owner Finance Rules</div><div class="ref-body">Offer: <span class="val">full list or near-list price</span><br>Down: <span class="val">5% default</span><br>Seller carries: <span class="val">balance</span><br>Interest: <span class="val">0% unless manually changed</span><br>Term: <span class="val">60-120 months</span><br>Earnest: <span class="val">$500</span> | Close: <span class="val">21-30 days</span> | DD: <span class="val">10 days</span></div></div>
-      <div class="ref-card"><div class="ref-title p">Broker Compensation</div><div class="ref-body">Public line: <span class="val">seller pays per existing listing agreement</span><br>Buyer is not offering an agent bonus.<br>Internal calculator may estimate broker comp.<br>Do not show seller cash warning in public output.</div></div>
+      <div class="ref-card"><div class="ref-title p">Broker Compensation</div><div class="ref-body">Public line: <span class="val">seller handles broker compensation per listing agreement</span><br>Internal calculator may estimate broker comp.<br>Do not show seller cash warning in public output.</div></div>
       <div class="ref-card"><div class="ref-title p">Assign Price</div><div class="ref-body">Sell to end buyer at: <span class="val">same list price</span><br>Buyer down: <span class="val">12%</span> (you put in 5%)<br>Your spread at close: <span class="val">7% of list price</span><br>Buyer rate: <span class="val">12% / 10yr = positive cashflow</span><br>Monthly cashflow: <span class="val">buyer mo. - seller mo.</span><br>End buyer: <span class="val">owner occupant, no bank needed</span></div></div>
       <div class="ref-card"><div class="ref-title p">Email Hard Rules</div><div class="ref-body">Length: <span class="val">3-5 sentences max</span><br>Em dashes: <span class="val">NEVER</span><br>Subject: <span class="val">neutral only</span><br>Commission: <span class="val">clean public line only</span><br>Terms: <span class="val">as-is, no repair requests</span><br>Sign off: <span class="val">Michael B. | 229 Holdings LLC</span></div></div>
     </div>
@@ -351,7 +351,7 @@
 
           <hr class="divider"/>
           <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Commission</div>
-          <div class="result-row" style="padding:8px 0"><span class="result-label" style="line-height:1.6;max-width:90%">Seller pays listing broker per existing listing agreement from seller proceeds. Buyer is not offering an agent bonus.</span></div>
+          <div class="result-row" style="padding:8px 0"><span class="result-label" style="line-height:1.6;max-width:90%">Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.</span></div>
           <hr class="divider"/>
           <div class="result-row hl"><span class="result-label">Your Assignment Fee</span><span class="result-value green" id="cl-r-fee">—</span></div>
           <div id="cl-pitch" class="pitch-check" style="display:none"></div>
@@ -361,11 +361,11 @@
         <div class="calc-title teal" style="margin-bottom:4px">Offer Output</div>
         <div class="calc-subtitle" style="margin-bottom:16px">Cash As-Is Offer — 229 Holdings LLC</div>
         <div class="output-view-tabs">
-          <button class="ovt-btn active" onclick="showOfferView(event,'cl','executive')">Executive</button>
-          <button class="ovt-btn" onclick="showOfferView(event,'cl','direct')">Direct (Paste)</button>
+          <button class="ovt-btn" onclick="showOfferView(event,'cl','executive')">Internal Analysis</button>
+          <button class="ovt-btn active" onclick="showOfferView(event,'cl','direct')">Agent Paste</button>
         </div>
-        <div id="cl-view-executive"><div class="offer-doc" id="cl-exec-doc"></div><button class="copy-btn" onclick="copyEl('cl-exec-doc',this)">&#128203; Copy Offer</button></div>
-        <div id="cl-view-direct" style="display:none"><div class="offer-direct" id="cl-direct-doc"></div><button class="copy-btn" onclick="copyEl('cl-direct-doc',this)">&#128203; Copy Text</button></div>
+        <div id="cl-view-executive" style="display:none"><div class="offer-doc" id="cl-exec-doc"></div></div>
+        <div id="cl-view-direct"><div class="offer-direct" id="cl-direct-doc"></div><button class="copy-btn" onclick="copyEl('cl-direct-doc',this)">&#128203; Copy Agent Message</button></div>
         <div class="email-gen-section" id="cl-email-section" style="display:none">
           <div class="section-header" style="font-size:11px;margin-bottom:12px">AI Email — 4 Variations</div>
           <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px">Cash framing. Speed + certainty + commission. Rotate before sending.</div>
@@ -405,9 +405,10 @@ function calcOF(){
   var buyerDp=parseFloat(document.getElementById('of-buyer-dp').value)||12;
   var buyerRate=parseFloat(document.getElementById('of-buyer-rate').value)||12;
   var buyerTermYrs=parseFloat(document.getElementById('of-buyer-term').value)||10;
-  var address=document.getElementById('of-address').value.trim()||'Property Address';
+  var address=document.getElementById('of-address').value.trim();
   var agent=document.getElementById('of-agent').value.trim()||'Listing Agent';
   if(!price){alert('Enter a list price.');return;}
+  if(!address){alert('Enter a property address.');return;}
 
   // Seller side
   var dp=price*(dpPct/100);
@@ -469,15 +470,15 @@ function calcOF(){
 
 function renderOFOffer(){
   var d=ofData;if(!d)return;
-  document.getElementById('of-exec-doc').innerHTML='<div class="od-header"><div><div class="od-brand">229 <span>HOLDINGS LLC</span></div><div style="font-family:Space Mono,monospace;font-size:9px;color:#7a7a9a;margin-top:4px"></div></div><div class="od-type">SELLER FINANCED OFFER<br>'+today()+'</div></div><div class="od-address">'+d.address+'</div><div class="od-date">Presented to: '+d.agent+'</div>'
-  +'<div class="od-comm-banner"><div class="od-comm-title">COMMISSION</div><div class="od-comm-body">Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.</div></div>'
+  document.getElementById('of-exec-doc').innerHTML='<div class="od-header"><div><div class="od-brand">229 <span>HOLDINGS LLC</span></div><div style="font-family:Space Mono,monospace;font-size:9px;color:#7a7a9a;margin-top:4px">INTERNAL ANALYSIS - DO NOT SEND TO AGENT</div></div><div class="od-type">OWNER FINANCE ANALYSIS<br>'+today()+'</div></div><div class="od-address">'+d.address+'</div><div class="od-date">Internal review for: '+d.agent+'</div>'
+  +'<div class="od-comm-banner"><div class="od-comm-title">BROKER COMPENSATION</div><div class="od-comm-body">Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.</div></div>'
   +'<div class="od-grid"><div class="od-box"><div class="od-label">Purchase Price</div><div class="od-value">'+fmt(d.price)+'</div><div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:Space Mono,monospace">Seller receives full asking price</div></div><div class="od-box teal-box"><div class="od-label">Down Payment ('+d.dpPct+'%)</div><div class="od-value teal">'+fmt(d.dp)+'</div><div style="font-size:11px;color:#7a7a9a;margin-top:4px;font-family:Space Mono,monospace">Paid at closing.</div></div></div>'
   +'<div class="od-grid-3"><div class="od-box"><div class="od-label">Financed Amount</div><div class="od-value dark">'+fmt(d.balance)+'</div></div><div class="od-box"><div class="od-label">Monthly Payment to Seller</div><div class="od-value dark">'+fmt(d.monthly)+'/mo</div></div><div class="od-box"><div class="od-label">Term</div><div class="od-value dark" style="font-size:14px">'+d.pmts+' months ('+d.sellerRate+'% interest)</div></div></div>'
   +'<div class="od-grid-3"><div class="od-box"><div class="od-label">Earnest Money</div><div class="od-value dark">$500</div></div><div class="od-box"><div class="od-label">Due Diligence</div><div class="od-value dark">10 Days</div></div><div class="od-box"><div class="od-label">Close of Escrow</div><div class="od-value dark" style="font-size:13px">'+coeDate(21)+'</div></div></div>'
-  +'<div class="od-legal"><strong>COMMISSION:</strong> Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.</div>'
+  +'<div class="od-legal"><strong>BROKER COMPENSATION:</strong> Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.</div>'
   +'<div class="od-sig"><div><div class="od-sig-name">229 Holdings LLC</div></div><div style="text-align:right;font-family:Space Mono,monospace;font-size:10px;color:#7a7a9a">Date: ___________________<br>Seller Signature: ___________________</div></div>';
 
-  document.getElementById('of-direct-doc').textContent='Seller-financed offer - 229 Holdings LLC\n\nProperty: '+d.address+'\n\nPurchase Price: '+fmt(d.price)+'\nDown Payment: '+fmt(d.dp)+' ('+d.dpPct+'%)\nSeller-Financed Balance: '+fmt(d.balance)+'\nMonthly Payment: '+fmt(d.monthly)+'/mo\nTerm: '+d.pmts+' months\nInterest Rate: '+d.sellerRate+'%\nEarnest Money: $500\nDue Diligence: 10 days\nClose Timeline: 21-30 days\n\nAs-is, no repair requests, subject to standard due diligence.\n\nSeller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.\n\nMichael B. | 229 Holdings LLC';
+  document.getElementById('of-direct-doc').textContent='Seller-financed offer - 229 Holdings LLC\n\nProperty: '+d.address+'\n\nPurchase Price: '+fmt(d.price)+'\nDown Payment: '+fmt(d.dp)+' ('+d.dpPct+'%)\nSeller-Financed Balance: '+fmt(d.balance)+'\nMonthly Payment: '+fmt(d.monthly)+'/mo\nTerm: '+d.pmts+' months\nInterest Rate: '+d.sellerRate+'%\nEarnest Money: $500\nDue Diligence: 10 days\nClose Timeline: 21-30 days\n\nAs-is, no repair requests, subject to standard due diligence.\n\nSeller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.\n\nMichael B. | 229 Holdings LLC';
 }
 
 /* kissOffer removed */
@@ -487,9 +488,10 @@ function calcCL(){
   var arv=parseFloat(document.getElementById('cl-arv').value)||0;
   var repair=parseFloat(document.getElementById('cl-repair').value)||0;
   var assignOverride=parseFloat(document.getElementById('cl-assign-override').value)||0;
-  var address=document.getElementById('cl-address').value.trim()||'Property Address';
+  var address=document.getElementById('cl-address').value.trim();
   var agent=document.getElementById('cl-agent').value.trim()||'Listing Agent';
   if(!listPrice){alert('Enter a list price.');return;}
+  if(!address){alert('Enter a property address.');return;}
   if(!arv){alert('ARV is required for cash offers. Enter ARV or use Owner Finance.');return;}
   if(listPrice>=500000){
     document.getElementById('cl-results').style.display='block';
@@ -604,15 +606,16 @@ function renderCLOffer(){
   var d=clData;if(!d)return;
   var roomLine='Buyer MAO: '+fmt(d.buyerMAO)+' | Buyer all-in: '+fmt(d.buyerAllIn)+' | Room: '+(d.buyerHasRoom?'YES (+'+fmt(d.roomDelta)+')':'NO');
   var spreadLine='Visible Spread: '+fmt(d.visibleSpread)+' vs Required: '+fmt(d.reqSpread)+' — '+(d.spreadOk?'PASS':'NO ARBITRAGE');
-  document.getElementById('cl-exec-doc').innerHTML='<div class="od-header"><div><div class="od-brand">229 <span>HOLDINGS LLC</span></div><div style="font-family:Space Mono,monospace;font-size:9px;color:#7a7a9a;margin-top:4px">INTERNAL ONLY - DO NOT SEND TO AGENT</div></div><div class="od-type">CASH LOWBALL ANALYSIS<br>'+today()+'</div></div><div class="od-address">'+d.address+'</div><div class="od-date">Presented to: '+d.agent+'</div>'
+  document.getElementById('cl-exec-doc').innerHTML='<div class="od-header"><div><div class="od-brand">229 <span>HOLDINGS LLC</span></div><div style="font-family:Space Mono,monospace;font-size:9px;color:#7a7a9a;margin-top:4px">INTERNAL ANALYSIS - DO NOT SEND TO AGENT</div></div><div class="od-type">CASH LOWBALL ANALYSIS<br>'+today()+'</div></div><div class="od-address">'+d.address+'</div><div class="od-date">Internal review for: '+d.agent+'</div>'
   +'<div class="od-grid-3"><div class="od-box"><div class="od-label">List Price</div><div class="od-value dark">'+fmt(d.listPrice)+'</div></div><div class="od-box"><div class="od-label">ARV</div><div class="od-value dark">'+fmt(d.arv)+'</div></div><div class="od-box"><div class="od-label">Estimated Repairs</div><div class="od-value dark">'+fmt(d.repair)+'</div></div></div>'
   +'<div class="od-grid-3"><div class="od-box"><div class="od-label">Effective Repairs</div><div class="od-value dark">'+fmt(d.effRepairs)+'</div></div><div class="od-box"><div class="od-label">ARV x 90%</div><div class="od-value dark">'+fmt(d.arv*0.90)+'</div></div><div class="od-box"><div class="od-label">Repairs x 2</div><div class="od-value dark">'+fmt(d.effRepairs*2)+'</div></div></div>'
   +'<div class="od-grid-3"><div class="od-box"><div class="od-label">Buyer MAO</div><div class="od-value dark">'+fmt(d.buyerMAO)+'</div></div><div class="od-box"><div class="od-label">Assignment Fee</div><div class="od-value dark">'+fmt(d.assignFee)+'</div></div><div class="od-box"><div class="od-label">Closing Buffer</div><div class="od-value dark">'+fmt(d.closingBuffer)+'</div></div></div>'
-  +'<div class="od-grid-3"><div class="od-box"><div class="od-label">Buyer Math Cap</div><div class="od-value dark">'+fmt(d.buyerMathCap)+'</div></div><div class="od-box"><div class="od-label">Visible Spread Cap</div><div class="od-value dark">'+fmt(d.spreadCap)+'</div></div><div class="od-box"><div class="od-label">Final Contract MAO</div><div class="od-value dark">'+fmt(d.finalMAO)+'</div></div></div>'
+  +'<div class="od-grid-3"><div class="od-box"><div class="od-label">Buyer Math Cap</div><div class="od-value dark">'+fmt(d.buyerMathCap)+'</div></div><div class="od-box"><div class="od-label">Required Visible Spread</div><div class="od-value dark">'+fmt(d.reqSpread)+'</div></div><div class="od-box"><div class="od-label">Visible Spread Cap</div><div class="od-value dark">'+fmt(d.spreadCap)+'</div></div></div>'
+  +'<div class="od-grid-3"><div class="od-box"><div class="od-label">Final Contract MAO</div><div class="od-value dark">'+fmt(d.finalMAO)+'</div></div><div class="od-box"><div class="od-label">Limiting Factor</div><div class="od-value dark" style="font-size:13px">'+d.limitingFactor+'</div></div><div class="od-box"><div class="od-label">Spread Check</div><div class="od-value dark">'+(d.spreadOk?'PASS':'FAIL')+'</div></div></div>'
   +'<div class="od-grid-3"><div class="od-box teal-box"><div class="od-label">Initial Offer</div><div class="od-value teal">'+fmt(d.cashOffer)+'</div></div><div class="od-box"><div class="od-label">Max Counter</div><div class="od-value dark">'+fmt(d.maxOffer)+'</div></div><div class="od-box"><div class="od-label">True Walkaway</div><div class="od-value dark">'+fmt(d.trueWalkaway)+'</div></div></div>'
   +'<div class="od-grid-3"><div class="od-box"><div class="od-label">Buyer All-In</div><div class="od-value dark">'+fmt(d.buyerAllIn)+'</div></div><div class="od-box"><div class="od-label">Visible Spread</div><div class="od-value dark">'+fmt(d.visibleSpread)+'</div></div><div class="od-box"><div class="od-label">Buyer Room</div><div class="od-value dark">'+fmt(d.roomDelta)+'</div></div></div>'
   +'<div class="od-legal"><strong>Internal summary:</strong> '+roomLine+'<br>'+spreadLine+'<br><strong>Limiting factor:</strong> '+d.limitingFactor+'</div>';
-  document.getElementById('cl-direct-doc').textContent='Cash as-is offer - 229 Holdings LLC\n\nProperty: '+d.address+'\n\nI can offer '+fmt(d.cashOffer)+' cash, as-is, closing in 21-30 days with $500 earnest money and a 10-day due diligence period.\n\nNo repair requests and no financing contingency.\n\nSeller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.\n\nIf that is worth showing the seller, where should I send the written offer?\n\nMichael B. | 229 Holdings LLC';
+  document.getElementById('cl-direct-doc').textContent='Cash as-is offer — 229 Holdings LLC\n\nProperty: '+d.address+'\n\nI can offer '+fmt(d.cashOffer)+' cash, as-is, closing in 21–30 days with $500 earnest money and a 10-day due diligence period.\n\nNo repair requests and no financing contingency.\n\nSeller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.\n\nIf that is worth showing the seller, where should I send the written offer?\n\nMichael B. | 229 Holdings LLC';
 }
 
 function showOfferView(e,prefix,view){
@@ -627,7 +630,7 @@ function copyEl(id,btn){var el=document.getElementById(id);var text=el.innerText
 async function generateOFEmails(){
   if(!ofData)return;
   var d=ofData;
-  var prompt='You are a real estate investor writing to a listing agent.\n\nPROPERTY: '+d.address+'\nOFFER: Full asking price of '+fmt(d.price)+'\nSTRUCTURE: '+fmt(d.dp)+' down at closing, seller carries balance over '+d.pmts+' payments at '+d.sellerRate+'% interest\nCOMMISSION: Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.\nCLOSE: 21-30 days | as-is, no repair requests, subject to standard due diligence | $500 earnest | 10-day due diligence\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX. Short, conversational.\n3. Use neutral subject lines.\n4. NEVER mention internal resale math, exact broker compensation amounts, assignment fees, or methodology.\n5. Seller gets full asking price '+fmt(d.price)+'.\n6. Soft CTA only: ask where to send written offer.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. V1=direct, V2=empathetic, V3=curiosity hook, V4=ultra short 2 sentences max.\n9. Different subject and opening each time.\n\nReturn ONLY raw JSON array:\n[{\"variation\":1,\"subject\":\"...\",\"body\":\"...\"},{\"variation\":2,\"subject\":\"...\",\"body\":\"...\"},{\"variation\":3,\"subject\":\"...\",\"body\":\"...\"},{\"variation\":4,\"subject\":\"...\",\"body\":\"...\"}]';
+  var prompt='You are a real estate investor writing to a listing agent.\n\nPROPERTY: '+d.address+'\nOFFER: Full asking price of '+fmt(d.price)+'\nSTRUCTURE: '+fmt(d.dp)+' down at closing, seller carries balance over '+d.pmts+' payments at '+d.sellerRate+'% interest\nCOMMISSION: Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.\nCLOSE: 21-30 days | as-is, no repair requests, subject to standard due diligence | $500 earnest | 10-day due diligence\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX. Short, conversational.\n3. Use neutral subject lines.\n4. NEVER mention internal resale math, exact broker compensation amounts, assignment fees, or methodology.\n5. Seller gets full asking price '+fmt(d.price)+'.\n6. Soft CTA only: ask where to send written offer.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. V1=direct, V2=empathetic, V3=curiosity hook, V4=ultra short 2 sentences max.\n9. Different subject and opening each time.\n\nReturn ONLY raw JSON array:\n[{\"variation\":1,\"subject\":\"...\",\"body\":\"...\"},{\"variation\":2,\"subject\":\"...\",\"body\":\"...\"},{\"variation\":3,\"subject\":\"...\",\"body\":\"...\"},{\"variation\":4,\"subject\":\"...\",\"body\":\"...\"}]';
   showEmailLoading('of');
   try{
     var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
@@ -643,7 +646,7 @@ async function generateOFEmails(){
 async function generateCLEmails(){
   if(!clData)return;
   var d=clData;
-  var prompt='You are a real estate investor writing to a listing agent about their listing.\n\nOFFER TYPE: Cash As-Is\nProperty: '+d.address+'\nCash Offer: '+fmt(d.cashOffer)+'\nCOMMISSION: Seller pays listing broker per existing listing agreement from seller proceeds. Buyer is not offering an agent bonus.\nClose: 21-30 days | as-is, no repair requests, subject to standard due diligence | Cash | $500 earnest | 10-day due diligence\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. Lead with speed and certainty.\n4. NEVER mention internal underwriting, broker compensation amounts, assignment fees, resale math, or methodology.\n5. Do NOT pitch the agent on their commission.\n6. Soft CTA only.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. V1=direct, V2=empathetic, V3=curiosity, V4=ultra short.\n\nReturn ONLY raw JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
+  var prompt='You are a real estate investor writing to a listing agent about their listing.\n\nOFFER TYPE: Cash As-Is\nProperty: '+d.address+'\nCash Offer: '+fmt(d.cashOffer)+'\nCOMMISSION: Seller handles listing broker compensation per the existing listing agreement from seller proceeds at closing.\nClose: 21-30 days | as-is, no repair requests, subject to standard due diligence | Cash | $500 earnest | 10-day due diligence\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. Lead with speed and certainty.\n4. NEVER mention internal underwriting, broker compensation amounts, assignment fees, resale math, or methodology.\n5. Do NOT pitch the agent on their commission.\n6. Soft CTA only.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. V1=direct, V2=empathetic, V3=curiosity, V4=ultra short.\n\nReturn ONLY raw JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
   showEmailLoading('cl');
   try{
     var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
@@ -994,12 +997,12 @@ async function genModalEmails(type){
     var monthly = lead.monthly_payment||Math.round((price-dp)/100);
     var agentComm = lead.total_to_agent||dp;
     var atList = lead.at_list_commission||(price*0.03);
-    prompt='You are a real estate investor writing to a listing agent.\n\nPROPERTY: '+lead.address+'\nOFFER: Full asking price '+fmt2(price)+'\nSTRUCTURE: '+fmt2(dp)+' down at closing, '+fmt2(monthly)+'/month over 100 months at 0% interest\nCOMMISSION: Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.\nCLOSE: 21-30 days, as-is, no repair requests, subject to standard due diligence, $500 earnest, 10-day due diligence\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. Use neutral subject lines.\n4. NEVER mention internal resale math, exact broker compensation amounts, assignment fees, or methodology.\n5. Seller gets full asking price.\n6. Soft CTA only.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. 4 variations. Different subject and opening each time.\n\nReturn ONLY a JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
+    prompt='You are a real estate investor writing to a listing agent.\n\nPROPERTY: '+lead.address+'\nOFFER: Full asking price '+fmt2(price)+'\nSTRUCTURE: '+fmt2(dp)+' down at closing, '+fmt2(monthly)+'/month over 100 months at 0% interest\nCOMMISSION: Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.\nCLOSE: 21-30 days, as-is, no repair requests, subject to standard due diligence, $500 earnest, 10-day due diligence\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. Use neutral subject lines.\n4. NEVER mention internal resale math, exact broker compensation amounts, assignment fees, or methodology.\n5. Seller gets full asking price.\n6. Soft CTA only.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. 4 variations. Different subject and opening each time.\n\nReturn ONLY a JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
   } else {
     var cashOffer = lead.cash_offer||lead.offer||0;
     var agentTotal = lead.total_to_agent||0;
     var atList2 = lead.at_list_commission||(price*0.03);
-    prompt='You are a real estate investor writing to a listing agent.\n\nPROPERTY: '+lead.address+'\nCASH OFFER: '+fmt2(cashOffer)+'\nCLOSE: 21-30 days, as-is, no repair requests, subject to standard due diligence, cash, $500 earnest, 10-day due diligence\nCOMMISSION: Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. Lead with speed and certainty.\n4. NEVER mention internal underwriting, broker compensation amounts, assignment fees, resale math, or methodology.\n5. Do NOT pitch the agent on their commission.\n6. Soft CTA only.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. 4 variations. Different subject and opening each time.\n\nReturn ONLY a JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
+    prompt='You are a real estate investor writing to a listing agent.\n\nPROPERTY: '+lead.address+'\nCASH OFFER: '+fmt2(cashOffer)+'\nCLOSE: 21-30 days, as-is, no repair requests, subject to standard due diligence, cash, $500 earnest, 10-day due diligence\nCOMMISSION: Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. Lead with speed and certainty.\n4. NEVER mention internal underwriting, broker compensation amounts, assignment fees, resale math, or methodology.\n5. Do NOT pitch the agent on their commission.\n6. Soft CTA only.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. 4 variations. Different subject and opening each time.\n\nReturn ONLY a JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
   }
   try{
     var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
@@ -1070,7 +1073,7 @@ function downloadModalPDF(type){
     var agentComm=lead.total_to_agent||dp;
     var atList=lead.at_list_commission||(price*0.03);
     html2+='<div class="banner"><b>COMMISSION</b>';
-    html2+='<span>Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.</span></div>';
+    html2+='<span>Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.</span></div>';
     html2+='<div class="grid grid-2"><div class="cell"><div class="cell-label">Purchase Price</div><div class="cell-value purple">$'+Math.round(price).toLocaleString()+'</div><div style="font-size:10px;color:#7a7a9a">Full asking price</div></div>';
     html2+='<div class="cell"><div class="cell-label">Down Payment</div><div class="cell-value teal">$'+Math.round(dp).toLocaleString()+'</div><div style="font-size:10px;color:#7a7a9a">Paid at closing</div></div></div>';
     html2+='<div class="grid grid-3"><div class="cell"><div class="cell-label">Financed Balance</div><div class="cell-value" style="font-size:15px">$'+Math.round(bal).toLocaleString()+'</div></div>';
@@ -1080,18 +1083,18 @@ function downloadModalPDF(type){
     html2+='<div class="cell"><div class="cell-label">Earnest Money</div><div class="cell-value" style="font-size:14px">$500</div></div>';
     html2+='<div class="cell"><div class="cell-label">Close of Escrow</div><div class="cell-value" style="font-size:12px">'+coe21s+'</div></div></div>';
     html2+='<div class="legal"><b>TERMS:</b> As-is, no repair requests, subject to standard due diligence. Due diligence period: 10 days. Close in 21-30 days.<br><br>';
-    html2+='<b>COMMISSION:</b> Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.</div>';
+    html2+='<b>COMMISSION:</b> Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.</div>';
   } else {
     var cashOffer=lead.cash_offer||lead.offer||0;
     var agentTotal=lead.total_to_agent||0;
     var atList3=lead.at_list_commission||(price*0.03);
     html2+='<div class="banner"><b>COMMISSION</b>';
-    html2+='<span>Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.</span></div>';
+    html2+='<span>Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.</span></div>';
     html2+='<div class="grid grid-3"><div class="cell"><div class="cell-label">Cash Offer</div><div class="cell-value teal">$'+Math.round(cashOffer).toLocaleString()+'</div></div>';
     html2+='<div class="cell"><div class="cell-label">Earnest Money</div><div class="cell-value" style="font-size:15px">$500</div></div>';
     html2+='<div class="cell"><div class="cell-label">Close Timeline</div><div class="cell-value" style="font-size:12px">21-30 days</div></div></div>';
     html2+='<div class="legal"><b>TERMS:</b> Cash as-is offer. No repair requests. No financing contingency. 10-day due diligence period. Close in 21-30 days.<br><br>';
-    html2+='<b>COMMISSION:</b> Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.</div>';
+    html2+='<b>COMMISSION:</b> Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.</div>';
   }
   html2+='<div class="sig"><div><b>229 Holdings LLC</b></div>';
   html2+='<div style="text-align:right;">Date: ___________________<br>Seller Signature: ___________________</div></div>';
