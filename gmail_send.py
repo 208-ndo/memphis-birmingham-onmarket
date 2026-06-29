@@ -3,16 +3,70 @@ import time
 import random
 import logging
 import os
+import json
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
-from datetime import datetime
-from config import MARKETS, EMAIL
+from datetime import datetime, timezone
+from config import MARKETS, EMAIL, DEDUP, GLOBAL_DAILY_CAP, PER_INBOX_CAP
 from generate_offer_pdf import generate_offer_pdf
 from dedup import mark_bounced
 
 log = logging.getLogger(__name__)
 
+
+# ── Calendar-day send counters ─────────────────────────────────────────────────
+# Cap is per sender inbox email, not per market.
+# A single inbox shared by 2 markets still caps at PER_INBOX_CAP/day combined.
+
+def _load_dedup_log() -> dict:
+    try:
+        with open(DEDUP["log_file"]) as f:
+            return json.load(f)
+    except Exception:
+        return {"properties": {}, "agents": {}, "opted_out": [], "bad_emails": []}
+
+
+def _today_utc() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+
+def count_sent_today_by_inbox(sender_email: str) -> int:
+    """
+    Count confirmed sends today from a specific Gmail sender address.
+    Counts across ALL markets that share this inbox.
+    Returns 0 if dedup log is missing or unreadable (safe — batch cap still applies).
+    """
+    if not sender_email:
+        return 0
+    today = _today_utc()
+    data  = _load_dedup_log()
+    count = 0
+    sender_lower = sender_email.lower().strip()
+    for prop in data.get("properties", {}).values():
+        sent_at = str(prop.get("sent_at", ""))
+        if (sent_at.startswith(today)
+                and prop.get("status") == "sent"
+                and prop.get("sender_email", "").lower().strip() == sender_lower):
+            count += 1
+    return count
+
+
+def count_sent_today_global() -> int:
+    """
+    Count all confirmed sends today across every inbox.
+    Enforces GLOBAL_DAILY_CAP = 30 regardless of how many markets or inboxes are active.
+    """
+    today = _today_utc()
+    data  = _load_dedup_log()
+    return sum(
+        1 for prop in data.get("properties", {}).values()
+        if str(prop.get("sent_at", "")).startswith(today)
+        and prop.get("status") == "sent"
+    )
+
+
+# ── Core email sender ──────────────────────────────────────────────────────────
 
 def send_email(
     market_key: str,
@@ -22,9 +76,9 @@ def send_email(
     pdf_path: str = None,
     dry_run: bool = False
 ) -> bool:
-    market          = MARKETS[market_key]
-    gmail_user      = market["gmail_user"]
-    gmail_password  = market["gmail_app_password"]
+    market         = MARKETS[market_key]
+    gmail_user     = market["gmail_user"]
+    gmail_password = market["gmail_app_password"]
 
     if not gmail_user or not gmail_password:
         log.error(f"Missing Gmail credentials for market: {market_key}")
@@ -39,7 +93,7 @@ def send_email(
         return True
 
     try:
-        msg = MIMEMultipart("mixed")
+        msg             = MIMEMultipart("mixed")
         msg["Subject"]  = subject
         msg["From"]     = gmail_user
         msg["To"]       = to_email
@@ -72,7 +126,8 @@ def send_email(
 
     except smtplib.SMTPException as e:
         error_str = str(e).lower()
-        if any(w in error_str for w in ["user unknown","no such user","invalid address","address rejected","does not exist"]):
+        if any(w in error_str for w in ["user unknown", "no such user", "invalid address",
+                                         "address rejected", "does not exist"]):
             log.error(f"Bounce detected for {to_email}: {e}")
             mark_bounced(to_email)
         else:
@@ -84,27 +139,58 @@ def send_email(
         return False
 
 
+# ── Batch sender ───────────────────────────────────────────────────────────────
+
 def send_batch(leads_with_emails: list, market_key: str, dry_run: bool = False) -> list:
-    # FIX: use correct key from config.py
-    daily_limit = EMAIL["daily_limit"]
     delay       = EMAIL.get("stagger_max_secs", 180)
     sent_results = []
     sent_count   = 0
 
-    log.info(f"Starting batch | Market: {market_key} | Leads: {len(leads_with_emails)} | Limit: {daily_limit}/day")
+    market       = MARKETS[market_key]
+    sender_email = market.get("gmail_user", "")
+
+    if dry_run:
+        # Dry run: don't read or write send history — caps are informational only
+        inbox_sent_today  = 0
+        global_sent_today = 0
+    else:
+        inbox_sent_today  = count_sent_today_by_inbox(sender_email)
+        global_sent_today = count_sent_today_global()
+
+    remaining_inbox  = max(0, PER_INBOX_CAP - inbox_sent_today)
+    remaining_global = max(0, GLOBAL_DAILY_CAP - global_sent_today)
+    effective_limit  = min(remaining_inbox, remaining_global)
+
+    log.info(
+        f"Starting batch | Market: {market_key} | Sender: {sender_email} | "
+        f"Leads: {len(leads_with_emails)} | "
+        f"Inbox {sender_email}: {inbox_sent_today}/{PER_INBOX_CAP} sent today, {remaining_inbox} remaining | "
+        f"Global: {global_sent_today}/{GLOBAL_DAILY_CAP} sent today, {remaining_global} remaining | "
+        f"Effective limit this batch: {effective_limit}"
+    )
+
+    if effective_limit <= 0 and not dry_run:
+        if remaining_inbox <= 0:
+            log.info(f"Per-inbox cap reached for {sender_email} ({inbox_sent_today}/{PER_INBOX_CAP}) — skipping batch")
+        else:
+            log.info(f"Global daily cap reached ({global_sent_today}/{GLOBAL_DAILY_CAP}) — skipping batch")
+        return sent_results
 
     for item in leads_with_emails:
-        if sent_count >= daily_limit:
-            log.info(f"Daily limit reached ({daily_limit}) — stopping batch")
+        if sent_count >= effective_limit:
+            log.info(
+                f"Cap reached — inbox: {inbox_sent_today + sent_count}/{PER_INBOX_CAP} | "
+                f"global: {global_sent_today + sent_count}/{GLOBAL_DAILY_CAP}"
+            )
             break
 
-        listing      = item["listing"]
-        offer        = item["offer"]
-        email_draft  = item["email"]
-        to_email     = listing.get("agent_email")
-        subject      = email_draft.get("subject", "Quick question")
-        body         = email_draft.get("body", "")
-        address      = listing.get("address", "unknown")
+        listing     = item["listing"]
+        offer       = item["offer"]
+        email_draft = item["email"]
+        to_email    = listing.get("agent_email")
+        subject     = email_draft.get("subject", "Quick question")
+        body        = email_draft.get("body", "")
+        address     = listing.get("address", "unknown")
 
         if not to_email:
             log.warning(f"No email for {address} — skipping")
@@ -112,9 +198,9 @@ def send_batch(leads_with_emails: list, market_key: str, dry_run: bool = False) 
 
         pdf_path = None
         try:
-            safe_addr = address.replace("/", "-").replace(" ", "_")[:40]
+            safe_addr    = address.replace("/", "-").replace(" ", "_")[:40]
             pdf_filename = f"{safe_addr}.pdf"
-            pdf_out = os.path.join("data/offers", pdf_filename)
+            pdf_out      = os.path.join("data/offers", pdf_filename)
             os.makedirs("data/offers", exist_ok=True)
             pdf_path = generate_offer_pdf(listing, offer, output_path=pdf_out)
             if pdf_path:
@@ -128,18 +214,19 @@ def send_batch(leads_with_emails: list, market_key: str, dry_run: bool = False) 
             subject=subject,
             body=body,
             pdf_path=pdf_path,
-            dry_run=dry_run
+            dry_run=dry_run,
         )
 
         if success:
             sent_count += 1
             sent_results.append({
-                "listing": listing,
-                "email":   email_draft,
-                "offer":   offer,
+                "listing":  listing,
+                "email":    email_draft,
+                "offer":    offer,
                 "pdf_path": pdf_path,
-                "sent_at": datetime.now().isoformat(),
-                "success": True,
+                "sent_at":  datetime.now().isoformat(),
+                "success":  True,
+                "sender_email": sender_email,
             })
             if pdf_path and os.path.exists(pdf_path) and not dry_run:
                 try:
@@ -147,19 +234,20 @@ def send_batch(leads_with_emails: list, market_key: str, dry_run: bool = False) 
                 except Exception:
                     pass
 
-            if sent_count < daily_limit:
+            if sent_count < effective_limit:
                 jitter     = random.uniform(-15, 30)
                 sleep_time = max(60, delay + jitter)
-                log.info(f"Waiting {round(sleep_time)}s before next send ({sent_count}/{daily_limit} sent)...")
+                log.info(f"Waiting {round(sleep_time)}s before next send ({sent_count}/{effective_limit} this batch)...")
                 time.sleep(sleep_time)
         else:
             sent_results.append({
-                "listing": listing,
-                "email":   email_draft,
-                "offer":   offer,
+                "listing":  listing,
+                "email":    email_draft,
+                "offer":    offer,
                 "pdf_path": None,
-                "sent_at": datetime.now().isoformat(),
-                "success": False,
+                "sent_at":  datetime.now().isoformat(),
+                "success":  False,
+                "sender_email": sender_email,
             })
 
     successful = sum(1 for r in sent_results if r["success"])
