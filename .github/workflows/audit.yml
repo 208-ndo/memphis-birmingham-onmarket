@@ -4,15 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       markets:
-        description: 'Space-separated market keys to audit'
+        description: 'Space-separated market keys'
         required: false
         default: 'huntsville little_rock oklahoma_city'
       price_reduced:
-        description: 'Include price-reduced filter variant'
+        description: 'Include price-reduced filter variant (true/false)'
         required: false
         default: 'true'
       dry:
-        description: 'Dry run only — no Apify calls'
+        description: 'Dry run only - no Apify calls (true/false)'
         required: false
         default: 'false'
 
@@ -20,7 +20,6 @@ jobs:
   audit:
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    # No write permissions — this workflow never commits or pushes
     permissions:
       contents: read
 
@@ -37,46 +36,39 @@ jobs:
         run: pip install apify-client
 
       - name: Compile audit script
-        run: python -m py_compile scripts/market_audit.py && echo "COMPILE: PASS"
+        run: python -m py_compile scripts/market_audit.py && echo "COMPILE PASS"
 
       - name: Create reports directory
         run: mkdir -p reports
 
-      - name: Run audit (dry)
-        if: ${{ github.event.inputs.dry == 'true' }}
+      - name: Run audit dry
+        if: github.event.inputs.dry == 'true'
         run: |
-          echo "Mode: DRY RUN — no Apify calls"
           python scripts/market_audit.py \
             --dry \
             --markets ${{ github.event.inputs.markets }} \
             --output-dir reports/
 
-      - name: Run audit (live, price-reduced)
-        if: ${{ github.event.inputs.dry != 'true' && github.event.inputs.price_reduced == 'true' }}
+      - name: Run audit live with price-reduced
+        if: github.event.inputs.dry != 'true' && github.event.inputs.price_reduced == 'true'
         env:
           APIFY_API_TOKEN: ${{ secrets.APIFY_API_TOKEN }}
         run: |
-          echo "Mode: LIVE | price_reduced=true"
-          echo "Markets: ${{ github.event.inputs.markets }}"
-          echo "AUDIT ONLY — no emails, no GHL, no dedup writes, no commits"
           python scripts/market_audit.py \
             --markets ${{ github.event.inputs.markets }} \
             --price-reduced \
             --output-dir reports/
 
-      - name: Run audit (live, no price-reduced)
-        if: ${{ github.event.inputs.dry != 'true' && github.event.inputs.price_reduced != 'true' }}
+      - name: Run audit live without price-reduced
+        if: github.event.inputs.dry != 'true' && github.event.inputs.price_reduced != 'true'
         env:
           APIFY_API_TOKEN: ${{ secrets.APIFY_API_TOKEN }}
         run: |
-          echo "Mode: LIVE | price_reduced=false"
-          echo "Markets: ${{ github.event.inputs.markets }}"
-          echo "AUDIT ONLY — no emails, no GHL, no dedup writes, no commits"
           python scripts/market_audit.py \
             --markets ${{ github.event.inputs.markets }} \
             --output-dir reports/
 
-      - name: Upload audit reports
+      - name: Upload reports
         uses: actions/upload-artifact@v4
         if: always()
         with:
