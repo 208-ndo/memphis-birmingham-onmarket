@@ -21,6 +21,9 @@ ACTOR_ID    = "maxcopell/zillow-scraper"
 MAX_RESULTS_PER_BAND = 50
 MIN_DOM = 30
 
+# Owner-finance price ceiling — below this, dom-unknown leads get OF fallback
+OF_PRICE_CEILING = 80000
+
 PRICE_BANDS = [
     {"min": 30000,  "max": 55000},
     {"min": 55001,  "max": 80000},
@@ -75,7 +78,12 @@ def build_zillow_url(city: str, price_min: int, price_max: int) -> str:
     return f"https://www.zillow.com/homes/for_sale/?searchQueryState={encoded}"
 
 
-def get_dom(listing: dict) -> int:
+def get_dom(listing: dict):
+    """
+    Return DOM as int if found, or None if the field is missing/unreliable.
+    Returns 0 if listing appears to be newly listed (hours).
+    Never returns a millisecond timestamp (> 10000 is rejected).
+    """
     for key in ["daysOnZillow", "timeOnZillow", "days_on_zillow"]:
         val = listing.get(key)
         if val and isinstance(val, int) and val < 10000:
@@ -99,7 +107,8 @@ def get_dom(listing: dict) -> int:
         return int(day_match.group(1))
     if re.search(r"\d+\s*hour", flex, re.IGNORECASE):
         return 0
-    return 0
+
+    return None  # explicitly missing — caller decides how to handle
 
 
 def get_all_text(listing: dict) -> str:
@@ -118,23 +127,62 @@ def get_all_text(listing: dict) -> str:
     return " ".join(parts).lower()
 
 
-def is_distressed(listing: dict) -> bool:
-    if get_dom(listing) >= MIN_DOM:
-        return True
+def has_distress_keyword(listing: dict) -> bool:
     text = get_all_text(listing)
     return any(kw.lower() in text for kw in DISTRESSED_KEYWORDS)
+
+
+def screen_listing(item: dict, band_min: int, band_max: int) -> tuple[bool, str]:
+    """
+    Evaluate a raw Zillow item and return (passes: bool, reason: str).
+
+    Reason codes:
+      passed_by_dom               — DOM >= 30 confirmed
+      passed_by_keyword           — distressed keyword found
+      passed_by_low_price_of_dom_unknown_fallback — OF band, DOM unknown, URL already filtered
+      reject_dom_missing_no_keyword — DOM unknown, no keyword, not in OF band
+      reject_dom_too_low          — DOM known but < 30
+      reject_dom_zero_fresh       — DOM=0 (newly listed)
+      reject_views_too_high       — views/day > MAX_VIEWS_DAY
+    """
+    dom = get_dom(item)
+
+    # DOM known and >= 30 — definitively passes
+    if dom is not None and dom >= MIN_DOM:
+        return True, "passed_by_dom"
+
+    # DOM known and too low — definitively reject
+    if dom is not None and dom == 0:
+        return False, "reject_dom_zero_fresh"
+
+    if dom is not None and dom < MIN_DOM:
+        return False, "reject_dom_too_low"
+
+    # DOM is None (missing from Apify) — check keyword first
+    if has_distress_keyword(item):
+        return True, "passed_by_keyword"
+
+    # DOM missing, no keyword — apply OF fallback only for sub-$80k price band
+    price = parse_price(item.get("unformattedPrice") or item.get("price"))
+    if price and band_min >= 30000 and band_max <= OF_PRICE_CEILING:
+        # Safe: Zillow URL already applied doz=30 filter before Apify ran.
+        # offer.py routes sub-$80k to owner_finance — no ARV needed.
+        return True, "passed_by_low_price_of_dom_unknown_fallback"
+
+    return False, "reject_dom_missing_no_keyword"
 
 
 def passes_views_gate(listing: dict) -> bool:
     try:
         views = int(listing.get("pageViewCount") or listing.get("totalViews") or 0)
-        days  = max(get_dom(listing), 1)
+        dom   = get_dom(listing)
+        days  = max(dom if dom is not None else 30, 1)
         return (views / days) <= MAX_VIEWS_DAY
     except Exception:
         return True
 
 
-def extract_lead(listing: dict, market: dict) -> dict | None:
+def extract_lead(listing: dict, market: dict, candidate_reason: str = "") -> dict | None:
     try:
         address  = listing.get("address") or listing.get("streetAddress") or ""
         city     = listing.get("addressCity") or listing.get("city") or market.get("city", "")
@@ -165,24 +213,25 @@ def extract_lead(listing: dict, market: dict) -> dict | None:
             return None
 
         return {
-            "address":        address,
-            "city":           city,
-            "state":          state,
-            "zip":            zipcode,
-            "price":          price,
-            "list_price":     price,
-            "zpid":           zpid,
-            "url":            url,
-            "agent_name":     agent_name,
-            "agent_email":    agent_email,
-            "agent_phone":    agent_phone,
-            "brokerName":     agent_name,
-            "days_on_market": dom,
-            "bedrooms":       bedrooms,
-            "bathrooms":      bathrooms,
-            "sqft":           sqft,
-            "photo_url":      photo_url,
-            "market":         market.get("city", "").lower(),
+            "address":          address,
+            "city":             city,
+            "state":            state,
+            "zip":              zipcode,
+            "price":            price,
+            "list_price":       price,
+            "zpid":             zpid,
+            "url":              url,
+            "agent_name":       agent_name,
+            "agent_email":      agent_email,
+            "agent_phone":      agent_phone,
+            "brokerName":       agent_name,
+            "days_on_market":   dom if dom is not None else -1,
+            "bedrooms":         bedrooms,
+            "bathrooms":        bathrooms,
+            "sqft":             sqft,
+            "photo_url":        photo_url,
+            "market":           market.get("city", "").lower(),
+            "candidate_reason": candidate_reason,
         }
     except Exception as e:
         logger.warning(f"Failed to extract lead: {e}")
@@ -222,29 +271,46 @@ def scrape_market(market: dict) -> list[dict]:
                     logger.warning(f"Result: {items[0]}")
                 continue
 
+            # ── Per-band rejection diagnostics ─────────────────────────────
+            reason_counts: dict[str, int] = {}
             band_leads = []
+
             for item in real_items:
                 status = (item.get("statusType") or item.get("rawHomeStatusCd") or "").upper()
                 if status and status not in ("FOR_SALE", "FORSALE", "ACTIVE", ""):
+                    reason_counts["reject_wrong_status"] = reason_counts.get("reject_wrong_status", 0) + 1
                     continue
 
                 zpid = str(item.get("zpid") or "")
                 if zpid and zpid in seen_zpids:
+                    reason_counts["reject_duplicate_zpid"] = reason_counts.get("reject_duplicate_zpid", 0) + 1
                     continue
                 if zpid:
                     seen_zpids.add(zpid)
 
-                if not is_distressed(item):
+                passes, reason = screen_listing(item, price_min, price_max)
+                reason_counts[reason] = reason_counts.get(reason, 0) + 1
+
+                if not passes:
                     continue
 
                 if not passes_views_gate(item):
+                    reason_counts["reject_views_too_high"] = reason_counts.get("reject_views_too_high", 0) + 1
                     continue
 
-                lead = extract_lead(item, market)
+                lead = extract_lead(item, market, candidate_reason=reason)
                 if lead:
                     band_leads.append(lead)
+                else:
+                    reason_counts["reject_missing_address_or_price"] = reason_counts.get("reject_missing_address_or_price", 0) + 1
 
-            logger.info(f"Band {band_label}: {len(band_leads)} candidates before email enrichment")
+            # Log diagnostics
+            reason_str = " | ".join(f"{k}={v}" for k, v in sorted(reason_counts.items()))
+            logger.info(
+                f"Band {band_label}: raw={len(real_items)} | candidates={len(band_leads)} | "
+                f"reasons: {reason_str}"
+            )
+
             leads.extend(band_leads)
             time.sleep(5)
 
@@ -258,9 +324,11 @@ def scrape_market(market: dict) -> list[dict]:
         leads = enrich_leads_with_emails(leads, market, client)
 
     for lead in leads:
+        dom_display = lead["days_on_market"] if lead["days_on_market"] >= 0 else "unknown"
         logger.info(
             f"LEAD: {lead['address']} | ${lead['price']:,} | "
-            f"DOM: {lead['days_on_market']} | "
+            f"DOM: {dom_display} | "
+            f"reason: {lead.get('candidate_reason', '')} | "
             f"Agent: {lead['agent_name']} | "
             f"Email: {lead.get('agent_email') or 'NONE'}"
         )
