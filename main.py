@@ -4,7 +4,7 @@ import sys
 import json
 import os
 from datetime import datetime
-from config import MARKETS
+from config import MARKETS, ACTIVE_MARKETS, GLOBAL_DAILY_CAP, PER_INBOX_CAP
 from scraper import scrape_market
 from offer import calculate_offer
 from email_gen import generate_emails, pick_email
@@ -23,7 +23,9 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 OVERFLOW_FILE = "data/overflow.json"
-DAILY_LIMIT   = 5
+# Per-run limit: split global daily cap evenly across 3 runs/day and active markets
+# e.g. 30 cap / 3 runs = 10/run total, but enforced as a global running total
+DAILY_LIMIT = PER_INBOX_CAP  # per-inbox per-day cap (passed to send_batch)
 
 
 def load_overflow() -> list:
@@ -293,7 +295,9 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
         offer   = listing.get("offer", {})
         try:
             if not dry_run:
-                mark_sent(listing, res["email"])
+                sender_email = MARKETS.get(market_key, {}).get("gmail_user", "")
+                email_record = {**res["email"], "sender_email": sender_email}
+                mark_sent(listing, email_record)
                 push_to_ghl(listing, offer, res["email"], market_key)
                 ghl_count += 1
             else:
@@ -334,39 +338,70 @@ def main():
     os.makedirs("data/offers", exist_ok=True)
 
     log.info(
-        f"Pipeline starting | Markets: Memphis + Birmingham | "
-        f"Dry run: {dry_run} | Force: {force_run} | Limit: {DAILY_LIMIT}/run | "
+        f"Pipeline starting | Markets: {', '.join(ACTIVE_MARKETS)} | "
+        f"Dry run: {dry_run} | Force: {force_run} | "
+        f"Global cap: {GLOBAL_DAILY_CAP}/day | Per-inbox: {PER_INBOX_CAP}/day | "
         f"Time: {datetime.now().strftime('%H:%M UTC')}"
     )
 
     all_results = {}
 
-    try:
-        all_results["memphis"] = run_market("memphis", dry_run=dry_run)
-    except Exception as e:
-        log.error(f"Memphis pipeline error: {e}")
-        all_results["memphis"] = {
-            "market_label": "Memphis TN", "leads": 0, "emails_sent": 0,
-            "ghl_pushed": 0, "of_deals": 0, "cl_deals": 0, "sent_items": []
-        }
+    # Read actual sends already made today before this run starts
+    # Prevents over-sending across multiple scheduled runs on the same day
+    from gmail_send import count_sent_today_global
+    global_sent_today = 0 if dry_run else count_sent_today_global()
+    global_sent_this_run = 0
 
-    log.info("Waiting 3 minutes between markets...")
-    time.sleep(180)
+    if not dry_run:
+        log.info(f"Global sends already today (before this run): {global_sent_today}/{GLOBAL_DAILY_CAP}")
+        if global_sent_today >= GLOBAL_DAILY_CAP:
+            log.info(f"Global daily cap of {GLOBAL_DAILY_CAP} already reached for today — exiting")
+            save_pipeline_log({})
+            if dry_run:
+                log.info("DRY RUN complete — no Gmail emails sent and no GHL contacts/texts triggered.")
+            else:
+                log.info("All markets complete. Dashboard updated. Check GHL for contacts.")
+            return
 
-    try:
-        all_results["birmingham"] = run_market("birmingham", dry_run=dry_run)
-    except Exception as e:
-        log.error(f"Birmingham pipeline error: {e}")
-        all_results["birmingham"] = {
-            "market_label": "Birmingham AL", "leads": 0, "emails_sent": 0,
-            "ghl_pushed": 0, "of_deals": 0, "cl_deals": 0, "sent_items": []
-        }
+    for i, market_key in enumerate(ACTIVE_MARKETS):
+        if market_key not in MARKETS:
+            log.warning(f"Market '{market_key}' in ACTIVE_MARKETS but not in MARKETS — skipping")
+            continue
+
+        remaining_cap = GLOBAL_DAILY_CAP - (global_sent_today + global_sent_this_run)
+        if remaining_cap <= 0:
+            log.info(f"Global daily cap of {GLOBAL_DAILY_CAP} reached — skipping remaining markets")
+            break
+
+        log.info(
+            f"Global: {global_sent_today + global_sent_this_run}/{GLOBAL_DAILY_CAP} sent today "
+            f"({global_sent_today} prior runs + {global_sent_this_run} this run) | "
+            f"Remaining: {remaining_cap}"
+        )
+
+        if i > 0:
+            log.info("Waiting 3 minutes between markets...")
+            time.sleep(180)
+
+        try:
+            result = run_market(market_key, dry_run=dry_run)
+            all_results[market_key] = result
+            global_sent_this_run += result.get("emails_sent", 0)
+        except Exception as e:
+            log.error(f"{market_key} pipeline error: {e}")
+            all_results[market_key] = {
+                "market_label": f"{MARKETS[market_key]['city']} {MARKETS[market_key]['state']}",
+                "leads": 0, "emails_sent": 0,
+                "ghl_pushed": 0, "of_deals": 0, "cl_deals": 0, "sent_items": []
+            }
+
+    log.info(f"All markets complete | Sent this run: {global_sent_this_run} | Total today: {global_sent_today + global_sent_this_run}/{GLOBAL_DAILY_CAP}")
 
     save_pipeline_log(all_results)
     if dry_run:
         log.info("DRY RUN complete — no Gmail emails sent and no GHL contacts/texts triggered.")
     else:
-        log.info("Both markets complete. Dashboard updated. Check GHL for contacts.")
+        log.info("All markets complete. Dashboard updated. Check GHL for contacts.")
 
 
 if __name__ == "__main__":
