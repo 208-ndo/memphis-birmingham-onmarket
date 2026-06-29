@@ -1,7 +1,6 @@
 """
-PDF offer generator — 229 Holdings LLC
-No 6% commission pitch. No agent bonus.
-Commission line: seller pays per existing listing agreement.
+PDF offer generator — 229 Holdings LLC.
+PDFs are agent-facing and must not expose internal underwriting or resale math.
 """
 
 import os
@@ -112,9 +111,8 @@ def _of_body(offer: dict, styles) -> list:
 
     legal = Paragraph(
         f'<font size="9" color="#7a7a9a">'
-        f'<b>TERMS:</b> As-Is subject to walk-through. Due diligence: {dd} days. '
-        f'Buyer pays all closing costs minus unpaid mortgages, taxes, or liens. '
-        f'Buyer selects closing attorney. Buyer reserves right to assign contract without seller consent.<br/><br/>'
+        f'<b>TERMS:</b> As-is, no repair requests, subject to standard due diligence. Due diligence: {dd} days. '
+        f'Seller to satisfy any existing mortgages, taxes, liens, or title-clearing items from seller proceeds unless otherwise agreed in writing.<br/><br/>'
         f'<b>COMMISSION:</b> {COMMISSION_LINE}'
         f'</font>',
         styles["Normal"]
@@ -125,7 +123,7 @@ def _of_body(offer: dict, styles) -> list:
 
 def _cl_body(offer: dict, styles) -> list:
     cash_offer = offer.get("cash_offer", 0)
-    coe        = (datetime.now() + timedelta(days=14)).strftime("%B %d, %Y")
+    coe        = (datetime.now() + timedelta(days=21)).strftime("%B %d, %Y")
 
     t1 = _grid([
         [_label("Cash Offer"),                    _label("Earnest Money"), _label("Close of Escrow")],
@@ -134,9 +132,8 @@ def _cl_body(offer: dict, styles) -> list:
 
     legal = Paragraph(
         f'<font size="9" color="#7a7a9a">'
-        f'<b>TERMS:</b> As-Is. No repairs. No financing contingency. Cash close. '
-        f'Buyer to pay standard buyer closing costs. Seller to satisfy any existing mortgages, taxes, liens, or title-clearing items from seller proceeds unless otherwise agreed in writing. '
-        f'Buyer reserves right to assign contract without seller consent.<br/><br/>'
+        f'<b>TERMS:</b> Cash close in 21-30 days. As-is, no repair requests, subject to standard due diligence. Due diligence: 10 days. '
+        f'Seller to satisfy any existing mortgages, taxes, liens, or title-clearing items from seller proceeds unless otherwise agreed in writing.<br/><br/>'
         f'<b>COMMISSION:</b> {COMMISSION_LINE}'
         f'</font>',
         styles["Normal"]
