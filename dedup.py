@@ -344,6 +344,7 @@ def mark_sent(listing: dict, email_sent: dict):
         "days_on_market": listing.get("days_on_market"),
         "offer_type":   offer.get("offer_type"),
         "email_subject": email_sent.get("subject"),
+        "sender_email":  email_sent.get("sender_email", ""),
         "sent_at":      now,
         "status":       "sent",
     }
