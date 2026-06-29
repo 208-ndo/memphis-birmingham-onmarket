@@ -292,11 +292,12 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
         listing = res["listing"]
         offer   = listing.get("offer", {})
         try:
-            mark_sent(listing, res["email"])
             if not dry_run:
+                mark_sent(listing, res["email"])
                 push_to_ghl(listing, offer, res["email"], market_key)
                 ghl_count += 1
             else:
+                log.info(f"[DRY RUN] dedup write skipped: {listing.get('address')}")
                 log.info(f"[DRY RUN] GHL skipped: {listing.get('address')}")
             result["sent_items"].append(res)
         except Exception as e:
