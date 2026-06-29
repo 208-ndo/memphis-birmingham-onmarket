@@ -1,7 +1,6 @@
 """
-Email generator — 229 Holdings LLC
-No 6% commission pitch. No agent bonus.
-Commission language: seller pays per existing listing agreement.
+Email generator — 229 Holdings LLC.
+Agent-facing copy must not expose internal underwriting or resale math.
 """
 
 import re
@@ -36,13 +35,13 @@ PROPERTY: {address}
 OFFER: Full asking price of ${price:,.0f}
 STRUCTURE: ${dp:,.0f} down at closing (5%), seller carries ${price-dp:,.0f} balance over {payments} monthly payments at 0% interest
 COMMISSION: Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.
-CLOSE: 21 days | As-Is subject to walk-through | $500 earnest | 10-day due diligence
+CLOSE: 21-30 days | as-is, no repair requests, subject to standard due diligence | $500 earnest | 10-day due diligence
 
 RULES:
 1. NO em dashes. Periods and commas only.
 2. 3-5 sentences MAX. Short, conversational, handwritten feel.
 3. NEVER say "seller financing" or "owner financing" in subject or body.
-4. NEVER mention percentages, assignment fees, wholesaling, or commission amounts.
+4. NEVER mention internal resale math, exact broker compensation amounts, assignment fees, or methodology.
 5. DO NOT pitch the agent on their commission. Keep focus on the seller getting full price.
 6. Seller gets FULL asking price of ${price:,.0f}.
 7. Soft CTA only: ask where to send written offer.
@@ -73,13 +72,13 @@ PROPERTY: {address}
 LIST PRICE: ${list_price:,.0f}
 CASH OFFER: ${cash_offer:,.0f}
 COMMISSION: Seller to pay any listing broker compensation per the existing listing agreement from seller proceeds at closing. Buyer is not offering an agent bonus.
-CLOSE: 7-14 days | As-Is | No repairs | No contingencies | Cash | $500 earnest
+CLOSE: 21-30 days | as-is, no repair requests, subject to standard due diligence | Cash | $500 earnest
 
 RULES:
 1. NO em dashes. Periods and commas only.
 2. 3-5 sentences MAX. Short, conversational.
-3. Lead with speed and certainty: cash, as-is, close in 14 days.
-4. NEVER mention percentages, assignment fees, wholesaling, or commission amounts.
+3. Lead with speed and certainty: cash, as-is, close in 21-30 days.
+4. NEVER mention internal underwriting, broker compensation amounts, assignment fees, resale math, or methodology.
 5. DO NOT pitch the agent on their commission.
 6. Soft CTA only: ask where to send written offer.
 7. Sign off EXACTLY: {SIGN_OFF}
