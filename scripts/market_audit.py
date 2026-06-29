@@ -49,6 +49,19 @@ log = logging.getLogger("market_audit")
 MIN_DOM_AUTOSEND = 30   # hard rule — never changes without explicit approval
 ACTOR_ID         = "maxcopell/zillow-scraper"
 
+def get_run_dataset_id(run) -> str:
+    """
+    Safely extract defaultDatasetId from an Apify run result.
+    apify-client <= 1.x  returns a dict  -> run["defaultDatasetId"]
+    apify-client >= 3.x  returns a Run object -> run.default_dataset_id
+    """
+    if run is None:
+        return ""
+    if isinstance(run, dict):
+        return run.get("defaultDatasetId", "")
+    return getattr(run, "default_dataset_id", "") or getattr(run, "defaultDatasetId", "") or ""
+
+
 AUDIT_PRICE_BANDS = [
     {"min": 30000,  "max": 55000,  "label": "$30k-$55k",  "lane": "OF"},
     {"min": 55001,  "max": 80000,  "label": "$55k-$80k",  "lane": "OF"},
@@ -278,10 +291,14 @@ def scrape_band(client, market_key: str, bounds: dict, band: dict,
     }
 
     try:
-        run   = client.actor(ACTOR_ID).call(
+        run = client.actor(ACTOR_ID).call(
             run_input={"searchUrls": [{"url": url}]},
         )
-        items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
+        dataset_id = get_run_dataset_id(run)
+        log.info(f"  run type={type(run).__name__} | dataset_id={dataset_id!r}")
+        if not dataset_id:
+            raise ValueError(f"Could not extract defaultDatasetId from run result (type={type(run).__name__})")
+        items = list(client.dataset(dataset_id).iterate_items())
         result["raw_count"] = len(items)
 
         seen = set()
@@ -580,6 +597,9 @@ def main():
             log.error("APIFY_API_TOKEN not set. Use --dry for a test run.")
             sys.exit(1)
         from apify_client import ApifyClient
+        import apify_client as _apify_mod
+        _ver = getattr(_apify_mod, "__version__", "unknown")
+        log.info(f"apify-client version: {_ver}")
         client = ApifyClient(token)
 
     results     = []
@@ -613,6 +633,15 @@ def main():
                     res_pr = scrape_band(client, mk, mdata["bounds"], band, price_reduced=True)
                     time.sleep(args.sleep)
                 results.append(res_pr)
+
+
+    # -- Hard failure: if every call errored, exit non-zero
+    all_errored = all(bool(r.get('error')) for r in results) if results else False
+    if all_errored:
+        log.error('FATAL: Every Apify call failed. Check apify-client version and APIFY_API_TOKEN.')
+        for r in results[:3]:
+            log.error(f"  {r['market']} {r['band']}: {r.get('error')}")
+        sys.exit(1)
 
     # ── Write reports ─────────────────────────────────────────────────────────
     ranking  = rank_markets(results, market_meta)
