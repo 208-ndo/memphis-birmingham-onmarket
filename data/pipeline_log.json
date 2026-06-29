@@ -1,13 +1,33 @@
 {
   "summary": {
-    "run_date": "2026-06-29 07:01",
-    "total_leads": 3,
+    "run_date": "2026-06-29 13:44",
+    "total_leads": 1,
     "emails_sent": 0,
     "ghl_pushed": 0,
     "of_deals": 0,
     "cl_deals": 0
   },
   "runs": [
+    {
+      "date": "2026-06-29 13:44",
+      "market": "Memphis TN",
+      "leads": 0,
+      "emails": 0,
+      "of": 0,
+      "cl": 0,
+      "ghl": 0,
+      "status": "NO SENDS"
+    },
+    {
+      "date": "2026-06-29 13:44",
+      "market": "Birmingham AL",
+      "leads": 1,
+      "emails": 0,
+      "of": 0,
+      "cl": 0,
+      "ghl": 0,
+      "status": "NO SENDS"
+    },
     {
       "date": "2026-06-29 07:01",
       "market": "Memphis TN",
