@@ -143,7 +143,8 @@ def _calc_cash_lowball(listing: dict, list_price: float) -> dict:
         return {
             "offer_type":         "no_arv",
             "list_price":         list_price,
-            "skip_reason":        "ARV REQUIRED — no cash offer generated. Use owner finance or manual review.",
+            "skip_reason":        "ARV required for auto cash offer — send to manual review",
+            "reason":             "ARV required for auto cash offer — send to manual review",
             "pitch_holds":        False,
             "commission_language": COMMISSION_LANGUAGE,
         }
