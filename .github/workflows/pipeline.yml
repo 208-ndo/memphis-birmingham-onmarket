@@ -63,13 +63,36 @@ jobs:
           GHL_LOCATION_ID: ${{ secrets.GHL_LOCATION_ID }}
           GHL_PHONE_MEMPHIS: ${{ secrets.GHL_PHONE_MEMPHIS }}
           GHL_PHONE_BIRMINGHAM: ${{ secrets.GHL_PHONE_BIRMINGHAM }}
-          FORCE_RUN: ${{ github.event.inputs.force_run || 'false' }}
         run: |
-          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
-            python main.py --dry-run
+          # ── Normalize dry_run input ──────────────────────────────────────
+          DRY_RUN_RAW="${{ github.event.inputs.dry_run }}"
+          DRY_RUN_NORMALIZED="$(echo "$DRY_RUN_RAW" | tr '[:upper:]' '[:lower:]' | xargs)"
+          echo "dry_run  raw='${DRY_RUN_RAW}'  normalized='${DRY_RUN_NORMALIZED}'"
+
+          # ── Normalize force_run input ────────────────────────────────────
+          FORCE_RUN_RAW="${{ github.event.inputs.force_run }}"
+          FORCE_RUN_NORMALIZED="$(echo "$FORCE_RUN_RAW" | tr '[:upper:]' '[:lower:]' | xargs)"
+          echo "force_run  raw='${FORCE_RUN_RAW}'  normalized='${FORCE_RUN_NORMALIZED}'"
+
+          # ── Build flags from normalized values only ──────────────────────
+          FLAGS=""
+          if [ "${DRY_RUN_NORMALIZED}" = "true" ]; then
+            FLAGS="${FLAGS} --dry-run"
+            echo "Mode: DRY RUN — no emails will be sent, no GHL contacts created"
           else
-            python main.py
+            echo "Mode: LIVE — emails and GHL pushes enabled"
           fi
+
+          if [ "${FORCE_RUN_NORMALIZED}" = "true" ]; then
+            FLAGS="${FLAGS} --force"
+            echo "Force: ON — bypassing day-of-week gate"
+          fi
+
+          # ── Export FORCE_RUN for main.py env check ───────────────────────
+          export FORCE_RUN="${FORCE_RUN_NORMALIZED}"
+
+          echo "Running: python main.py${FLAGS}"
+          python main.py${FLAGS}
 
       - name: Commit dashboard data to repo
         if: always()
