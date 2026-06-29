@@ -1,10 +1,33 @@
 """
 229 Holdings LLC — Pipeline Config
 Two offer lanes: Owner Finance + Cash Lowball (MAO + Visible Spread)
+
+Phase 2: Little Rock + Oklahoma City are the active production markets.
+Memphis and Birmingham are inactive (weak $30k-$80k DOM 30+ inventory per
+market_audit.py findings) but their Gmail/GHL secrets are reused as the
+sending inboxes for the new markets — no new GitHub Secrets required.
 """
 import os
 
+# ─── Active / Inactive Markets ──────────────────────────────────────────────────
+# Only markets listed in ACTIVE_MARKETS are processed by main.py's market loop.
+ACTIVE_MARKETS = ["little_rock", "oklahoma_city"]
+
+# Kept for reference / dashboard / audit reporting only — not read by main.py's
+# send loop. Documents why these markets are currently sidelined.
+INACTIVE_MARKETS = {
+    "memphis": "Weak $30k-$80k DOM 30+ inventory per market_audit.py — 0 useful OF candidates in low-price bands",
+    "birmingham": "Weak $30k-$80k DOM 30+ inventory per market_audit.py — 0 useful OF candidates in low-price bands",
+}
+
+# ─── Send Caps ──────────────────────────────────────────────────────────────────
+GLOBAL_DAILY_CAP = 30   # total emails across all inboxes, all markets, per day
+PER_INBOX_CAP    = 15   # max emails per Gmail inbox per run
+
 # ─── Markets ───────────────────────────────────────────────────────────────────
+# little_rock and oklahoma_city deliberately reuse the existing Memphis/Birmingham
+# Gmail + GHL secrets as their sending inboxes (inbox #1 = Memphis secret,
+# inbox #2 = Birmingham secret) so no new GitHub Secrets need to be created.
 MARKETS = {
     "memphis": {
         "city": "Memphis", "state": "TN", "zip_codes": [],
@@ -22,6 +45,26 @@ MARKETS = {
         "gmail_app_password": os.environ.get("GMAIL_APP_PASSWORD_BIRMINGHAM", ""),
         "ghl_phone_number": os.environ.get("GHL_PHONE_BIRMINGHAM", ""),
     },
+    "little_rock": {
+        "city": "Little Rock", "state": "AR", "zip_codes": [],
+        "price_min": 30000, "price_max": 500000,
+        "min_price": 30000, "max_price": 500000,
+        # Inbox #1 — reuses Memphis Gmail/GHL secrets
+        "gmail_user": os.environ.get("GMAIL_USER_MEMPHIS", ""),
+        "gmail_app_password": os.environ.get("GMAIL_APP_PASSWORD_MEMPHIS", ""),
+        "ghl_phone_number": os.environ.get("GHL_PHONE_MEMPHIS", ""),
+        "bounds": {"west": -92.5, "east": -92.1, "south": 34.6, "north": 34.85},
+    },
+    "oklahoma_city": {
+        "city": "Oklahoma City", "state": "OK", "zip_codes": [],
+        "price_min": 30000, "price_max": 500000,
+        "min_price": 30000, "max_price": 500000,
+        # Inbox #2 — reuses Birmingham Gmail/GHL secrets
+        "gmail_user": os.environ.get("GMAIL_USER_BIRMINGHAM", ""),
+        "gmail_app_password": os.environ.get("GMAIL_APP_PASSWORD_BIRMINGHAM", ""),
+        "ghl_phone_number": os.environ.get("GHL_PHONE_BIRMINGHAM", ""),
+        "bounds": {"west": -97.7, "east": -97.3, "south": 35.35, "north": 35.65},
+    },
 }
 
 # ─── GHL ───────────────────────────────────────────────────────────────────────
@@ -32,7 +75,7 @@ GHL = {
 
 # ─── Email ─────────────────────────────────────────────────────────────────────
 EMAIL = {
-    "daily_limit":      15,
+    "daily_limit":      PER_INBOX_CAP,
     "stagger_min_secs": 60,
     "stagger_max_secs": 180,
 }
@@ -47,19 +90,23 @@ DEDUP = {
 }
 
 # ─── Owner Finance ─────────────────────────────────────────────────────────────
-OF_MIN_PRICE      = 30000
-OF_MAX_PRICE      = 80000
-OF_DOWN_PCT       = 0.05
-OF_NUM_PAYMENTS   = 100
-OF_SELLER_RATE    = 0.0
-OF_BUYER_DOWN_PCT = 0.12
-OF_BUYER_RATE     = 0.08
-OF_BUYER_TERM_YRS = 30
-OF_EARNEST        = 500
-OF_CLOSE_DAYS     = 21
-OF_DD_DAYS        = 10
+# Production band stays $30k-$80k. $80k-$100k is audit-only — never auto-sent.
+OF_MIN_PRICE       = 30000
+OF_MAX_PRICE       = 80000
+OF_AUDIT_MIN_PRICE = 80000
+OF_AUDIT_MAX_PRICE = 100000   # audit-only band, not production OF
+OF_DOWN_PCT        = 0.05
+OF_NUM_PAYMENTS    = 100
+OF_SELLER_RATE     = 0.0
+OF_BUYER_DOWN_PCT  = 0.12
+OF_BUYER_RATE      = 0.08
+OF_BUYER_TERM_YRS  = 30
+OF_EARNEST         = 500
+OF_CLOSE_DAYS      = 21
+OF_DD_DAYS         = 10
 
 # ─── Cash Lowball — Buyer MAO ──────────────────────────────────────────────────
+# Cash offers require ARV. No-ARV cash leads remain manual review / no-send — unchanged.
 BUYER_MAO_MULTIPLIER = 0.90          # Buyer MAO = ARV * 0.90
 REPAIR_MULTIPLIER    = 2.0           # effective_repairs * 2 in buyer MAO
 ASSIGNMENT_FEE_MIN        = 7_500
@@ -98,7 +145,7 @@ DISTRESSED_KEYWORDS = [
 ]
 MIN_SQFT      = 750
 MAX_VIEWS_DAY = 25
-MIN_DOM       = 30
+MIN_DOM       = 30   # hard rule — never lowered, never made 7-29 auto-send eligible
 
 AGENT_COOLDOWN_DAYS  = 7
 AGENT_LIFETIME_CAP   = 3
