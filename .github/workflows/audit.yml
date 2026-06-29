@@ -33,7 +33,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install apify-client
+        run: pip install -r requirements.txt
 
       - name: Compile audit script
         run: python -m py_compile scripts/market_audit.py && echo "COMPILE PASS"
