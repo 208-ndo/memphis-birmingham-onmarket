@@ -627,37 +627,62 @@ function showOfferView(e,prefix,view){
 }
 function copyEl(id,btn){var el=document.getElementById(id);var text=el.innerText||el.textContent;navigator.clipboard.writeText(text).then(function(){var orig=btn.textContent;btn.textContent='Copied!';btn.classList.add('copied');setTimeout(function(){btn.textContent=orig;btn.classList.remove('copied');},2000);});}
 
-async function generateOFEmails(){
+function generateOFEmails(){
   if(!ofData)return;
   var d=ofData;
-  var prompt='You are a real estate investor writing to a listing agent.\n\nPROPERTY: '+d.address+'\nOFFER: Full asking price of '+fmt(d.price)+'\nSTRUCTURE: '+fmt(d.dp)+' down at closing, seller carries balance over '+d.pmts+' payments at '+d.sellerRate+'% interest\nCOMMISSION: Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.\nCLOSE: 21-30 days | as-is, no repair requests, subject to standard due diligence | $500 earnest | 10-day due diligence\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX. Short, conversational.\n3. Use neutral subject lines.\n4. NEVER mention internal resale math, exact broker compensation amounts, assignment fees, or methodology.\n5. Seller gets full asking price '+fmt(d.price)+'.\n6. Soft CTA only: ask where to send written offer.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. V1=direct, V2=empathetic, V3=curiosity hook, V4=ultra short 2 sentences max.\n9. Different subject and opening each time.\n\nReturn ONLY raw JSON array:\n[{\"variation\":1,\"subject\":\"...\",\"body\":\"...\"},{\"variation\":2,\"subject\":\"...\",\"body\":\"...\"},{\"variation\":3,\"subject\":\"...\",\"body\":\"...\"},{\"variation\":4,\"subject\":\"...\",\"body\":\"...\"}]';
-  showEmailLoading('of');
-  try{
-    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
-    var data=await res.json();
-    var raw=data.content[0].text.trim().replace(/```json|```/g,'').trim();
-    ofEmails=JSON.parse(raw);
-    ofEmails.forEach(function(e){e.body=e.body.replace(/\u2014/g,',').replace(/\u2013/g,',');e.subject=e.subject.replace(/\u2014/g,',').replace(/\u2013/g,',');});
-    renderEmailTabs('of',ofEmails);showEmail('of',0);
-  }catch(err){document.getElementById('of-email-body').textContent='Email generation failed. Pipeline emails still run server-side.';}
+  var addr=d.address||'the property';
+  var price=fmt(d.price);
+  var dp=fmt(d.dp);
+  var coe=offerCloseDate(21);
+  var broker='Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.';
+  var invest='Buyer is purchasing for investment purposes.';
+  var sign='Michael B. | 229 Holdings LLC';
+  ofEmails=[
+    {variation:1,
+     subject:'Offer on '+addr,
+     body:'Hi, I came across your listing at '+addr+' and wanted to get an offer to you. Purchase price is '+price+', $500 earnest, close by '+coe+', 10-day due diligence, as-is. '+broker+' '+invest+' Where can I send the written offer?\n\n'+sign},
+    {variation:2,
+     subject:'Offer on '+addr,
+     body:'Hi, I have an offer ready for '+addr+'. '+price+' purchase price, $500 earnest, 10-day due diligence, as-is, close by '+coe+'. '+broker+' '+invest+' Let me know where to send the written offer.\n\n'+sign},
+    {variation:3,
+     subject:'Written offer for '+addr,
+     body:'Hi, I wanted to reach out about '+addr+'. I have a written offer prepared at '+price+'. Terms: $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests. '+broker+' '+invest+' Where should I send it?\n\n'+sign},
+    {variation:4,
+     subject:'Offer on '+addr,
+     body:'Hi, offer ready for '+addr+': '+price+', $500 earnest, close by '+coe+', as-is. '+broker+' Where can I send the agreement?\n\n'+sign}
+  ];
+  renderEmailTabs('of',ofEmails);showEmail('of',0);
   document.getElementById('of-email-section').style.display='block';
 }
 
-async function generateCLEmails(){
+function generateCLEmails(){
   if(!clData)return;
   var d=clData;
-  var prompt='You are a real estate investor writing to a listing agent about their listing.\n\nOFFER TYPE: Cash As-Is\nProperty: '+d.address+'\nCash Offer: '+fmt(d.cashOffer)+'\nCOMMISSION: Seller handles listing broker compensation per the existing listing agreement from seller proceeds at closing.\nClose: 21-30 days | as-is, no repair requests, subject to standard due diligence | Cash | $500 earnest | 10-day due diligence\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. Lead with speed and certainty.\n4. NEVER mention internal underwriting, broker compensation amounts, assignment fees, resale math, or methodology.\n5. Do NOT pitch the agent on their commission.\n6. Soft CTA only.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. V1=direct, V2=empathetic, V3=curiosity, V4=ultra short.\n\nReturn ONLY raw JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
-  showEmailLoading('cl');
-  try{
-    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
-    var data=await res.json();
-    var raw=data.content[0].text.trim().replace(/```json|```/g,'').trim();
-    clEmails=JSON.parse(raw);
-    clEmails.forEach(function(e){e.body=e.body.replace(/\u2014/g,',').replace(/\u2013/g,',');});
-    renderEmailTabs('cl',clEmails);showEmail('cl',0);
-  }catch(err){document.getElementById('cl-email-body').textContent='Email generation failed. Pipeline emails still run server-side.';}
+  var addr=d.address||'the property';
+  var offer=fmt(d.cashOffer);
+  var coe=offerCloseDate(21);
+  var broker='Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.';
+  var invest='Buyer is purchasing for investment purposes.';
+  var sign='Michael B. | 229 Holdings LLC';
+  clEmails=[
+    {variation:1,
+     subject:'Cash offer on '+addr,
+     body:'Hi, I have a cash offer for '+addr+': '+offer+', $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests, no financing contingency. '+broker+' '+invest+' Where can I send the written offer?\n\n'+sign},
+    {variation:2,
+     subject:'Cash offer on '+addr,
+     body:'Hi, wanted to get a cash offer to you on '+addr+'. '+offer+' cash, $500 earnest, close by '+coe+', 10-day due diligence, as-is. '+broker+' '+invest+' Let me know where to send the agreement.\n\n'+sign},
+    {variation:3,
+     subject:'Written cash offer for '+addr,
+     body:'Hi, I have a written cash offer prepared for '+addr+' at '+offer+'. Terms: $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests, no financing contingency. '+broker+' '+invest+' Where should I send it?\n\n'+sign},
+    {variation:4,
+     subject:'Cash offer on '+addr,
+     body:'Hi, cash offer on '+addr+': '+offer+', close by '+coe+', as-is. '+broker+' Where can I send the written offer?\n\n'+sign}
+  ];
+  renderEmailTabs('cl',clEmails);showEmail('cl',0);
   document.getElementById('cl-email-section').style.display='block';
 }
+
+function offerCloseDate(days){var d=new Date();d.setDate(d.getDate()+days);return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}
 
 function showEmailLoading(prefix){document.getElementById(prefix+'-email-section').style.display='block';document.getElementById(prefix+'-email-subject').textContent='Generating...';document.getElementById(prefix+'-email-body').innerHTML='<div class="loading-shimmer" style="width:80%"></div><div class="loading-shimmer" style="width:65%"></div><div class="loading-shimmer" style="width:72%"></div>';document.getElementById(prefix+'-email-tabs').innerHTML='';}
 function renderEmailTabs(prefix,emails){var c=document.getElementById(prefix+'-email-tabs');c.innerHTML='';emails.forEach(function(e,i){var btn=document.createElement('button');btn.className='email-tab-btn'+(i===0?' active':'');btn.textContent='V'+(i+1);btn.onclick=function(){showEmail(prefix,i);};c.appendChild(btn);});}
@@ -982,57 +1007,52 @@ function copyText(id){
   setTimeout(function(){btn.textContent=orig;},2000);
 }
 
-async function genModalEmails(type){
+function genModalEmails(type){
   var lead = _modalLead;
   if(!lead)return;
   var prefix = type==='of'?'m-of':'m-cl';
   document.getElementById(prefix+'-emails').style.display='block';
-  document.getElementById(prefix+'-email-subject').textContent='Generating...';
-  document.getElementById(prefix+'-email-body').textContent='';
-  var price=lead.price||0;
-  // CLOSE: 7-14 days, as-is, no repair requests, subject to standard due diligence, cash, $500 earnest0;
-  var prompt;
+  var addr=lead.address||'the property';
+  var broker='Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.';
+  var invest='Buyer is purchasing for investment purposes.';
+  var sign='Michael B. | 229 Holdings LLC';
+  var coe=offerCloseDate(21);
+  var emails;
   if(type==='of'){
-    var dp = lead.down_payment||(price*0.05);
-    var monthly = lead.monthly_payment||Math.round((price-dp)/100);
-    var agentComm = lead.total_to_agent||dp;
-    var atList = lead.at_list_commission||(price*0.03);
-    prompt='You are a real estate investor writing to a listing agent.\n\nPROPERTY: '+lead.address+'\nOFFER: Full asking price '+fmt2(price)+'\nSTRUCTURE: '+fmt2(dp)+' down at closing, '+fmt2(monthly)+'/month over 100 months at 0% interest\nCOMMISSION: Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.\nCLOSE: 21-30 days, as-is, no repair requests, subject to standard due diligence, $500 earnest, 10-day due diligence\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. Use neutral subject lines.\n4. NEVER mention internal resale math, exact broker compensation amounts, assignment fees, or methodology.\n5. Seller gets full asking price.\n6. Soft CTA only.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. 4 variations. Different subject and opening each time.\n\nReturn ONLY a JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
+    var price=fmt2(lead.price||0);
+    emails=[
+      {variation:1,subject:'Offer on '+addr,body:'Hi, I came across your listing at '+addr+' and wanted to get an offer to you. Purchase price is '+price+', $500 earnest, close by '+coe+', 10-day due diligence, as-is. '+broker+' '+invest+' Where can I send the written offer?\n\n'+sign},
+      {variation:2,subject:'Offer on '+addr,body:'Hi, I have an offer ready for '+addr+'. '+price+' purchase price, $500 earnest, 10-day due diligence, as-is, close by '+coe+'. '+broker+' '+invest+' Let me know where to send the written offer.\n\n'+sign},
+      {variation:3,subject:'Written offer for '+addr,body:'Hi, I wanted to reach out about '+addr+'. I have a written offer prepared at '+price+'. Terms: $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests. '+broker+' '+invest+' Where should I send it?\n\n'+sign},
+      {variation:4,subject:'Offer on '+addr,body:'Hi, offer ready for '+addr+': '+price+', $500 earnest, close by '+coe+', as-is. '+broker+' Where can I send the agreement?\n\n'+sign}
+    ];
   } else {
-    var cashOffer = lead.cash_offer||lead.offer||0;
-    var agentTotal = lead.total_to_agent||0;
-    var atList2 = lead.at_list_commission||(price*0.03);
-    prompt='You are a real estate investor writing to a listing agent.\n\nPROPERTY: '+lead.address+'\nCASH OFFER: '+fmt2(cashOffer)+'\nCLOSE: 21-30 days, as-is, no repair requests, subject to standard due diligence, cash, $500 earnest, 10-day due diligence\nCOMMISSION: Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.\n\nRULES:\n1. NO em dashes. Periods and commas only.\n2. 3-5 sentences MAX.\n3. Lead with speed and certainty.\n4. NEVER mention internal underwriting, broker compensation amounts, assignment fees, resale math, or methodology.\n5. Do NOT pitch the agent on their commission.\n6. Soft CTA only.\n7. Sign off EXACTLY: Michael B. | 229 Holdings LLC\n8. 4 variations. Different subject and opening each time.\n\nReturn ONLY a JSON array:\n[{"variation":1,"subject":"...","body":"..."},{"variation":2,"subject":"...","body":"..."},{"variation":3,"subject":"...","body":"..."},{"variation":4,"subject":"...","body":"..."}]';
+    var cashOffer=fmt2(lead.cash_offer||lead.offer||0);
+    emails=[
+      {variation:1,subject:'Cash offer on '+addr,body:'Hi, I have a cash offer for '+addr+': '+cashOffer+', $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests, no financing contingency. '+broker+' '+invest+' Where can I send the written offer?\n\n'+sign},
+      {variation:2,subject:'Cash offer on '+addr,body:'Hi, wanted to get a cash offer to you on '+addr+'. '+cashOffer+' cash, $500 earnest, close by '+coe+', 10-day due diligence, as-is. '+broker+' '+invest+' Let me know where to send the agreement.\n\n'+sign},
+      {variation:3,subject:'Written cash offer for '+addr,body:'Hi, I have a written cash offer prepared for '+addr+' at '+cashOffer+'. Terms: $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests, no financing contingency. '+broker+' '+invest+' Where should I send it?\n\n'+sign},
+      {variation:4,subject:'Cash offer on '+addr,body:'Hi, cash offer on '+addr+': '+cashOffer+', close by '+coe+', as-is. '+broker+' Where can I send the written offer?\n\n'+sign}
+    ];
   }
-  try{
-    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
-    var data=await res.json();
-    var raw=data.content[0].text.trim().replace(/```json|```/g,'').trim();
-    var emails=JSON.parse(raw);
-    emails.forEach(function(e){e.body=e.body.replace(/—/g,',').replace(/–/g,',');});
-    if(type==='of') _modalOFEmails=emails; else _modalCLEmails=emails;
-    // Render tabs
-    var tabsEl=document.getElementById(prefix+'-email-tabs');
-    tabsEl.innerHTML='';
-    emails.forEach(function(e,i){
-      var btn=document.createElement('button');
-      btn.className='modal-btn modal-btn-ghost'+(i===0?' active':'');
-      btn.style.padding='6px 12px';btn.style.fontSize='10px';
-      btn.textContent='V'+(i+1);
-      btn.onclick=function(){
-        tabsEl.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
-        btn.classList.add('active');
-        document.getElementById(prefix+'-email-subject').textContent=emails[i].subject||'';
-        document.getElementById(prefix+'-email-body').textContent=emails[i].body||'';
-      };
-      tabsEl.appendChild(btn);
-    });
-    document.getElementById(prefix+'-email-subject').textContent=emails[0].subject||'';
-    document.getElementById(prefix+'-email-body').textContent=emails[0].body||'';
-  }catch(err){
-    document.getElementById(prefix+'-email-subject').textContent='Generation failed';
-    document.getElementById(prefix+'-email-body').textContent='Try again.';
-  }
+  if(type==='of') _modalOFEmails=emails; else _modalCLEmails=emails;
+  var tabsEl=document.getElementById(prefix+'-email-tabs');
+  tabsEl.innerHTML='';
+  emails.forEach(function(e,i){
+    var btn=document.createElement('button');
+    btn.className='modal-btn modal-btn-ghost'+(i===0?' active':'');
+    btn.style.padding='6px 12px';btn.style.fontSize='10px';
+    btn.textContent='V'+(i+1);
+    btn.onclick=function(){
+      tabsEl.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active');
+      document.getElementById(prefix+'-email-subject').textContent=emails[i].subject||'';
+      document.getElementById(prefix+'-email-body').textContent=emails[i].body||'';
+    };
+    tabsEl.appendChild(btn);
+  });
+  document.getElementById(prefix+'-email-subject').textContent=emails[0].subject||'';
+  document.getElementById(prefix+'-email-body').textContent=emails[0].body||'';
 }
 
 function downloadModalPDF(type){
