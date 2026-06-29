@@ -32,9 +32,14 @@ PRICE_BANDS = [
     {"min": 150001, "max": 300000},
 ]
 
+# Fallback bounds used only if a market dict doesn't define its own "bounds".
+# Little Rock + Oklahoma City added for Phase 2; market["bounds"] in config.py
+# takes precedence over these when present.
 MARKET_BOUNDS = {
-    "Memphis":    {"west": -90.3, "east": -89.7, "south": 35.0, "north": 35.3},
-    "Birmingham": {"west": -87.0, "east": -86.6, "south": 33.4, "north": 33.7},
+    "Memphis":       {"west": -90.3, "east": -89.7, "south": 35.0, "north": 35.3},
+    "Birmingham":    {"west": -87.0, "east": -86.6, "south": 33.4, "north": 33.7},
+    "Little Rock":   {"west": -92.5, "east": -92.1, "south": 34.6, "north": 34.85},
+    "Oklahoma City": {"west": -97.7, "east": -97.3, "south": 35.35, "north": 35.65},
 }
 
 
@@ -56,8 +61,21 @@ def parse_int(val) -> int:
     return int(cleaned) if cleaned else 0
 
 
-def build_zillow_url(city: str, price_min: int, price_max: int) -> str:
-    bounds = MARKET_BOUNDS.get(city, MARKET_BOUNDS["Memphis"])
+def resolve_bounds(market: dict) -> dict:
+    """
+    Bounds resolution order:
+      1. market["bounds"] from config.py, if present
+      2. MARKET_BOUNDS[market["city"]] fallback
+      3. MARKET_BOUNDS["Memphis"] as last resort
+    """
+    if market.get("bounds"):
+        return market["bounds"]
+    city = market.get("city", "")
+    return MARKET_BOUNDS.get(city, MARKET_BOUNDS["Memphis"])
+
+
+def build_zillow_url(market: dict, price_min: int, price_max: int) -> str:
+    bounds = resolve_bounds(market)
     state_obj = {
         "isMapVisible": True,
         "mapBounds": bounds,
@@ -255,7 +273,7 @@ def scrape_market(market: dict) -> list[dict]:
         band_label = f"${price_min:,}-${price_max:,}"
         logger.info(f"Scraping band: {band_label}")
 
-        search_url = build_zillow_url(city, price_min, price_max)
+        search_url = build_zillow_url(market, price_min, price_max)
         logger.info(f"URL: {search_url[:120]}...")
 
         try:
