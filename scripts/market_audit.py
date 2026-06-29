@@ -280,7 +280,6 @@ def scrape_band(client, market_key: str, bounds: dict, band: dict,
     try:
         run   = client.actor(ACTOR_ID).call(
             run_input={"searchUrls": [{"url": url}]},
-            timeout_secs=180,
         )
         items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
         result["raw_count"] = len(items)
