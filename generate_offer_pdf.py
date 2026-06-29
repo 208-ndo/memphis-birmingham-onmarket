@@ -1,6 +1,6 @@
 """
 PDF offer generator — 229 Holdings LLC.
-PDFs are agent-facing and must not expose internal underwriting or resale math.
+PDFs are agent-facing and must not expose internal underwriting math.
 """
 
 import os
@@ -20,8 +20,8 @@ DARK   = HexColor("#0a0a0f")
 GRAY   = HexColor("#7a7a9a")
 
 COMMISSION_LINE = (
-    "Seller to pay any listing broker compensation per the existing listing agreement "
-    "from seller proceeds at closing. Buyer is not offering an agent bonus."
+    "Seller to handle any listing broker compensation per the existing listing agreement "
+    "from seller proceeds at closing."
 )
 
 
@@ -112,7 +112,8 @@ def _of_body(offer: dict, styles) -> list:
     legal = Paragraph(
         f'<font size="9" color="#7a7a9a">'
         f'<b>TERMS:</b> As-is, no repair requests, subject to standard due diligence. Due diligence: {dd} days. '
-        f'Seller to satisfy any existing mortgages, taxes, liens, or title-clearing items from seller proceeds unless otherwise agreed in writing.<br/><br/>'
+        f'Seller to satisfy any existing mortgages, taxes, liens, or title-clearing items from seller proceeds unless otherwise agreed in writing. '
+        f'Buyer is purchasing for investment purposes.<br/><br/>'
         f'<b>COMMISSION:</b> {COMMISSION_LINE}'
         f'</font>',
         styles["Normal"]
@@ -133,7 +134,8 @@ def _cl_body(offer: dict, styles) -> list:
     legal = Paragraph(
         f'<font size="9" color="#7a7a9a">'
         f'<b>TERMS:</b> Cash close in 21-30 days. As-is, no repair requests, subject to standard due diligence. Due diligence: 10 days. '
-        f'Seller to satisfy any existing mortgages, taxes, liens, or title-clearing items from seller proceeds unless otherwise agreed in writing.<br/><br/>'
+        f'Seller to satisfy any existing mortgages, taxes, liens, or title-clearing items from seller proceeds unless otherwise agreed in writing. '
+        f'Buyer is purchasing for investment purposes.<br/><br/>'
         f'<b>COMMISSION:</b> {COMMISSION_LINE}'
         f'</font>',
         styles["Normal"]
