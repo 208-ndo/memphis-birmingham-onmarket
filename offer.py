@@ -149,8 +149,13 @@ def _calc_cash_lowball(listing: dict, list_price: float) -> dict:
         }
 
     # ── Step 1: Buyer MAO ──────────────────────────────────────────────────────
-    buyer_mao      = calc_buyer_mao(arv, repairs)
-    assignment_fee = calc_assignment_fee(arv, listing.get("assignment_fee_override"))
+    eff_repairs    = calc_effective_repairs(repairs, arv)
+    buyer_mao      = calc_buyer_mao(arv, eff_repairs)
+    assignment_fee = calc_assignment_fee(
+        arv,
+        buyer_mao,
+        listing.get("assignment_fee_override"),
+    )
     closing_buffer = calc_closing_buffer(buyer_mao)
 
     # ── Step 2: Contract MAO by buyer math ────────────────────────────────────
