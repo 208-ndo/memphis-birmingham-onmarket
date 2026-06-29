@@ -1,5 +1,25 @@
 [
   {
+    "address": "916 Meda St, Memphis, TN 38104",
+    "city": "Memphis",
+    "state": "TN",
+    "list_price": 299900,
+    "days_on_market": 30,
+    "agent_name": "Coldwell Banker Collins-Maury",
+    "agent_email": "maury@collins-maury.read",
+    "agent_phone": "",
+    "offer_type": "",
+    "owner_finance_offer": 0,
+    "cash_offer": 0,
+    "monthly_payment": 0,
+    "your_fee_estimate": 0,
+    "pitch_holds": false,
+    "down_payment": 0,
+    "zillow_url": "https://www.zillow.com/homedetails/916-Meda-St-Memphis-TN-38104/42139670_zpid/",
+    "email_sent": false,
+    "pipeline_date": "2026-06-29"
+  },
+  {
     "address": "2331 Eastover Dr, Memphis, TN 38119",
     "city": "Memphis",
     "state": "TN",
