@@ -243,11 +243,22 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
 
             if not offer.get("pitch_holds", True):
                 skipped_pitch += 1
-                log.info(
-                    f"SKIP (pitch fails): {listing.get('address')} | "
-                    f"Agent: ${offer.get('total_to_agent', 0):,} | "
-                    f"At-list: ${offer.get('at_list_commission', 0):,}"
-                )
+                otype  = offer.get("offer_type", "unknown")
+                reason = offer.get("skip_reason") or offer.get("reason") or "pitch_holds=False"
+                lp     = offer.get("list_price", listing.get("price", 0))
+                co     = offer.get("cash_offer", 0)
+                of_    = offer.get("owner_finance_offer", 0)
+                if otype in ("no_arv", "manual_cash_review", "manual_review"):
+                    log.info(
+                        f"SKIP (needs ARV/manual review): {listing.get('address')} | "
+                        f"type={otype} | list_price=${lp:,.0f} | reason={reason}"
+                    )
+                else:
+                    log.info(
+                        f"SKIP (pitch fails): {listing.get('address')} | "
+                        f"type={otype} | list_price=${lp:,.0f} | "
+                        f"cash_offer=${co:,.0f} | of_offer=${of_:,.0f} | reason={reason}"
+                    )
                 continue
 
             listing["offer"] = offer
@@ -275,7 +286,7 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
     result["emails_sent"] = len(successful)
     log.info(f"[4/5] {len(successful)} emails sent")
 
-    log.info(f"[5/5] Pushing to GHL...")
+    log.info(f"[5/5] {'DRY RUN — skipping GHL push' if dry_run else 'Pushing to GHL...'}")
     ghl_count = 0
     for res in successful:
         listing = res["listing"]
