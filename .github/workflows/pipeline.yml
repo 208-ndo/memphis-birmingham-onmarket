@@ -74,11 +74,22 @@ jobs:
           FORCE_RUN_NORMALIZED="$(echo "$FORCE_RUN_RAW" | tr '[:upper:]' '[:lower:]' | xargs)"
           echo "force_run  raw='${FORCE_RUN_RAW}'  normalized='${FORCE_RUN_NORMALIZED}'"
 
+          # ── Live-send kill switch ────────────────────────────────────────
+          # Scheduled runs (cron) never live-send unless LIVE_SEND_ENABLED secret = "true".
+          # Manual dispatch can live-send only if dry_run != "true" AND LIVE_SEND_ENABLED = "true".
+          LIVE_SEND_ENABLED="${{ secrets.LIVE_SEND_ENABLED }}"
+          LIVE_SEND_NORMALIZED="$(echo "$LIVE_SEND_ENABLED" | tr '[:upper:]' '[:lower:]' | xargs)"
+          echo "live_send_enabled normalized='${LIVE_SEND_NORMALIZED}'"
+
           # ── Build flags from normalized values only ──────────────────────
           FLAGS=""
           if [ "${DRY_RUN_NORMALIZED}" = "true" ]; then
             FLAGS="${FLAGS} --dry-run"
             echo "Mode: DRY RUN — no emails will be sent, no GHL contacts created"
+          elif [ "${LIVE_SEND_NORMALIZED}" != "true" ]; then
+            FLAGS="${FLAGS} --dry-run"
+            echo "Mode: LIVE SEND DISABLED — LIVE_SEND_ENABLED secret not set to true"
+            echo "LIVE SEND DISABLED — forcing dry run. Set LIVE_SEND_ENABLED secret to 'true' to enable."
           else
             echo "Mode: LIVE — emails and GHL pushes enabled"
           fi
