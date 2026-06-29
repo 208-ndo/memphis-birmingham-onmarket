@@ -779,3 +779,155 @@
 2026-06-29 04:16:46,862 INFO ============================================================
 2026-06-29 04:16:46,862 INFO pipeline_log.json written — 0 emails, 3 leads
 2026-06-29 04:16:46,863 INFO Both markets complete. Dashboard updated. Check GHL for contacts.
+2026-06-29 06:53:31,860 INFO Pipeline starting | Markets: Memphis + Birmingham | Dry run: True | Force: True | Limit: 5/run | Time: 06:53 UTC
+2026-06-29 06:53:31,860 INFO ============================================================
+2026-06-29 06:53:31,860 INFO PIPELINE: MEMPHIS | 2026-06-29 06:53
+2026-06-29 06:53:31,860 INFO DRY RUN: True | LIMIT: 5 emails this run
+2026-06-29 06:53:31,860 INFO ============================================================
+2026-06-29 06:53:31,860 INFO Loaded 6 overflow leads from previous run
+2026-06-29 06:53:31,860 INFO [1/5] Scraping Zillow for memphis...
+2026-06-29 06:53:31,929 INFO Scraping band: $30,000-$55,000
+2026-06-29 06:53:31,929 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-06-29 06:53:32,253 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-06-29 06:53:33,306 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/fMdKT2mpbkoIvp4es?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-29 06:53:38,515 INFO HTTP Request: GET https://api.apify.com/v2/datasets/70wottGo8jR9p1LlM/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-29 06:53:38,519 INFO Band $30,000-$55,000: 26 raw results
+2026-06-29 06:53:38,520 INFO Band $30,000-$55,000: 0 candidates before email enrichment
+2026-06-29 06:53:43,520 INFO Scraping band: $55,001-$80,000
+2026-06-29 06:53:43,520 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-06-29 06:53:43,761 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-06-29 06:53:44,796 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/dH3Ebl7eRu3cNK2I8?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-29 06:53:50,612 INFO HTTP Request: GET https://api.apify.com/v2/datasets/kR1klVXe5Zq4QkVP3/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-29 06:53:50,647 INFO Band $55,001-$80,000: 35 raw results
+2026-06-29 06:53:50,648 INFO Band $55,001-$80,000: 0 candidates before email enrichment
+2026-06-29 06:53:55,648 INFO Scraping band: $80,001-$150,000
+2026-06-29 06:53:55,648 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-06-29 06:53:55,939 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-06-29 06:53:56,962 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/x3NsxM0hyzEZZjEhl?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-29 06:54:09,579 INFO HTTP Request: GET https://api.apify.com/v2/datasets/zrB7D0B4GOnszkmao/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-29 06:54:09,644 INFO Band $80,001-$150,000: 199 raw results
+2026-06-29 06:54:09,647 INFO Band $80,001-$150,000: 0 candidates before email enrichment
+2026-06-29 06:54:14,648 INFO Scraping band: $150,001-$300,000
+2026-06-29 06:54:14,648 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-06-29 06:54:14,935 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-06-29 06:54:15,955 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/doUBClemrtcUp7rB7?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-29 06:54:59,996 INFO HTTP Request: GET https://api.apify.com/v2/datasets/K8CchXIglw7RPxjaj/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-29 06:55:00,079 INFO Band $150,001-$300,000: 314 raw results
+2026-06-29 06:55:00,085 INFO Band $150,001-$300,000: 2 candidates before email enrichment
+2026-06-29 06:55:05,085 INFO Starting email enrichment for 2 leads...
+2026-06-29 06:55:05,085 INFO Email lookup: 2 leads need emails, 0 already have one
+2026-06-29 06:55:05,408 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-29 06:55:06,427 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/0xpiDvrvVWjj332zS?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-29 06:55:25,671 INFO HTTP Request: GET https://api.apify.com/v2/datasets/pq9K5G0r8aPHh1ABi/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-29 06:55:28,350 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-29 06:55:29,370 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/PlnxcqOg9K6XFdd6K?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-29 06:55:35,283 INFO HTTP Request: GET https://api.apify.com/v2/datasets/phMx2oSFZv14TyBKQ/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-29 06:55:35,286 INFO Found email via Google: help@renowned.com for Southeast Investors, LLC / Southeast Investors, LLC
+2026-06-29 06:55:36,529 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-29 06:55:37,556 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/H6obHpwf0FiwmOGc2?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-29 06:55:43,310 INFO HTTP Request: GET https://api.apify.com/v2/datasets/yMpj2UB6csuKhCMUM/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-29 06:55:43,314 INFO Found email via Google: ginny@johngreen.com for Marathon REALTORS, LLC / Marathon REALTORS, LLC
+2026-06-29 06:55:44,314 INFO Email enrichment complete: found 2/2 emails
+2026-06-29 06:55:44,314 INFO LEAD: 4278 Auburn Rd, Memphis, TN 38116 | $169,000 | DOM: 10 | Agent: Southeast Investors, LLC | Email: help@renowned.com
+2026-06-29 06:55:44,314 INFO LEAD: 2331 Eastover Dr, Memphis, TN 38119 | $259,900 | DOM: 11 | Agent: Marathon REALTORS, LLC | Email: ginny@johngreen.com
+2026-06-29 06:55:44,314 INFO Scrape complete: Memphis | 2 leads passed all screening gates
+2026-06-29 06:55:44,316 INFO [1/5] 2 fresh leads from Zillow
+2026-06-29 06:55:44,317 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-29 06:55:44,317 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-29 06:55:44,318 WARNING Agent key falling back to company name (low confidence): 'Bespoke Realty'
+2026-06-29 06:55:44,318 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-29 06:55:44,319 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-29 06:55:44,319 WARNING Agent key falling back to company name (low confidence): 'Bespoke Realty'
+2026-06-29 06:55:44,319 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-29 06:55:44,320 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-29 06:55:44,320 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-29 06:55:44,321 INFO SKIP (7-day cooldown): help@renowned.com
+2026-06-29 06:55:44,321 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-29 06:55:44,321 INFO [2/5] 7 after dedup
+2026-06-29 06:55:44,322 INFO Saved 2 leads to overflow for next run
+2026-06-29 06:55:44,322 INFO Saved 2 leads to overflow for next run
+2026-06-29 06:55:44,322 INFO [3/5] Calculating offers and generating emails...
+2026-06-29 06:55:44,322 INFO SKIP (needs ARV/manual review): 4546 Hughes Meadow Dr, Memphis, TN 38125 | type=no_arv | list_price=$265,000 | reason=ARV required for auto cash offer — send to manual review
+2026-06-29 06:55:44,322 INFO SKIP (needs ARV/manual review): 6674 Chauncey, Memphis, TN 38141 | type=no_arv | list_price=$194,000 | reason=ARV required for auto cash offer — send to manual review
+2026-06-29 06:55:44,322 INFO SKIP (needs ARV/manual review): 2331 Eastover Dr, Memphis, TN 38119 | type=no_arv | list_price=$259,900 | reason=ARV required for auto cash offer — send to manual review
+2026-06-29 06:55:44,322 INFO [3/5] 0 ready | Skipped: 3 pitch + 2 no email
+2026-06-29 06:55:44,322 INFO [4/5] Sending emails...
+2026-06-29 06:55:44,322 INFO Starting batch | Market: memphis | Leads: 0 | Limit: 15/day
+2026-06-29 06:55:44,322 INFO Batch complete | Sent: 0 | Failed: 0 | Market: memphis
+2026-06-29 06:55:44,322 INFO [4/5] 0 emails sent
+2026-06-29 06:55:44,322 INFO [5/5] DRY RUN — skipping GHL push
+2026-06-29 06:55:44,323 INFO Dashboard data saved: data/memphis_leads.json
+2026-06-29 06:55:44,323 INFO ============================================================
+2026-06-29 06:55:44,323 INFO COMPLETE: MEMPHIS | Scraped: 2 | Sent: 0 | Pitch skipped: 3 | No email: 2
+2026-06-29 06:55:44,323 INFO All-time: 17 properties | 14 agents
+2026-06-29 06:55:44,323 INFO ============================================================
+2026-06-29 06:55:44,323 INFO Waiting 3 minutes between markets...
+2026-06-29 06:58:44,324 INFO ============================================================
+2026-06-29 06:58:44,324 INFO PIPELINE: BIRMINGHAM | 2026-06-29 06:58
+2026-06-29 06:58:44,324 INFO DRY RUN: True | LIMIT: 5 emails this run
+2026-06-29 06:58:44,324 INFO ============================================================
+2026-06-29 06:58:44,324 INFO Loaded 2 overflow leads from previous run
+2026-06-29 06:58:44,324 INFO [1/5] Scraping Zillow for birmingham...
+2026-06-29 06:58:44,357 INFO Scraping band: $30,000-$55,000
+2026-06-29 06:58:44,357 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-06-29 06:58:44,635 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-06-29 06:58:45,653 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/qI5hEbPoXDquqz2em?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-29 06:58:58,516 INFO HTTP Request: GET https://api.apify.com/v2/datasets/A3HU9OsNrKkyGecaf/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-29 06:58:58,520 INFO Band $30,000-$55,000: 14 raw results
+2026-06-29 06:58:58,521 INFO Band $30,000-$55,000: 0 candidates before email enrichment
+2026-06-29 06:59:03,521 INFO Scraping band: $55,001-$80,000
+2026-06-29 06:59:03,521 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-06-29 06:59:03,887 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-06-29 06:59:04,911 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/hRl7SpEoyv2sVSW2A?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-29 06:59:10,113 INFO HTTP Request: GET https://api.apify.com/v2/datasets/n8D4X4eGg06cVzwly/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-29 06:59:10,122 INFO Band $55,001-$80,000: 26 raw results
+2026-06-29 06:59:10,123 INFO Band $55,001-$80,000: 0 candidates before email enrichment
+2026-06-29 06:59:15,123 INFO Scraping band: $80,001-$150,000
+2026-06-29 06:59:15,123 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-06-29 06:59:15,471 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-06-29 06:59:16,500 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/UbdgGoeOhJKQZdoQm?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-29 07:00:16,813 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/UbdgGoeOhJKQZdoQm?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-29 07:00:27,546 INFO HTTP Request: GET https://api.apify.com/v2/datasets/lKytuaPMogqPi1Bod/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-29 07:00:27,595 INFO Band $80,001-$150,000: 143 raw results
+2026-06-29 07:00:27,598 INFO Band $80,001-$150,000: 0 candidates before email enrichment
+2026-06-29 07:00:32,598 INFO Scraping band: $150,001-$300,000
+2026-06-29 07:00:32,598 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-06-29 07:00:32,944 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-06-29 07:00:34,008 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/ZTMAihNbH1NYD3L5F?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-29 07:00:52,199 INFO HTTP Request: GET https://api.apify.com/v2/datasets/edl5m0j3fwlcY9PRe/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-29 07:00:52,254 INFO Band $150,001-$300,000: 175 raw results
+2026-06-29 07:00:52,258 INFO Band $150,001-$300,000: 1 candidates before email enrichment
+2026-06-29 07:00:57,258 INFO Starting email enrichment for 1 leads...
+2026-06-29 07:00:57,258 INFO Email lookup: 1 leads need emails, 0 already have one
+2026-06-29 07:00:57,576 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-29 07:00:58,697 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/5ZKGvHRLr1oWZ7jUp?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-29 07:01:03,075 INFO HTTP Request: GET https://api.apify.com/v2/datasets/RSKbxpmuFn7oRyxTa/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-29 07:01:05,528 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-29 07:01:06,552 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/Hy7LjNPtENko0Lds2?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-29 07:01:37,960 INFO HTTP Request: GET https://api.apify.com/v2/datasets/snKJMqkbetfaiTBdb/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-29 07:01:40,318 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-06-29 07:01:41,340 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/pWBssAuhunzQL2dZQ?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-06-29 07:01:58,721 INFO HTTP Request: GET https://api.apify.com/v2/datasets/8P1Odut6jgFdhBWPo/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-06-29 07:01:58,723 INFO No email found for Dream Home Realtors, LLC / Dream Home Realtors, LLC
+2026-06-29 07:01:59,724 INFO Email enrichment complete: found 0/1 emails
+2026-06-29 07:01:59,724 INFO LEAD: 1317 Glenwick Cir, Birmingham, AL 35235 | $259,900 | DOM: 30 | Agent: Dream Home Realtors, LLC | Email: NONE
+2026-06-29 07:01:59,724 INFO Scrape complete: Birmingham | 1 leads passed all screening gates
+2026-06-29 07:01:59,726 INFO [1/5] 1 fresh leads from Zillow
+2026-06-29 07:01:59,726 INFO FORCE_RUN=true — bypassing business hours gate
+2026-06-29 07:01:59,726 WARNING Agent key falling back to company name (low confidence): 'Dream Home Realtors, LLC'
+2026-06-29 07:01:59,726 INFO [2/5] 1 after dedup
+2026-06-29 07:01:59,726 INFO Saved 2 leads to overflow for next run
+2026-06-29 07:01:59,727 INFO [3/5] Calculating offers and generating emails...
+2026-06-29 07:01:59,727 INFO [3/5] 0 ready | Skipped: 0 pitch + 1 no email
+2026-06-29 07:01:59,727 INFO [4/5] Sending emails...
+2026-06-29 07:01:59,727 INFO Starting batch | Market: birmingham | Leads: 0 | Limit: 15/day
+2026-06-29 07:01:59,727 INFO Batch complete | Sent: 0 | Failed: 0 | Market: birmingham
+2026-06-29 07:01:59,727 INFO [4/5] 0 emails sent
+2026-06-29 07:01:59,727 INFO [5/5] DRY RUN — skipping GHL push
+2026-06-29 07:01:59,727 INFO Dashboard data saved: data/birmingham_leads.json
+2026-06-29 07:01:59,728 INFO ============================================================
+2026-06-29 07:01:59,728 INFO COMPLETE: BIRMINGHAM | Scraped: 1 | Sent: 0 | Pitch skipped: 0 | No email: 1
+2026-06-29 07:01:59,728 INFO All-time: 17 properties | 14 agents
+2026-06-29 07:01:59,728 INFO ============================================================
+2026-06-29 07:01:59,729 INFO pipeline_log.json written — 0 emails, 3 leads
+2026-06-29 07:01:59,729 INFO Both markets complete. Dashboard updated. Check GHL for contacts.
