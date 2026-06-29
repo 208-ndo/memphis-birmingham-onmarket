@@ -363,7 +363,10 @@ def main():
         }
 
     save_pipeline_log(all_results)
-    log.info("Both markets complete. Dashboard updated. Check GHL for contacts.")
+    if dry_run:
+        log.info("DRY RUN complete — no Gmail emails sent and no GHL contacts/texts triggered.")
+    else:
+        log.info("Both markets complete. Dashboard updated. Check GHL for contacts.")
 
 
 if __name__ == "__main__":
