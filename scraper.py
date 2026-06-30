@@ -10,7 +10,7 @@ import json
 import ast
 from urllib.parse import quote
 from apify_client import ApifyClient
-from config import DISTRESSED_KEYWORDS, MAX_VIEWS_DAY
+from config import DISTRESSED_KEYWORDS, MAX_VIEWS_DAY, MAX_APIFY_RUNS_PER_WORKFLOW
 from agent_email_finder import enrich_leads_with_emails
 
 logger = logging.getLogger(__name__)
@@ -41,6 +41,11 @@ MARKET_BOUNDS = {
     "Little Rock":   {"west": -92.5, "east": -92.1, "south": 34.6, "north": 34.85},
     "Oklahoma City": {"west": -97.7, "east": -97.3, "south": 35.35, "north": 35.65},
 }
+
+# Module-level Apify actor call counter — shared across all scrape_market() calls
+# within the same process (one pipeline run = one process).
+# Enforces MAX_APIFY_RUNS_PER_WORKFLOW from config.py.
+_apify_call_count = 0
 
 
 def parse_price(val) -> int:
@@ -258,12 +263,39 @@ def extract_lead(listing: dict, market: dict, candidate_reason: str = "") -> dic
 
 
 def scrape_market(market: dict) -> list[dict]:
+    global _apify_call_count
+
+    city = market["city"]
+
+    # ── APIFY_ENABLED guard ──────────────────────────────────────────────────
+    # Set APIFY_ENABLED=false in the workflow to run a no-scrape test.
+    # No-scrape mode returns [] immediately — no Zillow, no Google email enrichment.
+    apify_enabled_raw = os.environ.get("APIFY_ENABLED", "true").lower().strip()
+    apify_enabled = (apify_enabled_raw == "true")
+
+    planned_bands    = len(PRICE_BANDS)
+    est_actor_calls  = planned_bands + 1  # bands + 1 email enrichment call
+
+    logger.info("=" * 60)
+    logger.info(f"SCRAPER: {city}")
+    logger.info(f"  APIFY_ENABLED              : {apify_enabled} (raw='{apify_enabled_raw}')")
+    logger.info(f"  MAX_APIFY_RUNS_PER_WORKFLOW: {MAX_APIFY_RUNS_PER_WORKFLOW}")
+    logger.info(f"  Apify calls used so far    : {_apify_call_count}")
+    band_labels = " | ".join(f"${b['min']:,}-${b['max']:,}" for b in PRICE_BANDS)
+    logger.info(f"  Planned bands              : {planned_bands} ({band_labels})")
+    logger.info(f"  Estimated actor calls      : {est_actor_calls} (bands + email enrichment)")
+    logger.info(f"  Remaining budget           : {max(0, MAX_APIFY_RUNS_PER_WORKFLOW - _apify_call_count)} calls")
+    logger.info("=" * 60)
+
+    if not apify_enabled:
+        logger.info(f"APIFY_ENABLED=false — skipping all Apify + Google scraping for {city}. Returning 0 leads.")
+        return []
+
     if not APIFY_TOKEN:
         logger.error("APIFY_API_TOKEN not set — cannot scrape")
         return []
 
     client     = ApifyClient(APIFY_TOKEN)
-    city       = market["city"]
     leads      = []
     seen_zpids = set()
 
@@ -277,8 +309,17 @@ def scrape_market(market: dict) -> list[dict]:
         logger.info(f"URL: {search_url[:120]}...")
 
         try:
+            # ── Global call budget check ─────────────────────────────────────
+            if _apify_call_count >= MAX_APIFY_RUNS_PER_WORKFLOW:
+                logger.warning(
+                    f"MAX_APIFY_RUNS_PER_WORKFLOW={MAX_APIFY_RUNS_PER_WORKFLOW} reached "
+                    f"after {_apify_call_count} calls — stopping scrape for {city}"
+                )
+                break
+
             max_results = MAX_RESULTS_OF_BAND if price_max <= 80000 else MAX_RESULTS_CL_BAND
-            logger.info(f"Band {band_label}: maxResults={max_results}")
+            logger.info(f"Band {band_label}: maxResults={max_results} | actor call #{_apify_call_count + 1}")
+            _apify_call_count += 1
             run   = client.actor(ACTOR_ID).call(
                 run_input={"searchUrls": [{"url": search_url}], "maxResults": max_results},
                 timeout_secs=180
