@@ -33,6 +33,18 @@ on:
         description: 'Enable Apify scraping (set false for no-scrape compile/logic test)'
         required: false
         default: 'true'
+      email_enrichment_enabled:
+        description: 'Enable Google email enrichment actor (set false to scrape Zillow only)'
+        required: false
+        default: 'true'
+      max_email_enrichment_calls:
+        description: 'Override MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW (blank = use config.py default of 5)'
+        required: false
+        default: ''
+      max_leads_to_enrich:
+        description: 'Override MAX_LEADS_TO_ENRICH_PER_WORKFLOW (blank = use config.py default of 10)'
+        required: false
+        default: ''
 
 jobs:
   run-pipeline:
@@ -91,6 +103,19 @@ jobs:
           fi
           echo "apify_enabled  raw='${APIFY_ENABLED_RAW}'  normalized='${APIFY_ENABLED_NORMALIZED}'"
 
+          # ── Normalize email_enrichment_enabled input ─────────────────────
+          # Controls the Google email-search Apify actor only (separate from
+          # the Zillow scraper). Set false to scrape Zillow but skip Google
+          # email lookups — leads keep agent_email=NONE. Capped further by
+          # MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW in config.py either way.
+          EMAIL_ENRICHMENT_ENABLED_RAW="${{ github.event.inputs.email_enrichment_enabled }}"
+          if [ -z "${EMAIL_ENRICHMENT_ENABLED_RAW}" ]; then
+            EMAIL_ENRICHMENT_ENABLED_NORMALIZED="true"
+          else
+            EMAIL_ENRICHMENT_ENABLED_NORMALIZED="$(echo "$EMAIL_ENRICHMENT_ENABLED_RAW" | tr '[:upper:]' '[:lower:]' | xargs)"
+          fi
+          echo "email_enrichment_enabled  raw='${EMAIL_ENRICHMENT_ENABLED_RAW}'  normalized='${EMAIL_ENRICHMENT_ENABLED_NORMALIZED}'"
+
           # ── Live-send kill switch ────────────────────────────────────────
           # Scheduled runs (cron) never live-send unless LIVE_SEND_ENABLED secret = "true".
           # Manual dispatch can live-send only if dry_run != "true" AND LIVE_SEND_ENABLED = "true".
@@ -101,12 +126,19 @@ jobs:
           # ── Pre-run Apify budget summary ─────────────────────────────────
           echo "========================================"
           echo "APIFY BUDGET SUMMARY"
-          echo "  APIFY_ENABLED              : ${APIFY_ENABLED_NORMALIZED}"
-          echo "  MAX_APIFY_RUNS_PER_WORKFLOW: 10 (config.py)"
-          echo "  Active markets             : little_rock oklahoma_city (2)"
-          echo "  Price bands per market     : 4"
-          echo "  Estimated actor calls      : 10 (4 bands x 2 markets + 2 email enrichment)"
-          echo "  If APIFY_ENABLED=false     : 0 Apify calls (no-scrape test mode)"
+          echo "  APIFY_ENABLED                       : ${APIFY_ENABLED_NORMALIZED}"
+          echo "  EMAIL_ENRICHMENT_ENABLED            : ${EMAIL_ENRICHMENT_ENABLED_NORMALIZED}"
+          echo "  MAX_APIFY_RUNS_PER_WORKFLOW         : 10 (config.py — shared, covers Zillow + Google + any future actor)"
+          echo "  MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW: 5 default (config.py — Google sub-cap; override='${{ github.event.inputs.max_email_enrichment_calls }}')"
+          echo "  MAX_LEADS_TO_ENRICH_PER_WORKFLOW    : 10 default (config.py — top-scored shortlist before enrichment; override='${{ github.event.inputs.max_leads_to_enrich }}')"
+          echo "  Active markets                       : little_rock oklahoma_city (2)"
+          echo "  Price bands per market                : 4"
+          echo "  Planned Zillow calls                  : 8 (4 bands x 2 markets, base only)"
+          echo "  Planned max Google email calls        : up to 10 (5 cap x 2 markets) IF email_enrichment_enabled=true"
+          echo "                                           — only for the TOP-SCORED leads per market, never every lead"
+          echo "  If APIFY_ENABLED=false                : 0 Apify calls (no-scrape test mode)"
+          echo "  If EMAIL_ENRICHMENT_ENABLED=false      : 0 Google calls (Zillow-only test mode, leads show Email: NONE)"
+          echo "  Actual calls are hard-capped at runtime by scraper.py's shared budget counter"
           echo "========================================"
 
           # ── Build flags from normalized values only ──────────────────────
@@ -127,9 +159,12 @@ jobs:
             echo "Force: ON — bypassing day-of-week gate"
           fi
 
-          # ── Export env vars for main.py / scraper.py ────────────────────
+          # ── Export env vars for main.py / scraper.py / config.py ─────────
           export FORCE_RUN="${FORCE_RUN_NORMALIZED}"
           export APIFY_ENABLED="${APIFY_ENABLED_NORMALIZED}"
+          export EMAIL_ENRICHMENT_ENABLED="${EMAIL_ENRICHMENT_ENABLED_NORMALIZED}"
+          export MAX_EMAIL_ENRICHMENT_CALLS_OVERRIDE="${{ github.event.inputs.max_email_enrichment_calls }}"
+          export MAX_LEADS_TO_ENRICH_OVERRIDE="${{ github.event.inputs.max_leads_to_enrich }}"
 
           echo "Running: python main.py${FLAGS}"
           python main.py${FLAGS}
