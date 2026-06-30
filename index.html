@@ -128,7 +128,11 @@
     .modal-tab.active-of{background:rgba(108,99,255,.15);color:var(--purple);border-color:var(--purple);}
     .modal-tab.active-cl{background:rgba(0,212,170,.15);color:var(--teal);border-color:var(--teal);}
     .modal-tab.active-sent{background:rgba(255,215,0,.1);color:var(--yellow);border-color:var(--yellow);}
-    .modal-tab.active-card,.modal-tab.active-creative,.modal-tab.active-cash,.modal-tab.active-loi{background:rgba(0,230,118,.15);color:var(--green);border-color:var(--green);}
+    .modal-tab.active-card,.modal-tab.active-creative,.modal-tab.active-cash,.modal-tab.active-loi,.modal-tab.active-offerhist{background:rgba(0,230,118,.15);color:var(--green);border-color:var(--green);}
+    .snapshot-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:10px;font-family:'Space Mono',monospace;font-size:11px;}
+    .snapshot-card .snap-row{display:flex;justify-content:space-between;padding:2px 0;}
+    .snapshot-card .snap-row .lbl{color:var(--muted);}
+    .snapshot-card .snap-row .val{color:var(--text);font-weight:700;}
     .calc-field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
     .calc-field label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
     .calc-field input,.calc-field textarea{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:'Space Mono',monospace;font-size:12px;outline:none;}
@@ -998,6 +1002,7 @@ function renderHistoryFiltered(){
       <div class="modal-tab" id="mtab-creative" onclick="switchModalTab('creative')">&#x1F3A8; Creative Calc</div>
       <div class="modal-tab" id="mtab-cash" onclick="switchModalTab('cash')">&#x1F4B5; Cash Calc</div>
       <div class="modal-tab" id="mtab-loi" onclick="switchModalTab('loi')">&#x1F4DD; LOI Email</div>
+      <div class="modal-tab" id="mtab-offerhist" onclick="switchModalTab('offerhist')">&#x1F553; Offer History</div>
     </div>
 
     <!-- Sent Email Tab -->
@@ -1162,7 +1167,9 @@ function renderHistoryFiltered(){
           </div>
         </div>
       </div>
+      <div id="m-creative-use-confirm" style="display:none;background:rgba(0,230,118,.12);border:1px solid var(--green);border-radius:8px;padding:10px 14px;margin-top:10px;font-family:'Space Mono',monospace;font-size:11px;color:var(--green);">&#x2713; Copied to LOI</div>
       <div class="modal-btn-row">
+        <button class="modal-btn modal-btn-purple" onclick="useCreativeTerms()">&#x2713; Use These Creative Terms</button>
         <button class="modal-btn modal-btn-ghost" onclick="copyCreativeTerms()">&#x1F4CB; Copy Terms</button>
       </div>
     </div>
@@ -1177,17 +1184,23 @@ function renderHistoryFiltered(){
           <div class="calc-field"><label>Repairs ($)</label><input type="number" id="ch-repairs" oninput="recalcCash()" /></div>
           <div class="calc-field"><label>Closing / Holding Buffer ($)</label><input type="number" id="ch-buffer" oninput="recalcCash()" /></div>
           <div class="calc-field"><label style="color:var(--red);">Internal Buyer Room / Profit ($) — INTERNAL — DO NOT SEND</label><input type="number" id="ch-profit" oninput="recalcCash()" /></div>
+          <div class="calc-field"><label>Negotiation Notes</label><textarea id="ch-notes" rows="3" placeholder="Notes from the call..."></textarea></div>
         </div>
         <div class="modal-section">
           <div class="modal-section-title">&#x1F4CA; Calculated</div>
           <div id="m-cash-outputs-empty" style="color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;">Enter ARV above to calculate offers.</div>
           <div class="calc-result" id="m-cash-outputs" style="display:none;">
             <div class="calc-result-row"><span>Conservative Cash Offer</span><span class="v" id="ch-conservative">—</span></div>
-            <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin:-2px 0 8px;" id="ch-conservative-formula">ARV x 0.70 − repairs − closing/holding buffer</div>
+            <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin:-2px 0 6px;" id="ch-conservative-formula">ARV x 0.70 − repairs − closing/holding buffer</div>
+            <button class="modal-btn modal-btn-teal" style="padding:6px 12px;font-size:9px;margin-bottom:10px;" onclick="useConservativeOffer()">&#x2713; Use Conservative Offer</button>
+
             <div class="calc-result-row"><span>Moderate Cash Offer</span><span class="v" id="ch-moderate">—</span></div>
-            <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin:-2px 0 8px;" id="ch-moderate-formula">ARV x 0.75 − repairs − closing/holding buffer</div>
+            <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin:-2px 0 6px;" id="ch-moderate-formula">ARV x 0.75 − repairs − closing/holding buffer</div>
+            <button class="modal-btn modal-btn-purple" style="padding:6px 12px;font-size:9px;margin-bottom:10px;" onclick="useModerateOffer()">&#x2713; Use Moderate Offer</button>
+
             <div class="calc-result-row"><span>Manual Custom Max — Review Only</span><span class="v" id="ch-max-offer">—</span></div>
-            <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin:-2px 0 0;" id="ch-custom-formula">ARV − repairs − closing/holding buffer − INTERNAL buyer room/profit</div>
+            <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin:-2px 0 6px;" id="ch-custom-formula">ARV − repairs − closing/holding buffer − INTERNAL buyer room/profit</div>
+            <button class="modal-btn modal-btn-ghost" style="padding:6px 12px;font-size:9px;" onclick="useManualCustomOffer()">&#x2713; Use Manual Custom Offer (Review Only)</button>
           </div>
         </div>
       </div>
@@ -1197,14 +1210,16 @@ function renderHistoryFiltered(){
       <div style="background:rgba(255,215,0,.08);border:1px solid var(--yellow);border-radius:8px;padding:10px 14px;margin-top:10px;font-family:'Space Mono',monospace;font-size:10px;color:var(--yellow);">
         &#x26A0; Cash numbers are internal estimates only. Final offer should be based on verified comps, repairs, title, and walkthrough.
       </div>
+      <div id="m-cash-use-confirm" style="display:none;background:rgba(0,230,118,.12);border:1px solid var(--green);border-radius:8px;padding:10px 14px;margin-top:10px;font-family:'Space Mono',monospace;font-size:11px;color:var(--green);">&#x2713; Copied to LOI</div>
       <div class="modal-btn-row">
-        <button class="modal-btn modal-btn-ghost" onclick="copyCashTerms()">&#x1F4CB; Copy Terms</button>
+        <button class="modal-btn modal-btn-ghost" onclick="copyCashTerms()">&#x1F4CB; Copy Internal Snapshot</button>
       </div>
     </div>
 
     <!-- LOI Email Tab -->
     <div class="modal-body" id="mbody-loi">
       <div style="color:var(--muted);font-size:11px;margin-bottom:14px;">Offer Letter / LOI Generator — copy/paste only. Nothing here is auto-sent.</div>
+      <div id="loi-source-note" style="display:none;background:rgba(108,99,255,.1);border:1px solid var(--purple);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-family:'Space Mono',monospace;font-size:11px;color:var(--purple);"></div>
       <div class="modal-grid">
         <div class="modal-section">
           <div class="modal-section-title">&#x1F4DD; Offer Details</div>
@@ -1240,6 +1255,16 @@ function renderHistoryFiltered(){
       <div class="calc-field"><label>Body</label><textarea id="loi-body" rows="12" readonly></textarea></div>
       <div class="modal-btn-row">
         <button class="modal-btn modal-btn-ghost" onclick="copyLOIEmail()">&#x1F4CB; Copy LOI Email</button>
+      </div>
+    </div>
+
+    <!-- Offer / Negotiation History Tab -->
+    <div class="modal-body" id="mbody-offerhist">
+      <div style="color:var(--muted);font-size:11px;margin-bottom:14px;">Saved offer snapshots for this property only — stored in this browser only (localStorage), not synced anywhere, not sent anywhere.</div>
+      <div id="offerhist-empty" style="color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;">No saved snapshots for this property yet. Use a "Use ... Offer" / "Use These Creative Terms" button to save one.</div>
+      <div id="offerhist-list"></div>
+      <div class="modal-btn-row">
+        <button class="modal-btn modal-btn-ghost" style="border-color:var(--red);color:var(--red);" onclick="clearPropertyHistory()">&#x1F5D1; Clear This Property History</button>
       </div>
     </div>
   </div>
@@ -1424,7 +1449,7 @@ function closePropModal(){
 }
 
 function switchModalTab(name){
-  ['sent','of','cl','card','creative','cash','loi'].forEach(function(t){document.getElementById('mtab-'+t).className='modal-tab';
+  ['sent','of','cl','card','creative','cash','loi','offerhist'].forEach(function(t){document.getElementById('mtab-'+t).className='modal-tab';
     document.getElementById('mbody-'+t).classList.remove('active');
   });
   document.getElementById('mtab-'+name).classList.add('active-'+name);
@@ -1596,6 +1621,191 @@ function copyCashTerms(){
   setTimeout(function(){btn.textContent=orig;}, 1500);
 }
 
+// ── Offer / Negotiation History — browser localStorage, per-property ─────────
+// Stable key from address + market. Nothing here leaves the browser, nothing
+// is sent, nothing touches Gmail/GHL/the workflow. Purely a local scratchpad
+// so the operator doesn't lose track of which number they used mid-call.
+var OFFER_HISTORY_PREFIX = '229_offer_history_';
+
+function getPropertyKey(lead){
+  lead = lead || _modalLead || {};
+  var raw = (lead.address || '') + '|' + (lead.market || '');
+  return OFFER_HISTORY_PREFIX + raw.toLowerCase().replace(/[^a-z0-9|]/g, '');
+}
+function loadSnapshots(lead){
+  try{
+    var raw = localStorage.getItem(getPropertyKey(lead));
+    return raw ? JSON.parse(raw) : [];
+  }catch(e){ return []; }
+}
+function saveSnapshotToStorage(snapshot){
+  var key = getPropertyKey();
+  var existing = loadSnapshots();
+  existing.unshift(snapshot); // newest first
+  try{ localStorage.setItem(key, JSON.stringify(existing)); }catch(e){}
+  renderOfferHistory();
+}
+function buildSnapshotBase(offerType){
+  var lead = _modalLead || {};
+  return {
+    timestamp: new Date().toLocaleString(),
+    offerType: offerType,
+    address: lead.address || '',
+    market: lead.market || '',
+    agent: lead.agent || '',
+    zillowUrl: lead.zillow_url || ''
+  };
+}
+function showUseConfirm(tabPrefix){
+  var el = document.getElementById('m-'+tabPrefix+'-use-confirm');
+  if(el){
+    el.style.display = 'block';
+    setTimeout(function(){ el.style.display = 'none'; }, 2500);
+  }
+}
+
+function useConservativeOffer(){ useCashOfferType('conservative', 'Conservative Cash Offer', document.getElementById('ch-conservative').textContent); }
+function useModerateOffer(){ useCashOfferType('moderate', 'Moderate Cash Offer', document.getElementById('ch-moderate').textContent); }
+function useManualCustomOffer(){ useCashOfferType('manual_custom', 'Manual Custom Max — Review Only', document.getElementById('ch-max-offer').textContent); }
+
+function useCashOfferType(typeKey, label, amountText){
+  var arv = parseFloat(document.getElementById('ch-arv').value) || 0;
+  if(!arv || amountText === '—'){
+    return; // nothing to save — no ARV, no calculated number
+  }
+  var amount = parseFloat(amountText.replace(/[^0-9.-]/g,'')) || 0;
+
+  var snap = buildSnapshotBase('cash');
+  snap.cashOfferType = typeKey;
+  snap.cashOfferLabel = label;
+  snap.selectedAmount = amount;
+  snap.arv     = parseFloat(document.getElementById('ch-arv').value)     || 0;
+  snap.repairs = parseFloat(document.getElementById('ch-repairs').value) || 0;
+  snap.buffer  = parseFloat(document.getElementById('ch-buffer').value)  || 0;
+  snap.profit  = parseFloat(document.getElementById('ch-profit').value)  || 0;
+  snap.notes   = document.getElementById('ch-notes').value || '';
+
+  saveSnapshotToStorage(snap);
+
+  // Push into LOI tab
+  document.getElementById('loi-offer-type').value = 'cash';
+  onLoiOfferTypeChange();
+  document.getElementById('loi-final-price').value = amount;
+  var noteEl = document.getElementById('loi-source-note');
+  noteEl.style.display = 'block';
+  noteEl.textContent = 'Pulled from Cash Calc — ' + label + ' (' + snap.timestamp + ')';
+
+  showUseConfirm('cash');
+  switchModalTab('loi');
+}
+
+function useCreativeTerms(){
+  var price   = parseFloat(document.getElementById('cc-price').value)   || 0;
+  var down    = parseFloat(document.getElementById('cc-down').value)    || 0;
+  var rate    = parseFloat(document.getElementById('cc-rate').value)    || 0;
+  var term    = parseFloat(document.getElementById('cc-term').value)    || 0;
+  var balloon = parseFloat(document.getElementById('cc-balloon').value) || 0;
+  var notes   = document.getElementById('cc-notes').value || '';
+
+  var snap = buildSnapshotBase('creative');
+  snap.purchasePrice = price;
+  snap.downPayment   = down;
+  snap.monthlyPayment= parseFloat(document.getElementById('cc-monthly').textContent.replace(/[^0-9.-]/g,'')) || 0;
+  snap.interestRate  = rate;
+  snap.term          = term;
+  snap.balloon       = balloon;
+  snap.notes         = notes;
+
+  saveSnapshotToStorage(snap);
+
+  // Push into LOI tab
+  document.getElementById('loi-offer-type').value = 'of';
+  onLoiOfferTypeChange();
+  document.getElementById('loi-final-price').value = price;
+  if(down)    document.getElementById('loi-down').value = down;
+  if(snap.monthlyPayment) document.getElementById('loi-monthly').value = snap.monthlyPayment;
+  if(term)    document.getElementById('loi-term').value = term;
+  if(balloon) document.getElementById('loi-balloon').value = balloon;
+  var noteEl = document.getElementById('loi-source-note');
+  noteEl.style.display = 'block';
+  noteEl.textContent = 'Pulled from Creative Calc terms (' + snap.timestamp + ')';
+
+  showUseConfirm('creative');
+  switchModalTab('loi');
+}
+
+function fmtSnapAmount(v){ return v ? '$'+Math.round(v).toLocaleString() : '—'; }
+
+function renderOfferHistory(){
+  var listEl = document.getElementById('offerhist-list');
+  var emptyEl = document.getElementById('offerhist-empty');
+  if(!listEl || !emptyEl) return;
+  var snapshots = loadSnapshots();
+  if(!snapshots.length){
+    emptyEl.style.display = '';
+    listEl.innerHTML = '';
+    return;
+  }
+  emptyEl.style.display = 'none';
+  listEl.innerHTML = snapshots.map(function(s, idx){
+    var rows = '';
+    rows += '<div class="snap-row"><span class="lbl">Timestamp</span><span class="val">'+s.timestamp+'</span></div>';
+    if(s.offerType === 'cash'){
+      rows += '<div class="snap-row"><span class="lbl">Offer Type</span><span class="val">'+(s.cashOfferLabel||'Cash')+'</span></div>';
+      rows += '<div class="snap-row"><span class="lbl">Selected Amount</span><span class="val">'+fmtSnapAmount(s.selectedAmount)+'</span></div>';
+      rows += '<div class="snap-row"><span class="lbl">ARV</span><span class="val">'+fmtSnapAmount(s.arv)+'</span></div>';
+      rows += '<div class="snap-row"><span class="lbl">Repairs</span><span class="val">'+fmtSnapAmount(s.repairs)+'</span></div>';
+      rows += '<div class="snap-row"><span class="lbl">Buffer</span><span class="val">'+fmtSnapAmount(s.buffer)+'</span></div>';
+      rows += '<div class="snap-row"><span class="lbl">Internal Buyer Room/Profit</span><span class="val">'+fmtSnapAmount(s.profit)+'</span></div>';
+    } else {
+      rows += '<div class="snap-row"><span class="lbl">Offer Type</span><span class="val">Owner Finance / Creative</span></div>';
+      rows += '<div class="snap-row"><span class="lbl">Purchase Price</span><span class="val">'+fmtSnapAmount(s.purchasePrice)+'</span></div>';
+      rows += '<div class="snap-row"><span class="lbl">Down Payment</span><span class="val">'+fmtSnapAmount(s.downPayment)+'</span></div>';
+      rows += '<div class="snap-row"><span class="lbl">Monthly Payment</span><span class="val">'+fmtSnapAmount(s.monthlyPayment)+'</span></div>';
+      rows += '<div class="snap-row"><span class="lbl">Term</span><span class="val">'+(s.term?s.term+' months':'—')+'</span></div>';
+      rows += '<div class="snap-row"><span class="lbl">Balloon</span><span class="val">'+(s.balloon?s.balloon+' months':'None')+'</span></div>';
+    }
+    if(s.notes) rows += '<div class="snap-row"><span class="lbl">Notes</span><span class="val">'+s.notes+'</span></div>';
+    return '<div class="snapshot-card">'+rows
+      + '<div class="modal-btn-row" style="margin-top:8px;"><button class="modal-btn modal-btn-ghost" style="padding:6px 12px;font-size:9px;" onclick="copySnapshot('+idx+')">&#x1F4CB; Copy Snapshot</button></div>'
+      + '</div>';
+  }).join('');
+}
+
+function copySnapshot(idx){
+  var snapshots = loadSnapshots();
+  var s = snapshots[idx];
+  if(!s) return;
+  var text = 'Offer Snapshot — ' + (s.address||'') + '\n'
+    + 'Timestamp: ' + s.timestamp + '\n';
+  if(s.offerType === 'cash'){
+    text += 'Offer Type: ' + (s.cashOfferLabel||'Cash') + '\n'
+      + 'Selected Amount: ' + fmtSnapAmount(s.selectedAmount) + '\n'
+      + 'ARV: ' + fmtSnapAmount(s.arv) + '\n'
+      + 'Repairs: ' + fmtSnapAmount(s.repairs) + '\n'
+      + 'Buffer: ' + fmtSnapAmount(s.buffer) + '\n'
+      + 'Internal Buyer Room/Profit (INTERNAL — DO NOT SEND): ' + fmtSnapAmount(s.profit) + '\n';
+  } else {
+    text += 'Offer Type: Owner Finance / Creative\n'
+      + 'Purchase Price: ' + fmtSnapAmount(s.purchasePrice) + '\n'
+      + 'Down Payment: ' + fmtSnapAmount(s.downPayment) + '\n'
+      + 'Monthly Payment: ' + fmtSnapAmount(s.monthlyPayment) + '\n'
+      + 'Term: ' + (s.term?s.term+' months':'—') + '\n'
+      + 'Balloon: ' + (s.balloon?s.balloon+' months':'None') + '\n';
+  }
+  if(s.notes) text += 'Notes: ' + s.notes + '\n';
+  navigator.clipboard.writeText(text);
+  var btn = event.currentTarget; var orig = btn.textContent; btn.textContent='✓ Copied!';
+  setTimeout(function(){btn.textContent=orig;}, 1500);
+}
+
+function clearPropertyHistory(){
+  var lead = _modalLead || {};
+  if(!confirm('Clear all saved offer snapshots for ' + (lead.address||'this property') + '? This cannot be undone.')) return;
+  try{ localStorage.setItem(getPropertyKey(), JSON.stringify([])); }catch(e){}
+  renderOfferHistory();
+}
+
 // ── LOI Email Tab — copy/paste only, never auto-sent ─────────────────
 function onLoiOfferTypeChange(){
   var isOF = document.getElementById('loi-offer-type').value === 'of';
@@ -1615,6 +1825,10 @@ function resetLOITab(){
   document.getElementById('loi-buyer').value = 'Michael B. | 229 Holdings LLC';
   document.getElementById('loi-subject').value = '';
   document.getElementById('loi-body').value = '';
+  var sourceNoteEl = document.getElementById('loi-source-note');
+  sourceNoteEl.style.display = 'none';
+  sourceNoteEl.textContent = '';
+  renderOfferHistory();
 
   var lead = _modalLead || {};
   document.getElementById('loi-ref-address').textContent = lead.address || '—';
