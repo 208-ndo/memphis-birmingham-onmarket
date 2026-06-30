@@ -1839,10 +1839,11 @@ function resetLOITab(){
 // Required public language — used verbatim, never altered per-offer.
 var LOI_INVESTOR_LINE   = 'Buyer is purchasing for investment/business purposes and not as an owner-occupant.';
 var LOI_COMMISSION_LINE = 'Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing, down payment/closing funds, or as otherwise agreed in writing by the seller and broker.';
-var LOI_CLOSE_REVIEW_LEAD = 'This offer is subject to buyer final walkthrough, title review, and standard closing review.';
-var LOI_NO_FINANCING    = 'No financing contingency.';
+var LOI_CLOSE_REVIEW    = 'This offer is subject to buyer final walkthrough, title review, and standard closing review.';
+var LOI_CONTRACT_FORM   = 'Please let me know if the seller would like this submitted on a state contract or preferred offer form.';
+var LOI_NO_FINANCING    = 'Financing: No financing contingency'; // no trailing period, per spec
 
-// Extracts a plain integer from a closing-timeline input like "30" or "30 days".
+// Extracts a plain integer from inputs like "30" or "30 days".
 // Returns null if the input isn't a number at all (so we don't fabricate a day count).
 function parseDaysNumber(raw){
   if(!raw) return null;
@@ -1863,21 +1864,25 @@ function generateLOI(){
   var inspectRaw  = document.getElementById('loi-inspection').value.trim();
   var buyer    = document.getElementById('loi-buyer').value.trim() || 'Michael B. | 229 Holdings LLC';
 
-  // Closing timeline: render as "On or before X days after acceptance" whenever
-  // the input contains a number. If it's pure custom text with no number, use
-  // the text as-is rather than fabricating a day count.
+  // Closing timeline: "On or before X days after acceptance" whenever the
+  // input contains a number. Pure custom text with no number is used as-is.
   var closingDays = parseDaysNumber(closingRaw);
   var closingLine = closingDays != null
     ? ('On or before ' + closingDays + ' days after acceptance')
     : (closingRaw || '');
 
-  // Walkthrough/inspection note: a bare number renders as the standard
-  // walkthrough sentence; free text is used verbatim.
+  // Inspection/Walkthrough Period: always its own labeled line, never buried
+  // in another sentence. A bare number renders as "X days after acceptance";
+  // custom text is used as-is.
   var inspectDays = parseDaysNumber(inspectRaw);
-  var isInspectPureNumber = inspectRaw && /^\d+(\.\d+)?$/.test(inspectRaw);
-  var walkthroughSentence = isInspectPureNumber
-    ? ('Buyer to complete walkthrough/review within ' + inspectDays + ' days of acceptance.')
-    : (inspectRaw ? inspectRaw : (closingDays != null ? ('Buyer to complete walkthrough/review within ' + closingDays + ' days of acceptance.') : ''));
+  var inspectLine = inspectDays != null
+    ? (inspectDays + ' days after acceptance')
+    : (inspectRaw || '');
+
+  // Earnest money: fixed escrow-timing language, omitted entirely if blank.
+  var earnestLine = earnest
+    ? ('Earnest Money: ' + fmt2(earnest) + " to be deposited with title/escrow upon completion or waiver of buyer's inspection/walkthrough period, unless otherwise agreed in writing.")
+    : '';
 
   var subject = '';
   var body = '';
@@ -1890,17 +1895,18 @@ function generateLOI(){
     lines.push('I would like to submit the following cash offer for ' + address + ':');
     lines.push('');
     lines.push('Offer Price: ' + (price ? fmt2(price) : '[OFFER PRICE]'));
-    if(earnest) lines.push('Earnest Money: ' + fmt2(earnest));
+    if(earnestLine) lines.push(earnestLine);
     if(closingLine) lines.push('Closing Timeline: ' + closingLine);
-    lines.push('Financing: ' + LOI_NO_FINANCING);
+    if(inspectLine) lines.push('Inspection / Walkthrough Period: ' + inspectLine);
+    lines.push(LOI_NO_FINANCING);
     lines.push('');
     lines.push(LOI_INVESTOR_LINE);
     lines.push('');
     lines.push(LOI_COMMISSION_LINE);
     lines.push('');
-    lines.push(LOI_CLOSE_REVIEW_LEAD + (walkthroughSentence ? (' ' + walkthroughSentence) : ''));
+    lines.push(LOI_CLOSE_REVIEW);
     lines.push('');
-    lines.push('Happy to discuss further.');
+    lines.push(LOI_CONTRACT_FORM);
     lines.push('');
     lines.push('Thank you,');
     lines.push(buyer);
@@ -1922,16 +1928,17 @@ function generateLOI(){
     if(monthly) ofLines.push('Monthly Payment: ' + fmt2(monthly));
     if(term)    ofLines.push('Term: ' + term + ' months');
     if(balloon) ofLines.push('Balloon: ' + balloon + ' months');
-    if(earnest) ofLines.push('Earnest Money: ' + fmt2(earnest));
+    if(earnestLine) ofLines.push(earnestLine);
     if(closingLine) ofLines.push('Closing Timeline: ' + closingLine);
+    if(inspectLine) ofLines.push('Inspection / Walkthrough Period: ' + inspectLine);
     ofLines.push('');
     ofLines.push(LOI_INVESTOR_LINE);
     ofLines.push('');
     ofLines.push(LOI_COMMISSION_LINE);
     ofLines.push('');
-    ofLines.push(LOI_CLOSE_REVIEW_LEAD + (walkthroughSentence ? (' ' + walkthroughSentence) : ''));
+    ofLines.push(LOI_CLOSE_REVIEW);
     ofLines.push('');
-    ofLines.push('Happy to discuss further.');
+    ofLines.push(LOI_CONTRACT_FORM);
     ofLines.push('');
     ofLines.push('Thank you,');
     ofLines.push(buyer);
