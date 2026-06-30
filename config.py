@@ -148,10 +148,10 @@ MAX_VIEWS_DAY = 25
 MIN_DOM       = 30   # hard rule — never lowered, never made 7-29 auto-send eligible
 
 # ─── Apify Safety ──────────────────────────────────────────────────────────────
-# Hard cap on Apify actor calls per workflow run (across all markets + bands).
-# Prevents runaway credit spend if market list grows or loops misbehave.
-# Each price band = 1 actor call. agent_email_finder adds 1 call per market.
-# Full pipeline run (2 markets x 4 bands + 2 enrichment) = 10 calls.
+# Hard cap on Apify actor calls per workflow run (across ALL actors — Zillow
+# scraper AND Google email-search share this single budget; any future actor
+# must check it too). Prevents runaway credit spend if market list grows,
+# loops misbehave, or email enrichment runs on too many leads.
 # Set to 10 as safe default; raise deliberately if adding more markets/bands.
 MAX_APIFY_RUNS_PER_WORKFLOW = 10
 
@@ -163,6 +163,39 @@ MAX_APIFY_RUNS_PER_WORKFLOW = 10
 # Default: False — base search only, budget stays within MAX_APIFY_RUNS_PER_WORKFLOW.
 # Enable only after confirming base search produces sufficient leads.
 ENABLE_PRICE_REDUCED_OF_VARIANT = False
+
+
+def _int_env_override(env_name: str, default: int) -> int:
+    """Read an optional integer override from a workflow input env var.
+    Falls back to the given default if unset, blank, or unparsable."""
+    raw = os.environ.get(env_name, "")
+    try:
+        return int(raw) if raw.strip() else default
+    except ValueError:
+        return default
+
+
+# ─── Email Enrichment Budget ────────────────────────────────────────────────────
+# Separate, lower sub-cap on Google email-search Apify calls specifically.
+# This is IN ADDITION TO MAX_APIFY_RUNS_PER_WORKFLOW above — a Google call must
+# pass BOTH checks (shared total budget AND this email-specific cap) before
+# it is allowed to run. Overridable per-run via the max_email_enrichment_calls
+# workflow input (passed through as MAX_EMAIL_ENRICHMENT_CALLS_OVERRIDE).
+MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW = _int_env_override(
+    "MAX_EMAIL_ENRICHMENT_CALLS_OVERRIDE", 5
+)
+
+# ─── Lead Shortlist Before Enrichment ───────────────────────────────────────────
+# Leads are scored (KISS/Zompz-style signals — price band, DOM, views/day,
+# photo count, distress keywords, etc.) and ranked BEFORE any Google email
+# call is made. Only the top N scored leads per market are ever sent to email
+# enrichment; the rest are kept for the dashboard/log with Email: NONE unless
+# Zillow itself already supplied an email. Overridable via the
+# max_leads_to_enrich workflow input (MAX_LEADS_TO_ENRICH_OVERRIDE).
+MAX_LEADS_TO_ENRICH_PER_WORKFLOW = _int_env_override(
+    "MAX_LEADS_TO_ENRICH_OVERRIDE", 10
+)
+
 
 AGENT_COOLDOWN_DAYS  = 7
 AGENT_LIFETIME_CAP   = 3
