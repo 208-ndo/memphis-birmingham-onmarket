@@ -180,7 +180,8 @@
   <div class="section-header">Recent Pipeline Runs</div>
   <div class="table-wrap"><table><thead><tr><th>Date</th><th>Market</th><th>Leads</th><th>Emails</th><th>OF / CL</th><th>GHL</th><th>Status</th></tr></thead>
   <tbody id="runs-tbody"><tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px">No run data yet. Pipeline fires Tue/Wed/Thu/Fri 9AM CT.</td></tr></tbody></table></div>
-  <div class="section-header">Agent Outreach Queue</div>
+  <div class="section-header">Current Run / Active Queue</div>
+  <div style="color:var(--muted);font-size:11px;margin-bottom:12px">Only leads from the most recent pipeline run. Sent records from prior runs live in Sent History below.</div>
   <div class="search-wrap">
     <div class="search-input-wrap">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -189,8 +190,23 @@
     <span class="search-count" id="search-count"></span>
     <button class="search-clear" id="search-clear" onclick="clearSearch()">&#x2715; clear</button>
   </div>
-  <div class="table-wrap"><table><thead><tr><th>Address</th><th>Market</th><th>Price</th><th>DOM</th><th>Type</th><th>Offer</th><th>Agent</th><th>Sent</th></tr></thead>
-  <tbody id="queue-tbody"><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">Queue populates after first live run.</td></tr></tbody></table></div>
+  <div class="table-wrap"><table><thead><tr><th>Address</th><th>Market</th><th>Price</th><th>DOM</th><th>Type</th><th>Lane</th><th>Offer</th><th>Agent</th><th>Sent</th></tr></thead>
+  <tbody id="queue-tbody"><tr><td colspan="9" style="color:var(--muted);text-align:center;padding:24px">Queue populates after first live run.</td></tr></tbody></table></div>
+</div>
+
+<div class="card">
+  <div class="section-header">Sent History / Historical Outreach</div>
+  <div style="color:var(--muted);font-size:11px;margin-bottom:12px">All-time record of every emailed/sent offer, across all markets and runs — preserved for audit, follow-up tracking, and duplicate prevention. Never deleted by normal pipeline operation.</div>
+  <div class="search-wrap">
+    <div class="search-input-wrap">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="history-search" type="text" placeholder="Search by address, agent, market, type..." oninput="searchHistory(this.value)" />
+    </div>
+    <span class="search-count" id="history-search-count"></span>
+    <button class="search-clear" id="history-search-clear" onclick="clearHistorySearch()">&#x2715; clear</button>
+  </div>
+  <div class="table-wrap"><table><thead><tr><th>Address</th><th>Market</th><th>Price</th><th>DOM</th><th>Type</th><th>Lane</th><th>Offer</th><th>Agent</th><th>Sent</th></tr></thead>
+  <tbody id="history-tbody"><tr><td colspan="9" style="color:var(--muted);text-align:center;padding:24px">Sent history populates after first live run.</td></tr></tbody></table></div>
 </div>
 
 <div class="panel" id="panel-memphis">
@@ -386,7 +402,7 @@
 
 <footer>229 Holdings LLC &nbsp;|&nbsp; Memphis TN &bull; Birmingham AL</footer>
 <script>
-var ofData=null,clData=null,ofEmails=[],clEmails=[],_rawQueue=[],_rawRuns=[];
+var ofData=null,clData=null,ofEmails=[],clEmails=[],_rawQueue=[],_rawRuns=[],_rawHistory=[],_historyData=[];
 var fmt=function(v){return '$'+Math.round(v).toLocaleString();};
 function today(){var d=new Date();return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}
 function coeDate(days){var d=new Date();d.setDate(d.getDate()+(days||21));return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}
@@ -693,8 +709,38 @@ function filterTable(tbodyId,rawRows,q){var tbody=document.getElementById(tbodyI
 function clearSearch(){var inp=document.getElementById('queue-search');inp.value='';document.getElementById('search-clear').style.display='none';searchQueue('');inp.focus();}
 function updateSearchCount(){var q=(document.getElementById('queue-search')?.value||'').trim().toLowerCase();var el=document.getElementById('search-count');if(!el)return;if(!q||!_rawQueue.length){el.textContent=_rawQueue.length?_rawQueue.length+' leads':'';return;}el.textContent=_rawQueue.filter(function(r){return r.replace(/<[^>]+>/g,'').toLowerCase().includes(q);}).length+' of '+_rawQueue.length+' leads';}
 
-async function loadRunData(){try{var res=await fetch('./data/pipeline_log.json');if(!res.ok)return;var d=await res.json();if(d.summary){var s=d.summary;[['s-total',s.total_leads],['s-emails',s.emails_sent],['s-ghl',s.ghl_pushed],['s-of',s.of_deals],['s-cl',s.cl_deals],['s-last',s.run_date]].forEach(function(pair){var el=document.getElementById(pair[0]);if(el)el.textContent=pair[1]!=null?pair[1]:'--';});}if(d.runs&&d.runs.length){_rawRuns=d.runs.map(function(r){return'<tr><td>'+(r.date||'--')+'</td><td>'+(r.market||'--')+'</td><td>'+(r.leads!=null?r.leads:'--')+'</td><td>'+(r.emails!=null?r.emails:'--')+'</td><td>'+(r.of||0)+'/'+(r.cl||0)+'</td><td>'+(r.ghl!=null?r.ghl:'--')+'</td><td><span class="badge '+(r.status==='OK'?'badge-new':'badge-of')+'">'+(r.status||'--')+'</span></td></tr>';});document.getElementById('runs-tbody').innerHTML=_rawRuns.join('');}if(d.queue&&d.queue.length){_queueData = d.queue;
-_rawQueue=d.queue.map(function(q,idx){return'<tr class="clickable-row" onclick="openPropModal('+idx+')" style="cursor:pointer"><td style="color:var(--teal);text-decoration:underline">'+(q.address||'--')+'</td><td>'+(q.market||'--')+'</td><td>'+(q.price?'$'+Number(q.price).toLocaleString():'--')+'</td><td>'+(q.dom!=null?q.dom:'--')+'</td><td><span class="badge '+(q.type==='OF'?'badge-of':'badge-cl')+'">'+(q.type||'--')+'</span></td><td>'+(q.offer?'$'+Number(q.offer).toLocaleString():'--')+'</td><td>'+(q.agent||'--')+'</td><td>'+(q.sent||'--')+'</td></tr>';});document.getElementById('queue-tbody').innerHTML=_rawQueue.join('');updateSearchCount();}}catch(e){}}
+function searchHistory(q){q=q.trim().toLowerCase();document.getElementById('history-search-clear').style.display=q?'inline':'none';filterTable('history-tbody',_rawHistory,q);updateHistorySearchCount();}
+function clearHistorySearch(){var inp=document.getElementById('history-search');inp.value='';document.getElementById('history-search-clear').style.display='none';searchHistory('');inp.focus();}
+function updateHistorySearchCount(){var q=(document.getElementById('history-search')?.value||'').trim().toLowerCase();var el=document.getElementById('history-search-count');if(!el)return;if(!q||!_rawHistory.length){el.textContent=_rawHistory.length?_rawHistory.length+' records':'';return;}el.textContent=_rawHistory.filter(function(r){return r.replace(/<[^>]+>/g,'').toLowerCase().includes(q);}).length+' of '+_rawHistory.length+' records';}
+
+function laneBadge(lane){
+  var labels={
+    'OWNER_FINANCE_PRODUCTION':'OF Production',
+    'OWNER_FINANCE_AUDIT':'OF Audit Only',
+    'CASH_LOWBALL_ARV_CONFIRMED':'CL — ARV Confirmed',
+    'CASH_REVIEW_ARV_REQUIRED':'Review — ARV Required',
+    'NO_AUTO_OFFER_HIGH_PRICE':'No Auto-Offer — High Price',
+    'UNCLASSIFIED':'—'
+  };
+  var colors={
+    'OWNER_FINANCE_PRODUCTION':'badge-of',
+    'OWNER_FINANCE_AUDIT':'badge-cl',
+    'CASH_LOWBALL_ARV_CONFIRMED':'badge-cl',
+    'CASH_REVIEW_ARV_REQUIRED':'badge-new',
+    'NO_AUTO_OFFER_HIGH_PRICE':'badge-new',
+    'UNCLASSIFIED':'badge-new'
+  };
+  var key=lane||'UNCLASSIFIED';
+  return '<span class="badge '+(colors[key]||'badge-new')+'" style="font-size:9px">'+(labels[key]||key)+'</span>';
+}
+
+async function loadRunData(){try{var res=await fetch('./data/pipeline_log.json');if(!res.ok)return;var d=await res.json();if(d.summary){var s=d.summary;[['s-total',s.total_leads],['s-emails',s.emails_sent],['s-ghl',s.ghl_pushed],['s-of',s.of_deals],['s-cl',s.cl_deals],['s-last',s.run_date]].forEach(function(pair){var el=document.getElementById(pair[0]);if(el)el.textContent=pair[1]!=null?pair[1]:'--';});}if(d.runs&&d.runs.length){_rawRuns=d.runs.map(function(r){return'<tr><td>'+(r.date||'--')+'</td><td>'+(r.market||'--')+'</td><td>'+(r.leads!=null?r.leads:'--')+'</td><td>'+(r.emails!=null?r.emails:'--')+'</td><td>'+(r.of||0)+'/'+(r.cl||0)+'</td><td>'+(r.ghl!=null?r.ghl:'--')+'</td><td><span class="badge '+(r.status==='OK'?'badge-new':'badge-of')+'">'+(r.status||'--')+'</span></td></tr>';});document.getElementById('runs-tbody').innerHTML=_rawRuns.join('');}
+if(d.queue&&d.queue.length){_queueData = d.queue;
+_rawQueue=d.queue.map(function(q,idx){return'<tr class="clickable-row" onclick="openPropModal('+idx+')" style="cursor:pointer"><td style="color:var(--teal);text-decoration:underline">'+(q.address||'--')+'</td><td>'+(q.market||'--')+'</td><td>'+(q.price?'$'+Number(q.price).toLocaleString():'--')+'</td><td>'+(q.dom!=null?q.dom:'--')+'</td><td><span class="badge '+(q.type==='OF'?'badge-of':'badge-cl')+'">'+(q.type||'--')+'</span></td><td>'+laneBadge(q.offer_lane)+'</td><td>'+(q.offer?'$'+Number(q.offer).toLocaleString():'--')+'</td><td>'+(q.agent||'--')+'</td><td>'+(q.sent||'--')+'</td></tr>';});document.getElementById('queue-tbody').innerHTML=_rawQueue.join('');updateSearchCount();}
+else{document.getElementById('queue-tbody').innerHTML='<tr><td colspan="9" style="color:var(--muted);text-align:center;padding:24px">No leads sent in the current run.</td></tr>';}
+if(d.history&&d.history.length){_historyData = d.history;
+_rawHistory=d.history.map(function(h,idx){return'<tr><td>'+(h.address||'--')+'</td><td>'+(h.market||'--')+'</td><td>'+(h.price?'$'+Number(h.price).toLocaleString():'--')+'</td><td>'+(h.dom!=null?h.dom:'--')+'</td><td><span class="badge '+(h.type==='OF'?'badge-of':'badge-cl')+'">'+(h.type||'--')+'</span></td><td>'+laneBadge(h.offer_lane)+'</td><td>'+(h.offer?'$'+Number(h.offer).toLocaleString():'--')+'</td><td>'+(h.agent||'--')+'</td><td><span class="badge badge-new" style="font-size:9px">SENT</span> '+(h.sent||'--')+'</td></tr>';});document.getElementById('history-tbody').innerHTML=_rawHistory.join('');updateHistorySearchCount();}
+}catch(e){}}
 loadRunData();
 
 var _activeMarket = 'all';
