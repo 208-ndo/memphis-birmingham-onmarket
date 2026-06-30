@@ -1193,3 +1193,50 @@
 2026-06-29 14:33:32,515 INFO ============================================================
 2026-06-29 14:33:32,515 INFO pipeline_log.json written — 0 emails, 2 leads
 2026-06-29 14:33:32,516 INFO DRY RUN complete — no Gmail emails sent and no GHL contacts/texts triggered.
+2026-06-30 00:14:12,866 INFO Pipeline starting | Markets: little_rock, oklahoma_city | Dry run: True | Force: True | Global cap: 30/day | Per-inbox: 15/day | Time: 00:14 UTC
+2026-06-30 00:14:12,866 INFO Global: 0/30 sent today (0 prior runs + 0 this run) | Remaining: 30
+2026-06-30 00:14:12,866 INFO ============================================================
+2026-06-30 00:14:12,866 INFO PIPELINE: LITTLE_ROCK | 2026-06-30 00:14
+2026-06-30 00:14:12,866 INFO DRY RUN: True | LIMIT: 15 emails this run
+2026-06-30 00:14:12,867 INFO ============================================================
+2026-06-30 00:14:12,867 INFO Loaded 0 overflow leads from previous run
+2026-06-30 00:14:12,867 INFO [1/5] Scraping Zillow for little_rock...
+2026-06-30 00:14:12,867 INFO ============================================================
+2026-06-30 00:14:12,867 INFO SCRAPER: Little Rock
+2026-06-30 00:14:12,867 INFO   APIFY_ENABLED              : False (raw='false')
+2026-06-30 00:14:12,867 INFO   MAX_APIFY_RUNS_PER_WORKFLOW: 10
+2026-06-30 00:14:12,867 INFO   Apify calls used so far    : 0
+2026-06-30 00:14:12,867 INFO   Planned bands              : 4 ($30,000-$55,000 | $55,001-$80,000 | $80,001-$150,000 | $150,001-$300,000)
+2026-06-30 00:14:12,867 INFO   Estimated actor calls      : 5 (bands + email enrichment)
+2026-06-30 00:14:12,867 INFO   Remaining budget           : 10 calls
+2026-06-30 00:14:12,867 INFO ============================================================
+2026-06-30 00:14:12,867 INFO APIFY_ENABLED=false — skipping all Apify + Google scraping for Little Rock. Returning 0 leads.
+2026-06-30 00:14:12,867 INFO [1/5] 0 fresh leads from Zillow
+2026-06-30 00:14:12,867 INFO [2/5] 0 after dedup
+2026-06-30 00:14:12,867 INFO No fresh leads — exiting market
+2026-06-30 00:14:12,867 INFO Saved 0 leads to overflow for next run
+2026-06-30 00:14:12,867 INFO Global: 0/30 sent today (0 prior runs + 0 this run) | Remaining: 30
+2026-06-30 00:14:12,867 INFO Waiting 3 minutes between markets...
+2026-06-30 00:17:12,867 INFO ============================================================
+2026-06-30 00:17:12,868 INFO PIPELINE: OKLAHOMA_CITY | 2026-06-30 00:17
+2026-06-30 00:17:12,868 INFO DRY RUN: True | LIMIT: 15 emails this run
+2026-06-30 00:17:12,868 INFO ============================================================
+2026-06-30 00:17:12,868 INFO Loaded 0 overflow leads from previous run
+2026-06-30 00:17:12,868 INFO [1/5] Scraping Zillow for oklahoma_city...
+2026-06-30 00:17:12,868 INFO ============================================================
+2026-06-30 00:17:12,868 INFO SCRAPER: Oklahoma City
+2026-06-30 00:17:12,868 INFO   APIFY_ENABLED              : False (raw='false')
+2026-06-30 00:17:12,868 INFO   MAX_APIFY_RUNS_PER_WORKFLOW: 10
+2026-06-30 00:17:12,868 INFO   Apify calls used so far    : 0
+2026-06-30 00:17:12,868 INFO   Planned bands              : 4 ($30,000-$55,000 | $55,001-$80,000 | $80,001-$150,000 | $150,001-$300,000)
+2026-06-30 00:17:12,868 INFO   Estimated actor calls      : 5 (bands + email enrichment)
+2026-06-30 00:17:12,868 INFO   Remaining budget           : 10 calls
+2026-06-30 00:17:12,868 INFO ============================================================
+2026-06-30 00:17:12,868 INFO APIFY_ENABLED=false — skipping all Apify + Google scraping for Oklahoma City. Returning 0 leads.
+2026-06-30 00:17:12,868 INFO [1/5] 0 fresh leads from Zillow
+2026-06-30 00:17:12,868 INFO [2/5] 0 after dedup
+2026-06-30 00:17:12,868 INFO No fresh leads — exiting market
+2026-06-30 00:17:12,869 INFO Saved 0 leads to overflow for next run
+2026-06-30 00:17:12,869 INFO All markets complete | Sent this run: 0 | Total today: 0/30
+2026-06-30 00:17:12,870 INFO pipeline_log.json written — 0 emails, 0 leads
+2026-06-30 00:17:12,870 INFO DRY RUN complete — no Gmail emails sent and no GHL contacts/texts triggered.
