@@ -1068,6 +1068,9 @@ function renderHistoryFiltered(){
 
     <!-- CL Tab -->
     <div class="modal-body" id="mbody-cl">
+      <div id="m-cl-legacy-warning" style="display:none;background:rgba(255,71,87,.1);border:1px solid var(--red);border-radius:8px;padding:14px 16px;margin-bottom:16px;font-family:'Space Mono',monospace;font-size:11px;color:var(--red);">
+        &#x26A0; Legacy sent email — preserved for history only. Do not reuse this wording.
+      </div>
       <div id="m-cl-arv-required" style="display:none;background:rgba(255,71,87,.1);border:1px solid var(--red);border-radius:8px;padding:14px 16px;margin-bottom:16px;font-family:'Space Mono',monospace;font-size:11px;color:var(--red);">
         &#x26A0; NO CASH OFFER — ARV REQUIRED. Use owner finance or manual review.
       </div>
@@ -1095,8 +1098,8 @@ function renderHistoryFiltered(){
       </div>
       <div class="modal-btn-row">
         <button class="modal-btn modal-btn-teal" onclick="downloadModalPDF('cl')">&#x2B07; Download CL Offer PDF</button>
-        <button class="modal-btn modal-btn-ghost" onclick="genModalEmails('cl')">&#x2728; Generate Fresh Emails</button>
       </div>
+      <div style="color:var(--muted);font-size:11px;margin-top:12px;">For a fresh, safe offer email, use the <strong>LOI Email</strong> tab — it does not reuse old Cash Lowball copy.</div>
       <div id="m-cl-emails" style="display:none;margin-top:16px;">
         <div class="modal-sent-box">
           <div class="modal-sent-subject" id="m-cl-email-subject">—</div>
@@ -1166,8 +1169,7 @@ function renderHistoryFiltered(){
 
     <!-- Cash Offer Calculator Tab -->
     <div class="modal-body" id="mbody-cash">
-      <div id="m-cash-arv-warning" class="arv-warning" style="display:none;">&#x26A0; Manual review only — cash offer requires ARV.</div>
-      <div id="m-cash-content">
+      <div id="m-cash-arv-warning" class="arv-warning" style="display:none;">&#x26A0; No verified ARV saved. Enter ARV manually to calculate. Final offer requires verified comps, repairs, title, and walkthrough.</div>
       <div class="modal-grid">
         <div class="modal-section">
           <div class="modal-section-title">&#x1F4B0; Inputs</div>
@@ -1178,22 +1180,25 @@ function renderHistoryFiltered(){
         </div>
         <div class="modal-section">
           <div class="modal-section-title">&#x1F4CA; Calculated</div>
-          <div class="calc-result">
+          <div id="m-cash-outputs-empty" style="color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;">Enter ARV above to calculate offers.</div>
+          <div class="calc-result" id="m-cash-outputs" style="display:none;">
             <div class="calc-result-row"><span>Conservative Cash Offer</span><span class="v" id="ch-conservative">—</span></div>
             <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin:-2px 0 8px;" id="ch-conservative-formula">ARV x 0.70 − repairs − closing/holding buffer</div>
             <div class="calc-result-row"><span>Moderate Cash Offer</span><span class="v" id="ch-moderate">—</span></div>
             <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin:-2px 0 8px;" id="ch-moderate-formula">ARV x 0.75 − repairs − closing/holding buffer</div>
             <div class="calc-result-row"><span>Manual Custom Max — Review Only</span><span class="v" id="ch-max-offer">—</span></div>
-            <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin:-2px 0 0;" id="ch-custom-formula">ARV − repairs − closing/holding buffer − internal buyer room/profit</div>
+            <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin:-2px 0 0;" id="ch-custom-formula">ARV − repairs − closing/holding buffer − INTERNAL buyer room/profit</div>
           </div>
         </div>
       </div>
-      <div style="background:rgba(255,215,0,.08);border:1px solid var(--yellow);border-radius:8px;padding:10px 14px;margin-top:14px;font-family:'Space Mono',monospace;font-size:10px;color:var(--yellow);">
+      <div style="background:rgba(0,212,170,.08);border:1px solid var(--teal);border-radius:8px;padding:10px 14px;margin-top:14px;font-family:'Space Mono',monospace;font-size:10px;color:var(--teal);">
+        &#x1F4A1; Use Conservative/Moderate as the starting call range. Manual Custom Max is review-only and should not be treated as the recommended offer.
+      </div>
+      <div style="background:rgba(255,215,0,.08);border:1px solid var(--yellow);border-radius:8px;padding:10px 14px;margin-top:10px;font-family:'Space Mono',monospace;font-size:10px;color:var(--yellow);">
         &#x26A0; Cash numbers are internal estimates only. Final offer should be based on verified comps, repairs, title, and walkthrough.
       </div>
       <div class="modal-btn-row">
         <button class="modal-btn modal-btn-ghost" onclick="copyCashTerms()">&#x1F4CB; Copy Terms</button>
-      </div>
       </div>
     </div>
 
@@ -1359,6 +1364,8 @@ function openPropModal(idx, source){
     // OF numbers done
   // CL numbers — full MAO engine
   var lp=lead.price||0,arv=lead.arv||0,repairs=lead.repairs||0;
+  var legacyWarnEl=document.getElementById('m-cl-legacy-warning');
+  if(legacyWarnEl) legacyWarnEl.style.display = (_modalSource === 'history') ? 'block' : 'none';
   var arvReqEl=document.getElementById('m-cl-arv-required');
   var clGrid=document.getElementById('m-cl-grid');
   document.getElementById('m-cl-list').textContent=fmt2(lp);
@@ -1542,18 +1549,21 @@ function recalcCash(){
   var buffer  = parseFloat(document.getElementById('ch-buffer').value)  || 0;
   var profit  = parseFloat(document.getElementById('ch-profit').value)  || 0;
   var warning = document.getElementById('m-cash-arv-warning');
-  var contentEl = document.getElementById('m-cash-content');
+  var outputsEl = document.getElementById('m-cash-outputs');
+  var emptyEl   = document.getElementById('m-cash-outputs-empty');
 
   if(!arv){
     warning.style.display = 'block';
-    contentEl.style.display = 'none';
+    outputsEl.style.display = 'none';
+    emptyEl.style.display = '';
     document.getElementById('ch-conservative').textContent = '—';
     document.getElementById('ch-moderate').textContent = '—';
     document.getElementById('ch-max-offer').textContent = '—';
     return;
   }
   warning.style.display = 'none';
-  contentEl.style.display = '';
+  outputsEl.style.display = '';
+  emptyEl.style.display = 'none';
 
   var conservative = Math.max(0, arv*0.70 - repairs - buffer);
   var moderate      = Math.max(0, arv*0.75 - repairs - buffer);
