@@ -128,6 +128,16 @@
     .modal-tab.active-of{background:rgba(108,99,255,.15);color:var(--purple);border-color:var(--purple);}
     .modal-tab.active-cl{background:rgba(0,212,170,.15);color:var(--teal);border-color:var(--teal);}
     .modal-tab.active-sent{background:rgba(255,215,0,.1);color:var(--yellow);border-color:var(--yellow);}
+    .modal-tab.active-card,.modal-tab.active-creative,.modal-tab.active-cash,.modal-tab.active-loi{background:rgba(0,230,118,.15);color:var(--green);border-color:var(--green);}
+    .calc-field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+    .calc-field label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+    .calc-field input,.calc-field textarea{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:'Space Mono',monospace;font-size:12px;outline:none;}
+    .calc-field input:focus,.calc-field textarea:focus{border-color:var(--teal);}
+    .calc-result{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-top:8px;}
+    .calc-result-row{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:11px;padding:3px 0;}
+    .calc-result-row .v{color:var(--teal);font-weight:700;}
+    .arv-warning{background:rgba(255,71,87,.1);border:1px solid var(--red);border-radius:8px;padding:14px 16px;margin-bottom:14px;font-family:'Space Mono',monospace;font-size:11px;color:var(--red);}
+    .status-pill{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:4px 12px;border-radius:4px;text-transform:uppercase;letter-spacing:1px;}
     .modal-body{display:none;}.modal-body.active{display:block;}
     .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
     @media(max-width:640px){.modal-grid{grid-template-columns:1fr;}}
@@ -398,7 +408,7 @@
 
 <footer>229 Holdings LLC &nbsp;|&nbsp; Little Rock AR &bull; Oklahoma City OK</footer>
 <script>
-var ofData=null,clData=null,ofEmails=[],clEmails=[],_rawQueue=[],_rawRuns=[],_rawHistory=[],_historyData=[];
+var ofData=null,clData=null,ofEmails=[],clEmails=[],_rawQueue=[],_rawRuns=[],_rawHistory=[],_historyData=[],_scoredLRData=[],_scoredOKCData=[];
 var fmt=function(v){return '$'+Math.round(v).toLocaleString();};
 function today(){var d=new Date();return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}
 function coeDate(days){var d=new Date();d.setDate(d.getDate()+(days||21));return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}
@@ -735,10 +745,10 @@ function laneBadge(lane,fallbackLabel){
 
 async function loadRunData(){try{var res=await fetch('./data/pipeline_log.json');if(!res.ok)return;var d=await res.json();if(d.summary){var s=d.summary;[['s-total',s.total_leads],['s-emails',s.emails_sent],['s-ghl',s.ghl_pushed],['s-of',s.of_deals],['s-cl',s.cl_deals],['s-last',s.run_date]].forEach(function(pair){var el=document.getElementById(pair[0]);if(el)el.textContent=pair[1]!=null?pair[1]:'--';});}if(d.runs&&d.runs.length){_rawRuns=d.runs.map(function(r){return'<tr><td>'+(r.date||'--')+'</td><td>'+(r.market||'--')+'</td><td>'+(r.leads!=null?r.leads:'--')+'</td><td>'+(r.emails!=null?r.emails:'--')+'</td><td>'+(r.of||0)+'/'+(r.cl||0)+'</td><td>'+(r.ghl!=null?r.ghl:'--')+'</td><td><span class="badge '+(r.status==='OK'?'badge-new':'badge-of')+'">'+(r.status||'--')+'</span></td></tr>';});document.getElementById('runs-tbody').innerHTML=_rawRuns.join('');}
 if(d.queue&&d.queue.length){_queueData = d.queue;
-_rawQueue=d.queue.map(function(q,idx){return'<tr class="clickable-row" onclick="openPropModal('+idx+')" style="cursor:pointer"><td style="color:var(--teal);text-decoration:underline">'+(q.address||'--')+'</td><td>'+(q.market||'--')+'</td><td>'+(q.price?'$'+Number(q.price).toLocaleString():'--')+'</td><td>'+(q.dom!=null?q.dom:'--')+'</td><td><span class="badge '+(q.type==='OF'?'badge-of':'badge-cl')+'">'+(q.type||'--')+'</span></td><td>'+laneBadge(q.offer_lane)+'</td><td>'+(q.offer?'$'+Number(q.offer).toLocaleString():'--')+'</td><td>'+(q.agent||'--')+'</td><td>'+(q.sent||'--')+'</td></tr>';});document.getElementById('queue-tbody').innerHTML=_rawQueue.join('');updateSearchCount();}
+_rawQueue=d.queue.map(function(q,idx){return'<tr class="clickable-row" onclick="openPropModal('+idx+',\'queue\')" ondblclick="openPropModal('+idx+',\'queue\')" style="cursor:pointer"><td style="color:var(--teal);text-decoration:underline">'+(q.address||'--')+'</td><td>'+(q.market||'--')+'</td><td>'+(q.price?'$'+Number(q.price).toLocaleString():'--')+'</td><td>'+(q.dom!=null?q.dom:'--')+'</td><td><span class="badge '+(q.type==='OF'?'badge-of':'badge-cl')+'">'+(q.type||'--')+'</span></td><td>'+laneBadge(q.offer_lane)+'</td><td>'+(q.offer?'$'+Number(q.offer).toLocaleString():'--')+'</td><td>'+(q.agent||'--')+'</td><td>'+(q.sent||'--')+'</td></tr>';});document.getElementById('queue-tbody').innerHTML=_rawQueue.join('');updateSearchCount();}
 else{document.getElementById('queue-tbody').innerHTML='<tr><td colspan="9" style="color:var(--muted);text-align:center;padding:24px">No leads sent in the current run.</td></tr>';}
 if(d.history&&d.history.length){_historyData = d.history;
-_rawHistory=d.history.map(function(h,idx){return'<tr><td>'+(h.address||'--')+'</td><td>'+(h.market||'--')+'</td><td>'+(h.price?'$'+Number(h.price).toLocaleString():'--')+'</td><td>'+(h.dom!=null?h.dom:'--')+'</td><td><span class="badge '+(h.type==='OF'?'badge-of':'badge-cl')+'">'+(h.type||'--')+'</span></td><td>'+laneBadge(h.offer_lane,'LEGACY_SENT')+'</td><td>'+(h.offer?'$'+Number(h.offer).toLocaleString():'--')+'</td><td>'+(h.agent||'--')+'</td><td><span class="badge badge-new" style="font-size:9px">SENT</span> '+(h.sent||'--')+'</td></tr>';});document.getElementById('history-tbody').innerHTML=_rawHistory.join('');updateHistorySearchCount();}
+_rawHistory=d.history.map(function(h,idx){return'<tr class="clickable-row" onclick="openPropModal('+idx+',\'history\')" ondblclick="openPropModal('+idx+',\'history\')" style="cursor:pointer"><td style="color:var(--teal);text-decoration:underline">'+(h.address||'--')+'</td><td>'+(h.market||'--')+'</td><td>'+(h.price?'$'+Number(h.price).toLocaleString():'--')+'</td><td>'+(h.dom!=null?h.dom:'--')+'</td><td><span class="badge '+(h.type==='OF'?'badge-of':'badge-cl')+'">'+(h.type||'--')+'</span></td><td>'+laneBadge(h.offer_lane,'LEGACY_SENT')+'</td><td>'+(h.offer?'$'+Number(h.offer).toLocaleString():'--')+'</td><td>'+(h.agent||'--')+'</td><td><span class="badge badge-new" style="font-size:9px">SENT</span> '+(h.sent||'--')+'</td></tr>';});document.getElementById('history-tbody').innerHTML=_rawHistory.join('');updateHistorySearchCount();}
 }catch(e){}}
 loadRunData();
 
@@ -750,19 +760,19 @@ loadRunData();
 // Note: these files currently hold up to the per-run inbox cap of scored
 // leads per market (not the full raw scrape count shown in the "Total Leads
 // Scraped" KPI) — that's a pipeline-side persistence detail, unchanged here.
-function renderScoredLeadsTable(tbodyId, leads){
+function renderScoredLeadsTable(tbodyId, leads, source){
   var tbody = document.getElementById(tbodyId);
   if(!tbody) return;
   if(!leads || !leads.length){
     tbody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">No scored leads yet for this market.</td></tr>';
     return;
   }
-  tbody.innerHTML = leads.map(function(l){
+  tbody.innerHTML = leads.map(function(l,idx){
     var statusBadge = l.email_sent
       ? '<span class="badge badge-new" style="font-size:9px">SENT</span>'
       : (l.pitch_holds ? '<span class="badge badge-of" style="font-size:9px">READY</span>' : '<span class="badge badge-cl" style="font-size:9px">REVIEW</span>');
-    return '<tr>'
-      + '<td>'+(l.address||'--')+'</td>'
+    return '<tr class="clickable-row" onclick="openPropModal('+idx+',\''+source+'\')" ondblclick="openPropModal('+idx+',\''+source+'\')" style="cursor:pointer">'
+      + '<td style="color:var(--teal);text-decoration:underline">'+(l.address||'--')+'</td>'
       + '<td>'+(l.list_price?'$'+Number(l.list_price).toLocaleString():'--')+'</td>'
       + '<td>'+(l.days_on_market!=null?l.days_on_market:'--')+'</td>'
       + '<td>'+laneBadge(l.offer_lane)+'</td>'
@@ -779,7 +789,8 @@ async function loadScoredLeads(){
     var lrRes = await fetch('./data/little_rock_leads.json');
     if(lrRes.ok){
       var lrLeads = await lrRes.json();
-      renderScoredLeadsTable('little_rock-scored-tbody', lrLeads);
+      _scoredLRData = lrLeads;
+      renderScoredLeadsTable('little_rock-scored-tbody', lrLeads, 'lr');
       var lrCount=document.getElementById('lr-leads-count'); if(lrCount) lrCount.textContent = lrLeads.length;
       var lrEmails=document.getElementById('lr-emails-count'); if(lrEmails) lrEmails.textContent = lrLeads.filter(function(l){return l.email_sent;}).length;
     }
@@ -788,7 +799,8 @@ async function loadScoredLeads(){
     var okcRes = await fetch('./data/oklahoma_city_leads.json');
     if(okcRes.ok){
       var okcLeads = await okcRes.json();
-      renderScoredLeadsTable('oklahoma_city-scored-tbody', okcLeads);
+      _scoredOKCData = okcLeads;
+      renderScoredLeadsTable('oklahoma_city-scored-tbody', okcLeads, 'okc');
       var okcCount=document.getElementById('okc-leads-count'); if(okcCount) okcCount.textContent = okcLeads.length;
       var okcEmails=document.getElementById('okc-emails-count'); if(okcEmails) okcEmails.textContent = okcLeads.filter(function(l){return l.email_sent;}).length;
     }
@@ -851,6 +863,10 @@ function filterRunsByMarket() {
       <div class="modal-tab active-sent" id="mtab-sent" onclick="switchModalTab('sent')">&#x2709; Offer Sent</div>
       <div class="modal-tab" id="mtab-of" onclick="switchModalTab('of')">&#x1F3E0; Owner Finance</div>
       <div class="modal-tab" id="mtab-cl" onclick="switchModalTab('cl')">&#x1F4B5; Cash Lowball</div>
+      <div class="modal-tab" id="mtab-card" onclick="switchModalTab('card')">&#x1F4C7; Deal Card</div>
+      <div class="modal-tab" id="mtab-creative" onclick="switchModalTab('creative')">&#x1F3A8; Creative Calc</div>
+      <div class="modal-tab" id="mtab-cash" onclick="switchModalTab('cash')">&#x1F4B5; Cash Calc</div>
+      <div class="modal-tab" id="mtab-loi" onclick="switchModalTab('loi')">&#x1F4DD; LOI Email</div>
     </div>
 
     <!-- Sent Email Tab -->
@@ -961,17 +977,161 @@ function filterRunsByMarket() {
         </div>
       </div>
     </div>
+
+    <!-- Deal Card Tab -->
+    <div class="modal-body" id="mbody-card">
+      <div style="margin-bottom:14px;"><span class="status-pill" id="m-card-status">—</span></div>
+      <div class="modal-grid">
+        <div class="modal-section">
+          <div class="modal-section-title">&#x1F4CD; Property</div>
+          <div class="modal-row"><span class="modal-row-label">Address</span><span class="modal-row-value" id="m-card-address">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Market</span><span class="modal-row-value" id="m-card-market">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">List Price</span><span class="modal-row-value teal" id="m-card-price">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">DOM</span><span class="modal-row-value" id="m-card-dom">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Score</span><span class="modal-row-value purple" id="m-card-score">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Offer Lane</span><span id="m-card-lane">—</span></div>
+        </div>
+        <div class="modal-section">
+          <div class="modal-section-title">&#x1F4DE; Agent / Offer</div>
+          <div class="modal-row"><span class="modal-row-label">Agent / Brokerage</span><span class="modal-row-value" id="m-card-agent">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Agent Email</span><span class="modal-row-value" id="m-card-agent-email">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Offer Type</span><span class="modal-row-value" id="m-card-offer-type">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Proposed / Sent Offer</span><span class="modal-row-value green" id="m-card-offer-amount">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Sent Date</span><span class="modal-row-value" id="m-card-sent-date">—</span></div>
+        </div>
+      </div>
+      <div class="modal-btn-row">
+        <a id="m-card-zillow" href="#" target="_blank" class="modal-btn modal-btn-teal" style="text-decoration:none;display:inline-block;">&#x1F517; View Listing on Zillow</a>
+        <a id="m-card-call" href="#" class="modal-btn modal-btn-purple" style="text-decoration:none;display:inline-block;">&#x1F4DE; Call Agent</a>
+      </div>
+    </div>
+
+    <!-- Creative Offer Calculator Tab -->
+    <div class="modal-body" id="mbody-creative">
+      <div style="color:var(--muted);font-size:11px;margin-bottom:14px;">Manual deal-structuring calculator for live agent calls. Internal working tool only — adjust freely.</div>
+      <div class="modal-grid">
+        <div class="modal-section">
+          <div class="modal-section-title">&#x1F3A8; Terms</div>
+          <div class="calc-field"><label>Purchase Price ($)</label><input type="number" id="cc-price" oninput="recalcCreative()" /></div>
+          <div class="calc-field"><label>Down Payment ($)</label><input type="number" id="cc-down" oninput="recalcCreative()" /></div>
+          <div class="calc-field"><label>Interest Rate (%)</label><input type="number" step="0.1" id="cc-rate" oninput="recalcCreative()" /></div>
+          <div class="calc-field"><label>Term (months)</label><input type="number" id="cc-term" oninput="recalcCreative()" /></div>
+          <div class="calc-field"><label>Balloon (months, optional)</label><input type="number" id="cc-balloon" oninput="recalcCreative()" /></div>
+          <div class="calc-field"><label>Notes</label><textarea id="cc-notes" rows="3" placeholder="Deal notes from the call..."></textarea></div>
+        </div>
+        <div class="modal-section">
+          <div class="modal-section-title">&#x1F4CA; Calculated</div>
+          <div class="calc-result">
+            <div class="calc-result-row"><span>Financed Balance</span><span class="v" id="cc-balance">—</span></div>
+            <div class="calc-result-row"><span>Monthly Payment</span><span class="v" id="cc-monthly">—</span></div>
+            <div class="calc-result-row"><span>Balloon Due</span><span class="v" id="cc-balloon-amt">—</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-btn-row">
+        <button class="modal-btn modal-btn-ghost" onclick="copyCreativeTerms()">&#x1F4CB; Copy Terms</button>
+      </div>
+    </div>
+
+    <!-- Cash Offer Calculator Tab -->
+    <div class="modal-body" id="mbody-cash">
+      <div id="m-cash-arv-warning" class="arv-warning" style="display:none;">&#x26A0; Manual review only — cash offer requires ARV.</div>
+      <div style="color:var(--muted);font-size:11px;margin-bottom:14px;">Manual cash-offer calculator for live agent calls. Internal working tool only — does not auto-generate or auto-send any offer.</div>
+      <div class="modal-grid">
+        <div class="modal-section">
+          <div class="modal-section-title">&#x1F4B0; Inputs</div>
+          <div class="calc-field"><label>ARV ($)</label><input type="number" id="ch-arv" oninput="recalcCash()" /></div>
+          <div class="calc-field"><label>Repairs ($)</label><input type="number" id="ch-repairs" oninput="recalcCash()" /></div>
+          <div class="calc-field"><label>Closing / Holding Buffer ($)</label><input type="number" id="ch-buffer" oninput="recalcCash()" /></div>
+          <div class="calc-field"><label>Internal Buyer Room / Profit ($)</label><input type="number" id="ch-profit" oninput="recalcCash()" /></div>
+        </div>
+        <div class="modal-section">
+          <div class="modal-section-title">&#x1F4CA; Calculated</div>
+          <div class="calc-result">
+            <div class="calc-result-row"><span>Max Cash Offer</span><span class="v" id="ch-max-offer">—</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-btn-row">
+        <button class="modal-btn modal-btn-ghost" onclick="copyCashTerms()">&#x1F4CB; Copy Terms</button>
+      </div>
+    </div>
+
+    <!-- LOI Email Tab -->
+    <div class="modal-body" id="mbody-loi">
+      <div style="color:var(--muted);font-size:11px;margin-bottom:14px;">Copy/paste only — nothing here is auto-sent.</div>
+      <div class="modal-btn-row" style="margin-bottom:12px;">
+        <button class="modal-btn modal-btn-purple" onclick="generateLOI('of')">&#x1F3E0; Owner Finance Template</button>
+        <button class="modal-btn modal-btn-teal" onclick="generateLOI('cash')">&#x1F4B5; Cash Offer Template</button>
+      </div>
+      <div class="calc-field"><label>Subject</label><input type="text" id="loi-subject" readonly /></div>
+      <div class="calc-field"><label>Body</label><textarea id="loi-body" rows="10" readonly></textarea></div>
+      <div class="modal-btn-row">
+        <button class="modal-btn modal-btn-ghost" onclick="copyLOIEmail()">&#x1F4CB; Copy Email</button>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
 
 // ── Property Modal ────────────────────────────────────────────────
-var _modalLead = null;
+var _modalLead = null, _modalRawLead = null, _modalSource = 'queue';
 var _modalOFEmails = [], _modalCLEmails = [];
 var fmt2 = function(v){return v?'$'+Math.round(v).toLocaleString():'—';};
 
-function openPropModal(idx){var lead=_queueData[idx];if(!lead)return;
+// Adapts a Current-Scored-Leads-shaped record (list_price, days_on_market,
+// agent_name, offer_type, etc. — written by main.py's save_dashboard_data)
+// into the same shape the existing Sent/OF/CL tabs already expect (price,
+// dom, agent, type, etc. — the Active Queue / Sent History shape). This lets
+// the existing tab-population code below run completely unchanged for all
+// three lead sources.
+function adaptScoredLeadToQueueShape(lead){
+  var isOF = lead.offer_type === 'owner_finance';
+  return {
+    address: lead.address,
+    market: (lead.city||'') + (lead.state?' '+lead.state:''),
+    price: lead.list_price,
+    dom: lead.days_on_market,
+    type: isOF ? 'OF' : 'CL',
+    offer: isOF ? lead.owner_finance_offer : lead.cash_offer,
+    agent: lead.agent_name,
+    agent_email: lead.agent_email,
+    agent_phone: lead.agent_phone,
+    sent: lead.email_sent ? (lead.pipeline_date||'') : '',
+    zillow_url: lead.zillow_url,
+    email_subject: '',
+    email_body: lead.email_sent ? '(sent — open from Active Queue or Sent History for the saved copy)' : '(not sent yet — this is a scored lead under review)',
+    down_payment: lead.down_payment,
+    monthly_payment: lead.monthly_payment,
+    num_payments: null,
+    financed_balance: null,
+    cash_offer: lead.cash_offer,
+    total_to_agent: null,
+    at_list_commission: null,
+    your_fee: lead.your_fee_estimate,
+    your_monthly_cashflow: null,
+    assign_price: null,
+    pitch_holds: lead.pitch_holds,
+    offer_lane: lead.offer_lane,
+    score: lead.score,
+    offer_type: lead.offer_type
+  };
+}
+
+function openPropModal(idx, source){
+  source = source || 'queue';
+  var rawLead =
+    source==='queue' ? _queueData[idx] :
+    source==='history' ? _historyData[idx] :
+    source==='lr' ? _scoredLRData[idx] :
+    source==='okc' ? _scoredOKCData[idx] :
+    null;
+  if(!rawLead) return;
+  var isScored = (source==='lr' || source==='okc');
+  var lead = isScored ? adaptScoredLeadToQueueShape(rawLead) : rawLead;
+  _modalRawLead = rawLead;
+  _modalSource = source;
   _modalLead = lead;
   _modalOFEmails = []; _modalCLEmails = [];
   document.getElementById('m-address').textContent = lead.address||'—';
@@ -1071,8 +1231,15 @@ function openPropModal(idx){var lead=_queueData[idx];if(!lead)return;
   // Hide email sections
   document.getElementById('m-of-emails').style.display='none';
   document.getElementById('m-cl-emails').style.display='none';
-  // Default to sent tab
-  switchModalTab('sent');
+
+  populateDealCardTab(lead, rawLead, source);
+  resetCreativeCalc(lead);
+  resetCashCalc(lead, rawLead);
+  resetLOITab();
+
+  // Default to Sent tab for actual outreach records (queue/history), and the
+  // new Deal Card tab for scored leads under review (no email sent yet).
+  switchModalTab(isScored ? 'card' : 'sent');
   document.getElementById('prop-modal').classList.add('open');
   document.body.style.overflow='hidden';
 }
@@ -1083,11 +1250,221 @@ function closePropModal(){
 }
 
 function switchModalTab(name){
-  ['sent','of','cl'].forEach(function(t){document.getElementById('mtab-'+t).className='modal-tab';
+  ['sent','of','cl','card','creative','cash','loi'].forEach(function(t){document.getElementById('mtab-'+t).className='modal-tab';
     document.getElementById('mbody-'+t).classList.remove('active');
   });
   document.getElementById('mtab-'+name).classList.add('active-'+name);
   document.getElementById('mbody-'+name).classList.add('active');
+}
+
+// ── Deal Card Tab ────────────────────────────────────────────────
+function computeDealStatus(lead, rawLead, source){
+  if(source==='history'){
+    return lead.offer_lane ? 'SENT HISTORY' : 'LEGACY_SENT';
+  }
+  if(source==='lr' || source==='okc'){
+    if(rawLead.email_sent) return 'SENT HISTORY';
+    if(lead.pitch_holds===false) return 'REVIEW ONLY';
+    return 'PROPOSED / NOT SENT';
+  }
+  // queue source — Active Queue only ever contains items that were sent
+  return 'SENT HISTORY';
+}
+function statusPillColor(status){
+  if(status==='SENT HISTORY') return 'background:rgba(0,230,118,.15);color:var(--green);';
+  if(status==='PROPOSED / NOT SENT') return 'background:rgba(108,99,255,.15);color:var(--purple);';
+  if(status==='REVIEW ONLY') return 'background:rgba(255,215,0,.12);color:var(--yellow);';
+  return 'background:rgba(0,212,170,.12);color:var(--teal);'; // LEGACY_SENT
+}
+function populateDealCardTab(lead, rawLead, source){
+  var status = computeDealStatus(lead, rawLead, source);
+  var pill = document.getElementById('m-card-status');
+  pill.textContent = status;
+  pill.setAttribute('style', (pill.getAttribute('style')||'').replace(/background:[^;]+;color:[^;]+;/,'') + statusPillColor(status));
+
+  document.getElementById('m-card-address').textContent = lead.address||'—';
+  document.getElementById('m-card-market').textContent  = lead.market||'—';
+  document.getElementById('m-card-price').textContent   = fmt2(lead.price);
+  document.getElementById('m-card-dom').textContent     = (lead.dom!=null?lead.dom+'d':'—');
+  document.getElementById('m-card-score').textContent   = (lead.score!=null?lead.score:'—');
+  document.getElementById('m-card-lane').innerHTML      = lead.offer_lane ? laneBadge(lead.offer_lane,'LEGACY_SENT') : laneBadge(null,'LEGACY_SENT');
+  document.getElementById('m-card-agent').textContent   = lead.agent||'—';
+  var emailEl = document.getElementById('m-card-agent-email');
+  emailEl.textContent = lead.agent_email || 'NONE';
+  document.getElementById('m-card-offer-type').textContent = lead.type==='OF' ? 'Owner Finance' : (lead.offer_type==='cash_lowball' ? 'Cash Lowball' : (lead.offer_type||'—'));
+  document.getElementById('m-card-offer-amount').textContent = fmt2(lead.offer || lead.cash_offer);
+  document.getElementById('m-card-sent-date').textContent = lead.sent || '—';
+
+  var zl = document.getElementById('m-card-zillow');
+  if(lead.zillow_url){ zl.href = lead.zillow_url; zl.style.display='inline-block'; }
+  else{ zl.style.display='none'; }
+
+  var callBtn = document.getElementById('m-card-call');
+  if(lead.agent_phone){ callBtn.href = 'tel:'+lead.agent_phone.replace(/[^0-9+]/g,''); callBtn.style.display='inline-block'; }
+  else{ callBtn.style.display='none'; }
+}
+
+// ── Creative Offer Calculator Tab ───────────────────────────────────
+function resetCreativeCalc(lead){
+  document.getElementById('cc-price').value   = lead.price || '';
+  document.getElementById('cc-down').value    = lead.down_payment || (lead.price ? Math.round(lead.price*0.05) : '');
+  document.getElementById('cc-rate').value    = '';
+  document.getElementById('cc-term').value    = 100;
+  document.getElementById('cc-balloon').value = '';
+  document.getElementById('cc-notes').value   = '';
+  recalcCreative();
+}
+function recalcCreative(){
+  var price   = parseFloat(document.getElementById('cc-price').value)   || 0;
+  var down    = parseFloat(document.getElementById('cc-down').value)    || 0;
+  var rate    = parseFloat(document.getElementById('cc-rate').value)    || 0;
+  var term    = parseFloat(document.getElementById('cc-term').value)    || 0;
+  var balloon = parseFloat(document.getElementById('cc-balloon').value) || 0;
+
+  var balance = Math.max(0, price - down);
+  var monthly = 0;
+  if(term > 0){
+    if(rate > 0){
+      var r = (rate/100)/12;
+      monthly = (balance * r) / (1 - Math.pow(1+r, -term));
+    } else {
+      monthly = balance / term;
+    }
+  }
+  var balloonAmt = 0;
+  if(balloon > 0 && term > 0 && monthly > 0){
+    // Remaining balance at the balloon month, straight-line approximation for display purposes
+    var paidDown = monthly * balloon;
+    balloonAmt = Math.max(0, balance - paidDown);
+  }
+  document.getElementById('cc-balance').textContent     = fmt2(balance);
+  document.getElementById('cc-monthly').textContent     = monthly ? fmt2(monthly)+'/mo' : '—';
+  document.getElementById('cc-balloon-amt').textContent = balloon > 0 ? fmt2(balloonAmt)+' @ month '+balloon : 'No balloon';
+}
+function copyCreativeTerms(){
+  var price   = document.getElementById('cc-price').value;
+  var down    = document.getElementById('cc-down').value;
+  var rate    = document.getElementById('cc-rate').value;
+  var term    = document.getElementById('cc-term').value;
+  var balloon = document.getElementById('cc-balloon').value;
+  var notes   = document.getElementById('cc-notes').value;
+  var text = 'Creative Offer Terms — '+(_modalLead?_modalLead.address:'')+'\n'
+    + 'Purchase Price: '+(price?'$'+Number(price).toLocaleString():'—')+'\n'
+    + 'Down Payment: '+(down?'$'+Number(down).toLocaleString():'—')+'\n'
+    + 'Interest Rate: '+(rate||'0')+'%\n'
+    + 'Term: '+(term||'—')+' months\n'
+    + 'Balloon: '+(balloon?balloon+' months':'None')+'\n'
+    + 'Monthly Payment: '+document.getElementById('cc-monthly').textContent+'\n'
+    + (notes?('Notes: '+notes+'\n'):'');
+  navigator.clipboard.writeText(text);
+  var btn = event.currentTarget; var orig = btn.textContent; btn.textContent='✓ Copied!';
+  setTimeout(function(){btn.textContent=orig;}, 1500);
+}
+
+// ── Cash Offer Calculator Tab ────────────────────────────────────────
+function resetCashCalc(lead, rawLead){
+  document.getElementById('ch-arv').value     = (rawLead && rawLead.arv) || '';
+  document.getElementById('ch-repairs').value = (rawLead && rawLead.repairs) || '';
+  document.getElementById('ch-buffer').value  = '';
+  document.getElementById('ch-profit').value  = '';
+  recalcCash();
+}
+function recalcCash(){
+  var arv     = parseFloat(document.getElementById('ch-arv').value)     || 0;
+  var repairs = parseFloat(document.getElementById('ch-repairs').value) || 0;
+  var buffer  = parseFloat(document.getElementById('ch-buffer').value)  || 0;
+  var profit  = parseFloat(document.getElementById('ch-profit').value)  || 0;
+  var warning = document.getElementById('m-cash-arv-warning');
+  var maxOfferEl = document.getElementById('ch-max-offer');
+
+  if(!arv){
+    warning.style.display = 'block';
+    maxOfferEl.textContent = '—';
+    return;
+  }
+  warning.style.display = 'none';
+  var maxOffer = Math.max(0, arv - repairs - buffer - profit);
+  maxOfferEl.textContent = fmt2(maxOffer);
+}
+function copyCashTerms(){
+  var arv     = document.getElementById('ch-arv').value;
+  var repairs = document.getElementById('ch-repairs').value;
+  var buffer  = document.getElementById('ch-buffer').value;
+  var profit  = document.getElementById('ch-profit').value;
+  var maxOffer = document.getElementById('ch-max-offer').textContent;
+  if(!arv){
+    var btn0 = event.currentTarget; var orig0 = btn0.textContent; btn0.textContent='No ARV — nothing to copy';
+    setTimeout(function(){btn0.textContent=orig0;}, 1500);
+    return;
+  }
+  var text = 'Cash Offer Terms — '+(_modalLead?_modalLead.address:'')+'\n'
+    + 'ARV: '+(arv?'$'+Number(arv).toLocaleString():'—')+'\n'
+    + 'Repairs: '+(repairs?'$'+Number(repairs).toLocaleString():'—')+'\n'
+    + 'Closing/Holding Buffer: '+(buffer?'$'+Number(buffer).toLocaleString():'—')+'\n'
+    + 'Internal Buyer Room/Profit: '+(profit?'$'+Number(profit).toLocaleString():'—')+'\n'
+    + 'Max Cash Offer: '+maxOffer+'\n';
+  navigator.clipboard.writeText(text);
+  var btn = event.currentTarget; var orig = btn.textContent; btn.textContent='✓ Copied!';
+  setTimeout(function(){btn.textContent=orig;}, 1500);
+}
+
+// ── LOI Email Tab — copy/paste only, never auto-sent ─────────────────
+function resetLOITab(){
+  document.getElementById('loi-subject').value = '';
+  document.getElementById('loi-body').value = '';
+}
+function generateLOI(kind){
+  if(!_modalLead) return;
+  var lead = _modalLead;
+  var address = lead.address || '[ADDRESS]';
+  var signoff = 'Michael B. | 229 Holdings LLC';
+  var standardClose = 'Subject to buyer final walkthrough/title review/standard closing review.';
+  var investorLine = 'Buyer is purchasing for investment purposes.';
+  var commissionLine = 'Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.';
+
+  var subject = 'Offer on ' + address;
+  var body = '';
+
+  if(kind === 'of'){
+    var price   = parseFloat(document.getElementById('cc-price').value)   || lead.price || 0;
+    var down    = parseFloat(document.getElementById('cc-down').value)    || 0;
+    var rate    = parseFloat(document.getElementById('cc-rate').value)    || 0;
+    var term    = parseFloat(document.getElementById('cc-term').value)    || 0;
+    var balloon = parseFloat(document.getElementById('cc-balloon').value) || 0;
+    body = 'Hi [Agent],\n\n'
+      + 'I would like to submit an offer on ' + address + '.\n\n'
+      + 'Proposed terms: ' + (price?'$'+Number(price).toLocaleString():'[PRICE]') + ' purchase price, '
+      + (down?'$'+Number(down).toLocaleString():'[DOWN]') + ' down, balance over '
+      + (term||'[TERM]') + ' months at ' + (rate||'0') + '% interest'
+      + (balloon ? (', with a balloon due at month ' + balloon) : '') + '.\n\n'
+      + investorLine + ' ' + commissionLine + '\n\n'
+      + standardClose + '\n\n'
+      + 'Happy to discuss further. Thank you,\n' + signoff;
+  } else {
+    var maxOfferText = document.getElementById('ch-max-offer').textContent;
+    var hasArv = !!document.getElementById('ch-arv').value;
+    body = 'Hi [Agent],\n\n'
+      + 'I would like to submit a cash offer on ' + address
+      + (hasArv ? (' for ' + maxOfferText) : ' — [OFFER AMOUNT, pending review]') + '.\n\n'
+      + 'No financing contingency. ' + investorLine + ' ' + commissionLine + '\n\n'
+      + standardClose + '\n\n'
+      + 'Happy to discuss further. Thank you,\n' + signoff;
+  }
+
+  document.getElementById('loi-subject').value = subject;
+  document.getElementById('loi-body').value = body;
+}
+function copyLOIEmail(){
+  var subj = document.getElementById('loi-subject').value;
+  var body = document.getElementById('loi-body').value;
+  if(!subj && !body){
+    var btn0 = event.currentTarget; var orig0 = btn0.textContent; btn0.textContent='Generate a template first';
+    setTimeout(function(){btn0.textContent=orig0;}, 1500);
+    return;
+  }
+  navigator.clipboard.writeText('Subject: '+subj+'\n\n'+body);
+  var btn = event.currentTarget; var orig = btn.textContent; btn.textContent='✓ Copied!';
+  setTimeout(function(){btn.textContent=orig;}, 1500);
 }
 
 function copyModalEmail(){
