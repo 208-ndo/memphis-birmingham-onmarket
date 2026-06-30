@@ -1167,38 +1167,74 @@ function renderHistoryFiltered(){
     <!-- Cash Offer Calculator Tab -->
     <div class="modal-body" id="mbody-cash">
       <div id="m-cash-arv-warning" class="arv-warning" style="display:none;">&#x26A0; Manual review only — cash offer requires ARV.</div>
-      <div style="color:var(--muted);font-size:11px;margin-bottom:14px;">Manual cash-offer calculator for live agent calls. Internal working tool only — does not auto-generate or auto-send any offer.</div>
+      <div id="m-cash-content">
       <div class="modal-grid">
         <div class="modal-section">
           <div class="modal-section-title">&#x1F4B0; Inputs</div>
           <div class="calc-field"><label>ARV ($)</label><input type="number" id="ch-arv" oninput="recalcCash()" /></div>
           <div class="calc-field"><label>Repairs ($)</label><input type="number" id="ch-repairs" oninput="recalcCash()" /></div>
           <div class="calc-field"><label>Closing / Holding Buffer ($)</label><input type="number" id="ch-buffer" oninput="recalcCash()" /></div>
-          <div class="calc-field"><label>Internal Buyer Room / Profit ($)</label><input type="number" id="ch-profit" oninput="recalcCash()" /></div>
+          <div class="calc-field"><label style="color:var(--red);">Internal Buyer Room / Profit ($) — INTERNAL — DO NOT SEND</label><input type="number" id="ch-profit" oninput="recalcCash()" /></div>
         </div>
         <div class="modal-section">
           <div class="modal-section-title">&#x1F4CA; Calculated</div>
           <div class="calc-result">
-            <div class="calc-result-row"><span>Max Cash Offer</span><span class="v" id="ch-max-offer">—</span></div>
+            <div class="calc-result-row"><span>Conservative Cash Offer</span><span class="v" id="ch-conservative">—</span></div>
+            <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin:-2px 0 8px;" id="ch-conservative-formula">ARV x 0.70 − repairs − closing/holding buffer</div>
+            <div class="calc-result-row"><span>Moderate Cash Offer</span><span class="v" id="ch-moderate">—</span></div>
+            <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin:-2px 0 8px;" id="ch-moderate-formula">ARV x 0.75 − repairs − closing/holding buffer</div>
+            <div class="calc-result-row"><span>Manual Custom Max — Review Only</span><span class="v" id="ch-max-offer">—</span></div>
+            <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin:-2px 0 0;" id="ch-custom-formula">ARV − repairs − closing/holding buffer − internal buyer room/profit</div>
           </div>
         </div>
       </div>
+      <div style="background:rgba(255,215,0,.08);border:1px solid var(--yellow);border-radius:8px;padding:10px 14px;margin-top:14px;font-family:'Space Mono',monospace;font-size:10px;color:var(--yellow);">
+        &#x26A0; Cash numbers are internal estimates only. Final offer should be based on verified comps, repairs, title, and walkthrough.
+      </div>
       <div class="modal-btn-row">
         <button class="modal-btn modal-btn-ghost" onclick="copyCashTerms()">&#x1F4CB; Copy Terms</button>
+      </div>
       </div>
     </div>
 
     <!-- LOI Email Tab -->
     <div class="modal-body" id="mbody-loi">
-      <div style="color:var(--muted);font-size:11px;margin-bottom:14px;">Copy/paste only — nothing here is auto-sent.</div>
+      <div style="color:var(--muted);font-size:11px;margin-bottom:14px;">Offer Letter / LOI Generator — copy/paste only. Nothing here is auto-sent.</div>
+      <div class="modal-grid">
+        <div class="modal-section">
+          <div class="modal-section-title">&#x1F4DD; Offer Details</div>
+          <div class="calc-field"><label>Offer Type</label>
+            <select id="loi-offer-type" onchange="onLoiOfferTypeChange()" style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:'Space Mono',monospace;font-size:12px;">
+              <option value="cash">Cash Offer</option>
+              <option value="of">Owner Finance / Creative Offer</option>
+            </select>
+          </div>
+          <div class="calc-field"><label>Final Agreed Offer Price ($)</label><input type="number" id="loi-final-price" /></div>
+          <div class="calc-field"><label>Earnest Money ($)</label><input type="number" id="loi-earnest" /></div>
+          <div class="calc-field"><label>Closing Timeline</label><input type="text" id="loi-closing" placeholder="e.g. 21 days" /></div>
+          <div class="calc-field"><label>Inspection / Walkthrough Note</label><input type="text" id="loi-inspection" placeholder="e.g. 10-day inspection period" /></div>
+          <div id="loi-of-fields" style="display:none;">
+            <div class="calc-field"><label>Down Payment ($)</label><input type="number" id="loi-down" /></div>
+            <div class="calc-field"><label>Monthly Payment ($)</label><input type="number" id="loi-monthly" /></div>
+            <div class="calc-field"><label>Term (months)</label><input type="number" id="loi-term" /></div>
+            <div class="calc-field"><label>Balloon (months, optional)</label><input type="number" id="loi-balloon" /></div>
+          </div>
+          <div class="calc-field"><label>Buyer Name / Entity</label><input type="text" id="loi-buyer" value="Michael B. | 229 Holdings LLC" /></div>
+        </div>
+        <div class="modal-section">
+          <div class="modal-section-title">&#x1F4CB; Property / Agent (from card)</div>
+          <div class="modal-row"><span class="modal-row-label">Address</span><span class="modal-row-value" id="loi-ref-address">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Agent</span><span class="modal-row-value" id="loi-ref-agent">—</span></div>
+          <div class="modal-row"><span class="modal-row-label">Agent Email</span><span class="modal-row-value" id="loi-ref-email">—</span></div>
+        </div>
+      </div>
       <div class="modal-btn-row" style="margin-bottom:12px;">
-        <button class="modal-btn modal-btn-purple" onclick="generateLOI('of')">&#x1F3E0; Owner Finance Template</button>
-        <button class="modal-btn modal-btn-teal" onclick="generateLOI('cash')">&#x1F4B5; Cash Offer Template</button>
+        <button class="modal-btn modal-btn-purple" onclick="generateLOI()">&#x1F4DD; Generate LOI Email</button>
       </div>
       <div class="calc-field"><label>Subject</label><input type="text" id="loi-subject" readonly /></div>
-      <div class="calc-field"><label>Body</label><textarea id="loi-body" rows="10" readonly></textarea></div>
+      <div class="calc-field"><label>Body</label><textarea id="loi-body" rows="12" readonly></textarea></div>
       <div class="modal-btn-row">
-        <button class="modal-btn modal-btn-ghost" onclick="copyLOIEmail()">&#x1F4CB; Copy Email</button>
+        <button class="modal-btn modal-btn-ghost" onclick="copyLOIEmail()">&#x1F4CB; Copy LOI Email</button>
       </div>
     </div>
   </div>
@@ -1506,80 +1542,126 @@ function recalcCash(){
   var buffer  = parseFloat(document.getElementById('ch-buffer').value)  || 0;
   var profit  = parseFloat(document.getElementById('ch-profit').value)  || 0;
   var warning = document.getElementById('m-cash-arv-warning');
-  var maxOfferEl = document.getElementById('ch-max-offer');
+  var contentEl = document.getElementById('m-cash-content');
 
   if(!arv){
     warning.style.display = 'block';
-    maxOfferEl.textContent = '—';
+    contentEl.style.display = 'none';
+    document.getElementById('ch-conservative').textContent = '—';
+    document.getElementById('ch-moderate').textContent = '—';
+    document.getElementById('ch-max-offer').textContent = '—';
     return;
   }
   warning.style.display = 'none';
-  var maxOffer = Math.max(0, arv - repairs - buffer - profit);
-  maxOfferEl.textContent = fmt2(maxOffer);
+  contentEl.style.display = '';
+
+  var conservative = Math.max(0, arv*0.70 - repairs - buffer);
+  var moderate      = Math.max(0, arv*0.75 - repairs - buffer);
+  var customMax     = Math.max(0, arv - repairs - buffer - profit);
+
+  document.getElementById('ch-conservative').textContent = fmt2(conservative);
+  document.getElementById('ch-moderate').textContent     = fmt2(moderate);
+  document.getElementById('ch-max-offer').textContent    = fmt2(customMax);
 }
 function copyCashTerms(){
   var arv     = document.getElementById('ch-arv').value;
   var repairs = document.getElementById('ch-repairs').value;
   var buffer  = document.getElementById('ch-buffer').value;
   var profit  = document.getElementById('ch-profit').value;
-  var maxOffer = document.getElementById('ch-max-offer').textContent;
   if(!arv){
     var btn0 = event.currentTarget; var orig0 = btn0.textContent; btn0.textContent='No ARV — nothing to copy';
     setTimeout(function(){btn0.textContent=orig0;}, 1500);
     return;
   }
-  var text = 'Cash Offer Terms — '+(_modalLead?_modalLead.address:'')+'\n'
+  var text = 'Cash Calc (Internal) — '+(_modalLead?_modalLead.address:'')+'\n'
     + 'ARV: '+(arv?'$'+Number(arv).toLocaleString():'—')+'\n'
     + 'Repairs: '+(repairs?'$'+Number(repairs).toLocaleString():'—')+'\n'
     + 'Closing/Holding Buffer: '+(buffer?'$'+Number(buffer).toLocaleString():'—')+'\n'
-    + 'Internal Buyer Room/Profit: '+(profit?'$'+Number(profit).toLocaleString():'—')+'\n'
-    + 'Max Cash Offer: '+maxOffer+'\n';
+    + 'Internal Buyer Room/Profit (INTERNAL — DO NOT SEND): '+(profit?'$'+Number(profit).toLocaleString():'—')+'\n\n'
+    + 'Conservative Cash Offer: '+document.getElementById('ch-conservative').textContent+' (ARV x 0.70 - repairs - buffer)\n'
+    + 'Moderate Cash Offer: '+document.getElementById('ch-moderate').textContent+' (ARV x 0.75 - repairs - buffer)\n'
+    + 'Manual Custom Max — Review Only: '+document.getElementById('ch-max-offer').textContent+' (ARV - repairs - buffer - internal buyer room/profit)\n';
   navigator.clipboard.writeText(text);
   var btn = event.currentTarget; var orig = btn.textContent; btn.textContent='✓ Copied!';
   setTimeout(function(){btn.textContent=orig;}, 1500);
 }
 
 // ── LOI Email Tab — copy/paste only, never auto-sent ─────────────────
+function onLoiOfferTypeChange(){
+  var isOF = document.getElementById('loi-offer-type').value === 'of';
+  document.getElementById('loi-of-fields').style.display = isOF ? '' : 'none';
+}
 function resetLOITab(){
+  document.getElementById('loi-offer-type').value = 'cash';
+  document.getElementById('loi-of-fields').style.display = 'none';
+  document.getElementById('loi-final-price').value = '';
+  document.getElementById('loi-earnest').value = '';
+  document.getElementById('loi-closing').value = '';
+  document.getElementById('loi-inspection').value = '';
+  document.getElementById('loi-down').value = '';
+  document.getElementById('loi-monthly').value = '';
+  document.getElementById('loi-term').value = '';
+  document.getElementById('loi-balloon').value = '';
+  document.getElementById('loi-buyer').value = 'Michael B. | 229 Holdings LLC';
   document.getElementById('loi-subject').value = '';
   document.getElementById('loi-body').value = '';
+
+  var lead = _modalLead || {};
+  document.getElementById('loi-ref-address').textContent = lead.address || '—';
+  document.getElementById('loi-ref-agent').textContent   = lead.agent || '—';
+  document.getElementById('loi-ref-email').textContent   = lead.agent_email || 'NONE';
 }
-function generateLOI(kind){
+
+// Required public language — used verbatim, never altered per-offer.
+var LOI_INVESTOR_LINE   = 'Buyer is purchasing for investment purposes.';
+var LOI_COMMISSION_LINE = 'Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.';
+var LOI_CLOSE_REVIEW    = 'Subject to buyer final walkthrough, title review, and standard closing review.';
+var LOI_NO_FINANCING    = 'No financing contingency.';
+
+function generateLOI(){
   if(!_modalLead) return;
   var lead = _modalLead;
   var address = lead.address || '[ADDRESS]';
-  var signoff = 'Michael B. | 229 Holdings LLC';
-  var standardClose = 'Subject to buyer final walkthrough/title review/standard closing review.';
-  var investorLine = 'Buyer is purchasing for investment purposes.';
-  var commissionLine = 'Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.';
+  var kind     = document.getElementById('loi-offer-type').value; // 'cash' | 'of'
+  var price    = parseFloat(document.getElementById('loi-final-price').value) || 0;
+  var earnest  = parseFloat(document.getElementById('loi-earnest').value) || 0;
+  var closing  = document.getElementById('loi-closing').value.trim();
+  var inspect  = document.getElementById('loi-inspection').value.trim();
+  var buyer    = document.getElementById('loi-buyer').value.trim() || 'Michael B. | 229 Holdings LLC';
 
   var subject = 'Offer on ' + address;
   var body = '';
 
-  if(kind === 'of'){
-    var price   = parseFloat(document.getElementById('cc-price').value)   || lead.price || 0;
-    var down    = parseFloat(document.getElementById('cc-down').value)    || 0;
-    var rate    = parseFloat(document.getElementById('cc-rate').value)    || 0;
-    var term    = parseFloat(document.getElementById('cc-term').value)    || 0;
-    var balloon = parseFloat(document.getElementById('cc-balloon').value) || 0;
-    body = 'Hi [Agent],\n\n'
-      + 'I would like to submit an offer on ' + address + '.\n\n'
-      + 'Proposed terms: ' + (price?'$'+Number(price).toLocaleString():'[PRICE]') + ' purchase price, '
-      + (down?'$'+Number(down).toLocaleString():'[DOWN]') + ' down, balance over '
-      + (term||'[TERM]') + ' months at ' + (rate||'0') + '% interest'
-      + (balloon ? (', with a balloon due at month ' + balloon) : '') + '.\n\n'
-      + investorLine + ' ' + commissionLine + '\n\n'
-      + standardClose + '\n\n'
-      + 'Happy to discuss further. Thank you,\n' + signoff;
-  } else {
-    var maxOfferText = document.getElementById('ch-max-offer').textContent;
-    var hasArv = !!document.getElementById('ch-arv').value;
+  if(kind === 'cash'){
     body = 'Hi [Agent],\n\n'
       + 'I would like to submit a cash offer on ' + address
-      + (hasArv ? (' for ' + maxOfferText) : ' — [OFFER AMOUNT, pending review]') + '.\n\n'
-      + 'No financing contingency. ' + investorLine + ' ' + commissionLine + '\n\n'
-      + standardClose + '\n\n'
-      + 'Happy to discuss further. Thank you,\n' + signoff;
+      + (price ? (' for ' + fmt2(price)) : ' — [OFFER AMOUNT]') + '.\n\n'
+      + LOI_NO_FINANCING + ' ' + LOI_INVESTOR_LINE + '\n\n'
+      + LOI_COMMISSION_LINE + '\n\n'
+      + (closing ? ('Proposed closing: ' + closing + '.\n\n') : '')
+      + (earnest ? ('Earnest money: ' + fmt2(earnest) + '.\n\n') : '')
+      + (inspect ? (inspect + '\n\n') : '')
+      + LOI_CLOSE_REVIEW + '\n\n'
+      + 'Happy to discuss further. Thank you,\n' + buyer;
+  } else {
+    var down    = parseFloat(document.getElementById('loi-down').value)    || 0;
+    var monthly = parseFloat(document.getElementById('loi-monthly').value) || 0;
+    var term    = parseFloat(document.getElementById('loi-term').value)    || 0;
+    var balloon = parseFloat(document.getElementById('loi-balloon').value) || 0;
+    body = 'Hi [Agent],\n\n'
+      + 'I would like to submit an owner-finance offer on ' + address + '.\n\n'
+      + 'Proposed terms: ' + (price ? fmt2(price) : '[PRICE]') + ' purchase price'
+      + (down ? (', ' + fmt2(down) + ' down') : '')
+      + (monthly ? (', ' + fmt2(monthly) + '/month') : '')
+      + (term ? (' over ' + term + ' months') : '')
+      + (balloon ? (', with a balloon due at month ' + balloon) : '') + '.\n\n'
+      + LOI_INVESTOR_LINE + '\n\n'
+      + LOI_COMMISSION_LINE + '\n\n'
+      + (closing ? ('Proposed closing: ' + closing + '.\n\n') : '')
+      + (earnest ? ('Earnest money: ' + fmt2(earnest) + '.\n\n') : '')
+      + (inspect ? (inspect + '\n\n') : '')
+      + LOI_CLOSE_REVIEW + '\n\n'
+      + 'Happy to discuss further. Thank you,\n' + buyer;
   }
 
   document.getElementById('loi-subject').value = subject;
