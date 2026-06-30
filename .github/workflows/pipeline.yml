@@ -45,6 +45,10 @@ on:
         description: 'Override MAX_LEADS_TO_ENRICH_PER_WORKFLOW (blank = use config.py default of 10)'
         required: false
         default: ''
+      clear_overflow_before_run:
+        description: 'Ignore data/overflow.json for this run only (clean dry-run testing). Does NOT delete the file. Default false = normal production behavior.'
+        required: false
+        default: 'false'
 
 jobs:
   run-pipeline:
@@ -116,6 +120,19 @@ jobs:
           fi
           echo "email_enrichment_enabled  raw='${EMAIL_ENRICHMENT_ENABLED_RAW}'  normalized='${EMAIL_ENRICHMENT_ENABLED_NORMALIZED}'"
 
+          # ── Normalize clear_overflow_before_run input ────────────────────
+          # Default false — production behavior unchanged. Set true only for
+          # clean dry-run testing so data/overflow.json from prior test runs
+          # doesn't contaminate this run's fresh-lead measurements. Does not
+          # delete or modify the committed file.
+          CLEAR_OVERFLOW_RAW="${{ github.event.inputs.clear_overflow_before_run }}"
+          if [ -z "${CLEAR_OVERFLOW_RAW}" ]; then
+            CLEAR_OVERFLOW_NORMALIZED="false"
+          else
+            CLEAR_OVERFLOW_NORMALIZED="$(echo "$CLEAR_OVERFLOW_RAW" | tr '[:upper:]' '[:lower:]' | xargs)"
+          fi
+          echo "clear_overflow_before_run  raw='${CLEAR_OVERFLOW_RAW}'  normalized='${CLEAR_OVERFLOW_NORMALIZED}'"
+
           # ── Live-send kill switch ────────────────────────────────────────
           # Scheduled runs (cron) never live-send unless LIVE_SEND_ENABLED secret = "true".
           # Manual dispatch can live-send only if dry_run != "true" AND LIVE_SEND_ENABLED = "true".
@@ -139,6 +156,7 @@ jobs:
           echo "  If APIFY_ENABLED=false                : 0 Apify calls (no-scrape test mode)"
           echo "  If EMAIL_ENRICHMENT_ENABLED=false      : 0 Google calls (Zillow-only test mode, leads show Email: NONE)"
           echo "  Actual calls are hard-capped at runtime by scraper.py's shared budget counter"
+          echo "  CLEAR_OVERFLOW_BEFORE_RUN           : ${CLEAR_OVERFLOW_NORMALIZED} (true = ignore data/overflow.json this run only, file untouched)"
           echo "========================================"
 
           # ── Build flags from normalized values only ──────────────────────
@@ -165,6 +183,7 @@ jobs:
           export EMAIL_ENRICHMENT_ENABLED="${EMAIL_ENRICHMENT_ENABLED_NORMALIZED}"
           export MAX_EMAIL_ENRICHMENT_CALLS_OVERRIDE="${{ github.event.inputs.max_email_enrichment_calls }}"
           export MAX_LEADS_TO_ENRICH_OVERRIDE="${{ github.event.inputs.max_leads_to_enrich }}"
+          export CLEAR_OVERFLOW_BEFORE_RUN="${CLEAR_OVERFLOW_NORMALIZED}"
 
           echo "Running: python main.py${FLAGS}"
           python main.py${FLAGS}
