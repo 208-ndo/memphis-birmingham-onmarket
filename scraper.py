@@ -10,7 +10,7 @@ import json
 import ast
 from urllib.parse import quote
 from apify_client import ApifyClient
-from config import DISTRESSED_KEYWORDS, MAX_VIEWS_DAY, MAX_APIFY_RUNS_PER_WORKFLOW
+from config import DISTRESSED_KEYWORDS, MAX_VIEWS_DAY, MAX_APIFY_RUNS_PER_WORKFLOW, ENABLE_PRICE_REDUCED_OF_VARIANT
 from agent_email_finder import enrich_leads_with_emails
 
 logger = logging.getLogger(__name__)
@@ -79,23 +79,38 @@ def resolve_bounds(market: dict) -> dict:
     return MARKET_BOUNDS.get(city, MARKET_BOUNDS["Memphis"])
 
 
-def build_zillow_url(market: dict, price_min: int, price_max: int) -> str:
+def build_zillow_url(market: dict, price_min: int, price_max: int,
+                     price_reduced: bool = False) -> str:
+    """
+    Build a Zillow search URL for a given market, price band, and optional
+    price-reduced variant.
+
+    NOTE: doz (days-on-Zillow) is intentionally OMITTED.
+    doz=30 means "listed in the last 30 days" — the opposite of our goal.
+    We want stale DOM>=30 inventory. screen_listing() enforces DOM>=30 in
+    Python after Apify returns results, so no pre-filter is needed here.
+    """
     bounds = resolve_bounds(market)
+    filter_state = {
+        "price": {"min": price_min, "max": price_max},
+        "beds":  {"min": 1},
+        "sqft":  {"min": 750},
+        "isForSaleByAgent":  {"value": True},
+        "isForSaleByOwner":  {"value": False},
+        "isNewConstruction": {"value": False},
+        "isAuction":         {"value": False},
+        "isMakeMeMove":      {"value": False},
+        "sort":              {"value": "days"},
+    }
+    if price_reduced:
+        # Adds isReducedPrice filter — surfaces listings with at least one price cut.
+        # Only used when ENABLE_PRICE_REDUCED_OF_VARIANT=True in config.py.
+        filter_state["isReducedPrice"] = {"value": True}
+
     state_obj = {
-        "isMapVisible": True,
-        "mapBounds": bounds,
-        "filterState": {
-            "price": {"min": price_min, "max": price_max},
-            "beds":  {"min": 1},
-            "sqft":  {"min": 750},
-            "isForSaleByAgent":  {"value": True},
-            "isForSaleByOwner":  {"value": False},
-            "isNewConstruction": {"value": False},
-            "isAuction":         {"value": False},
-            "isMakeMeMove":      {"value": False},
-            "doz":               {"value": "30"},
-            "sort":              {"value": "days"},
-        },
+        "isMapVisible":  True,
+        "mapBounds":     bounds,
+        "filterState":   filter_state,
         "isListVisible": True,
     }
     encoded = quote(json.dumps(state_obj, separators=(",", ":")))
@@ -274,17 +289,22 @@ def scrape_market(market: dict) -> list[dict]:
     apify_enabled = (apify_enabled_raw == "true")
 
     planned_bands    = len(PRICE_BANDS)
-    est_actor_calls  = planned_bands + 1  # bands + 1 email enrichment call
+    of_bands         = sum(1 for b in PRICE_BANDS if b["max"] <= 80000)
+    pr_extra_calls   = of_bands if ENABLE_PRICE_REDUCED_OF_VARIANT else 0
+    est_actor_calls  = planned_bands + pr_extra_calls + 1  # bands + optional PR + enrichment
 
     logger.info("=" * 60)
     logger.info(f"SCRAPER: {city}")
-    logger.info(f"  APIFY_ENABLED              : {apify_enabled} (raw='{apify_enabled_raw}')")
-    logger.info(f"  MAX_APIFY_RUNS_PER_WORKFLOW: {MAX_APIFY_RUNS_PER_WORKFLOW}")
-    logger.info(f"  Apify calls used so far    : {_apify_call_count}")
+    logger.info(f"  APIFY_ENABLED                    : {apify_enabled} (raw='{apify_enabled_raw}')")
+    logger.info(f"  MAX_APIFY_RUNS_PER_WORKFLOW       : {MAX_APIFY_RUNS_PER_WORKFLOW}")
+    logger.info(f"  ENABLE_PRICE_REDUCED_OF_VARIANT   : {ENABLE_PRICE_REDUCED_OF_VARIANT}")
+    logger.info(f"  Apify calls used so far           : {_apify_call_count}")
     band_labels = " | ".join(f"${b['min']:,}-${b['max']:,}" for b in PRICE_BANDS)
-    logger.info(f"  Planned bands              : {planned_bands} ({band_labels})")
-    logger.info(f"  Estimated actor calls      : {est_actor_calls} (bands + email enrichment)")
-    logger.info(f"  Remaining budget           : {max(0, MAX_APIFY_RUNS_PER_WORKFLOW - _apify_call_count)} calls")
+    logger.info(f"  Planned bands                     : {planned_bands} ({band_labels})")
+    if ENABLE_PRICE_REDUCED_OF_VARIANT:
+        logger.info(f"  Price-reduced OF extra calls      : {pr_extra_calls} ($30k-$80k bands only)")
+    logger.info(f"  Estimated actor calls this market : {est_actor_calls} (bands + enrichment)")
+    logger.info(f"  Remaining budget                  : {max(0, MAX_APIFY_RUNS_PER_WORKFLOW - _apify_call_count)} calls")
     logger.info("=" * 60)
 
     if not apify_enabled:
@@ -303,82 +323,109 @@ def scrape_market(market: dict) -> list[dict]:
         price_min  = band["min"]
         price_max  = band["max"]
         band_label = f"${price_min:,}-${price_max:,}"
-        logger.info(f"Scraping band: {band_label}")
+        is_of_band = (price_max <= 80000)
 
-        search_url = build_zillow_url(market, price_min, price_max)
-        logger.info(f"URL: {search_url[:120]}...")
+        # Decide which variants to run for this band.
+        # Price-reduced variant only fires on OF bands when explicitly enabled.
+        variants = ["base"]
+        if is_of_band and ENABLE_PRICE_REDUCED_OF_VARIANT:
+            variants.append("price_reduced")
 
-        try:
-            # ── Global call budget check ─────────────────────────────────────
-            if _apify_call_count >= MAX_APIFY_RUNS_PER_WORKFLOW:
-                logger.warning(
-                    f"MAX_APIFY_RUNS_PER_WORKFLOW={MAX_APIFY_RUNS_PER_WORKFLOW} reached "
-                    f"after {_apify_call_count} calls — stopping scrape for {city}"
+        band_leads_all: list[dict] = []
+
+        for variant in variants:
+            is_price_reduced = (variant == "price_reduced")
+            search_url = build_zillow_url(market, price_min, price_max,
+                                          price_reduced=is_price_reduced)
+            logger.info(f"Scraping band: {band_label} [variant={variant}]")
+            logger.info(f"URL: {search_url[:120]}...")
+
+            try:
+                # ── Global call budget check ─────────────────────────────────
+                if _apify_call_count >= MAX_APIFY_RUNS_PER_WORKFLOW:
+                    logger.warning(
+                        f"MAX_APIFY_RUNS_PER_WORKFLOW={MAX_APIFY_RUNS_PER_WORKFLOW} reached "
+                        f"after {_apify_call_count} calls — stopping scrape for {city}"
+                    )
+                    break
+
+                max_results = MAX_RESULTS_OF_BAND if is_of_band else MAX_RESULTS_CL_BAND
+                logger.info(
+                    f"Band {band_label} [{variant}]: maxResults={max_results} "
+                    f"| actor call #{_apify_call_count + 1}"
                 )
-                break
+                _apify_call_count += 1
+                run   = client.actor(ACTOR_ID).call(
+                    run_input={"searchUrls": [{"url": search_url}], "maxResults": max_results},
+                    timeout_secs=180
+                )
+                items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
+                logger.info(f"Band {band_label} [{variant}]: {len(items)} raw results")
 
-            max_results = MAX_RESULTS_OF_BAND if price_max <= 80000 else MAX_RESULTS_CL_BAND
-            logger.info(f"Band {band_label}: maxResults={max_results} | actor call #{_apify_call_count + 1}")
-            _apify_call_count += 1
-            run   = client.actor(ACTOR_ID).call(
-                run_input={"searchUrls": [{"url": search_url}], "maxResults": max_results},
-                timeout_secs=180
-            )
-            items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
-            logger.info(f"Band {band_label}: {len(items)} raw results")
+                real_items = [i for i in items if "error" not in i]
+                if not real_items:
+                    if items:
+                        logger.warning(f"Result: {items[0]}")
+                    continue
 
-            real_items = [i for i in items if "error" not in i]
-            if not real_items:
-                if items:
-                    logger.warning(f"Result: {items[0]}")
+                # ── Per-variant rejection diagnostics ────────────────────────
+                reason_counts: dict[str, int] = {}
+                variant_leads: list[dict] = []
+
+                for item in real_items:
+                    status = (item.get("statusType") or item.get("rawHomeStatusCd") or "").upper()
+                    if status and status not in ("FOR_SALE", "FORSALE", "ACTIVE", ""):
+                        reason_counts["reject_wrong_status"] = reason_counts.get("reject_wrong_status", 0) + 1
+                        continue
+
+                    zpid = str(item.get("zpid") or "")
+                    if zpid and zpid in seen_zpids:
+                        reason_counts["reject_duplicate_zpid"] = reason_counts.get("reject_duplicate_zpid", 0) + 1
+                        continue
+                    if zpid:
+                        seen_zpids.add(zpid)
+
+                    passes, reason = screen_listing(item, price_min, price_max)
+                    reason_counts[reason] = reason_counts.get(reason, 0) + 1
+
+                    if not passes:
+                        continue
+
+                    if not passes_views_gate(item):
+                        reason_counts["reject_views_too_high"] = reason_counts.get("reject_views_too_high", 0) + 1
+                        continue
+
+                    lead = extract_lead(item, market,
+                                        candidate_reason=f"{reason}|{variant}")
+                    if lead:
+                        variant_leads.append(lead)
+                    else:
+                        reason_counts["reject_missing_address_or_price"] = reason_counts.get("reject_missing_address_or_price", 0) + 1
+
+                dom30_count = sum(
+                    1 for lead in variant_leads
+                    if lead.get("days_on_market", -1) >= 30
+                )
+                reason_str = " | ".join(f"{k}={v}" for k, v in sorted(reason_counts.items()))
+                logger.info(
+                    f"Band {band_label} [{variant}]: "
+                    f"raw={len(real_items)} | dom30+={dom30_count} | "
+                    f"candidates={len(variant_leads)} | reasons: {reason_str}"
+                )
+
+                band_leads_all.extend(variant_leads)
+                time.sleep(5)
+
+            except Exception as e:
+                logger.error(f"Apify run failed for band {band_label} [{variant}]: {e}")
                 continue
 
-            # ── Per-band rejection diagnostics ─────────────────────────────
-            reason_counts: dict[str, int] = {}
-            band_leads = []
-
-            for item in real_items:
-                status = (item.get("statusType") or item.get("rawHomeStatusCd") or "").upper()
-                if status and status not in ("FOR_SALE", "FORSALE", "ACTIVE", ""):
-                    reason_counts["reject_wrong_status"] = reason_counts.get("reject_wrong_status", 0) + 1
-                    continue
-
-                zpid = str(item.get("zpid") or "")
-                if zpid and zpid in seen_zpids:
-                    reason_counts["reject_duplicate_zpid"] = reason_counts.get("reject_duplicate_zpid", 0) + 1
-                    continue
-                if zpid:
-                    seen_zpids.add(zpid)
-
-                passes, reason = screen_listing(item, price_min, price_max)
-                reason_counts[reason] = reason_counts.get(reason, 0) + 1
-
-                if not passes:
-                    continue
-
-                if not passes_views_gate(item):
-                    reason_counts["reject_views_too_high"] = reason_counts.get("reject_views_too_high", 0) + 1
-                    continue
-
-                lead = extract_lead(item, market, candidate_reason=reason)
-                if lead:
-                    band_leads.append(lead)
-                else:
-                    reason_counts["reject_missing_address_or_price"] = reason_counts.get("reject_missing_address_or_price", 0) + 1
-
-            # Log diagnostics
-            reason_str = " | ".join(f"{k}={v}" for k, v in sorted(reason_counts.items()))
-            logger.info(
-                f"Band {band_label}: raw={len(real_items)} | candidates={len(band_leads)} | "
-                f"reasons: {reason_str}"
-            )
-
-            leads.extend(band_leads)
-            time.sleep(5)
-
-        except Exception as e:
-            logger.error(f"Apify run failed for band {band_label}: {e}")
-            continue
+        # Log combined unique count per band (seen_zpids dedup already applied above)
+        logger.info(
+            f"Band {band_label} combined: {len(band_leads_all)} unique candidates "
+            f"across {len(variants)} variant(s)"
+        )
+        leads.extend(band_leads_all)
 
     # Enrich ALL leads with emails via Google search
     if leads:
