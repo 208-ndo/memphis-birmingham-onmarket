@@ -571,6 +571,14 @@ def main():
         "--sleep", type=int, default=3,
         help="Seconds to sleep between Apify calls (default: 3)"
     )
+    parser.add_argument(
+        "--max-markets", type=int, default=None,
+        help="Cap the number of markets scraped (e.g. 1 for cheapest test). Default: no limit."
+    )
+    parser.add_argument(
+        "--max-bands", type=int, default=None,
+        help="Cap the number of price bands per market (1-4). Default: all 4 bands."
+    )
     args = parser.parse_args()
 
     markets_to_run = (
@@ -578,6 +586,19 @@ def main():
         if "all" in (args.markets or [])
         else (args.markets or list(CANDIDATE_MARKETS.keys()))
     )
+
+    # Apply --max-markets cap
+    if args.max_markets is not None and args.max_markets > 0:
+        markets_to_run = markets_to_run[:args.max_markets]
+
+    # Apply --max-bands cap
+    active_bands = AUDIT_PRICE_BANDS
+    if args.max_bands is not None and args.max_bands > 0:
+        active_bands = AUDIT_PRICE_BANDS[:args.max_bands]
+
+    variants_per_band = 2 if args.price_reduced else 1
+    est_actor_calls   = len(markets_to_run) * len(active_bands) * variants_per_band
+    max_actor_calls   = len(markets_to_run) * len(active_bands) * variants_per_band  # same as est when no --dry
 
     os.makedirs(args.output_dir, exist_ok=True)
 
@@ -588,6 +609,13 @@ def main():
     log.info(f"Dry mode: {args.dry}")
     log.info(f"DOM auto-send threshold: >= {MIN_DOM_AUTOSEND}")
     log.info("AUDIT ONLY — no emails, no GHL, no dedup writes")
+    log.info("=" * 60)
+    log.info("APIFY BUDGET SUMMARY")
+    log.info(f"  Markets to scrape          : {len(markets_to_run)} — {markets_to_run}")
+    log.info(f"  Price bands per market     : {len(active_bands)} of {len(AUDIT_PRICE_BANDS)} ({[b['label'] for b in active_bands]})")
+    log.info(f"  Variants per band          : {variants_per_band} ({'base + price-reduced' if args.price_reduced else 'base only'})")
+    log.info(f"  Estimated actor calls      : {est_actor_calls}")
+    log.info(f"  Dry mode (0 Apify calls)   : {args.dry}")
     log.info("=" * 60)
 
     client = None
@@ -604,6 +632,7 @@ def main():
 
     results     = []
     market_meta = {}
+    audit_call_count = 0   # tracks actual Apify actor calls made this audit run
 
     for mk in markets_to_run:
         mdata = CANDIDATE_MARKETS.get(mk)
@@ -616,11 +645,13 @@ def main():
         log.info(f"MARKET: {mdata['label']}")
         log.info(f"{'='*50}")
 
-        for band in AUDIT_PRICE_BANDS:
+        for band in active_bands:
             # Base search
             if args.dry:
                 res = fake_band_result(mk, band, price_reduced=False)
             else:
+                audit_call_count += 1
+                log.info(f"  [actor call #{audit_call_count} of ~{est_actor_calls}]")
                 res = scrape_band(client, mk, mdata["bounds"], band, price_reduced=False)
                 time.sleep(args.sleep)
             results.append(res)
@@ -630,6 +661,8 @@ def main():
                 if args.dry:
                     res_pr = fake_band_result(mk, band, price_reduced=True)
                 else:
+                    audit_call_count += 1
+                    log.info(f"  [actor call #{audit_call_count} of ~{est_actor_calls}]")
                     res_pr = scrape_band(client, mk, mdata["bounds"], band, price_reduced=True)
                     time.sleep(args.sleep)
                 results.append(res_pr)
@@ -652,6 +685,7 @@ def main():
     log.info("")
     log.info("=" * 60)
     log.info("AUDIT COMPLETE — read-only, no production data changed")
+    log.info(f"Apify actor calls made: {audit_call_count} of ~{est_actor_calls} estimated")
     log.info(f"JSON:     {json_path}")
     log.info(f"CSV:      {csv_path}")
     log.info(f"Markdown: {md_path}")
