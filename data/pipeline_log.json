@@ -1,13 +1,37 @@
 {
   "summary": {
-    "run_date": "2026-06-30 03:27",
-    "total_leads": 1791,
+    "run_date": "2026-06-30 03:52",
+    "total_leads": 0,
     "emails_sent": 0,
     "ghl_pushed": 0,
     "of_deals": 0,
-    "cl_deals": 0
+    "cl_deals": 0,
+    "active_markets_this_run": [
+      "Little Rock AR",
+      "Oklahoma City OK"
+    ]
   },
   "runs": [
+    {
+      "date": "2026-06-30 03:52",
+      "market": "Little Rock AR",
+      "leads": 0,
+      "emails": 0,
+      "of": 0,
+      "cl": 0,
+      "ghl": 0,
+      "status": "NO SENDS"
+    },
+    {
+      "date": "2026-06-30 03:52",
+      "market": "Oklahoma City OK",
+      "leads": 0,
+      "emails": 0,
+      "of": 0,
+      "cl": 0,
+      "ghl": 0,
+      "status": "NO SENDS"
+    },
     {
       "date": "2026-06-30 03:27",
       "market": "Little Rock AR",
@@ -229,7 +253,8 @@
       "status": "OK"
     }
   ],
-  "queue": [
+  "queue": [],
+  "history": [
     {
       "address": "826 N Watkins St, Memphis, TN 38107",
       "market": "Memphis TN",

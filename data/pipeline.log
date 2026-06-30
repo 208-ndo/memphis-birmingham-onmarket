@@ -10599,3 +10599,66 @@
 2026-06-30 03:27:54,172 INFO All markets complete | Sent this run: 0 | Total today: 0/30
 2026-06-30 03:27:54,172 INFO pipeline_log.json written — 0 emails, 1791 leads
 2026-06-30 03:27:54,173 INFO DRY RUN complete — no Gmail emails sent and no GHL contacts/texts triggered.
+2026-06-30 03:49:19,080 INFO Pipeline starting | Markets: little_rock, oklahoma_city | Dry run: True | Force: True | Global cap: 30/day | Per-inbox: 15/day | Time: 03:49 UTC
+2026-06-30 03:49:19,080 INFO Global: 0/30 sent today (0 prior runs + 0 this run) | Remaining: 30
+2026-06-30 03:49:19,080 INFO ============================================================
+2026-06-30 03:49:19,080 INFO PIPELINE: LITTLE_ROCK | 2026-06-30 03:49
+2026-06-30 03:49:19,080 INFO DRY RUN: True | LIMIT: 15 emails this run
+2026-06-30 03:49:19,080 INFO ============================================================
+2026-06-30 03:49:19,080 INFO CLEAR_OVERFLOW_BEFORE_RUN=true — ignoring data/overflow.json for this run (treating overflow as empty, file on disk left untouched)
+2026-06-30 03:49:19,080 INFO [1/5] Scraping Zillow for little_rock...
+2026-06-30 03:49:19,080 INFO ============================================================
+2026-06-30 03:49:19,080 INFO SCRAPER: Little Rock
+2026-06-30 03:49:19,081 INFO   APIFY_ENABLED                       : False (raw='false')
+2026-06-30 03:49:19,081 INFO   EMAIL_ENRICHMENT_ENABLED            : False (raw='false')
+2026-06-30 03:49:19,081 INFO   MAX_APIFY_RUNS_PER_WORKFLOW         : 10 (shared — Zillow + Google + any future actor)
+2026-06-30 03:49:19,081 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW: 5
+2026-06-30 03:49:19,081 INFO   MAX_LEADS_TO_ENRICH_PER_WORKFLOW    : 10 (top-scored leads sent to enrichment)
+2026-06-30 03:49:19,081 INFO   ENABLE_PRICE_REDUCED_OF_VARIANT     : False
+2026-06-30 03:49:19,081 INFO   Apify calls used so far — total     : 0
+2026-06-30 03:49:19,081 INFO   Apify calls used so far — zillow    : 0
+2026-06-30 03:49:19,081 INFO   Apify calls used so far — google    : 0
+2026-06-30 03:49:19,081 INFO   Planned bands                       : 4 ($30,000-$55,000 | $55,001-$80,000 | $80,001-$150,000 | $150,001-$300,000)
+2026-06-30 03:49:19,081 INFO   Planned Zillow calls this market    : 4
+2026-06-30 03:49:19,081 INFO   Planned max Google email calls      : 0 (only for top 10 scored leads)
+2026-06-30 03:49:19,081 INFO   Estimated actor calls this market   : 4 (Zillow + Google, capped)
+2026-06-30 03:49:19,081 INFO   Remaining shared budget              : 10 calls
+2026-06-30 03:49:19,081 INFO ============================================================
+2026-06-30 03:49:19,081 INFO APIFY_ENABLED=false — skipping all Apify + Google scraping for Little Rock. Returning 0 leads.
+2026-06-30 03:49:19,081 INFO [1/5] 0 fresh leads from Zillow
+2026-06-30 03:49:19,081 INFO [2/5] 0 after dedup
+2026-06-30 03:49:19,081 INFO No fresh leads — exiting market
+2026-06-30 03:49:19,082 INFO Saved 0 leads to overflow for next run
+2026-06-30 03:49:19,082 INFO Global: 0/30 sent today (0 prior runs + 0 this run) | Remaining: 30
+2026-06-30 03:49:19,082 INFO Waiting 3 minutes between markets...
+2026-06-30 03:52:19,082 INFO ============================================================
+2026-06-30 03:52:19,082 INFO PIPELINE: OKLAHOMA_CITY | 2026-06-30 03:52
+2026-06-30 03:52:19,082 INFO DRY RUN: True | LIMIT: 15 emails this run
+2026-06-30 03:52:19,082 INFO ============================================================
+2026-06-30 03:52:19,082 INFO CLEAR_OVERFLOW_BEFORE_RUN=true — ignoring data/overflow.json for this run (treating overflow as empty, file on disk left untouched)
+2026-06-30 03:52:19,082 INFO [1/5] Scraping Zillow for oklahoma_city...
+2026-06-30 03:52:19,082 INFO ============================================================
+2026-06-30 03:52:19,082 INFO SCRAPER: Oklahoma City
+2026-06-30 03:52:19,083 INFO   APIFY_ENABLED                       : False (raw='false')
+2026-06-30 03:52:19,083 INFO   EMAIL_ENRICHMENT_ENABLED            : False (raw='false')
+2026-06-30 03:52:19,083 INFO   MAX_APIFY_RUNS_PER_WORKFLOW         : 10 (shared — Zillow + Google + any future actor)
+2026-06-30 03:52:19,083 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW: 5
+2026-06-30 03:52:19,083 INFO   MAX_LEADS_TO_ENRICH_PER_WORKFLOW    : 10 (top-scored leads sent to enrichment)
+2026-06-30 03:52:19,083 INFO   ENABLE_PRICE_REDUCED_OF_VARIANT     : False
+2026-06-30 03:52:19,083 INFO   Apify calls used so far — total     : 0
+2026-06-30 03:52:19,083 INFO   Apify calls used so far — zillow    : 0
+2026-06-30 03:52:19,083 INFO   Apify calls used so far — google    : 0
+2026-06-30 03:52:19,083 INFO   Planned bands                       : 4 ($30,000-$55,000 | $55,001-$80,000 | $80,001-$150,000 | $150,001-$300,000)
+2026-06-30 03:52:19,083 INFO   Planned Zillow calls this market    : 4
+2026-06-30 03:52:19,083 INFO   Planned max Google email calls      : 0 (only for top 10 scored leads)
+2026-06-30 03:52:19,083 INFO   Estimated actor calls this market   : 4 (Zillow + Google, capped)
+2026-06-30 03:52:19,083 INFO   Remaining shared budget              : 10 calls
+2026-06-30 03:52:19,083 INFO ============================================================
+2026-06-30 03:52:19,083 INFO APIFY_ENABLED=false — skipping all Apify + Google scraping for Oklahoma City. Returning 0 leads.
+2026-06-30 03:52:19,083 INFO [1/5] 0 fresh leads from Zillow
+2026-06-30 03:52:19,083 INFO [2/5] 0 after dedup
+2026-06-30 03:52:19,083 INFO No fresh leads — exiting market
+2026-06-30 03:52:19,084 INFO Saved 0 leads to overflow for next run
+2026-06-30 03:52:19,084 INFO All markets complete | Sent this run: 0 | Total today: 0/30
+2026-06-30 03:52:19,085 INFO pipeline_log.json written — 0 emails this run, 0 in active queue, 17 in sent history
+2026-06-30 03:52:19,085 INFO DRY RUN complete — no Gmail emails sent and no GHL contacts/texts triggered.
