@@ -108,28 +108,33 @@ def save_overflow(leads: list):
 
 
 def save_dashboard_data(market_key: str, leads: list, sent_results: list):
+    """
+    Persists the FULL current scored lead list for this market — dashboard
+    "Current Scored Leads" persistence only, does not affect send eligibility,
+    email enrichment caps, or which leads actually get emailed (those remain
+    governed entirely by todays_leads/DAILY_LIMIT in run_market(), unchanged).
+
+    This file is REPLACED each run (not merged/accumulated) since it
+    represents what was scraped/scored THIS run. Historical sent records
+    live separately and permanently in pipeline_log.json's "history" field —
+    completely untouched by this function.
+    """
     os.makedirs("data", exist_ok=True)
     dashboard_file = f"data/{market_key}_leads.json"
-    existing = []
-    if os.path.exists(dashboard_file):
-        try:
-            with open(dashboard_file, "r") as f:
-                existing = json.load(f)
-        except Exception:
-            existing = []
 
     sent_addresses = {r["listing"].get("address") for r in sent_results if r["success"]}
     new_entries = []
     for lead in leads:
-        address = lead.get("address", "")
-        offer   = lead.get("offer", {})
-        list_price = lead.get("price", 0)
+        address    = lead.get("address", "")
+        offer      = lead.get("offer", {}) or {}
+        list_price = lead.get("price", lead.get("list_price", 0))
         new_entries.append({
             "address":             address,
             "city":                lead.get("city"),
             "state":               lead.get("state"),
             "list_price":          list_price,
             "days_on_market":      lead.get("days_on_market", 0),
+            "score":               lead.get("score", 0),
             "agent_name":          lead.get("agent_name"),
             "agent_email":         lead.get("agent_email"),
             "agent_phone":         lead.get("agent_phone"),
@@ -146,14 +151,9 @@ def save_dashboard_data(market_key: str, leads: list, sent_results: list):
             "pipeline_date":       datetime.now().strftime("%Y-%m-%d"),
         })
 
-    all_entries = new_entries + [
-        e for e in existing
-        if e["address"] not in {n["address"] for n in new_entries}
-    ]
-    all_entries = all_entries[:200]
     with open(dashboard_file, "w") as f:
-        json.dump(all_entries, f, indent=2)
-    log.info(f"Dashboard data saved: {dashboard_file}")
+        json.dump(new_entries, f, indent=2)
+    log.info(f"Dashboard data saved: {dashboard_file} ({len(new_entries)} current scored leads)")
 
 
 def save_pipeline_log(all_results: dict):
@@ -321,6 +321,9 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
     if not fresh_deduped:
         log.info("No fresh leads — exiting market")
         save_overflow(other_overflow)
+        # Dashboard-only: reflect that THIS run found 0 current scored leads,
+        # rather than leaving a stale snapshot from a prior run in place.
+        save_dashboard_data(market_key, [], [])
         return result
 
     todays_leads       = fresh_deduped[:DAILY_LIMIT]
@@ -412,7 +415,24 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
             log.error(f"GHL error for {listing.get('address')}: {e}")
 
     result["ghl_pushed"] = ghl_count
-    save_dashboard_data(market_key, todays_leads, sent_results)
+
+    # ── Dashboard-only: compute offer/lane for the FULL current scored lead
+    # list, not just the capped todays_leads send shortlist. Purely read-only
+    # math via the same calculate_offer() already used above — no sending,
+    # no enrichment, no change to send_queue/todays_leads/DAILY_LIMIT. Leads
+    # already processed in the loop above keep their existing listing["offer"]
+    # (identical recomputation would be redundant); this only fills in offer
+    # data for the remaining leads beyond the per-run send cap so the
+    # dashboard can show lane/type/score for the complete scored list.
+    for listing in fresh_deduped:
+        if "offer" not in listing:
+            try:
+                listing["offer"] = calculate_offer(listing) or {}
+            except Exception as e:
+                log.debug(f"Dashboard offer calc skipped for {listing.get('address')}: {e}")
+                listing["offer"] = {}
+
+    save_dashboard_data(market_key, fresh_deduped, sent_results)
 
     stats = get_stats()
     log.info(f"{'='*60}")
