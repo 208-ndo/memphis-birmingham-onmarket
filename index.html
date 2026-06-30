@@ -423,6 +423,21 @@
 <footer>229 Holdings LLC &nbsp;|&nbsp; Little Rock AR &bull; Oklahoma City OK</footer>
 <script>
 var ofData=null,clData=null,ofEmails=[],clEmails=[],_rawQueue=[],_rawRuns=[],_rawHistory=[],_historyData=[],_scoredLRData=[],_scoredOKCData=[];
+
+// ─── Shared public-facing copy (Deal Analyzer panel) ────────────────────────
+// generateOFEmails()/generateCLEmails() below reference LOI_INVESTOR_LINE /
+// LOI_COMMISSION_LINE / LOI_CLOSE_REVIEW / LOI_CONTRACT_FORM directly — those
+// are defined later in this file (modal script section) as plain top-level
+// vars. Both script blocks share one global scope, and these names are only
+// read inside functions invoked later by button clicks, so by the time a user
+// clicks "Generate Emails" all scripts have already loaded and the values are
+// populated. This reuses the same four sentences instead of duplicating them.
+// The three lines below are specific to this panel's FIXED business terms
+// ($500 earnest / 21-day close / 10-day inspection) — the LOI tab takes those
+// as free operator input instead, so there's no equivalent constant for them.
+var PUBLIC_EARNEST_LINE = "Earnest Money: $500 to be deposited with title/escrow upon completion or waiver of buyer's inspection/walkthrough period, unless otherwise agreed in writing.";
+var PUBLIC_CLOSING_LINE = "On or before 21 days after acceptance";
+var PUBLIC_INSPECTION_LINE = "10 days after acceptance";
 var fmt=function(v){return '$'+Math.round(v).toLocaleString();};
 function today(){var d=new Date();return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}
 function coeDate(days){var d=new Date();d.setDate(d.getDate()+(days||21));return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}
@@ -514,7 +529,7 @@ function renderOFOffer(){
   +'<div class="od-legal"><strong>BROKER COMPENSATION:</strong> Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.</div>'
   +'<div class="od-sig"><div><div class="od-sig-name">229 Holdings LLC</div></div><div style="text-align:right;font-family:Space Mono,monospace;font-size:10px;color:#7a7a9a">Date: ___________________<br>Seller Signature: ___________________</div></div>';
 
-  document.getElementById('of-direct-doc').textContent='Purchase Offer - 229 Holdings LLC\n\nProperty: '+d.address+'\n\nPurchase Price: '+fmt(d.price)+'\nDown Payment: '+fmt(d.dp)+' ('+d.dpPct+'%)\nSeller-Financed Balance: '+fmt(d.balance)+'\nMonthly Payment: '+fmt(d.monthly)+'/mo\nTerm: '+d.pmts+' months\nInterest Rate: '+d.sellerRate+'%\nEarnest Money: $500\nDue Diligence: 10 days\nClose Timeline: 21-30 days\n\nAs-is, no repair requests, subject to standard due diligence.\n\nSeller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.\n\nMichael B. | 229 Holdings LLC';
+  document.getElementById('of-direct-doc').textContent='Purchase Offer - 229 Holdings LLC\n\nProperty: '+d.address+'\n\nPurchase Price: '+fmt(d.price)+'\nDown Payment: '+fmt(d.dp)+' ('+d.dpPct+'%)\nSeller-Financed Balance: '+fmt(d.balance)+'\nMonthly Payment: '+fmt(d.monthly)+'/mo\nTerm: '+d.pmts+' months\nInterest Rate: '+d.sellerRate+'%\n'+PUBLIC_EARNEST_LINE+'\nClosing Timeline: '+PUBLIC_CLOSING_LINE+'\nInspection / Walkthrough Period: '+PUBLIC_INSPECTION_LINE+'\n\nAs-is, no repair requests, subject to standard due diligence.\n\n'+LOI_INVESTOR_LINE+'\n\n'+LOI_COMMISSION_LINE+'\n\n'+LOI_CLOSE_REVIEW+'\n\n'+LOI_CONTRACT_FORM+'\n\nThank you,\nMichael B. | 229 Holdings LLC';
 }
 
 /* kissOffer removed */
@@ -651,7 +666,7 @@ function renderCLOffer(){
   +'<div class="od-grid-3"><div class="od-box teal-box"><div class="od-label">Initial Offer</div><div class="od-value teal">'+fmt(d.cashOffer)+'</div></div><div class="od-box"><div class="od-label">Max Counter</div><div class="od-value dark">'+fmt(d.maxOffer)+'</div></div><div class="od-box"><div class="od-label">True Walkaway</div><div class="od-value dark">'+fmt(d.trueWalkaway)+'</div></div></div>'
   +'<div class="od-grid-3"><div class="od-box"><div class="od-label">Buyer All-In</div><div class="od-value dark">'+fmt(d.buyerAllIn)+'</div></div><div class="od-box"><div class="od-label">Visible Spread</div><div class="od-value dark">'+fmt(d.visibleSpread)+'</div></div><div class="od-box"><div class="od-label">Buyer Room</div><div class="od-value dark">'+fmt(d.roomDelta)+'</div></div></div>'
   +'<div class="od-legal"><strong>Internal summary:</strong> '+roomLine+'<br>'+spreadLine+'<br><strong>Limiting factor:</strong> '+d.limitingFactor+'</div>';
-  document.getElementById('cl-direct-doc').textContent='Cash as-is offer — 229 Holdings LLC\n\nProperty: '+d.address+'\n\nI can offer '+fmt(d.cashOffer)+' cash, as-is, closing in 21–30 days with $500 earnest money and a 10-day due diligence period.\n\nNo repair requests and no financing contingency.\n\nSeller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.\n\nIf that is worth showing the seller, where should I send the written offer?\n\nMichael B. | 229 Holdings LLC';
+  document.getElementById('cl-direct-doc').textContent='Cash Offer - 229 Holdings LLC\n\nProperty: '+d.address+'\n\nOffer Price: '+fmt(d.cashOffer)+'\n'+PUBLIC_EARNEST_LINE+'\nClosing Timeline: '+PUBLIC_CLOSING_LINE+'\nInspection / Walkthrough Period: '+PUBLIC_INSPECTION_LINE+'\nFinancing: No financing contingency\n\nAs-is, no repair requests.\n\n'+LOI_INVESTOR_LINE+'\n\n'+LOI_COMMISSION_LINE+'\n\n'+LOI_CLOSE_REVIEW+'\n\n'+LOI_CONTRACT_FORM+'\n\nThank you,\nMichael B. | 229 Holdings LLC';
 }
 
 function showOfferView(e,prefix,view){
@@ -669,23 +684,11 @@ function generateOFEmails(){
   var addr=d.address||'the property';
   var price=fmt(d.price);
   var dp=fmt(d.dp);
-  var coe=offerCloseDate(21);
-  var broker='Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.';
-  var invest='Buyer is purchasing for investment purposes.';
   var sign='Michael B. | 229 Holdings LLC';
   ofEmails=[
     {variation:1,
-     subject:'Offer on '+addr,
-     body:'Hi, I came across your listing at '+addr+' and wanted to get an offer to you. Purchase price is '+price+', $500 earnest, close by '+coe+', 10-day due diligence, as-is. '+broker+' '+invest+' Where can I send the written offer?\n\n'+sign},
-    {variation:2,
-     subject:'Offer on '+addr,
-     body:'Hi, I have an offer ready for '+addr+'. '+price+' purchase price, $500 earnest, 10-day due diligence, as-is, close by '+coe+'. '+broker+' '+invest+' Let me know where to send the written offer.\n\n'+sign},
-    {variation:3,
-     subject:'Written offer for '+addr,
-     body:'Hi, I wanted to reach out about '+addr+'. I have a written offer prepared at '+price+'. Terms: $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests. '+broker+' '+invest+' Where should I send it?\n\n'+sign},
-    {variation:4,
-     subject:'Offer on '+addr,
-     body:'Hi, offer ready for '+addr+': '+price+', $500 earnest, close by '+coe+', as-is. '+broker+' Where can I send the agreement?\n\n'+sign}
+     subject:'Owner Finance Offer on '+addr,
+     body:'Hi,\n\nI would like to submit the following owner-finance offer for '+addr+':\n\nPurchase Price: '+price+'\nDown Payment: '+dp+'\nMonthly Payment: '+fmt(d.monthly)+'\nTerm: '+d.pmts+' months\n'+PUBLIC_EARNEST_LINE+'\nClosing Timeline: '+PUBLIC_CLOSING_LINE+'\nInspection / Walkthrough Period: '+PUBLIC_INSPECTION_LINE+'\n\n'+LOI_INVESTOR_LINE+'\n\n'+LOI_COMMISSION_LINE+'\n\n'+LOI_CLOSE_REVIEW+'\n\n'+LOI_CONTRACT_FORM+'\n\nThank you,\n'+sign}
   ];
   renderEmailTabs('of',ofEmails);showEmail('of',0);
   document.getElementById('of-email-section').style.display='block';
@@ -696,23 +699,11 @@ function generateCLEmails(){
   var d=clData;
   var addr=d.address||'the property';
   var offer=fmt(d.cashOffer);
-  var coe=offerCloseDate(21);
-  var broker='Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.';
-  var invest='Buyer is purchasing for investment purposes.';
   var sign='Michael B. | 229 Holdings LLC';
   clEmails=[
     {variation:1,
      subject:'Offer on '+addr,
-     body:'Hi, I have a cash offer for '+addr+': '+offer+', $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests, no financing contingency. '+broker+' '+invest+' Where can I send the written offer?\n\n'+sign},
-    {variation:2,
-     subject:'Offer on '+addr,
-     body:'Hi, wanted to get a cash offer to you on '+addr+'. '+offer+' cash, $500 earnest, close by '+coe+', 10-day due diligence, as-is. '+broker+' '+invest+' Let me know where to send the agreement.\n\n'+sign},
-    {variation:3,
-     subject:'Offer on '+addr,
-     body:'Hi, I have a written cash offer prepared for '+addr+' at '+offer+'. Terms: $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests, no financing contingency. '+broker+' '+invest+' Where should I send it?\n\n'+sign},
-    {variation:4,
-     subject:'Offer on '+addr,
-     body:'Hi, cash offer on '+addr+': '+offer+', close by '+coe+', as-is. '+broker+' Where can I send the written offer?\n\n'+sign}
+     body:'Hi,\n\nI would like to submit the following cash offer for '+addr+':\n\nOffer Price: '+offer+'\n'+PUBLIC_EARNEST_LINE+'\nClosing Timeline: '+PUBLIC_CLOSING_LINE+'\nInspection / Walkthrough Period: '+PUBLIC_INSPECTION_LINE+'\nFinancing: No financing contingency\n\n'+LOI_INVESTOR_LINE+'\n\n'+LOI_COMMISSION_LINE+'\n\n'+LOI_CLOSE_REVIEW+'\n\n'+LOI_CONTRACT_FORM+'\n\nThank you,\n'+sign}
   ];
   renderEmailTabs('cl',clEmails);showEmail('cl',0);
   document.getElementById('cl-email-section').style.display='block';
@@ -2015,7 +2006,7 @@ function downloadModalPDF(type){
     var agentComm=lead.total_to_agent||dp;
     var atList=lead.at_list_commission||(price*0.03);
     html2+='<div class="banner"><b>COMMISSION</b>';
-    html2+='<span>Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.</span></div>';
+    html2+='<span>'+LOI_COMMISSION_LINE+'</span></div>';
     html2+='<div class="grid grid-2"><div class="cell"><div class="cell-label">Purchase Price</div><div class="cell-value purple">$'+Math.round(price).toLocaleString()+'</div><div style="font-size:10px;color:#7a7a9a">Full asking price</div></div>';
     html2+='<div class="cell"><div class="cell-label">Down Payment</div><div class="cell-value teal">$'+Math.round(dp).toLocaleString()+'</div><div style="font-size:10px;color:#7a7a9a">Paid at closing</div></div></div>';
     html2+='<div class="grid grid-3"><div class="cell"><div class="cell-label">Financed Balance</div><div class="cell-value" style="font-size:15px">$'+Math.round(bal).toLocaleString()+'</div></div>';
@@ -2024,19 +2015,21 @@ function downloadModalPDF(type){
     html2+='<div class="grid grid-3"><div class="cell"><div class="cell-label">Interest Rate</div><div class="cell-value" style="font-size:14px">0% — Interest Free</div></div>';
     html2+='<div class="cell"><div class="cell-label">Earnest Money</div><div class="cell-value" style="font-size:14px">$500</div></div>';
     html2+='<div class="cell"><div class="cell-label">Close of Escrow</div><div class="cell-value" style="font-size:12px">'+coe21s+'</div></div></div>';
-    html2+='<div class="legal"><b>TERMS:</b> As-is, no repair requests, subject to standard due diligence. Due diligence period: 10 days. Close in 21-30 days.<br><br>';
-    html2+='<b>COMMISSION:</b> Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.</div>';
+    html2+='<div class="legal"><b>TERMS:</b> As-is, no repair requests, subject to standard due diligence. Closing Timeline: '+PUBLIC_CLOSING_LINE+'. Inspection / Walkthrough Period: '+PUBLIC_INSPECTION_LINE+'. '+PUBLIC_EARNEST_LINE+'<br><br>';
+    html2+='<b>COMMISSION:</b> '+LOI_COMMISSION_LINE+'<br><br>';
+    html2+=LOI_INVESTOR_LINE+' '+LOI_CLOSE_REVIEW+' '+LOI_CONTRACT_FORM+'</div>';
   } else {
     var cashOffer=lead.cash_offer||lead.offer||0;
     var agentTotal=lead.total_to_agent||0;
     var atList3=lead.at_list_commission||(price*0.03);
     html2+='<div class="banner"><b>COMMISSION</b>';
-    html2+='<span>Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.</span></div>';
+    html2+='<span>'+LOI_COMMISSION_LINE+'</span></div>';
     html2+='<div class="grid grid-3"><div class="cell"><div class="cell-label">Cash Offer</div><div class="cell-value teal">$'+Math.round(cashOffer).toLocaleString()+'</div></div>';
     html2+='<div class="cell"><div class="cell-label">Earnest Money</div><div class="cell-value" style="font-size:15px">$500</div></div>';
-    html2+='<div class="cell"><div class="cell-label">Close Timeline</div><div class="cell-value" style="font-size:12px">21-30 days</div></div></div>';
-    html2+='<div class="legal"><b>TERMS:</b> Cash as-is offer. No repair requests. No financing contingency. 10-day due diligence period. Close in 21-30 days.<br><br>';
-    html2+='<b>COMMISSION:</b> Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.</div>';
+    html2+='<div class="cell"><div class="cell-label">Close Timeline</div><div class="cell-value" style="font-size:12px">'+PUBLIC_CLOSING_LINE+'</div></div></div>';
+    html2+='<div class="legal"><b>TERMS:</b> Cash offer. No repair requests. Financing: No financing contingency. Closing Timeline: '+PUBLIC_CLOSING_LINE+'. Inspection / Walkthrough Period: '+PUBLIC_INSPECTION_LINE+'. '+PUBLIC_EARNEST_LINE+'<br><br>';
+    html2+='<b>COMMISSION:</b> '+LOI_COMMISSION_LINE+'<br><br>';
+    html2+=LOI_INVESTOR_LINE+' '+LOI_CLOSE_REVIEW+' '+LOI_CONTRACT_FORM+'</div>';
   }
   html2+='<div class="sig"><div><b>229 Holdings LLC</b></div>';
   html2+='<div style="text-align:right;">Date: ___________________<br>Seller Signature: ___________________</div></div>';
