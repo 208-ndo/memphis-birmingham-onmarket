@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>229 Holdings — Memphis &amp; Birmingham Pipeline</title>
+  <title>229 Holdings — Little Rock &amp; Oklahoma City Pipeline</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     :root{--bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a26;--border:#2a2a3a;--purple:#6c63ff;--purple2:#8b84ff;--teal:#00d4aa;--teal2:#00ffcc;--red:#ff4757;--yellow:#ffd700;--text:#e8e8f0;--muted:#7a7a9a;--green:#00e676;}
@@ -159,12 +159,12 @@
 <body>
 <header>
   <div class="logo">229 <span>Holdings</span></div>
-  <div class="header-meta"><span class="live-dot"></span>PIPELINE LIVE<br>Memphis TN &amp; Birmingham AL<br>Auto-fires Tue/Wed/Thu/Fri 9AM CT</div>
+  <div class="header-meta"><span class="live-dot"></span>PIPELINE LIVE<br>Little Rock AR &amp; Oklahoma City OK<br>Auto-fires Tue/Wed/Thu/Fri 9AM CT</div>
 </header>
 <div class="tab-bar">
   <div id="tab-all" class="tab active" onclick="switchTab(event,'all');setMarketFilter('all')">All Markets</div>
-  <div id="tab-memphis" class="tab" onclick="switchTab(event,'all');setMarketFilter('memphis')">Memphis TN</div>
-  <div id="tab-birmingham" class="tab" onclick="switchTab(event,'all');setMarketFilter('birmingham')">Birmingham AL</div>
+  <div id="tab-little_rock" class="tab" onclick="switchTab(event,'little_rock')">Little Rock AR</div>
+  <div id="tab-oklahoma_city" class="tab" onclick="switchTab(event,'oklahoma_city')">Oklahoma City OK</div>
   <div class="tab deal-tab" onclick="switchTab(event,'analyzer')">Deal Analyzer</div>
 </div>
 
@@ -209,30 +209,26 @@
   <tbody id="history-tbody"><tr><td colspan="9" style="color:var(--muted);text-align:center;padding:24px">Sent history populates after first live run.</td></tr></tbody></table></div>
 </div>
 
-<div class="panel" id="panel-memphis">
+<div class="panel" id="panel-little_rock">
+  <div class="section-header">Current Scored Leads — Little Rock AR</div>
+  <div style="color:var(--muted);font-size:11px;margin-bottom:12px">Freshly scraped and scored leads from the latest run, for review before outreach. This is NOT the outreach queue — see Active Queue / Sent History on the All Markets tab for what was actually emailed.</div>
   <div class="stat-grid">
-    <div class="stat-card"><div class="stat-label">Memphis Leads</div><div class="stat-value purple">—</div></div>
-    <div class="stat-card"><div class="stat-label">Memphis Emails</div><div class="stat-value teal">—</div></div>
-    <div class="stat-card"><div class="stat-label">OF Deals</div><div class="stat-value purple">—</div></div>
-    <div class="stat-card"><div class="stat-label">Cash Deals</div><div class="stat-value teal">—</div></div>
-    <div class="stat-card"><div class="stat-label">Avg DOM</div><div class="stat-value yellow">—</div></div>
-    <div class="stat-card"><div class="stat-label">901 SMS Fired</div><div class="stat-value green">—</div></div>
+    <div class="stat-card"><div class="stat-label">Little Rock Leads Scored</div><div class="stat-value purple" id="lr-leads-count">—</div></div>
+    <div class="stat-card"><div class="stat-label">Little Rock Emails Sent</div><div class="stat-value teal" id="lr-emails-count">—</div></div>
   </div>
-  <div class="table-wrap"><table><thead><tr><th>Address</th><th>List Price</th><th>DOM</th><th>Sqft</th><th>Type</th><th>Offer</th><th>Agent Commission</th><th>Status</th></tr></thead>
-  <tbody><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">Memphis leads populate after first run.</td></tr></tbody></table></div>
+  <div class="table-wrap"><table><thead><tr><th>Address</th><th>List Price</th><th>DOM</th><th>Lane</th><th>Type</th><th>Agent Email</th><th>Pitch Holds</th><th>Status</th></tr></thead>
+  <tbody id="little_rock-scored-tbody"><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">Little Rock leads populate after first run.</td></tr></tbody></table></div>
 </div>
 
-<div class="panel" id="panel-birmingham">
+<div class="panel" id="panel-oklahoma_city">
+  <div class="section-header">Current Scored Leads — Oklahoma City OK</div>
+  <div style="color:var(--muted);font-size:11px;margin-bottom:12px">Freshly scraped and scored leads from the latest run, for review before outreach. This is NOT the outreach queue — see Active Queue / Sent History on the All Markets tab for what was actually emailed.</div>
   <div class="stat-grid">
-    <div class="stat-card"><div class="stat-label">Birmingham Leads</div><div class="stat-value purple">—</div></div>
-    <div class="stat-card"><div class="stat-label">Birmingham Emails</div><div class="stat-value teal">—</div></div>
-    <div class="stat-card"><div class="stat-label">OF Deals</div><div class="stat-value purple">—</div></div>
-    <div class="stat-card"><div class="stat-label">Cash Deals</div><div class="stat-value teal">—</div></div>
-    <div class="stat-card"><div class="stat-label">Avg DOM</div><div class="stat-value yellow">—</div></div>
-    <div class="stat-card"><div class="stat-label">205 SMS Fired</div><div class="stat-value green">—</div></div>
+    <div class="stat-card"><div class="stat-label">Oklahoma City Leads Scored</div><div class="stat-value purple" id="okc-leads-count">—</div></div>
+    <div class="stat-card"><div class="stat-label">Oklahoma City Emails Sent</div><div class="stat-value teal" id="okc-emails-count">—</div></div>
   </div>
-  <div class="table-wrap"><table><thead><tr><th>Address</th><th>List Price</th><th>DOM</th><th>Sqft</th><th>Type</th><th>Offer</th><th>Agent Commission</th><th>Status</th></tr></thead>
-  <tbody><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">Birmingham leads populate after first run.</td></tr></tbody></table></div>
+  <div class="table-wrap"><table><thead><tr><th>Address</th><th>List Price</th><th>DOM</th><th>Lane</th><th>Type</th><th>Agent Email</th><th>Pitch Holds</th><th>Status</th></tr></thead>
+  <tbody id="oklahoma_city-scored-tbody"><tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">Oklahoma City leads populate after first run.</td></tr></tbody></table></div>
 </div>
 
 <div class="panel" id="panel-analyzer">
@@ -400,7 +396,7 @@
   </div>
 </div>
 
-<footer>229 Holdings LLC &nbsp;|&nbsp; Memphis TN &bull; Birmingham AL</footer>
+<footer>229 Holdings LLC &nbsp;|&nbsp; Little Rock AR &bull; Oklahoma City OK</footer>
 <script>
 var ofData=null,clData=null,ofEmails=[],clEmails=[],_rawQueue=[],_rawRuns=[],_rawHistory=[],_historyData=[];
 var fmt=function(v){return '$'+Math.round(v).toLocaleString();};
@@ -713,7 +709,7 @@ function searchHistory(q){q=q.trim().toLowerCase();document.getElementById('hist
 function clearHistorySearch(){var inp=document.getElementById('history-search');inp.value='';document.getElementById('history-search-clear').style.display='none';searchHistory('');inp.focus();}
 function updateHistorySearchCount(){var q=(document.getElementById('history-search')?.value||'').trim().toLowerCase();var el=document.getElementById('history-search-count');if(!el)return;if(!q||!_rawHistory.length){el.textContent=_rawHistory.length?_rawHistory.length+' records':'';return;}el.textContent=_rawHistory.filter(function(r){return r.replace(/<[^>]+>/g,'').toLowerCase().includes(q);}).length+' of '+_rawHistory.length+' records';}
 
-function laneBadge(lane){
+function laneBadge(lane,fallbackLabel){
   var labels={
     'OWNER_FINANCE_PRODUCTION':'OF Production',
     'OWNER_FINANCE_AUDIT':'OF Audit Only',
@@ -730,7 +726,10 @@ function laneBadge(lane){
     'NO_AUTO_OFFER_HIGH_PRICE':'badge-new',
     'UNCLASSIFIED':'badge-new'
   };
-  var key=lane||'UNCLASSIFIED';
+  if(!lane){
+    return '<span class="badge badge-cl" style="font-size:9px" title="Record predates offer-lane classification">'+(fallbackLabel||'LEGACY_SENT')+'</span>';
+  }
+  var key=lane;
   return '<span class="badge '+(colors[key]||'badge-new')+'" style="font-size:9px">'+(labels[key]||key)+'</span>';
 }
 
@@ -739,9 +738,63 @@ if(d.queue&&d.queue.length){_queueData = d.queue;
 _rawQueue=d.queue.map(function(q,idx){return'<tr class="clickable-row" onclick="openPropModal('+idx+')" style="cursor:pointer"><td style="color:var(--teal);text-decoration:underline">'+(q.address||'--')+'</td><td>'+(q.market||'--')+'</td><td>'+(q.price?'$'+Number(q.price).toLocaleString():'--')+'</td><td>'+(q.dom!=null?q.dom:'--')+'</td><td><span class="badge '+(q.type==='OF'?'badge-of':'badge-cl')+'">'+(q.type||'--')+'</span></td><td>'+laneBadge(q.offer_lane)+'</td><td>'+(q.offer?'$'+Number(q.offer).toLocaleString():'--')+'</td><td>'+(q.agent||'--')+'</td><td>'+(q.sent||'--')+'</td></tr>';});document.getElementById('queue-tbody').innerHTML=_rawQueue.join('');updateSearchCount();}
 else{document.getElementById('queue-tbody').innerHTML='<tr><td colspan="9" style="color:var(--muted);text-align:center;padding:24px">No leads sent in the current run.</td></tr>';}
 if(d.history&&d.history.length){_historyData = d.history;
-_rawHistory=d.history.map(function(h,idx){return'<tr><td>'+(h.address||'--')+'</td><td>'+(h.market||'--')+'</td><td>'+(h.price?'$'+Number(h.price).toLocaleString():'--')+'</td><td>'+(h.dom!=null?h.dom:'--')+'</td><td><span class="badge '+(h.type==='OF'?'badge-of':'badge-cl')+'">'+(h.type||'--')+'</span></td><td>'+laneBadge(h.offer_lane)+'</td><td>'+(h.offer?'$'+Number(h.offer).toLocaleString():'--')+'</td><td>'+(h.agent||'--')+'</td><td><span class="badge badge-new" style="font-size:9px">SENT</span> '+(h.sent||'--')+'</td></tr>';});document.getElementById('history-tbody').innerHTML=_rawHistory.join('');updateHistorySearchCount();}
+_rawHistory=d.history.map(function(h,idx){return'<tr><td>'+(h.address||'--')+'</td><td>'+(h.market||'--')+'</td><td>'+(h.price?'$'+Number(h.price).toLocaleString():'--')+'</td><td>'+(h.dom!=null?h.dom:'--')+'</td><td><span class="badge '+(h.type==='OF'?'badge-of':'badge-cl')+'">'+(h.type||'--')+'</span></td><td>'+laneBadge(h.offer_lane,'LEGACY_SENT')+'</td><td>'+(h.offer?'$'+Number(h.offer).toLocaleString():'--')+'</td><td>'+(h.agent||'--')+'</td><td><span class="badge badge-new" style="font-size:9px">SENT</span> '+(h.sent||'--')+'</td></tr>';});document.getElementById('history-tbody').innerHTML=_rawHistory.join('');updateHistorySearchCount();}
 }catch(e){}}
 loadRunData();
+
+// ── Current Scored Leads — Little Rock AR / Oklahoma City OK ────────────────
+// Reads the per-market dashboard JSON files that main.py's save_dashboard_data()
+// already writes (data/little_rock_leads.json, data/oklahoma_city_leads.json).
+// This shows freshly scraped/scored leads for REVIEW — separate from the
+// Active Queue, which only ever shows leads that were actually emailed.
+// Note: these files currently hold up to the per-run inbox cap of scored
+// leads per market (not the full raw scrape count shown in the "Total Leads
+// Scraped" KPI) — that's a pipeline-side persistence detail, unchanged here.
+function renderScoredLeadsTable(tbodyId, leads){
+  var tbody = document.getElementById(tbodyId);
+  if(!tbody) return;
+  if(!leads || !leads.length){
+    tbody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">No scored leads yet for this market.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = leads.map(function(l){
+    var statusBadge = l.email_sent
+      ? '<span class="badge badge-new" style="font-size:9px">SENT</span>'
+      : (l.pitch_holds ? '<span class="badge badge-of" style="font-size:9px">READY</span>' : '<span class="badge badge-cl" style="font-size:9px">REVIEW</span>');
+    return '<tr>'
+      + '<td>'+(l.address||'--')+'</td>'
+      + '<td>'+(l.list_price?'$'+Number(l.list_price).toLocaleString():'--')+'</td>'
+      + '<td>'+(l.days_on_market!=null?l.days_on_market:'--')+'</td>'
+      + '<td>'+laneBadge(l.offer_lane)+'</td>'
+      + '<td><span class="badge '+(l.offer_type==='owner_finance'?'badge-of':'badge-cl')+'">'+(l.offer_type||'--')+'</span></td>'
+      + '<td>'+(l.agent_email||'NONE')+'</td>'
+      + '<td>'+(l.pitch_holds?'Yes':'No')+'</td>'
+      + '<td>'+statusBadge+'</td>'
+      + '</tr>';
+  }).join('');
+}
+
+async function loadScoredLeads(){
+  try{
+    var lrRes = await fetch('./data/little_rock_leads.json');
+    if(lrRes.ok){
+      var lrLeads = await lrRes.json();
+      renderScoredLeadsTable('little_rock-scored-tbody', lrLeads);
+      var lrCount=document.getElementById('lr-leads-count'); if(lrCount) lrCount.textContent = lrLeads.length;
+      var lrEmails=document.getElementById('lr-emails-count'); if(lrEmails) lrEmails.textContent = lrLeads.filter(function(l){return l.email_sent;}).length;
+    }
+  }catch(e){}
+  try{
+    var okcRes = await fetch('./data/oklahoma_city_leads.json');
+    if(okcRes.ok){
+      var okcLeads = await okcRes.json();
+      renderScoredLeadsTable('oklahoma_city-scored-tbody', okcLeads);
+      var okcCount=document.getElementById('okc-leads-count'); if(okcCount) okcCount.textContent = okcLeads.length;
+      var okcEmails=document.getElementById('okc-emails-count'); if(okcEmails) okcEmails.textContent = okcLeads.filter(function(l){return l.email_sent;}).length;
+    }
+  }catch(e){}
+}
+loadScoredLeads();
 
 var _activeMarket = 'all';
 function setMarketFilter(market) {
@@ -763,7 +816,7 @@ function filterQueueByMarket() {
       var q=_queueData[i];
       if(!q)return false;
       var m=(q.market||'').toLowerCase();
-      return _activeMarket==='memphis'?m.indexOf('memphis')>=0:m.indexOf('birmingham')>=0;
+      return _activeMarket==='little_rock'?m.indexOf('little rock')>=0:m.indexOf('oklahoma city')>=0;
     });
   }
   tbody.innerHTML=filtered.length?filtered.join(''):'<tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">No leads for this market yet.</td></tr>';
@@ -774,7 +827,7 @@ function filterRunsByMarket() {
   var tbody = document.getElementById('runs-tbody');
   if(!tbody||!_rawRuns.length)return;
   var filtered=_activeMarket==='all'?_rawRuns:_rawRuns.filter(function(r){
-    return _activeMarket==='memphis'?r.toLowerCase().indexOf('memphis')>=0:r.toLowerCase().indexOf('birmingham')>=0;
+    return _activeMarket==='little_rock'?r.toLowerCase().indexOf('little rock')>=0:r.toLowerCase().indexOf('oklahoma city')>=0;
   });
   tbody.innerHTML=filtered.length?filtered.join(''):'<tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px">No runs for this market yet.</td></tr>';
 }
