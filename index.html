@@ -178,12 +178,12 @@
 
 <div class="panel active" id="panel-all">
   <div class="stat-grid">
-    <div class="stat-card"><div class="stat-label">Total Leads Scraped</div><div class="stat-value purple" id="s-total">—</div></div>
-    <div class="stat-card"><div class="stat-label">Emails Sent (All)</div><div class="stat-value teal" id="s-emails">—</div></div>
-    <div class="stat-card"><div class="stat-label">GHL Contacts Pushed</div><div class="stat-value yellow" id="s-ghl">—</div></div>
-    <div class="stat-card"><div class="stat-label">Owner Finance Deals</div><div class="stat-value purple" id="s-of">—</div></div>
-    <div class="stat-card"><div class="stat-label">Cash Lowball Deals</div><div class="stat-value teal" id="s-cl">—</div></div>
-    <div class="stat-card"><div class="stat-label">Last Run</div><div class="stat-value green" style="font-size:16px" id="s-last">—</div></div>
+    <div class="stat-card"><div class="stat-label">Current Scored Leads</div><div class="stat-value purple" id="sum-scored">—</div></div>
+    <div class="stat-card"><div class="stat-label">Emails Sent Today</div><div class="stat-value teal" id="sum-emails-today">—</div></div>
+    <div class="stat-card"><div class="stat-label">Current Active Queue</div><div class="stat-value yellow" id="sum-queue">—</div></div>
+    <div class="stat-card"><div class="stat-label">Sent History Count</div><div class="stat-value green" id="sum-history">—</div></div>
+    <div class="stat-card"><div class="stat-label">Overflow / Waiting</div><div class="stat-value purple" style="font-size:15px" id="sum-overflow">—</div></div>
+    <div class="stat-card"><div class="stat-label">Last Successful Run</div><div class="stat-value green" style="font-size:15px" id="s-last">—</div></div>
   </div>
 
   <div class="section-header">Market Filter</div>
@@ -198,10 +198,6 @@
     </select>
     <div style="color:var(--muted);font-size:11px;margin-top:8px;" id="market-filter-hint">Little Rock AR and Oklahoma City OK are the active current markets. Memphis TN and Birmingham AL are historical sent records only.</div>
   </div>
-
-  <div class="section-header">Recent Pipeline Runs</div>
-  <div class="table-wrap"><table><thead><tr><th>Date</th><th>Market</th><th>Leads</th><th>Emails</th><th>OF / CL</th><th>GHL</th><th>Status</th></tr></thead>
-  <tbody id="runs-tbody"><tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px">No run data yet. Pipeline fires Tue/Wed/Thu/Fri 9AM CT.</td></tr></tbody></table></div>
 
   <div id="scored-leads-section">
     <div class="section-header">Current Scored Leads</div>
@@ -242,6 +238,16 @@
     </div>
     <div class="table-wrap"><table><thead><tr><th>Address</th><th>Market</th><th>Price</th><th>DOM</th><th>Type</th><th>Lane</th><th>Offer</th><th>Agent</th><th>Sent</th></tr></thead>
     <tbody id="history-tbody"><tr><td colspan="9" style="color:var(--muted);text-align:center;padding:24px">Sent history populates after first live run.</td></tr></tbody></table></div>
+  </details>
+
+  <details id="runs-details" style="margin-top:8px;">
+    <summary class="section-header" style="cursor:pointer;display:list-item;">Recent Pipeline Runs</summary>
+    <div style="color:var(--muted);font-size:11px;margin-bottom:12px">Showing latest 5 runs. Full run history is preserved in pipeline_log.json regardless of what's displayed here.</div>
+    <div class="modal-btn-row" style="margin-bottom:10px;">
+      <button class="modal-btn modal-btn-ghost" id="runs-toggle-btn" onclick="toggleRunHistory()">Show full run history</button>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>Date</th><th>Market</th><th>Leads</th><th>Emails</th><th>OF / CL</th><th>GHL</th><th>Status</th></tr></thead>
+    <tbody id="runs-tbody"><tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px">No run data yet. Pipeline fires Tue/Wed/Thu/Fri 9AM CT.</td></tr></tbody></table></div>
   </details>
 </div>
 
@@ -714,7 +720,7 @@ function showEmailLoading(prefix){document.getElementById(prefix+'-email-section
 function renderEmailTabs(prefix,emails){var c=document.getElementById(prefix+'-email-tabs');c.innerHTML='';emails.forEach(function(e,i){var btn=document.createElement('button');btn.className='email-tab-btn'+(i===0?' active':'');btn.textContent='V'+(i+1);btn.onclick=function(){showEmail(prefix,i);};c.appendChild(btn);});}
 function showEmail(prefix,idx){var emails=prefix==='of'?ofEmails:clEmails;if(!emails.length)return;document.querySelectorAll('#'+prefix+'-email-tabs .email-tab-btn').forEach(function(b,i){b.classList.toggle('active',i===idx);});var e=emails[idx];document.getElementById(prefix+'-email-subject').textContent='Subject: '+(e.subject||'');document.getElementById(prefix+'-email-body').textContent=e.body||'';}
 
-function searchQueue(q){q=q.trim().toLowerCase();document.getElementById('search-clear').style.display=q?'inline':'none';filterTable('queue-tbody',_rawQueue,q);filterTable('runs-tbody',_rawRuns,q);updateSearchCount();}
+function searchQueue(q){q=q.trim().toLowerCase();document.getElementById('search-clear').style.display=q?'inline':'none';filterTable('queue-tbody',_rawQueue,q);updateSearchCount();}
 function filterTable(tbodyId,rawRows,q){var tbody=document.getElementById(tbodyId);if(!tbody)return;if(!q){tbody.innerHTML=rawRows.join('');return;}tbody.innerHTML=rawRows.map(function(rowHtml){var plain=rowHtml.replace(/<[^>]+>/g,'').toLowerCase();if(!plain.includes(q))return rowHtml.replace('<tr','<tr class="search-hidden"');return rowHtml.replace(/(<td[^>]*>)([\s\S]*?)(<\/td>)/g,function(m,open,content,close){return open+content.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),function(m){return'<mark class="hit">'+m+'</mark>';})+close;});}).join('');}
 function clearSearch(){var inp=document.getElementById('queue-search');inp.value='';document.getElementById('search-clear').style.display='none';searchQueue('');inp.focus();}
 function updateSearchCount(){var q=(document.getElementById('queue-search')?.value||'').trim().toLowerCase();var el=document.getElementById('search-count');if(!el)return;if(!q||!_rawQueue.length){el.textContent=_rawQueue.length?_rawQueue.length+' leads':'';return;}el.textContent=_rawQueue.filter(function(r){return r.replace(/<[^>]+>/g,'').toLowerCase().includes(q);}).length+' of '+_rawQueue.length+' leads';}
@@ -747,14 +753,71 @@ function laneBadge(lane,fallbackLabel){
   return '<span class="badge '+(colors[key]||'badge-new')+'" style="font-size:9px">'+(labels[key]||key)+'</span>';
 }
 
-async function loadRunData(){try{var res=await fetch('./data/pipeline_log.json');if(!res.ok)return;var d=await res.json();if(d.summary){var s=d.summary;[['s-total',s.total_leads],['s-emails',s.emails_sent],['s-ghl',s.ghl_pushed],['s-of',s.of_deals],['s-cl',s.cl_deals],['s-last',s.run_date]].forEach(function(pair){var el=document.getElementById(pair[0]);if(el)el.textContent=pair[1]!=null?pair[1]:'--';});}
-_rawRuns = (d.runs||[]).map(function(r){return'<tr><td>'+(r.date||'--')+'</td><td>'+(r.market||'--')+'</td><td>'+(r.leads!=null?r.leads:'--')+'</td><td>'+(r.emails!=null?r.emails:'--')+'</td><td>'+(r.of||0)+'/'+(r.cl||0)+'</td><td>'+(r.ghl!=null?r.ghl:'--')+'</td><td><span class="badge '+(r.status==='OK'?'badge-new':'badge-of')+'">'+(r.status||'--')+'</span></td></tr>';});
-document.getElementById('runs-tbody').innerHTML = _rawRuns.length ? _rawRuns.join('') : '<tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px">No run data yet. Pipeline fires Tue/Wed/Thu/Fri 9AM CT.</td></tr>';
+var _allRunsData = [];
+var _runsExpanded = false;
+
+async function loadRunData(){try{var res=await fetch('./data/pipeline_log.json');if(!res.ok)return;var d=await res.json();
+if(d.summary){
+  var lastEl = document.getElementById('s-last');
+  if(lastEl) lastEl.textContent = d.summary.run_date || '--';
+}
+_allRunsData = d.runs || [];
+renderRunsTable();
 _queueData = d.queue || [];
 _historyData = d.history || [];
 }catch(e){}}
 
-// ── Current Scored Leads — Little Rock AR / Oklahoma City OK ────────────────
+function runRowHtml(r){
+  return '<tr><td>'+(r.date||'--')+'</td><td>'+(r.market||'--')+'</td><td>'+(r.leads!=null?r.leads:'--')+'</td><td>'+(r.emails!=null?r.emails:'--')+'</td><td>'+(r.of||0)+'/'+(r.cl||0)+'</td><td>'+(r.ghl!=null?r.ghl:'--')+'</td><td><span class="badge '+(r.status==='OK'?'badge-new':'badge-of')+'">'+(r.status||'--')+'</span></td></tr>';
+}
+function renderRunsTable(){
+  var tbody = document.getElementById('runs-tbody');
+  var rows = _runsExpanded ? _allRunsData : _allRunsData.slice(0, 5);
+  tbody.innerHTML = rows.length
+    ? rows.map(runRowHtml).join('')
+    : '<tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px">No run data yet. Pipeline fires Tue/Wed/Thu/Fri 9AM CT.</td></tr>';
+  var btn = document.getElementById('runs-toggle-btn');
+  if(btn){
+    btn.textContent = _runsExpanded ? 'Hide full run history' : 'Show full run history';
+    btn.style.display = _allRunsData.length > 5 ? 'inline-flex' : 'none';
+  }
+}
+function toggleRunHistory(){
+  _runsExpanded = !_runsExpanded;
+  renderRunsTable();
+}
+
+// ── Summary cards — global, unfiltered by Market Filter ─────────────────────
+async function updateSummaryCards(){
+  var scoredCount = _scoredLRData.length + _scoredOKCData.length;
+  var el = document.getElementById('sum-scored'); if(el) el.textContent = scoredCount;
+
+  var todayStr = new Date().toISOString().slice(0,10); // YYYY-MM-DD
+  var emailsToday = _allRunsData
+    .filter(function(r){ return (r.date||'').slice(0,10) === todayStr; })
+    .reduce(function(sum,r){ return sum + (r.emails||0); }, 0);
+  var emailsEl = document.getElementById('sum-emails-today'); if(emailsEl) emailsEl.textContent = emailsToday;
+
+  var queueEl = document.getElementById('sum-queue'); if(queueEl) queueEl.textContent = _queueData.length;
+  var histEl = document.getElementById('sum-history'); if(histEl) histEl.textContent = _historyData.length;
+
+  var overflowEl = document.getElementById('sum-overflow');
+  if(overflowEl){
+    try{
+      var res = await fetch('./data/overflow.json');
+      if(res.ok){
+        var overflowData = await res.json();
+        overflowEl.textContent = Array.isArray(overflowData) ? (overflowData.length + ' leads') : 'unavailable';
+      } else {
+        overflowEl.textContent = 'unavailable';
+      }
+    }catch(e){
+      overflowEl.textContent = 'unavailable';
+    }
+  }
+}
+
+
 // Reads the per-market dashboard JSON files that main.py's save_dashboard_data()
 // already writes (data/little_rock_leads.json, data/oklahoma_city_leads.json).
 // This shows freshly scraped/scored leads for REVIEW — separate from the
@@ -909,6 +972,7 @@ function renderHistoryFiltered(){
   await loadRunData();
   await loadScoredLeads();
   applyMarketFilter('all_active');
+  await updateSummaryCards();
 })();
 
 </script>
