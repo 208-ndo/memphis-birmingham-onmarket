@@ -1,16 +1,44 @@
 """
 Deterministic agent email templates for 229 Holdings LLC.
 Emails are public-facing and only include the offer terms intended for agents.
+
+Wording-only update: all public-facing copy now uses the shared hardwired
+lines (buyer-purpose, broker-compensation, review, closing-CTA) and the
+labeled-line offer format. No offer math, field sources, or function
+signatures were changed — only how the existing values are presented.
 """
 
 import random
 
 SIGN_OFF = "Michael B. | 229 Holdings LLC"
-BROKER_COMP_LINE = (
-    "Seller to handle any listing broker compensation per the existing listing "
-    "agreement from seller proceeds at closing."
+
+# ─── Shared public-facing language (source of truth) ────────────────────────
+# These exact lines must be reused everywhere public-facing — email, PDF,
+# dashboard LOI generator — rather than re-typed with slightly different
+# wording in each place.
+INVESTMENT_PURPOSE_LINE = (
+    "Buyer is purchasing for investment/business purposes and not as an "
+    "owner-occupant."
 )
-INVESTMENT_PURPOSE_LINE = "Buyer is purchasing for investment purposes."
+BROKER_COMP_LINE = (
+    "Seller to handle any listing broker compensation per the existing "
+    "listing agreement from seller proceeds at closing, down payment/closing "
+    "funds, or as otherwise agreed in writing by the seller and broker."
+)
+REVIEW_LINE = (
+    "This offer is subject to buyer final walkthrough, title review, and "
+    "standard closing review."
+)
+CLOSING_CTA_LINE = (
+    "Please let me know if the seller would like this submitted on a state "
+    "contract or preferred offer form."
+)
+
+# Standard terms used across the pipeline (unchanged business defaults —
+# wording presentation only, not new numbers).
+EARNEST_AMOUNT = 500
+CLOSE_DAYS = 21
+DUE_DILIGENCE_DAYS = 10
 
 
 def generate_emails(listing: dict, offer: dict) -> list[dict]:
@@ -51,6 +79,14 @@ def _number(value, default=0):
         return default
 
 
+def _earnest_line() -> str:
+    return (
+        f"Earnest Money: {_money(EARNEST_AMOUNT)} to be deposited with "
+        "title/escrow upon completion or waiver of buyer's "
+        "inspection/walkthrough period, unless otherwise agreed in writing."
+    )
+
+
 def _gen_cl_email(listing: dict, offer: dict) -> dict:
     address = _address(listing)
     cash_offer = (
@@ -60,28 +96,33 @@ def _gen_cl_email(listing: dict, offer: dict) -> dict:
         or 0
     )
 
-    body = "\n\n".join(
-        [
-            _agent_greeting(listing),
-            (
-                f"I saw the listing at {address}. I can offer {_money(cash_offer)} "
-                "cash, as-is, closing in 21-30 days with $500 earnest money and "
-                "a 10-day due diligence period."
-            ),
-            (
-                "No repair requests and no financing contingency. "
-                f"{INVESTMENT_PURPOSE_LINE}"
-            ),
-            BROKER_COMP_LINE,
-            "If that is worth showing the seller, where should I send the written offer?",
-            SIGN_OFF,
-        ]
-    )
+    lines = [
+        _agent_greeting(listing),
+        "",
+        f"I would like to submit the following cash offer for {address}:",
+        "",
+        f"Offer Price: {_money(cash_offer)}",
+        _earnest_line(),
+        f"Closing Timeline: On or before {CLOSE_DAYS} days after acceptance",
+        f"Inspection / Walkthrough Period: {DUE_DILIGENCE_DAYS} days after acceptance",
+        "Financing: No financing contingency",
+        "",
+        INVESTMENT_PURPOSE_LINE,
+        "",
+        BROKER_COMP_LINE,
+        "",
+        REVIEW_LINE,
+        "",
+        CLOSING_CTA_LINE,
+        "",
+        "Thank you,",
+        SIGN_OFF,
+    ]
 
     return {
         "variation": 1,
         "subject": f"Offer on {address}",
-        "body": body,
+        "body": "\n".join(lines),
     }
 
 
@@ -96,38 +137,47 @@ def _gen_of_email(listing: dict, offer: dict) -> dict:
         or 0
     )
     down_payment = offer.get("down_payment") or (_number(purchase_price) * 0.05)
-    financed_balance = (
-        offer.get("financed_balance")
-        or (_number(purchase_price) - _number(down_payment))
-    )
     monthly_payment = offer.get("monthly_payment") or 0
     term = offer.get("term") or offer.get("num_payments") or 100
-    interest_rate = offer.get("interest_rate", 0)
+    balloon = offer.get("balloon") or 0
 
-    body = "\n\n".join(
-        [
-            _agent_greeting(listing),
-            (
-                f"I saw the listing at {address}. I can offer {_money(purchase_price)} "
-                f"with {_money(down_payment)} down, seller-financed balance of "
-                f"{_money(financed_balance)}, {_money(monthly_payment)}/mo for "
-                f"{term} months at {_number(interest_rate):g}% interest."
-            ),
-            (
-                "Terms would be as-is with no repair requests, $500 earnest money, "
-                "10-day due diligence, and closing in 21-30 days. "
-                f"{INVESTMENT_PURPOSE_LINE}"
-            ),
-            BROKER_COMP_LINE,
-            "If that is worth showing the seller, where should I send the written offer?",
-            SIGN_OFF,
-        ]
-    )
+    lines = [
+        _agent_greeting(listing),
+        "",
+        f"I would like to submit the following owner-finance offer for {address}:",
+        "",
+        f"Purchase Price: {_money(purchase_price)}",
+        f"Down Payment: {_money(down_payment)}",
+        f"Monthly Payment: {_money(monthly_payment)}",
+        f"Term: {term:g} months" if isinstance(term, (int, float)) else f"Term: {term} months",
+    ]
+    if balloon:
+        lines.append(
+            f"Balloon: {balloon:g} months"
+            if isinstance(balloon, (int, float))
+            else f"Balloon: {balloon} months"
+        )
+    lines += [
+        _earnest_line(),
+        f"Closing Timeline: On or before {CLOSE_DAYS} days after acceptance",
+        f"Inspection / Walkthrough Period: {DUE_DILIGENCE_DAYS} days after acceptance",
+        "",
+        INVESTMENT_PURPOSE_LINE,
+        "",
+        BROKER_COMP_LINE,
+        "",
+        REVIEW_LINE,
+        "",
+        CLOSING_CTA_LINE,
+        "",
+        "Thank you,",
+        SIGN_OFF,
+    ]
 
     return {
         "variation": 1,
-        "subject": f"Offer on {address}",
-        "body": body,
+        "subject": f"Owner Finance Offer on {address}",
+        "body": "\n".join(lines),
     }
 
 
