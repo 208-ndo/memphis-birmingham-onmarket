@@ -4,7 +4,10 @@ import sys
 import json
 import os
 from datetime import datetime
-from config import MARKETS, ACTIVE_MARKETS, GLOBAL_DAILY_CAP, PER_INBOX_CAP
+from config import (
+    MARKETS, ACTIVE_MARKETS, GLOBAL_DAILY_CAP, PER_INBOX_CAP,
+    OF_MIN_PRICE, OF_MAX_PRICE, OF_AUDIT_MIN_PRICE, OF_AUDIT_MAX_PRICE,
+)
 from scraper import scrape_market
 from offer import calculate_offer
 from email_gen import generate_emails, pick_email
@@ -26,6 +29,49 @@ OVERFLOW_FILE = "data/overflow.json"
 # Per-run limit: split global daily cap evenly across 3 runs/day and active markets
 # e.g. 30 cap / 3 runs = 10/run total, but enforced as a global running total
 DAILY_LIMIT = PER_INBOX_CAP  # per-inbox per-day cap (passed to send_batch)
+
+# Sent History cap — generous on purpose. At GLOBAL_DAILY_CAP=30/day this is
+# ~330 days of full-volume sending before any trimming. Historical/sent
+# records are audit trail, dedup reference, and follow-up tracking data —
+# they are NEVER deleted by normal pipeline operation; this cap only exists
+# as a sanity ceiling against unbounded file growth over years.
+HISTORY_MAX_RECORDS = 10000
+
+
+def classify_offer_lane(list_price: float, offer: dict) -> str:
+    """
+    Pure dashboard/audit classification label. Does NOT influence offer
+    math, pitch_holds, dedup, or send eligibility in any way — those
+    decisions are made entirely by offer.py and the existing pitch_holds
+    gate in run_market(). This only labels what already happened, for
+    clarity in the dashboard and logs.
+
+      $30k-$80k                          -> OWNER_FINANCE_PRODUCTION
+      $80k-$100k                         -> OWNER_FINANCE_AUDIT (never auto-sent;
+                                             offer.py routes this to the cash lane,
+                                             which requires ARV — absent ARV it
+                                             already returns no_arv/pitch_holds=False)
+      $100k+ with confirmed ARV (cash_lowball) -> CASH_LOWBALL_ARV_CONFIRMED
+      $100k+ without ARV/comps           -> CASH_REVIEW_ARV_REQUIRED
+      $500k+ (manual underwriting)       -> NO_AUTO_OFFER_HIGH_PRICE
+    """
+    if list_price <= 0:
+        return "UNCLASSIFIED"
+
+    if OF_MIN_PRICE <= list_price <= OF_MAX_PRICE:
+        return "OWNER_FINANCE_PRODUCTION"
+
+    if OF_AUDIT_MIN_PRICE < list_price <= OF_AUDIT_MAX_PRICE:
+        return "OWNER_FINANCE_AUDIT"
+
+    offer_type = (offer or {}).get("offer_type", "")
+    if offer_type == "manual_review":
+        return "NO_AUTO_OFFER_HIGH_PRICE"
+    if offer_type == "cash_lowball":
+        return "CASH_LOWBALL_ARV_CONFIRMED"
+
+    # no_arv, skip, or anything else above the audit band — review only
+    return "CASH_REVIEW_ARV_REQUIRED"
 
 
 def load_overflow() -> list:
@@ -77,16 +123,18 @@ def save_dashboard_data(market_key: str, leads: list, sent_results: list):
     for lead in leads:
         address = lead.get("address", "")
         offer   = lead.get("offer", {})
+        list_price = lead.get("price", 0)
         new_entries.append({
             "address":             address,
             "city":                lead.get("city"),
             "state":               lead.get("state"),
-            "list_price":          lead.get("price", 0),
+            "list_price":          list_price,
             "days_on_market":      lead.get("days_on_market", 0),
             "agent_name":          lead.get("agent_name"),
             "agent_email":         lead.get("agent_email"),
             "agent_phone":         lead.get("agent_phone"),
             "offer_type":          offer.get("offer_type", ""),
+            "offer_lane":          classify_offer_lane(list_price, offer),
             "owner_finance_offer": offer.get("owner_finance_offer", 0),
             "cash_offer":          offer.get("cash_offer", 0),
             "monthly_payment":     offer.get("monthly_payment", 0),
@@ -111,14 +159,16 @@ def save_dashboard_data(market_key: str, leads: list, sent_results: list):
 def save_pipeline_log(all_results: dict):
     os.makedirs("data", exist_ok=True)
     log_file = "data/pipeline_log.json"
-    existing_runs  = []
-    existing_queue = []
+    existing_runs    = []
+    existing_history = []
+    legacy_queue     = []  # old field name, pre-dating the queue/history split
     if os.path.exists(log_file):
         try:
             with open(log_file, "r") as f:
                 old = json.load(f)
-            existing_runs  = old.get("runs", [])
-            existing_queue = old.get("queue", [])
+            existing_runs    = old.get("runs", [])
+            existing_history = old.get("history", [])
+            legacy_queue     = old.get("queue", [])
         except Exception:
             pass
 
@@ -142,18 +192,23 @@ def save_pipeline_log(all_results: dict):
             "status": "OK" if r["emails_sent"] > 0 else "NO SENDS",
         })
 
+    # Markets actually included in THIS run — used to scope "Current Run / Active Queue"
+    active_market_labels = {r["market_label"] for r in all_results.values()}
+
     new_queue = []
     for market_key, r in all_results.items():
         for item in r.get("sent_items", []):
             listing = item["listing"]
             offer   = item["offer"]
             sent_email = item.get("email", {})
+            list_price = listing.get("price", 0)
             new_queue.append({
                 "address":      listing.get("address"),
                 "market":       r["market_label"],
-                "price":        listing.get("price", 0),
+                "price":        list_price,
                 "dom":          listing.get("days_on_market", 0),
                 "type":         "OF" if offer.get("offer_type") == "owner_finance" else "CL",
+                "offer_lane":   classify_offer_lane(list_price, offer),
                 "offer":        offer.get("owner_finance_offer") or offer.get("cash_offer", 0),
                 "agent":        listing.get("agent_name"),
                 "agent_email":  listing.get("agent_email"),
@@ -175,8 +230,38 @@ def save_pipeline_log(all_results: dict):
                 "pitch_holds":        offer.get("pitch_holds", False),
             })
 
-    combined_runs  = (new_runs + existing_runs)[:30]
-    combined_queue = (new_queue + existing_queue)[:200]
+    combined_runs = (new_runs + existing_runs)[:30]
+
+    # ── "queue" = CURRENT RUN / ACTIVE QUEUE ONLY ─────────────────────────────
+    # Only this run's sent items, scoped to this run's active markets. Never
+    # blended with older runs — that blending was the root cause of stale
+    # Memphis/Birmingham rows appearing under a fresh Little Rock/OKC run.
+    combined_queue = new_queue
+
+    # ── "history" = SENT HISTORY / HISTORICAL OUTREACH — append-only ─────────
+    # Every record ever written here is preserved (audit, follow-up tracking,
+    # duplicate prevention). legacy_queue (the old blended field from before
+    # this split existed) is migrated in once so no prior emailed records are
+    # ever lost. Deduped on (address, agent_email, sent) so re-running the
+    # same write doesn't create exact duplicate rows.
+    merged_history = new_queue + existing_history + legacy_queue
+    seen_keys = set()
+    deduped_history = []
+    for entry in merged_history:
+        key = (entry.get("address"), entry.get("agent_email"), entry.get("sent"))
+        if key in seen_keys:
+            continue
+        seen_keys.add(key)
+        deduped_history.append(entry)
+
+    if len(deduped_history) > HISTORY_MAX_RECORDS:
+        log.warning(
+            f"Sent history at {len(deduped_history)} records, exceeds "
+            f"HISTORY_MAX_RECORDS={HISTORY_MAX_RECORDS}. Trimming OLDEST records "
+            f"only — no recent sent/emailed record is ever dropped by normal "
+            f"day-to-day operation at current send volume."
+        )
+    combined_history = deduped_history[:HISTORY_MAX_RECORDS]
 
     log_data = {
         "summary": {
@@ -186,13 +271,18 @@ def save_pipeline_log(all_results: dict):
             "ghl_pushed":  total_ghl,
             "of_deals":    total_of,
             "cl_deals":    total_cl,
+            "active_markets_this_run": sorted(active_market_labels),
         },
-        "runs":  combined_runs,
-        "queue": combined_queue,
+        "runs":    combined_runs,
+        "queue":   combined_queue,    # Current Run / Active Queue — this run only
+        "history": combined_history,  # Sent History / Historical Outreach — all-time, never deleted
     }
     with open(log_file, "w") as f:
         json.dump(log_data, f, indent=2)
-    log.info(f"pipeline_log.json written — {total_emails} emails, {total_leads} leads")
+    log.info(
+        f"pipeline_log.json written — {total_emails} emails this run, "
+        f"{len(combined_queue)} in active queue, {len(combined_history)} in sent history"
+    )
 
 
 def run_market(market_key: str, dry_run: bool = False) -> dict:
