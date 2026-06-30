@@ -53,7 +53,7 @@ MARKETS = {
         "gmail_user": os.environ.get("GMAIL_USER_MEMPHIS", ""),
         "gmail_app_password": os.environ.get("GMAIL_APP_PASSWORD_MEMPHIS", ""),
         "ghl_phone_number": os.environ.get("GHL_PHONE_MEMPHIS", ""),
-        "bounds": {"west": -92.5, "east": -92.1, "south": 34.6, "north": 34.85},
+        "bounds": {"west": -92.5, "east": -92.0, "south": 34.6, "north": 35.0},
     },
     "oklahoma_city": {
         "city": "Oklahoma City", "state": "OK", "zip_codes": [],
@@ -63,7 +63,7 @@ MARKETS = {
         "gmail_user": os.environ.get("GMAIL_USER_BIRMINGHAM", ""),
         "gmail_app_password": os.environ.get("GMAIL_APP_PASSWORD_BIRMINGHAM", ""),
         "ghl_phone_number": os.environ.get("GHL_PHONE_BIRMINGHAM", ""),
-        "bounds": {"west": -97.7, "east": -97.3, "south": 35.35, "north": 35.65},
+        "bounds": {"west": -97.7, "east": -97.2, "south": 35.3, "north": 35.7},
     },
 }
 
@@ -154,6 +154,15 @@ MIN_DOM       = 30   # hard rule — never lowered, never made 7-29 auto-send el
 # Full pipeline run (2 markets x 4 bands + 2 enrichment) = 10 calls.
 # Set to 10 as safe default; raise deliberately if adding more markets/bands.
 MAX_APIFY_RUNS_PER_WORKFLOW = 10
+
+# ─── Price-Reduced OF Variant ───────────────────────────────────────────────────
+# When True: $30k-$80k OF bands get a second Apify pass with isReducedPrice=True.
+# This surfaces listings with at least one price cut — a motivated-seller signal.
+# Cost: adds 2 extra actor calls per market (one per OF band pair), so 4 extra
+#       calls total for 2 active markets, pushing budget from ~10 to ~14/run.
+# Default: False — base search only, budget stays within MAX_APIFY_RUNS_PER_WORKFLOW.
+# Enable only after confirming base search produces sufficient leads.
+ENABLE_PRICE_REDUCED_OF_VARIANT = False
 
 AGENT_COOLDOWN_DAYS  = 7
 AGENT_LIFETIME_CAP   = 3
