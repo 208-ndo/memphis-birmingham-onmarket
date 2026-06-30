@@ -10,7 +10,11 @@ import json
 import ast
 from urllib.parse import quote
 from apify_client import ApifyClient
-from config import DISTRESSED_KEYWORDS, MAX_VIEWS_DAY, MAX_APIFY_RUNS_PER_WORKFLOW, ENABLE_PRICE_REDUCED_OF_VARIANT
+from config import (
+    DISTRESSED_KEYWORDS, MAX_VIEWS_DAY, MAX_APIFY_RUNS_PER_WORKFLOW,
+    ENABLE_PRICE_REDUCED_OF_VARIANT, MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW,
+    MAX_LEADS_TO_ENRICH_PER_WORKFLOW,
+)
 from agent_email_finder import enrich_leads_with_emails
 
 logger = logging.getLogger(__name__)
@@ -42,10 +46,66 @@ MARKET_BOUNDS = {
     "Oklahoma City": {"west": -97.7, "east": -97.3, "south": 35.35, "north": 35.65},
 }
 
-# Module-level Apify actor call counter — shared across all scrape_market() calls
-# within the same process (one pipeline run = one process).
-# Enforces MAX_APIFY_RUNS_PER_WORKFLOW from config.py.
-_apify_call_count = 0
+# ── Shared Apify Budget (covers ALL Apify actors: Zillow + Google email) ─────
+# Module-level counters, shared across all scrape_market() calls within the
+# same process (one pipeline run = one process, per market sequentially).
+# MAX_APIFY_RUNS_PER_WORKFLOW is a HARD CEILING across every actor call —
+# Zillow scraper AND Google email search both draw from this same budget.
+# MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW is an additional, lower sub-cap
+# applied only to Google email enrichment calls.
+_apify_call_count             = 0  # total across ALL actors (Zillow + Google + any future actor)
+_zillow_call_count            = 0  # subset of the above, Zillow actor only
+_email_enrichment_call_count  = 0  # subset of the above, Google actor only
+
+
+def can_make_apify_call() -> bool:
+    """True if any actor (Zillow or otherwise) may still be called this workflow."""
+    return _apify_call_count < MAX_APIFY_RUNS_PER_WORKFLOW
+
+
+def register_zillow_call() -> int:
+    """Record one Zillow actor call against the shared budget. Returns new shared total."""
+    global _apify_call_count, _zillow_call_count
+    _apify_call_count  += 1
+    _zillow_call_count += 1
+    return _apify_call_count
+
+
+def register_apify_call() -> int:
+    """Generic alias retained for any other future actor that isn't Zillow or Google."""
+    global _apify_call_count
+    _apify_call_count += 1
+    return _apify_call_count
+
+
+def can_make_email_enrichment_call() -> bool:
+    """
+    True only if BOTH the shared total budget AND the email-specific sub-cap
+    still have room. Checked before every Google email actor call.
+    """
+    if _apify_call_count >= MAX_APIFY_RUNS_PER_WORKFLOW:
+        return False
+    if _email_enrichment_call_count >= MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW:
+        return False
+    return True
+
+
+def register_email_enrichment_call() -> tuple:
+    """Record one Google email actor call against both the shared and email counters."""
+    global _apify_call_count, _email_enrichment_call_count
+    _apify_call_count            += 1
+    _email_enrichment_call_count += 1
+    return _apify_call_count, _email_enrichment_call_count
+
+
+def get_apify_budget_status() -> dict:
+    return {
+        "total_calls_used":  _apify_call_count,
+        "total_calls_max":   MAX_APIFY_RUNS_PER_WORKFLOW,
+        "zillow_calls_used": _zillow_call_count,
+        "google_calls_used": _email_enrichment_call_count,
+        "google_calls_max":  MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW,
+    }
 
 
 def parse_price(val) -> int:
@@ -211,14 +271,187 @@ def screen_listing(item: dict, band_min: int, band_max: int) -> tuple[bool, str]
     return False, "reject_dom_missing_no_keyword"
 
 
-def passes_views_gate(listing: dict) -> bool:
+def compute_views_per_day(listing: dict):
+    """Return views/day as float, or None if it can't be computed."""
     try:
         views = int(listing.get("pageViewCount") or listing.get("totalViews") or 0)
         dom   = get_dom(listing)
         days  = max(dom if dom is not None else 30, 1)
-        return (views / days) <= MAX_VIEWS_DAY
+        return views / days
     except Exception:
+        return None
+
+
+def passes_views_gate(listing: dict) -> bool:
+    vpd = compute_views_per_day(listing)
+    if vpd is None:
         return True
+    return vpd <= MAX_VIEWS_DAY
+
+
+def get_photo_count(listing: dict):
+    """
+    Best-effort photo count from common Apify zillow-scraper fields.
+    Returns None if no photo data is present (treated as neutral in scoring).
+    """
+    for key in ["photoCount", "photo_count", "numPhotos"]:
+        val = listing.get(key)
+        if isinstance(val, (int, float)) and val >= 0:
+            return int(val)
+
+    for key in ["photos", "carouselPhotos", "responsivePhotos", "imgSrc"]:
+        val = listing.get(key)
+        if isinstance(val, list):
+            return len(val)
+
+    return None
+
+
+def get_description_text(listing: dict) -> str:
+    for key in ["description", "homeDescription", "publicRemarks", "remarks"]:
+        val = listing.get(key)
+        if isinstance(val, str) and val.strip():
+            return val.strip()
+    return ""
+
+
+def normalize_address(address: str) -> str:
+    """Lowercase, strip punctuation/whitespace for dedup comparison."""
+    if not address:
+        return ""
+    return re.sub(r"[^a-z0-9]", "", address.lower())
+
+
+def dedup_leads(leads: list[dict]) -> list[dict]:
+    """
+    Final dedup pass across the full market lead list by zpid, URL, and
+    normalized address. zpid dedup already happens during band scraping via
+    seen_zpids, but URL/address dedup is applied here as a safety net before
+    scoring — catches cases where the same property surfaced under a
+    different zpid (re-listed) or via the price-reduced variant.
+    """
+    seen_zpid = set()
+    seen_url  = set()
+    seen_addr = set()
+    deduped   = []
+
+    for lead in leads:
+        zpid = lead.get("zpid", "")
+        url  = lead.get("url", "")
+        addr = normalize_address(lead.get("address", ""))
+
+        if zpid and zpid in seen_zpid:
+            continue
+        if url and url in seen_url:
+            continue
+        if addr and addr in seen_addr:
+            continue
+
+        if zpid:
+            seen_zpid.add(zpid)
+        if url:
+            seen_url.add(url)
+        if addr:
+            seen_addr.add(addr)
+
+        deduped.append(lead)
+
+    return deduped
+
+
+# ── KISS/Zompz-style lead scoring ────────────────────────────────────────────
+# Scores what data exists; no single signal is required. Higher = more
+# promising for the OF lane (cheap, stale, low-competition, motivated-seller
+# signals). Used only to RANK leads before email enrichment — does not
+# replace or loosen any existing screen_listing()/DOM/price gates.
+OF_BAND_MIN = 30000
+OF_BAND_MAX = 80000
+MIN_SQFT_FOR_SCORING = 750
+
+
+def score_lead(lead: dict) -> dict:
+    """
+    Returns {"score": float, "breakdown": {signal: points}}.
+    All inputs are read from the already-extracted lead dict — no extra
+    Apify calls. Missing signals simply contribute 0, never penalize.
+    """
+    breakdown: dict[str, float] = {}
+
+    price = lead.get("price", 0)
+    dom   = lead.get("days_on_market", -1)
+    views_per_day = lead.get("views_per_day")
+    photo_count   = lead.get("photo_count")
+    has_keyword   = lead.get("has_distress_keyword", False)
+    sqft          = lead.get("sqft", 0)
+    status        = (lead.get("status") or "").upper()
+    desc_len      = lead.get("description_length", 0)
+
+    # Active / for-sale only (no pending/contingent/backup) — bonus if confirmed
+    if status in ("FOR_SALE", "FORSALE", "ACTIVE"):
+        breakdown["active_status"] = 10
+    elif status in ("PENDING", "CONTINGENT", "ACTIVE_UNDER_CONTRACT", "BACKUP"):
+        breakdown["active_status"] = -50  # should already be filtered out upstream, but defensive
+    else:
+        breakdown["active_status"] = 0  # unknown — neutral
+
+    # OF production band ($30k-$80k) strongly preferred
+    if OF_BAND_MIN <= price <= OF_BAND_MAX:
+        breakdown["of_band_price"] = 25
+        # Prefer lower price within the band (cheaper = more margin room)
+        band_position = (price - OF_BAND_MIN) / (OF_BAND_MAX - OF_BAND_MIN)
+        breakdown["lower_price_in_band"] = round(10 * (1 - band_position), 1)
+    else:
+        breakdown["of_band_price"] = 5
+        breakdown["lower_price_in_band"] = 0
+
+    # Older / truer DOM preferred (diminishing returns past 120 days)
+    if dom and dom >= 30:
+        breakdown["dom_age"] = round(min(dom, 120) / 120 * 20, 1)
+    else:
+        breakdown["dom_age"] = 0
+
+    # Low views/day preferred (<=25 ideal)
+    if views_per_day is not None:
+        if views_per_day <= MAX_VIEWS_DAY:
+            breakdown["low_views"] = 15
+        else:
+            breakdown["low_views"] = max(0, round(15 - (views_per_day - MAX_VIEWS_DAY) * 0.5, 1))
+    else:
+        breakdown["low_views"] = 0
+
+    # Few photos preferred (1-10 = lazy/weak listing signal)
+    if photo_count is not None:
+        if 1 <= photo_count <= 10:
+            breakdown["few_photos"] = 15
+        elif photo_count == 0:
+            breakdown["few_photos"] = 5  # no photo data — mildly positive, could be weak listing
+        else:
+            breakdown["few_photos"] = max(0, 15 - (photo_count - 10))
+    else:
+        breakdown["few_photos"] = 0
+
+    # Weak description (short or missing) — lazy listing signal
+    if desc_len == 0:
+        breakdown["weak_description"] = 8
+    elif desc_len < 100:
+        breakdown["weak_description"] = 5
+    else:
+        breakdown["weak_description"] = 0
+
+    # Distressed / motivated-seller keyword match
+    breakdown["distress_keyword"] = 20 if has_keyword else 0
+
+    # Square footage >= 750 (already gated upstream by URL filter, confirm if known)
+    if sqft:
+        breakdown["sqft_ok"] = 10 if sqft >= MIN_SQFT_FOR_SCORING else 0
+    else:
+        breakdown["sqft_ok"] = 0
+
+    # Agent-listed only — URL always filters isForSaleByAgent=true, constant small bonus
+    breakdown["agent_listed"] = 5
+
+    total = round(sum(breakdown.values()), 1)
+    return {"score": total, "breakdown": breakdown}
 
 
 def extract_lead(listing: dict, market: dict, candidate_reason: str = "") -> dict | None:
@@ -248,29 +481,42 @@ def extract_lead(listing: dict, market: dict, candidate_reason: str = "") -> dic
         if isinstance(photo_url, list):
             photo_url = photo_url[0] if photo_url else ""
 
+        # ── Scoring inputs (no extra Apify calls — all derived from this item) ──
+        status            = (listing.get("statusType") or listing.get("rawHomeStatusCd") or "").upper()
+        photo_count       = get_photo_count(listing)
+        views_per_day     = compute_views_per_day(listing)
+        has_keyword       = has_distress_keyword(listing)
+        description_text  = get_description_text(listing)
+
         if not address or not price:
             return None
 
         return {
-            "address":          address,
-            "city":             city,
-            "state":            state,
-            "zip":              zipcode,
-            "price":            price,
-            "list_price":       price,
-            "zpid":             zpid,
-            "url":              url,
-            "agent_name":       agent_name,
-            "agent_email":      agent_email,
-            "agent_phone":      agent_phone,
-            "brokerName":       agent_name,
-            "days_on_market":   dom if dom is not None else -1,
-            "bedrooms":         bedrooms,
-            "bathrooms":        bathrooms,
-            "sqft":             sqft,
-            "photo_url":        photo_url,
-            "market":           market.get("city", "").lower(),
-            "candidate_reason": candidate_reason,
+            "address":             address,
+            "city":                city,
+            "state":               state,
+            "zip":                 zipcode,
+            "price":               price,
+            "list_price":          price,
+            "zpid":                zpid,
+            "url":                 url,
+            "agent_name":          agent_name,
+            "agent_email":         agent_email,
+            "agent_phone":         agent_phone,
+            "brokerName":          agent_name,
+            "days_on_market":      dom if dom is not None else -1,
+            "bedrooms":            bedrooms,
+            "bathrooms":           bathrooms,
+            "sqft":                sqft,
+            "photo_url":           photo_url,
+            "market":              market.get("city", "").lower(),
+            "candidate_reason":    candidate_reason,
+            # Scoring-only fields — not consumed by offer.py/email_gen.py
+            "status":              status,
+            "photo_count":         photo_count,
+            "views_per_day":       views_per_day,
+            "has_distress_keyword": has_keyword,
+            "description_length":  len(description_text),
         }
     except Exception as e:
         logger.warning(f"Failed to extract lead: {e}")
@@ -278,8 +524,6 @@ def extract_lead(listing: dict, market: dict, candidate_reason: str = "") -> dic
 
 
 def scrape_market(market: dict) -> list[dict]:
-    global _apify_call_count
-
     city = market["city"]
 
     # ── APIFY_ENABLED guard ──────────────────────────────────────────────────
@@ -288,23 +532,38 @@ def scrape_market(market: dict) -> list[dict]:
     apify_enabled_raw = os.environ.get("APIFY_ENABLED", "true").lower().strip()
     apify_enabled = (apify_enabled_raw == "true")
 
+    # ── EMAIL_ENRICHMENT_ENABLED guard ───────────────────────────────────────
+    # Set EMAIL_ENRICHMENT_ENABLED=false to scrape Zillow but skip the Google
+    # email-search actor entirely. Leads keep agent_email="" (displayed as NONE).
+    email_enrichment_enabled_raw = os.environ.get("EMAIL_ENRICHMENT_ENABLED", "true").lower().strip()
+    email_enrichment_enabled = (email_enrichment_enabled_raw == "true")
+
     planned_bands    = len(PRICE_BANDS)
     of_bands         = sum(1 for b in PRICE_BANDS if b["max"] <= 80000)
     pr_extra_calls   = of_bands if ENABLE_PRICE_REDUCED_OF_VARIANT else 0
-    est_actor_calls  = planned_bands + pr_extra_calls + 1  # bands + optional PR + enrichment
+    planned_zillow_calls = planned_bands + pr_extra_calls
+    planned_email_calls  = MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW if email_enrichment_enabled else 0
+    est_actor_calls  = planned_zillow_calls + planned_email_calls
 
     logger.info("=" * 60)
     logger.info(f"SCRAPER: {city}")
-    logger.info(f"  APIFY_ENABLED                    : {apify_enabled} (raw='{apify_enabled_raw}')")
-    logger.info(f"  MAX_APIFY_RUNS_PER_WORKFLOW       : {MAX_APIFY_RUNS_PER_WORKFLOW}")
-    logger.info(f"  ENABLE_PRICE_REDUCED_OF_VARIANT   : {ENABLE_PRICE_REDUCED_OF_VARIANT}")
-    logger.info(f"  Apify calls used so far           : {_apify_call_count}")
+    logger.info(f"  APIFY_ENABLED                       : {apify_enabled} (raw='{apify_enabled_raw}')")
+    logger.info(f"  EMAIL_ENRICHMENT_ENABLED            : {email_enrichment_enabled} (raw='{email_enrichment_enabled_raw}')")
+    logger.info(f"  MAX_APIFY_RUNS_PER_WORKFLOW         : {MAX_APIFY_RUNS_PER_WORKFLOW} (shared — Zillow + Google + any future actor)")
+    logger.info(f"  MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW: {MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW}")
+    logger.info(f"  MAX_LEADS_TO_ENRICH_PER_WORKFLOW    : {MAX_LEADS_TO_ENRICH_PER_WORKFLOW} (top-scored leads sent to enrichment)")
+    logger.info(f"  ENABLE_PRICE_REDUCED_OF_VARIANT     : {ENABLE_PRICE_REDUCED_OF_VARIANT}")
+    logger.info(f"  Apify calls used so far — total     : {_apify_call_count}")
+    logger.info(f"  Apify calls used so far — zillow    : {_zillow_call_count}")
+    logger.info(f"  Apify calls used so far — google    : {_email_enrichment_call_count}")
     band_labels = " | ".join(f"${b['min']:,}-${b['max']:,}" for b in PRICE_BANDS)
-    logger.info(f"  Planned bands                     : {planned_bands} ({band_labels})")
+    logger.info(f"  Planned bands                       : {planned_bands} ({band_labels})")
     if ENABLE_PRICE_REDUCED_OF_VARIANT:
-        logger.info(f"  Price-reduced OF extra calls      : {pr_extra_calls} ($30k-$80k bands only)")
-    logger.info(f"  Estimated actor calls this market : {est_actor_calls} (bands + enrichment)")
-    logger.info(f"  Remaining budget                  : {max(0, MAX_APIFY_RUNS_PER_WORKFLOW - _apify_call_count)} calls")
+        logger.info(f"  Price-reduced OF extra calls        : {pr_extra_calls} ($30k-$80k bands only)")
+    logger.info(f"  Planned Zillow calls this market    : {planned_zillow_calls}")
+    logger.info(f"  Planned max Google email calls      : {planned_email_calls} (only for top {MAX_LEADS_TO_ENRICH_PER_WORKFLOW} scored leads)")
+    logger.info(f"  Estimated actor calls this market   : {est_actor_calls} (Zillow + Google, capped)")
+    logger.info(f"  Remaining shared budget              : {max(0, MAX_APIFY_RUNS_PER_WORKFLOW - _apify_call_count)} calls")
     logger.info("=" * 60)
 
     if not apify_enabled:
@@ -341,8 +600,8 @@ def scrape_market(market: dict) -> list[dict]:
             logger.info(f"URL: {search_url[:120]}...")
 
             try:
-                # ── Global call budget check ─────────────────────────────────
-                if _apify_call_count >= MAX_APIFY_RUNS_PER_WORKFLOW:
+                # ── Shared Apify budget check (Zillow draws from the same pool) ──
+                if not can_make_apify_call():
                     logger.warning(
                         f"MAX_APIFY_RUNS_PER_WORKFLOW={MAX_APIFY_RUNS_PER_WORKFLOW} reached "
                         f"after {_apify_call_count} calls — stopping scrape for {city}"
@@ -352,9 +611,9 @@ def scrape_market(market: dict) -> list[dict]:
                 max_results = MAX_RESULTS_OF_BAND if is_of_band else MAX_RESULTS_CL_BAND
                 logger.info(
                     f"Band {band_label} [{variant}]: maxResults={max_results} "
-                    f"| actor call #{_apify_call_count + 1}"
+                    f"| actor call #{_apify_call_count + 1} (zillow call #{_zillow_call_count + 1})"
                 )
-                _apify_call_count += 1
+                register_zillow_call()
                 run   = client.actor(ACTOR_ID).call(
                     run_input={"searchUrls": [{"url": search_url}], "maxResults": max_results},
                     timeout_secs=180
@@ -427,22 +686,86 @@ def scrape_market(market: dict) -> list[dict]:
         )
         leads.extend(band_leads_all)
 
-    # Enrich ALL leads with emails via Google search
+    # ── Final dedup safety net (zpid + URL + normalized address) ─────────────
+    pre_dedup_count = len(leads)
+    leads = dedup_leads(leads)
+    if len(leads) != pre_dedup_count:
+        logger.info(f"Final dedup: {pre_dedup_count} -> {len(leads)} after URL/address dedup")
+
+    # ── KISS/Zompz-style scoring + ranking (no Apify calls — pure Python) ────
+    for lead in leads:
+        scored = score_lead(lead)
+        lead["score"] = scored["score"]
+        lead["score_breakdown"] = scored["breakdown"]
+
+    leads.sort(key=lambda l: l.get("score", 0), reverse=True)
+
     if leads:
-        logger.info(f"Starting email enrichment for {len(leads)} leads...")
-        leads = enrich_leads_with_emails(leads, market, client)
+        logger.info("=" * 60)
+        logger.info(f"TOP SCORED LEADS — {city} ({min(len(leads), MAX_LEADS_TO_ENRICH_PER_WORKFLOW)} of {len(leads)} shown)")
+        for i, lead in enumerate(leads[:MAX_LEADS_TO_ENRICH_PER_WORKFLOW], start=1):
+            logger.info(
+                f"  #{i} score={lead['score']:>5.1f} | {lead['address']} | "
+                f"${lead['price']:,} | DOM={lead['days_on_market']} | "
+                f"breakdown={lead['score_breakdown']}"
+            )
+        logger.info("=" * 60)
+
+    # ── Shortlist: only the top N proceed to email enrichment ────────────────
+    shortlist = leads[:MAX_LEADS_TO_ENRICH_PER_WORKFLOW]
+    remainder = leads[MAX_LEADS_TO_ENRICH_PER_WORKFLOW:]
+    if remainder:
+        logger.info(
+            f"{len(remainder)} lower-scored leads will NOT be sent to email "
+            f"enrichment this run (MAX_LEADS_TO_ENRICH_PER_WORKFLOW={MAX_LEADS_TO_ENRICH_PER_WORKFLOW}). "
+            f"They are still kept for the dashboard/log with Email: NONE unless "
+            f"Zillow itself already supplied an email."
+        )
+
+    # ── Email enrichment — gated by EMAIL_ENRICHMENT_ENABLED + shared budget ──
+    # Only the shortlist (top N by score) is ever passed to the Google actor.
+    if not shortlist:
+        pass
+    elif not email_enrichment_enabled:
+        logger.info(
+            f"EMAIL_ENRICHMENT_ENABLED=false — skipping Google email enrichment "
+            f"for {city}. {len(shortlist)} shortlisted leads keep agent_email=NONE where missing."
+        )
+    elif not can_make_email_enrichment_call():
+        logger.warning(
+            "EMAIL ENRICHMENT BUDGET REACHED — keeping remaining leads without email "
+            f"(shared: {_apify_call_count}/{MAX_APIFY_RUNS_PER_WORKFLOW}, "
+            f"google: {_email_enrichment_call_count}/{MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW})"
+        )
+    else:
+        logger.info(
+            f"Starting email enrichment for {len(shortlist)} shortlisted leads "
+            f"(google cap: {MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW} calls, "
+            f"shared budget remaining: {max(0, MAX_APIFY_RUNS_PER_WORKFLOW - _apify_call_count)})..."
+        )
+        shortlist = enrich_leads_with_emails(
+            shortlist, market, client,
+            can_make_call=can_make_email_enrichment_call,
+            register_call=register_email_enrichment_call,
+        )
+
+    leads = shortlist + remainder
 
     for lead in leads:
         dom_display = lead["days_on_market"] if lead["days_on_market"] >= 0 else "unknown"
         logger.info(
             f"LEAD: {lead['address']} | ${lead['price']:,} | "
-            f"DOM: {dom_display} | "
+            f"DOM: {dom_display} | score={lead.get('score', 0):.1f} | "
             f"reason: {lead.get('candidate_reason', '')} | "
             f"Agent: {lead['agent_name']} | "
             f"Email: {lead.get('agent_email') or 'NONE'}"
         )
 
-    logger.info(f"Scrape complete: {city} | {len(leads)} leads passed all screening gates")
+    logger.info(
+        f"Scrape complete: {city} | {len(leads)} leads passed all screening gates | "
+        f"Apify totals — total={_apify_call_count} zillow={_zillow_call_count} "
+        f"google={_email_enrichment_call_count}"
+    )
     return leads
 
 
