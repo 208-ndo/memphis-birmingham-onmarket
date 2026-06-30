@@ -1057,8 +1057,8 @@ function renderHistoryFiltered(){
       </div>
       <div class="modal-btn-row">
         <button class="modal-btn modal-btn-purple" onclick="downloadModalPDF('of')">&#x2B07; Download OF Offer PDF</button>
-        <button class="modal-btn modal-btn-ghost" onclick="genModalEmails('of')">&#x2728; Generate Fresh Emails</button>
       </div>
+      <div style="color:var(--muted);font-size:11px;margin-top:12px;">For a fresh, safe offer email, use the <strong>LOI Email</strong> tab — it does not reuse old wording.</div>
       <div id="m-of-emails" style="display:none;margin-top:16px;">
         <div class="modal-sent-box">
           <div class="modal-sent-subject" id="m-of-email-subject">—</div>
@@ -1968,54 +1968,6 @@ function copyText(id){
   var btn = event.currentTarget; var orig=btn.textContent;
   btn.textContent='✓ Copied!';
   setTimeout(function(){btn.textContent=orig;},2000);
-}
-
-function genModalEmails(type){
-  var lead = _modalLead;
-  if(!lead)return;
-  var prefix = type==='of'?'m-of':'m-cl';
-  document.getElementById(prefix+'-emails').style.display='block';
-  var addr=lead.address||'the property';
-  var broker='Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.';
-  var invest='Buyer is purchasing for investment purposes.';
-  var sign='Michael B. | 229 Holdings LLC';
-  var coe=offerCloseDate(21);
-  var emails;
-  if(type==='of'){
-    var price=fmt2(lead.price||0);
-    emails=[
-      {variation:1,subject:'Offer on '+addr,body:'Hi, I came across your listing at '+addr+' and wanted to get an offer to you. Purchase price is '+price+', $500 earnest, close by '+coe+', 10-day due diligence, as-is. '+broker+' '+invest+' Where can I send the written offer?\n\n'+sign},
-      {variation:2,subject:'Offer on '+addr,body:'Hi, I have an offer ready for '+addr+'. '+price+' purchase price, $500 earnest, 10-day due diligence, as-is, close by '+coe+'. '+broker+' '+invest+' Let me know where to send the written offer.\n\n'+sign},
-      {variation:3,subject:'Written offer for '+addr,body:'Hi, I wanted to reach out about '+addr+'. I have a written offer prepared at '+price+'. Terms: $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests. '+broker+' '+invest+' Where should I send it?\n\n'+sign},
-      {variation:4,subject:'Offer on '+addr,body:'Hi, offer ready for '+addr+': '+price+', $500 earnest, close by '+coe+', as-is. '+broker+' Where can I send the agreement?\n\n'+sign}
-    ];
-  } else {
-    var cashOffer=fmt2(lead.cash_offer||lead.offer||0);
-    emails=[
-      {variation:1,subject:'Offer on '+addr,body:'Hi, I have a cash offer for '+addr+': '+cashOffer+', $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests, no financing contingency. '+broker+' '+invest+' Where can I send the written offer?\n\n'+sign},
-      {variation:2,subject:'Offer on '+addr,body:'Hi, wanted to get a cash offer to you on '+addr+'. '+cashOffer+' cash, $500 earnest, close by '+coe+', 10-day due diligence, as-is. '+broker+' '+invest+' Let me know where to send the agreement.\n\n'+sign},
-      {variation:3,subject:'Offer on '+addr,body:'Hi, I have a written cash offer prepared for '+addr+' at '+cashOffer+'. Terms: $500 earnest, close by '+coe+', 10-day due diligence, as-is, no repair requests, no financing contingency. '+broker+' '+invest+' Where should I send it?\n\n'+sign},
-      {variation:4,subject:'Offer on '+addr,body:'Hi, cash offer on '+addr+': '+cashOffer+', close by '+coe+', as-is. '+broker+' Where can I send the written offer?\n\n'+sign}
-    ];
-  }
-  if(type==='of') _modalOFEmails=emails; else _modalCLEmails=emails;
-  var tabsEl=document.getElementById(prefix+'-email-tabs');
-  tabsEl.innerHTML='';
-  emails.forEach(function(e,i){
-    var btn=document.createElement('button');
-    btn.className='modal-btn modal-btn-ghost'+(i===0?' active':'');
-    btn.style.padding='6px 12px';btn.style.fontSize='10px';
-    btn.textContent='V'+(i+1);
-    btn.onclick=function(){
-      tabsEl.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
-      btn.classList.add('active');
-      document.getElementById(prefix+'-email-subject').textContent=emails[i].subject||'';
-      document.getElementById(prefix+'-email-body').textContent=emails[i].body||'';
-    };
-    tabsEl.appendChild(btn);
-  });
-  document.getElementById(prefix+'-email-subject').textContent=emails[0].subject||'';
-  document.getElementById(prefix+'-email-body').textContent=emails[0].body||'';
 }
 
 function downloadModalPDF(type){
