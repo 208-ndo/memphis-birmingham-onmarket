@@ -147,6 +147,14 @@ MIN_SQFT      = 750
 MAX_VIEWS_DAY = 25
 MIN_DOM       = 30   # hard rule — never lowered, never made 7-29 auto-send eligible
 
+# ─── Apify Safety ──────────────────────────────────────────────────────────────
+# Hard cap on Apify actor calls per workflow run (across all markets + bands).
+# Prevents runaway credit spend if market list grows or loops misbehave.
+# Each price band = 1 actor call. agent_email_finder adds 1 call per market.
+# Full pipeline run (2 markets x 4 bands + 2 enrichment) = 10 calls.
+# Set to 10 as safe default; raise deliberately if adding more markets/bands.
+MAX_APIFY_RUNS_PER_WORKFLOW = 10
+
 AGENT_COOLDOWN_DAYS  = 7
 AGENT_LIFETIME_CAP   = 3
 BUSINESS_HOURS_START = 8
