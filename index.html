@@ -1837,10 +1837,20 @@ function resetLOITab(){
 }
 
 // Required public language — used verbatim, never altered per-offer.
-var LOI_INVESTOR_LINE   = 'Buyer is purchasing for investment purposes.';
-var LOI_COMMISSION_LINE = 'Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing.';
-var LOI_CLOSE_REVIEW    = 'Subject to buyer final walkthrough, title review, and standard closing review.';
+var LOI_INVESTOR_LINE   = 'Buyer is purchasing for investment/business purposes and not as an owner-occupant.';
+var LOI_COMMISSION_LINE = 'Seller to handle any listing broker compensation per the existing listing agreement from seller proceeds at closing, down payment/closing funds, or as otherwise agreed in writing by the seller and broker.';
+var LOI_CLOSE_REVIEW_LEAD = 'This offer is subject to buyer final walkthrough, title review, and standard closing review.';
 var LOI_NO_FINANCING    = 'No financing contingency.';
+
+// Extracts a plain integer from a closing-timeline input like "30" or "30 days".
+// Returns null if the input isn't a number at all (so we don't fabricate a day count).
+function parseDaysNumber(raw){
+  if(!raw) return null;
+  var match = raw.match(/-?\d+(\.\d+)?/);
+  if(!match) return null;
+  var n = parseFloat(match[0]);
+  return isNaN(n) ? null : Math.round(n);
+}
 
 function generateLOI(){
   if(!_modalLead) return;
@@ -1849,43 +1859,83 @@ function generateLOI(){
   var kind     = document.getElementById('loi-offer-type').value; // 'cash' | 'of'
   var price    = parseFloat(document.getElementById('loi-final-price').value) || 0;
   var earnest  = parseFloat(document.getElementById('loi-earnest').value) || 0;
-  var closing  = document.getElementById('loi-closing').value.trim();
-  var inspect  = document.getElementById('loi-inspection').value.trim();
+  var closingRaw  = document.getElementById('loi-closing').value.trim();
+  var inspectRaw  = document.getElementById('loi-inspection').value.trim();
   var buyer    = document.getElementById('loi-buyer').value.trim() || 'Michael B. | 229 Holdings LLC';
 
-  var subject = 'Offer on ' + address;
+  // Closing timeline: render as "On or before X days after acceptance" whenever
+  // the input contains a number. If it's pure custom text with no number, use
+  // the text as-is rather than fabricating a day count.
+  var closingDays = parseDaysNumber(closingRaw);
+  var closingLine = closingDays != null
+    ? ('On or before ' + closingDays + ' days after acceptance')
+    : (closingRaw || '');
+
+  // Walkthrough/inspection note: a bare number renders as the standard
+  // walkthrough sentence; free text is used verbatim.
+  var inspectDays = parseDaysNumber(inspectRaw);
+  var isInspectPureNumber = inspectRaw && /^\d+(\.\d+)?$/.test(inspectRaw);
+  var walkthroughSentence = isInspectPureNumber
+    ? ('Buyer to complete walkthrough/review within ' + inspectDays + ' days of acceptance.')
+    : (inspectRaw ? inspectRaw : (closingDays != null ? ('Buyer to complete walkthrough/review within ' + closingDays + ' days of acceptance.') : ''));
+
+  var subject = '';
   var body = '';
 
   if(kind === 'cash'){
-    body = 'Hi [Agent],\n\n'
-      + 'I would like to submit a cash offer on ' + address
-      + (price ? (' for ' + fmt2(price)) : ' — [OFFER AMOUNT]') + '.\n\n'
-      + LOI_NO_FINANCING + ' ' + LOI_INVESTOR_LINE + '\n\n'
-      + LOI_COMMISSION_LINE + '\n\n'
-      + (closing ? ('Proposed closing: ' + closing + '.\n\n') : '')
-      + (earnest ? ('Earnest money: ' + fmt2(earnest) + '.\n\n') : '')
-      + (inspect ? (inspect + '\n\n') : '')
-      + LOI_CLOSE_REVIEW + '\n\n'
-      + 'Happy to discuss further. Thank you,\n' + buyer;
+    subject = 'Offer on ' + address;
+    var lines = [];
+    lines.push('Hi [Agent],');
+    lines.push('');
+    lines.push('I would like to submit the following cash offer for ' + address + ':');
+    lines.push('');
+    lines.push('Offer Price: ' + (price ? fmt2(price) : '[OFFER PRICE]'));
+    if(earnest) lines.push('Earnest Money: ' + fmt2(earnest));
+    if(closingLine) lines.push('Closing Timeline: ' + closingLine);
+    lines.push('Financing: ' + LOI_NO_FINANCING);
+    lines.push('');
+    lines.push(LOI_INVESTOR_LINE);
+    lines.push('');
+    lines.push(LOI_COMMISSION_LINE);
+    lines.push('');
+    lines.push(LOI_CLOSE_REVIEW_LEAD + (walkthroughSentence ? (' ' + walkthroughSentence) : ''));
+    lines.push('');
+    lines.push('Happy to discuss further.');
+    lines.push('');
+    lines.push('Thank you,');
+    lines.push(buyer);
+    body = lines.join('\n');
   } else {
+    subject = 'Owner Finance Offer on ' + address;
     var down    = parseFloat(document.getElementById('loi-down').value)    || 0;
     var monthly = parseFloat(document.getElementById('loi-monthly').value) || 0;
     var term    = parseFloat(document.getElementById('loi-term').value)    || 0;
     var balloon = parseFloat(document.getElementById('loi-balloon').value) || 0;
-    body = 'Hi [Agent],\n\n'
-      + 'I would like to submit an owner-finance offer on ' + address + '.\n\n'
-      + 'Proposed terms: ' + (price ? fmt2(price) : '[PRICE]') + ' purchase price'
-      + (down ? (', ' + fmt2(down) + ' down') : '')
-      + (monthly ? (', ' + fmt2(monthly) + '/month') : '')
-      + (term ? (' over ' + term + ' months') : '')
-      + (balloon ? (', with a balloon due at month ' + balloon) : '') + '.\n\n'
-      + LOI_INVESTOR_LINE + '\n\n'
-      + LOI_COMMISSION_LINE + '\n\n'
-      + (closing ? ('Proposed closing: ' + closing + '.\n\n') : '')
-      + (earnest ? ('Earnest money: ' + fmt2(earnest) + '.\n\n') : '')
-      + (inspect ? (inspect + '\n\n') : '')
-      + LOI_CLOSE_REVIEW + '\n\n'
-      + 'Happy to discuss further. Thank you,\n' + buyer;
+
+    var ofLines = [];
+    ofLines.push('Hi [Agent],');
+    ofLines.push('');
+    ofLines.push('I would like to submit the following owner-finance offer for ' + address + ':');
+    ofLines.push('');
+    ofLines.push('Purchase Price: ' + (price ? fmt2(price) : '[PURCHASE PRICE]'));
+    if(down)    ofLines.push('Down Payment: ' + fmt2(down));
+    if(monthly) ofLines.push('Monthly Payment: ' + fmt2(monthly));
+    if(term)    ofLines.push('Term: ' + term + ' months');
+    if(balloon) ofLines.push('Balloon: ' + balloon + ' months');
+    if(earnest) ofLines.push('Earnest Money: ' + fmt2(earnest));
+    if(closingLine) ofLines.push('Closing Timeline: ' + closingLine);
+    ofLines.push('');
+    ofLines.push(LOI_INVESTOR_LINE);
+    ofLines.push('');
+    ofLines.push(LOI_COMMISSION_LINE);
+    ofLines.push('');
+    ofLines.push(LOI_CLOSE_REVIEW_LEAD + (walkthroughSentence ? (' ' + walkthroughSentence) : ''));
+    ofLines.push('');
+    ofLines.push('Happy to discuss further.');
+    ofLines.push('');
+    ofLines.push('Thank you,');
+    ofLines.push(buyer);
+    body = ofLines.join('\n');
   }
 
   document.getElementById('loi-subject').value = subject;
