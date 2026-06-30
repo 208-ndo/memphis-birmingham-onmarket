@@ -29,6 +29,10 @@ on:
         description: 'Force run on any day (bypass day gate)'
         required: false
         default: 'true'
+      apify_enabled:
+        description: 'Enable Apify scraping (set false for no-scrape compile/logic test)'
+        required: false
+        default: 'true'
 
 jobs:
   run-pipeline:
@@ -74,12 +78,36 @@ jobs:
           FORCE_RUN_NORMALIZED="$(echo "$FORCE_RUN_RAW" | tr '[:upper:]' '[:lower:]' | xargs)"
           echo "force_run  raw='${FORCE_RUN_RAW}'  normalized='${FORCE_RUN_NORMALIZED}'"
 
+          # ── Normalize apify_enabled input ────────────────────────────────
+          # Scheduled runs always inherit APIFY_ENABLED=true (normal operation).
+          # Manual dispatch can pass apify_enabled=false for a no-scrape test
+          # that validates compile/import/email/offer logic at zero Apify cost.
+          APIFY_ENABLED_RAW="${{ github.event.inputs.apify_enabled }}"
+          # Default to true if input is blank (scheduled run or unset dispatch)
+          if [ -z "${APIFY_ENABLED_RAW}" ]; then
+            APIFY_ENABLED_NORMALIZED="true"
+          else
+            APIFY_ENABLED_NORMALIZED="$(echo "$APIFY_ENABLED_RAW" | tr '[:upper:]' '[:lower:]' | xargs)"
+          fi
+          echo "apify_enabled  raw='${APIFY_ENABLED_RAW}'  normalized='${APIFY_ENABLED_NORMALIZED}'"
+
           # ── Live-send kill switch ────────────────────────────────────────
           # Scheduled runs (cron) never live-send unless LIVE_SEND_ENABLED secret = "true".
           # Manual dispatch can live-send only if dry_run != "true" AND LIVE_SEND_ENABLED = "true".
           LIVE_SEND_ENABLED="${{ secrets.LIVE_SEND_ENABLED }}"
           LIVE_SEND_NORMALIZED="$(echo "$LIVE_SEND_ENABLED" | tr '[:upper:]' '[:lower:]' | xargs)"
           echo "live_send_enabled normalized='${LIVE_SEND_NORMALIZED}'"
+
+          # ── Pre-run Apify budget summary ─────────────────────────────────
+          echo "========================================"
+          echo "APIFY BUDGET SUMMARY"
+          echo "  APIFY_ENABLED              : ${APIFY_ENABLED_NORMALIZED}"
+          echo "  MAX_APIFY_RUNS_PER_WORKFLOW: 10 (config.py)"
+          echo "  Active markets             : little_rock oklahoma_city (2)"
+          echo "  Price bands per market     : 4"
+          echo "  Estimated actor calls      : 10 (4 bands x 2 markets + 2 email enrichment)"
+          echo "  If APIFY_ENABLED=false     : 0 Apify calls (no-scrape test mode)"
+          echo "========================================"
 
           # ── Build flags from normalized values only ──────────────────────
           FLAGS=""
@@ -99,14 +127,15 @@ jobs:
             echo "Force: ON — bypassing day-of-week gate"
           fi
 
-          # ── Export FORCE_RUN for main.py env check ───────────────────────
+          # ── Export env vars for main.py / scraper.py ────────────────────
           export FORCE_RUN="${FORCE_RUN_NORMALIZED}"
+          export APIFY_ENABLED="${APIFY_ENABLED_NORMALIZED}"
 
           echo "Running: python main.py${FLAGS}"
           python main.py${FLAGS}
 
       - name: Commit dashboard data to repo
-        if: always()
+        if: always() && github.event.inputs.apify_enabled != 'false'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
