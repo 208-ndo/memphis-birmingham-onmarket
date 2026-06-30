@@ -29,6 +29,20 @@ DAILY_LIMIT = PER_INBOX_CAP  # per-inbox per-day cap (passed to send_batch)
 
 
 def load_overflow() -> list:
+    # ── CLEAR_OVERFLOW_BEFORE_RUN guard ───────────────────────────────────────
+    # Default false — production behavior unchanged. Set true only for clean
+    # dry-run testing so stale overflow from prior test runs doesn't contaminate
+    # fresh-lead measurements. Does not delete or modify the committed file —
+    # it only skips reading it for this run; save_overflow() still writes
+    # normally afterward unless you also want to suppress that separately.
+    clear_overflow_raw = os.environ.get("CLEAR_OVERFLOW_BEFORE_RUN", "false").lower().strip()
+    if clear_overflow_raw == "true":
+        log.info(
+            "CLEAR_OVERFLOW_BEFORE_RUN=true — ignoring data/overflow.json for this run "
+            "(treating overflow as empty, file on disk left untouched)"
+        )
+        return []
+
     if not os.path.exists(OVERFLOW_FILE):
         return []
     try:
