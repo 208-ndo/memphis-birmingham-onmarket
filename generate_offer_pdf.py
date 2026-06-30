@@ -30,11 +30,28 @@ RULE = HexColor("#e8e8f0")
 
 CONTENT_WIDTH = 7.0 * inch
 
+# ─── Shared public-facing language (source of truth) ────────────────────────
+# Matches the lines used by email_gen.py and the dashboard LOI generator.
 COMMISSION_LINE = (
     "Seller to handle any listing broker compensation per the existing listing agreement "
-    "from seller proceeds at closing."
+    "from seller proceeds at closing, down payment/closing funds, or as otherwise agreed "
+    "in writing by the seller and broker."
 )
-INVESTMENT_PURPOSE_LINE = "Buyer is purchasing for investment purposes."
+INVESTMENT_PURPOSE_LINE = (
+    "Buyer is purchasing for investment/business purposes and not as an owner-occupant."
+)
+REVIEW_LINE = (
+    "This offer is subject to buyer final walkthrough, title review, and standard "
+    "closing review."
+)
+CLOSING_CTA_LINE = (
+    "Please let me know if the seller would like this submitted on a state contract "
+    "or preferred offer form."
+)
+EARNEST_ESCROW_NOTE = (
+    "Earnest money to be deposited with title/escrow upon completion or waiver of "
+    "buyer's inspection/walkthrough period, unless otherwise agreed in writing."
+)
 
 
 def generate_offer_pdf(listing: dict, offer: dict, output_path: str) -> str:
@@ -187,10 +204,13 @@ def _of_body(offer: dict, styles) -> list:
     legal = Paragraph(
         f'<font size="9" color="#7a7a9a">'
         f'<b>TERMS:</b> As-is, no repair requests, subject to standard due diligence. '
-        f'Due diligence: {due_diligence_days} days. Close timeline: 21-30 days. '
+        f'Closing Timeline: On or before {close_days} days after acceptance. '
+        f'Inspection / Walkthrough Period: {due_diligence_days} days after acceptance. '
+        f'{EARNEST_ESCROW_NOTE} '
         f'Seller to satisfy any existing mortgages, taxes, liens, or title-clearing items from seller proceeds unless otherwise agreed in writing. '
         f'{INVESTMENT_PURPOSE_LINE}<br/><br/>'
-        f'<b>COMMISSION:</b> {COMMISSION_LINE}'
+        f'<b>COMMISSION:</b> {COMMISSION_LINE}<br/><br/>'
+        f'{REVIEW_LINE} {CLOSING_CTA_LINE}'
         f'</font>',
         styles["Normal"],
     )
@@ -229,11 +249,15 @@ def _cl_body(offer: dict, styles) -> list:
 
     legal = Paragraph(
         f'<font size="9" color="#7a7a9a">'
-        f'<b>TERMS:</b> Cash close in 21-30 days. As-is, no repair requests. '
-        f'No financing contingency. Due diligence: 10 days. '
+        f'<b>TERMS:</b> Cash close. As-is, no repair requests. '
+        f'Closing Timeline: On or before {close_days} days after acceptance. '
+        f'Inspection / Walkthrough Period: 10 days after acceptance. '
+        f'Financing: No financing contingency — '
+        f'{EARNEST_ESCROW_NOTE} '
         f'Seller to satisfy any existing mortgages, taxes, liens, or title-clearing items from seller proceeds unless otherwise agreed in writing. '
         f'{INVESTMENT_PURPOSE_LINE}<br/><br/>'
-        f'<b>COMMISSION:</b> {COMMISSION_LINE}'
+        f'<b>COMMISSION:</b> {COMMISSION_LINE}<br/><br/>'
+        f'{REVIEW_LINE} {CLOSING_CTA_LINE}'
         f'</font>',
         styles["Normal"],
     )
