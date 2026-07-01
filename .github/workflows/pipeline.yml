@@ -34,6 +34,11 @@ on:
         required: false
         type: string
         default: ''
+      market_keys:
+        description: 'Optional comma-separated market keys, example: cleveland,akron'
+        required: false
+        type: string
+        default: ''
       apify_enabled:
         description: 'Enable Apify scraping (set false for no-scrape compile/logic test)'
         required: false
@@ -112,10 +117,14 @@ jobs:
           fi
           echo "apify_enabled  raw='${APIFY_ENABLED_RAW}'  normalized='${APIFY_ENABLED_NORMALIZED}'"
 
-          # Trim target_markets as a literal comma-separated string. Do not boolean-normalize it.
-          TARGET_MARKETS_RAW="${{ github.event.inputs.target_markets }}"
-          TARGET_MARKETS_TRIMMED="$(echo "$TARGET_MARKETS_RAW" | xargs)"
-          echo "target_markets raw='${TARGET_MARKETS_RAW}' trimmed='${TARGET_MARKETS_TRIMMED}'"
+          # Trim market_keys as a literal comma-separated string. Do not boolean-normalize it.
+          MARKET_KEYS_RAW="${{ github.event.inputs.market_keys }}"
+          TARGET_MARKETS_TRIMMED="$(echo "$MARKET_KEYS_RAW" | xargs)"
+          echo "market_keys raw='${MARKET_KEYS_RAW}'"
+          if [ "${TARGET_MARKETS_TRIMMED}" = "true" ] || [ "${TARGET_MARKETS_TRIMMED}" = "false" ]; then
+            echo "Invalid market_keys value. Enter comma-separated market keys like cleveland,akron."
+            exit 1
+          fi
 
           # ── Normalize email_enrichment_enabled input ─────────────────────
           # Controls the Google email-search Apify actor only (separate from
