@@ -39,6 +39,11 @@ on:
         required: false
         type: string
         default: ''
+      cleveland_akron_test:
+        description: 'Run Cleveland/Akron test markets'
+        required: false
+        type: boolean
+        default: false
       apify_enabled:
         description: 'Enable Apify scraping (set false for no-scrape compile/logic test)'
         required: false
@@ -117,11 +122,19 @@ jobs:
           fi
           echo "apify_enabled  raw='${APIFY_ENABLED_RAW}'  normalized='${APIFY_ENABLED_NORMALIZED}'"
 
+          # Cleveland/Akron selector only chooses markets. It does not enable Apify, Gmail, or GHL.
+          CLEVELAND_AKRON_TEST_RAW="${{ github.event.inputs.cleveland_akron_test }}"
+          CLEVELAND_AKRON_TEST_NORMALIZED="$(echo "$CLEVELAND_AKRON_TEST_RAW" | tr '[:upper:]' '[:lower:]' | xargs)"
+
           # Trim market_keys as a literal comma-separated string. Do not boolean-normalize it.
           MARKET_KEYS_RAW="${{ github.event.inputs.market_keys }}"
-          TARGET_MARKETS_TRIMMED="$(echo "$MARKET_KEYS_RAW" | xargs)"
           echo "market_keys raw='${MARKET_KEYS_RAW}'"
-          if [ "${TARGET_MARKETS_TRIMMED}" = "true" ] || [ "${TARGET_MARKETS_TRIMMED}" = "false" ]; then
+          if [ "${CLEVELAND_AKRON_TEST_NORMALIZED}" = "true" ]; then
+            TARGET_MARKETS_TRIMMED="cleveland,akron"
+          else
+            TARGET_MARKETS_TRIMMED="$(echo "$MARKET_KEYS_RAW" | xargs)"
+          fi
+          if [ "${CLEVELAND_AKRON_TEST_NORMALIZED}" != "true" ] && { [ "${TARGET_MARKETS_TRIMMED}" = "true" ] || [ "${TARGET_MARKETS_TRIMMED}" = "false" ]; }; then
             echo "Invalid market_keys value. Enter comma-separated market keys like cleveland,akron."
             exit 1
           fi
@@ -164,6 +177,9 @@ jobs:
           echo "APIFY BUDGET SUMMARY"
           echo "  APIFY_ENABLED                       : ${APIFY_ENABLED_NORMALIZED}"
           echo "  EMAIL_ENRICHMENT_ENABLED            : ${EMAIL_ENRICHMENT_ENABLED_NORMALIZED}"
+          if [ "${CLEVELAND_AKRON_TEST_NORMALIZED}" = "true" ]; then
+            echo "CLEVELAND_AKRON_TEST=true"
+          fi
           if [ -n "${TARGET_MARKETS_TRIMMED}" ]; then
             SELECTED_MARKETS="$(echo "${TARGET_MARKETS_TRIMMED}" | tr ',' ' ' | xargs)"
           else
@@ -171,8 +187,8 @@ jobs:
           fi
           SELECTED_MARKET_COUNT=$(echo "${SELECTED_MARKETS}" | wc -w | xargs)
           PLANNED_ZILLOW_CALLS=$((4 * SELECTED_MARKET_COUNT))
-          echo "  TARGET_MARKETS                      : ${TARGET_MARKETS_TRIMMED:-ACTIVE_MARKETS}"
-          echo "  Selected markets                    : ${SELECTED_MARKETS}"
+          echo "TARGET_MARKETS: ${TARGET_MARKETS_TRIMMED:-ACTIVE_MARKETS}"
+          echo "Selected markets: ${SELECTED_MARKETS}"
           echo "  MAX_APIFY_RUNS_PER_WORKFLOW         : 10 (config.py — shared, covers Zillow + Google + any future actor)"
           echo "  MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW: 5 default (config.py — Google sub-cap; override='${{ github.event.inputs.max_email_enrichment_calls }}')"
           echo "  MAX_LEADS_TO_ENRICH_PER_WORKFLOW    : 10 default (config.py — top-scored shortlist before enrichment; override='${{ github.event.inputs.max_leads_to_enrich }}')"
