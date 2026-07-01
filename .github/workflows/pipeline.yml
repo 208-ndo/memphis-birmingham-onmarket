@@ -24,19 +24,23 @@ on:
       dry_run:
         description: 'Dry run — scrape + generate but NO emails sent'
         required: false
-        default: 'false'
+        default: 'true'
       force_run:
         description: 'Force run on any day (bypass day gate)'
         required: false
         default: 'true'
+      target_markets:
+        description: 'Optional comma-separated market keys to run, e.g. cleveland,akron. Blank = ACTIVE_MARKETS.'
+        required: false
+        default: ''
       apify_enabled:
         description: 'Enable Apify scraping (set false for no-scrape compile/logic test)'
         required: false
-        default: 'true'
+        default: 'false'
       email_enrichment_enabled:
         description: 'Enable Google email enrichment actor (set false to scrape Zillow only)'
         required: false
-        default: 'true'
+        default: 'false'
       max_email_enrichment_calls:
         description: 'Override MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW (blank = use config.py default of 5)'
         required: false
@@ -107,6 +111,11 @@ jobs:
           fi
           echo "apify_enabled  raw='${APIFY_ENABLED_RAW}'  normalized='${APIFY_ENABLED_NORMALIZED}'"
 
+          # Normalize target_markets input
+          TARGET_MARKETS_RAW="${{ github.event.inputs.target_markets }}"
+          TARGET_MARKETS_NORMALIZED="$(echo "$TARGET_MARKETS_RAW" | tr '[:upper:]' '[:lower:]' | xargs)"
+          echo "target_markets  raw='${TARGET_MARKETS_RAW}'  normalized='${TARGET_MARKETS_NORMALIZED}'"
+
           # ── Normalize email_enrichment_enabled input ─────────────────────
           # Controls the Google email-search Apify actor only (separate from
           # the Zillow scraper). Set false to scrape Zillow but skip Google
@@ -145,6 +154,7 @@ jobs:
           echo "APIFY BUDGET SUMMARY"
           echo "  APIFY_ENABLED                       : ${APIFY_ENABLED_NORMALIZED}"
           echo "  EMAIL_ENRICHMENT_ENABLED            : ${EMAIL_ENRICHMENT_ENABLED_NORMALIZED}"
+          echo "  TARGET_MARKETS                      : ${TARGET_MARKETS_NORMALIZED:-ACTIVE_MARKETS}"
           echo "  MAX_APIFY_RUNS_PER_WORKFLOW         : 10 (config.py — shared, covers Zillow + Google + any future actor)"
           echo "  MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW: 5 default (config.py — Google sub-cap; override='${{ github.event.inputs.max_email_enrichment_calls }}')"
           echo "  MAX_LEADS_TO_ENRICH_PER_WORKFLOW    : 10 default (config.py — top-scored shortlist before enrichment; override='${{ github.event.inputs.max_leads_to_enrich }}')"
@@ -181,6 +191,7 @@ jobs:
           export FORCE_RUN="${FORCE_RUN_NORMALIZED}"
           export APIFY_ENABLED="${APIFY_ENABLED_NORMALIZED}"
           export EMAIL_ENRICHMENT_ENABLED="${EMAIL_ENRICHMENT_ENABLED_NORMALIZED}"
+          export TARGET_MARKETS="${TARGET_MARKETS_NORMALIZED}"
           export MAX_EMAIL_ENRICHMENT_CALLS_OVERRIDE="${{ github.event.inputs.max_email_enrichment_calls }}"
           export MAX_LEADS_TO_ENRICH_OVERRIDE="${{ github.event.inputs.max_leads_to_enrich }}"
           export CLEAR_OVERFLOW_BEFORE_RUN="${CLEAR_OVERFLOW_NORMALIZED}"

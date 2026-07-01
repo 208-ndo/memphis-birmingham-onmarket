@@ -38,6 +38,27 @@ DAILY_LIMIT = PER_INBOX_CAP  # per-inbox per-day cap (passed to send_batch)
 HISTORY_MAX_RECORDS = 10000
 
 
+def get_target_markets(target_markets_raw: str | None = None) -> list[str]:
+    """
+    Resolve the market list for this run.
+
+    Empty TARGET_MARKETS preserves normal ACTIVE_MARKETS behavior. Non-empty
+    TARGET_MARKETS can explicitly run inactive test markets, but unknown keys
+    fail fast instead of being silently skipped.
+    """
+    raw = os.environ.get("TARGET_MARKETS", "") if target_markets_raw is None else target_markets_raw
+    if not raw or not raw.strip():
+        return list(ACTIVE_MARKETS)
+
+    selected = [part.strip() for part in raw.split(",") if part.strip()]
+    unknown = [key for key in selected if key not in MARKETS]
+    if unknown:
+        valid = ", ".join(sorted(MARKETS))
+        raise ValueError(f"Unknown TARGET_MARKETS key(s): {', '.join(unknown)}. Valid markets: {valid}")
+
+    return selected
+
+
 def classify_offer_lane(list_price: float, offer: dict) -> str:
     """
     Pure dashboard/audit classification label. Does NOT influence offer
@@ -450,6 +471,11 @@ def main():
     today        = datetime.now().weekday()  # 0=Mon 1=Tue 2=Wed 3=Thu 4=Fri 5=Sat 6=Sun
     dry_run      = "--dry-run" in sys.argv
     force_run    = "--force" in sys.argv or os.environ.get("FORCE_RUN", "").lower() == "true"
+    try:
+        target_markets = get_target_markets()
+    except ValueError as e:
+        log.error(str(e))
+        sys.exit(1)
 
     # Skip day gate if manually forced
     if not force_run and today not in [1, 2, 3, 4]:
@@ -462,7 +488,7 @@ def main():
     os.makedirs("data/offers", exist_ok=True)
 
     log.info(
-        f"Pipeline starting | Markets: {', '.join(ACTIVE_MARKETS)} | "
+        f"Pipeline starting | Markets: {', '.join(target_markets)} | "
         f"Dry run: {dry_run} | Force: {force_run} | "
         f"Global cap: {GLOBAL_DAILY_CAP}/day | Per-inbox: {PER_INBOX_CAP}/day | "
         f"Time: {datetime.now().strftime('%H:%M UTC')}"
@@ -487,11 +513,7 @@ def main():
                 log.info("All markets complete. Dashboard updated. Check GHL for contacts.")
             return
 
-    for i, market_key in enumerate(ACTIVE_MARKETS):
-        if market_key not in MARKETS:
-            log.warning(f"Market '{market_key}' in ACTIVE_MARKETS but not in MARKETS — skipping")
-            continue
-
+    for i, market_key in enumerate(target_markets):
         remaining_cap = GLOBAL_DAILY_CAP - (global_sent_today + global_sent_this_run)
         if remaining_cap <= 0:
             log.info(f"Global daily cap of {GLOBAL_DAILY_CAP} reached — skipping remaining markets")
