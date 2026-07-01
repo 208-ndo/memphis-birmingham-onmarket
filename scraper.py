@@ -9,13 +9,19 @@ import re
 import json
 import ast
 from urllib.parse import quote
-from apify_client import ApifyClient
+try:
+    from apify_client import ApifyClient
+except ModuleNotFoundError:
+    ApifyClient = None
 from config import (
     DISTRESSED_KEYWORDS, MAX_VIEWS_DAY, MAX_APIFY_RUNS_PER_WORKFLOW,
     ENABLE_PRICE_REDUCED_OF_VARIANT, MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW,
     MAX_LEADS_TO_ENRICH_PER_WORKFLOW,
 )
-from agent_email_finder import enrich_leads_with_emails
+try:
+    from agent_email_finder import enrich_leads_with_emails
+except ModuleNotFoundError:
+    enrich_leads_with_emails = None
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +50,8 @@ MARKET_BOUNDS = {
     "Birmingham":    {"west": -87.0, "east": -86.6, "south": 33.4, "north": 33.7},
     "Little Rock":   {"west": -92.5, "east": -92.1, "south": 34.6, "north": 34.85},
     "Oklahoma City": {"west": -97.7, "east": -97.3, "south": 35.35, "north": 35.65},
+    "Cleveland":     {"west": -81.95, "east": -81.45, "south": 41.35, "north": 41.65},
+    "Akron":         {"west": -81.65, "east": -81.35, "south": 40.95, "north": 41.2},
 }
 
 # ── Shared Apify Budget (covers ALL Apify actors: Zillow + Google email) ─────
@@ -177,6 +185,19 @@ def build_zillow_url(market: dict, price_min: int, price_max: int,
     return f"https://www.zillow.com/homes/for_sale/?searchQueryState={encoded}"
 
 
+def get_market_price_bands(market: dict) -> list[dict]:
+    """Return global price bands clipped to a market's configured min/max."""
+    market_min = parse_price(market.get("min_price") or market.get("price_min")) or PRICE_BANDS[0]["min"]
+    market_max = parse_price(market.get("max_price") or market.get("price_max")) or PRICE_BANDS[-1]["max"]
+    bands = []
+    for band in PRICE_BANDS:
+        band_min = max(band["min"], market_min)
+        band_max = min(band["max"], market_max)
+        if band_min <= band_max:
+            bands.append({"min": band_min, "max": band_max})
+    return bands
+
+
 def get_dom(listing: dict):
     """
     Return DOM as int if found, or None if the field is missing/unreliable.
@@ -224,6 +245,127 @@ def get_all_text(listing: dict) -> str:
                         if isinstance(sv, str):
                             parts.append(sv)
     return " ".join(parts).lower()
+
+
+def get_all_visible_text(listing: dict) -> str:
+    parts = []
+
+    def collect(value):
+        if isinstance(value, str):
+            parts.append(value)
+        elif isinstance(value, list):
+            for item in value:
+                collect(item)
+        elif isinstance(value, dict):
+            for item in value.values():
+                collect(item)
+
+    collect(listing)
+    return " ".join(parts)
+
+
+EMAIL_RE = re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.IGNORECASE)
+PHONE_RE = re.compile(r"(?:\+?1[\s.-]?)?(?:\(?\d{3}\)?[\s.-]?)\d{3}[\s.-]?\d{4}")
+
+
+def clean_phone(value: str) -> str:
+    digits = re.sub(r"\D", "", value or "")
+    if len(digits) == 11 and digits.startswith("1"):
+        digits = digits[1:]
+    if len(digits) == 10:
+        return f"{digits[:3]}-{digits[3:6]}-{digits[6:]}"
+    return (value or "").strip()
+
+
+def parse_listed_by_text(text: str) -> dict:
+    """
+    Extract only contact details visibly present in Zillow-style Listed By text.
+    This never guesses an email from a name or brokerage domain.
+    """
+    text = re.sub(r"\s+", " ", text or "").strip()
+    if not text:
+        return {}
+    listed_by_match = re.search(r"(?i)\blisted\s+by\s*:?", text)
+    if listed_by_match:
+        text = text[listed_by_match.start():]
+
+    email_match = EMAIL_RE.search(text)
+    phone_match = PHONE_RE.search(text)
+    email = email_match.group(0) if email_match else ""
+    phone = clean_phone(phone_match.group(0)) if phone_match else ""
+
+    agent_name = ""
+    brokerage_name = ""
+    before_contact = text
+    contact_positions = [m.start() for m in (email_match, phone_match) if m]
+    if contact_positions:
+        before_contact = text[:min(contact_positions)]
+    before_contact = re.sub(r"(?i)\blisted\s+by\s*:?", "", before_contact).strip(" ,.-")
+    if before_contact:
+        agent_name = before_contact
+
+    if email_match:
+        after_email = text[email_match.end():].strip(" ,.-")
+        if after_email:
+            brokerage_name = after_email.split(". ")[0].strip(" ,.-")
+
+    return {
+        "agent_name": agent_name,
+        "agent_email": email,
+        "agent_phone": phone,
+        "brokerage_name": brokerage_name,
+    }
+
+
+def get_nested_value(data: dict, *keys):
+    current = data
+    for key in keys:
+        if not isinstance(current, dict):
+            return ""
+        current = current.get(key)
+    return current or ""
+
+
+def extract_contact_info(listing: dict) -> dict:
+    visible = get_all_visible_text(listing)
+    parsed = parse_listed_by_text(visible)
+    agent_name = (
+        listing.get("agentName")
+        or listing.get("listingAgentName")
+        or get_nested_value(listing, "attributionInfo", "agentName")
+        or parsed.get("agent_name")
+        or ""
+    )
+    brokerage_name = (
+        listing.get("brokerName")
+        or listing.get("brokerageName")
+        or get_nested_value(listing, "attributionInfo", "brokerName")
+        or parsed.get("brokerage_name")
+        or ""
+    )
+    agent_email = (
+        listing.get("agentEmail")
+        or listing.get("agent_email")
+        or get_nested_value(listing, "attributionInfo", "agentEmail")
+        or get_nested_value(listing, "attributionInfo", "email")
+        or parsed.get("agent_email")
+        or ""
+    )
+    agent_phone = (
+        listing.get("agentPhoneNumber")
+        or listing.get("agent_phone")
+        or get_nested_value(listing, "attributionInfo", "agentPhoneNumber")
+        or get_nested_value(listing, "attributionInfo", "phoneNumber")
+        or parsed.get("agent_phone")
+        or listing.get("brokerPhoneNumber")
+        or ""
+    )
+    return {
+        "agent_name": agent_name,
+        "brokerage_name": brokerage_name,
+        "agent_email": agent_email,
+        "agent_phone": clean_phone(agent_phone),
+    }
 
 
 def has_distress_keyword(listing: dict) -> bool:
@@ -469,9 +611,11 @@ def extract_lead(listing: dict, market: dict, candidate_reason: str = "") -> dic
         if not url and zpid:
             url = f"https://www.zillow.com/homedetails/{zpid}_zpid/"
 
-        agent_name  = listing.get("brokerName") or listing.get("agentName") or ""
-        agent_email = listing.get("agentEmail") or listing.get("agent_email") or ""
-        agent_phone = listing.get("agentPhoneNumber") or listing.get("brokerPhoneNumber") or ""
+        contact = extract_contact_info(listing)
+        agent_name = contact["agent_name"]
+        brokerage_name = contact["brokerage_name"]
+        agent_email = contact["agent_email"]
+        agent_phone = contact["agent_phone"]
 
         dom       = get_dom(listing)
         bedrooms  = parse_int(listing.get("beds") or listing.get("bedrooms"))
@@ -503,7 +647,8 @@ def extract_lead(listing: dict, market: dict, candidate_reason: str = "") -> dic
             "agent_name":          agent_name,
             "agent_email":         agent_email,
             "agent_phone":         agent_phone,
-            "brokerName":          agent_name,
+            "brokerName":          brokerage_name or agent_name,
+            "brokerage_name":      brokerage_name,
             "days_on_market":      dom if dom is not None else -1,
             "bedrooms":            bedrooms,
             "bathrooms":           bathrooms,
@@ -538,8 +683,9 @@ def scrape_market(market: dict) -> list[dict]:
     email_enrichment_enabled_raw = os.environ.get("EMAIL_ENRICHMENT_ENABLED", "true").lower().strip()
     email_enrichment_enabled = (email_enrichment_enabled_raw == "true")
 
-    planned_bands    = len(PRICE_BANDS)
-    of_bands         = sum(1 for b in PRICE_BANDS if b["max"] <= 80000)
+    market_price_bands = get_market_price_bands(market)
+    planned_bands    = len(market_price_bands)
+    of_bands         = sum(1 for b in market_price_bands if b["max"] <= 80000)
     pr_extra_calls   = of_bands if ENABLE_PRICE_REDUCED_OF_VARIANT else 0
     planned_zillow_calls = planned_bands + pr_extra_calls
     planned_email_calls  = MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW if email_enrichment_enabled else 0
@@ -556,7 +702,7 @@ def scrape_market(market: dict) -> list[dict]:
     logger.info(f"  Apify calls used so far — total     : {_apify_call_count}")
     logger.info(f"  Apify calls used so far — zillow    : {_zillow_call_count}")
     logger.info(f"  Apify calls used so far — google    : {_email_enrichment_call_count}")
-    band_labels = " | ".join(f"${b['min']:,}-${b['max']:,}" for b in PRICE_BANDS)
+    band_labels = " | ".join(f"${b['min']:,}-${b['max']:,}" for b in market_price_bands)
     logger.info(f"  Planned bands                       : {planned_bands} ({band_labels})")
     if ENABLE_PRICE_REDUCED_OF_VARIANT:
         logger.info(f"  Price-reduced OF extra calls        : {pr_extra_calls} ($30k-$80k bands only)")
@@ -570,6 +716,10 @@ def scrape_market(market: dict) -> list[dict]:
         logger.info(f"APIFY_ENABLED=false — skipping all Apify + Google scraping for {city}. Returning 0 leads.")
         return []
 
+    if ApifyClient is None:
+        logger.error("apify-client is not installed — cannot scrape")
+        return []
+
     if not APIFY_TOKEN:
         logger.error("APIFY_API_TOKEN not set — cannot scrape")
         return []
@@ -578,7 +728,7 @@ def scrape_market(market: dict) -> list[dict]:
     leads      = []
     seen_zpids = set()
 
-    for band in PRICE_BANDS:
+    for band in market_price_bands:
         price_min  = band["min"]
         price_max  = band["max"]
         band_label = f"${price_min:,}-${price_max:,}"
@@ -730,6 +880,10 @@ def scrape_market(market: dict) -> list[dict]:
         logger.info(
             f"EMAIL_ENRICHMENT_ENABLED=false — skipping Google email enrichment "
             f"for {city}. {len(shortlist)} shortlisted leads keep agent_email=NONE where missing."
+        )
+    elif enrich_leads_with_emails is None:
+        logger.warning(
+            "agent_email_finder dependencies are not installed — keeping shortlisted leads without email enrichment"
         )
     elif not can_make_email_enrichment_call():
         logger.warning(

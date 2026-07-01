@@ -18,6 +18,8 @@ ACTIVE_MARKETS = ["little_rock", "oklahoma_city"]
 INACTIVE_MARKETS = {
     "memphis": "Weak $30k-$80k DOM 30+ inventory per market_audit.py — 0 useful OF candidates in low-price bands",
     "birmingham": "Weak $30k-$80k DOM 30+ inventory per market_audit.py — 0 useful OF candidates in low-price bands",
+    "cleveland": "Prepared as next email-first test market; inactive until a dry-run Cleveland/Akron-only scrape is approved",
+    "akron": "Prepared as next email-first test market; inactive until a dry-run Cleveland/Akron-only scrape is approved",
 }
 
 # ─── Send Caps ──────────────────────────────────────────────────────────────────
@@ -64,6 +66,30 @@ MARKETS = {
         "gmail_app_password": os.environ.get("GMAIL_APP_PASSWORD_BIRMINGHAM", ""),
         "ghl_phone_number": os.environ.get("GHL_PHONE_BIRMINGHAM", ""),
         "bounds": {"west": -97.7, "east": -97.2, "south": 35.3, "north": 35.7},
+    },
+    "cleveland": {
+        "city": "Cleveland", "state": "OH", "zip_codes": [],
+        "price_min": 30000, "price_max": 125000,
+        "min_price": 30000, "max_price": 125000,
+        "min_dom": 30,
+        "email_first_test_market": True,
+        "live_send_enabled": False,
+        "gmail_user": "",
+        "gmail_app_password": "",
+        "ghl_phone_number": "",
+        "bounds": {"west": -81.95, "east": -81.45, "south": 41.35, "north": 41.65},
+    },
+    "akron": {
+        "city": "Akron", "state": "OH", "zip_codes": [],
+        "price_min": 30000, "price_max": 125000,
+        "min_price": 30000, "max_price": 125000,
+        "min_dom": 30,
+        "email_first_test_market": True,
+        "live_send_enabled": False,
+        "gmail_user": "",
+        "gmail_app_password": "",
+        "ghl_phone_number": "",
+        "bounds": {"west": -81.65, "east": -81.35, "south": 40.95, "north": 41.2},
     },
 }
 
