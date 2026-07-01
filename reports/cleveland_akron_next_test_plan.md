@@ -20,6 +20,8 @@ Human-verified Zillow screenshots showed Cleveland and Akron listings exposing d
 
 The first future run should scrape only Cleveland and Akron with small caps if possible. Use the existing workflow caps (`MAX_APIFY_RUNS_PER_WORKFLOW`, `max_email_enrichment_calls`, and `max_leads_to_enrich`) to keep the paid scrape bounded. Do not send Gmail until the review queue shows verified direct listing-agent emails and those emails pass manual review.
 
+Important: `dry_run=true` only prevents Gmail sends, GHL pushes, and sent-history writes. It does not make Apify free. If `apify_enabled=true`, Zillow actor calls can still spend Apify credits or hit Apify quota limits.
+
 ## Implementation Notes
 
 - Cleveland and Akron are configured as inactive test markets, not live-send markets.

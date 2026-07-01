@@ -8,7 +8,7 @@ from config import (
     MARKETS, ACTIVE_MARKETS, GLOBAL_DAILY_CAP, PER_INBOX_CAP,
     OF_MIN_PRICE, OF_MAX_PRICE, OF_AUDIT_MIN_PRICE, OF_AUDIT_MAX_PRICE,
 )
-from scraper import scrape_market
+from scraper import ApifyQuotaError, scrape_market
 from offer import calculate_offer
 from email_gen import generate_emails, pick_email
 from dedup import should_send, mark_sent, get_stats
@@ -533,6 +533,9 @@ def main():
             result = run_market(market_key, dry_run=dry_run)
             all_results[market_key] = result
             global_sent_this_run += result.get("emails_sent", 0)
+        except ApifyQuotaError:
+            log.error("APIFY QUOTA BLOCKED — preserving previous dashboard data and stopping workflow.")
+            return
         except Exception as e:
             log.error(f"{market_key} pipeline error: {e}")
             all_results[market_key] = {

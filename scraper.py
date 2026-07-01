@@ -66,6 +66,29 @@ _zillow_call_count            = 0  # subset of the above, Zillow actor only
 _email_enrichment_call_count  = 0  # subset of the above, Google actor only
 
 
+class ApifyQuotaError(RuntimeError):
+    """Raised when Apify rejects a run due to monthly quota or hard limit."""
+
+
+def is_apify_quota_error(exc: Exception) -> bool:
+    text_parts = [str(exc), repr(exc)]
+    for attr in ("message", "status_code", "status", "code"):
+        value = getattr(exc, attr, None)
+        if value is not None:
+            text_parts.append(str(value))
+    text = " ".join(text_parts).lower()
+
+    quota_phrases = (
+        "monthly usage hard limit exceeded",
+        "usage hard limit exceeded",
+        "quota exceeded",
+    )
+    if any(phrase in text for phrase in quota_phrases):
+        return True
+
+    return "403" in text and ("hard limit" in text or "quota" in text)
+
+
 def can_make_apify_call() -> bool:
     """True if any actor (Zillow or otherwise) may still be called this workflow."""
     return _apify_call_count < MAX_APIFY_RUNS_PER_WORKFLOW
@@ -826,6 +849,11 @@ def scrape_market(market: dict) -> list[dict]:
                 time.sleep(5)
 
             except Exception as e:
+                if is_apify_quota_error(e):
+                    logger.error(
+                        "APIFY QUOTA BLOCKED — preserving previous dashboard data and stopping workflow."
+                    )
+                    raise ApifyQuotaError(str(e)) from e
                 logger.error(f"Apify run failed for band {band_label} [{variant}]: {e}")
                 continue
 
