@@ -309,6 +309,7 @@ def save_pipeline_log(all_results: dict):
 def run_market(market_key: str, dry_run: bool = False) -> dict:
     market       = MARKETS[market_key]
     market_label = f"{market['city']} {market['state']}"
+    apify_disabled_no_scrape = os.environ.get("APIFY_ENABLED", "true").lower().strip() == "false"
 
     log.info(f"{'='*60}")
     log.info(f"PIPELINE: {market_key.upper()} | {datetime.now().strftime('%Y-%m-%d %H:%M')}")
@@ -342,6 +343,9 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
     if not fresh_deduped:
         log.info("No fresh leads — exiting market")
         save_overflow(other_overflow)
+        if apify_disabled_no_scrape:
+            log.info(f"APIFY_DISABLED_NO_SCRAPE — preserving existing dashboard data for {market_key}")
+            return result
         # Dashboard-only: reflect that THIS run found 0 current scored leads,
         # rather than leaving a stale snapshot from a prior run in place.
         save_dashboard_data(market_key, [], [])

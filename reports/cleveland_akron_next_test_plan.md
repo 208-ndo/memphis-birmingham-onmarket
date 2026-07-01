@@ -22,6 +22,8 @@ The first future run should scrape only Cleveland and Akron with small caps if p
 
 Important: `dry_run=true` only prevents Gmail sends, GHL pushes, and sent-history writes. It does not make Apify free. If `apify_enabled=true`, Zillow actor calls can still spend Apify credits or hit Apify quota limits.
 
+`apify_enabled=false` is no-scrape validation mode. It should validate workflow wiring without refreshing or overwriting dashboard lead files.
+
 ## Implementation Notes
 
 - Cleveland and Akron are configured as inactive test markets, not live-send markets.
