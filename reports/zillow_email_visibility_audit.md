@@ -13,41 +13,67 @@ Markets requested:
 - Milwaukee, WI
 - Saint Louis, MO
 
-Goal: check a small no-cost, manual-style sample of cheap/investor Zillow listing detail pages for direct listing-agent email visibility.
+Goal: check whether cheap/investor Zillow listing detail pages expose direct listing-agent emails.
 
-## Access Result
+## Codex-Accessible Sample Results
 
-No expansion-market Zillow listing detail pages were verified in this run.
+Codex could not complete a reliable automated/public-browser sample for the expansion markets.
 
-Zillow city/search pages returned a human-check page with `px-captcha` / "Access to this page has been denied" when requested through the available public shell browser path. Public search queries in the available search channel did not return usable Zillow detail URLs for the requested markets. Because of that, this audit does not fabricate listing rows and does not infer contact visibility.
+Zillow city/search pages returned a human-check page with `px-captcha` / "Access to this page has been denied" when requested through the available public shell browser path. Public search queries in the available search channel did not return enough usable Zillow detail URLs for the requested markets. Because of that, the Codex-accessible portion of the audit remains inconclusive and should not be treated as evidence that a market does or does not expose emails.
+
+## Human-Verified Screenshot Examples
+
+The following examples were manually verified from human screenshots of Zillow listing detail pages. These are not guessed or inferred emails.
+
+| market | address | days on Zillow | agent | brokerage | email | phone | source pattern | status |
+|---|---|---:|---|---|---|---|---|---|
+| Cleveland, OH | 4297 E 139th St, Cleveland, OH 44105 | 36 | Rakesh Baniya | Cleveland Property Management Group, LLC | rbaniya@clevelandpropertymanagement.com | 440-901-7145 | MLS Now / Akron Cleveland Association of REALTORS | direct_agent_email_visible |
+| Cleveland, OH | 10712 Grantwood Ave, Cleveland, OH 44108 | 88 | Leilani M Bowersock | Coldwell Banker Schmidt Realty | leilani7b@gmail.com | 440-570-9514 | Zillow Listed By screenshot | direct_agent_email_visible |
+| Akron, OH | 840 Work Dr, Akron, OH 44320 | 40 | Christopher A Frederick | Coldwell Banker Schmidt Realty | thefrederickteam@gmail.com | 216-210-7653 | MLS Now / Lorain County Association of REALTORS | direct_agent_email_visible |
+
+Additional observed Akron example: a Marshall Stephens example was mentioned, but it is not added to the CSV because the address and Zillow URL were not clear enough from the provided information.
 
 ## Summary By Market
 
+This table combines only verified rows currently recorded in `data/zillow_email_visibility_audit.csv`.
+
 | market | listings checked | direct_agent_email_visible | brokerage_email_visible | phone_only | contact_form_only | no_contact_found | email visibility percentage |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Cleveland, OH | 0 | 0 | 0 | 0 | 0 | 0 | n/a |
-| Akron, OH | 0 | 0 | 0 | 0 | 0 | 0 | n/a |
+| Cleveland, OH | 2 | 2 | 0 | 0 | 0 | 0 | 100% |
+| Akron, OH | 1 | 1 | 0 | 0 | 0 | 0 | 100% |
 | Toledo, OH | 0 | 0 | 0 | 0 | 0 | 0 | n/a |
 | Detroit, MI | 0 | 0 | 0 | 0 | 0 | 0 | n/a |
 | Milwaukee, WI | 0 | 0 | 0 | 0 | 0 | 0 | n/a |
 | Saint Louis, MO | 0 | 0 | 0 | 0 | 0 | 0 | n/a |
 
-## Market Ranking
+## Best Markets Ranked By Direct Agent Email Visibility
 
-No market can be ranked by direct agent email visibility from this run because no requested-market Zillow detail pages were verifiably accessible.
+1. Cleveland, OH: 2 verified examples, 2 direct agent emails visible.
+2. Akron, OH: 1 verified example, 1 direct agent email visible.
+3. Toledo, OH: no verified sample yet.
+4. Detroit, MI: no verified sample yet.
+5. Milwaukee, WI: no verified sample yet.
+6. Saint Louis, MO: no verified sample yet.
 
 ## MLS / Source Pattern Notes
 
-No MLS source patterns were verified for the requested markets in this run. The audit could not confirm MLS Now, Realcomp, MLS Grid, or other local feed behavior from Zillow detail pages.
+- Cleveland example 1 showed MLS Now / Akron Cleveland Association of REALTORS and a direct agent email in Zillow's Listed By section.
+- Akron example 1 showed MLS Now / Lorain County Association of REALTORS and a direct agent email in Zillow's Listed By section.
+- The screenshot evidence suggests MLS Now-fed Zillow listings may expose direct listing-agent emails more often than the Little Rock / OKC samples researched so far.
 
 ## Recommendation
 
-Top 2 markets to scrape next: none selected from this audit. A market should not be prioritized for email-first outreach until a real sample of public listing detail pages is verified.
+Recommended next two markets for email-first testing:
 
-Cleveland and Akron do not currently look better than Little Rock / OKC for email-first outreach based on this run. The result is inconclusive, not negative: the available public access path was blocked before listing detail pages could be sampled.
+1. Cleveland, OH
+2. Akron, OH
 
-Do not pause Little Rock / OKC solely because of this audit. Keep the current contact-policy guardrails: only `verified_agent_email` should be eligible for first live email testing after manual review; brokerage emails require separate manual approval.
+Reason: the Little Rock / OKC researched contact queue found 0 direct agent emails out of 25, while human screenshots show Cleveland/Akron MLS Now listings exposing direct listing-agent emails directly in Zillow's Listed By section.
+
+Pause Little Rock / OKC for email-first outreach until direct agent emails are available or a human explicitly approves brokerage/office outreach. Keep those markets active for phone/manual/contact-form workflows, but do not prioritize Gmail-first outreach there.
+
+Codex automated audit remains inconclusive due to Zillow/search access limits. The recommendation to test Cleveland/Akron is based on the human-verified screenshot examples, not on a completed automated sample.
 
 ## Next Safe No-Cost Step
 
-Use a normal signed-in browser manually, not Apify or paid enrichment, to open 10 Zillow detail pages per market and record only visibly published email/phone/contact information. If Zillow continues to block search pages, collect candidate listing URLs from a human browser session or from the listing brokerage's public site, then re-run this audit manually with the actual Zillow detail URLs.
+Use a normal human browser to collect 10 Zillow detail URLs per Cleveland and Akron. Record only visibly published contact information from the Zillow Listed By section or official brokerage/agent pages. Do not infer email patterns.
