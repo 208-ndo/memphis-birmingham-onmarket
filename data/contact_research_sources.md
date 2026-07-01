@@ -54,7 +54,7 @@
 - found_phone: 501-773-6438
 - source URL: https://www.rackleyrealty.com/
 - source type: brokerage_office
-- note: Checked active Zillow listing, Rackley Realty official website/contact page, and public searches for Taylor M Gray, Rackley Realty, 501-773-6438, and 501-519-4889. Zillow identifies Taylor M Gray with 501-773-6438 and Rackley Realty with 501-519-4889. Rackley Realty official site publishes brokerage email Chase@RackleyTeam.com.
+- note: Official brokerage/company email only, not verified as the listing agent direct email. Do not use for first live email test unless manually approved as brokerage outreach.
 
 ## 8. 1224 W 31st St, Little Rock, AR 72206
 - agent_name: McKimmey Associates REALTORS NLR
