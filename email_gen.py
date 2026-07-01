@@ -9,8 +9,29 @@ signatures were changed — only how the existing values are presented.
 """
 
 import random
+import re
 
 SIGN_OFF = "Michael B. | 229 Holdings LLC"
+COMPANY_NAME_INDICATORS = (
+    "realty",
+    "real estate",
+    "home",
+    "homes",
+    "properties",
+    "group",
+    "appraisals",
+    "llc",
+    "inc",
+    "brokerage",
+    "associates",
+    "re/max",
+    "century 21",
+    "coldwell",
+    "keller",
+    "exp",
+    "vylla",
+    "real broker",
+)
 
 # ─── Shared public-facing language (source of truth) ────────────────────────
 # These exact lines must be reused everywhere public-facing — email, PDF,
@@ -58,7 +79,24 @@ def _agent_greeting(listing: dict) -> str:
         or ""
     )
     name = str(name).strip()
+    if _looks_like_company_name(name):
+        return "Hi,"
     return f"Hi {name}," if name else "Hi,"
+
+
+def _looks_like_company_name(name: str) -> bool:
+    if not name:
+        return False
+    normalized = re.sub(r"\s+", " ", name.lower()).strip()
+    padded = f" {normalized} "
+    for indicator in COMPANY_NAME_INDICATORS:
+        needle = indicator.lower()
+        if " " in needle or "/" in needle:
+            if needle in normalized:
+                return True
+        elif re.search(rf"(?<![a-z0-9]){re.escape(needle)}(?![a-z0-9])", padded):
+            return True
+    return False
 
 
 def _address(listing: dict) -> str:
