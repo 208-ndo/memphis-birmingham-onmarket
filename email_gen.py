@@ -105,7 +105,10 @@ def _address(listing: dict) -> str:
 
 def _money(value) -> str:
     try:
-        return f"${float(value):,.0f}"
+        amount = round(float(value), 2)
+        if amount.is_integer():
+            return f"${amount:,.0f}"
+        return f"${amount:,.2f}"
     except (TypeError, ValueError):
         return "$0"
 

@@ -75,7 +75,7 @@ I would like to submit the following owner-finance offer for 10712 Grantwood Ave
 
 Purchase Price: $75,000
 Down Payment: $3,750
-Monthly Payment: $712
+Monthly Payment: $712.50
 Term: 100 months
 Earnest Money: $500 to be deposited with title/escrow upon completion or waiver of buyer's inspection/walkthrough period, unless otherwise agreed in writing.
 Closing Timeline: On or before 21 days after acceptance
@@ -115,7 +115,7 @@ I would like to submit the following owner-finance offer for 840 Work Dr, Akron,
 
 Purchase Price: $65,000
 Down Payment: $3,250
-Monthly Payment: $618
+Monthly Payment: $617.50
 Term: 100 months
 Earnest Money: $500 to be deposited with title/escrow upon completion or waiver of buyer's inspection/walkthrough period, unless otherwise agreed in writing.
 Closing Timeline: On or before 21 days after acceptance

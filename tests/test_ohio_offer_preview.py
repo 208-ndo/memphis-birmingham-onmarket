@@ -41,6 +41,17 @@ class OhioOfferPreviewTest(unittest.TestCase):
             self.assertEqual(row["num_payments"], num_payments)
             self.assertTrue(row["math_ok"], row["math_notes"])
 
+    def test_monthly_payment_email_format_preserves_cents_when_present(self):
+        expected_lines = {
+            "4297 E 139th St, Cleveland, OH 44105": "Monthly Payment: $570",
+            "10712 Grantwood Ave, Cleveland, OH 44108": "Monthly Payment: $712.50",
+            "840 Work Dr, Akron, OH 44320": "Monthly Payment: $617.50",
+        }
+        for address, expected_line in expected_lines.items():
+            row = self.by_address[address]
+            self.assertIn(expected_line, row["email_body"])
+            self.assertTrue(row["math_ok"], row["math_notes"])
+
     def test_agent_direct_email_remains_present(self):
         self.assertEqual(
             self.by_address["4297 E 139th St, Cleveland, OH 44105"]["agent_email"],
