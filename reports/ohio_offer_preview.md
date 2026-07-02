@@ -5,7 +5,9 @@ Fixture-only Cleveland/Akron preview. No scraper, Apify, enrichment, Gmail, or G
 ## Summary
 
 - Total fixture leads: 4
-- Owner finance preview count: 3
+- Owner finance preview count: 2
+- Seller finance counter count: 1
+- Stale seller finance review count: 0
 - Manual review count: 1
 - Math issues count: 0
 - Emails that would be eligible for review: 3
@@ -16,30 +18,36 @@ Fixture-only Cleveland/Akron preview. No scraper, Apify, enrichment, Gmail, or G
 ### 4297 E 139th St, Cleveland, OH 44105
 
 - Market: Cleveland, OH
-- List price: $60,000
+- List price: $74,000
 - Agent email: rbaniya@clevelandpropertymanagement.com
-- Offer lane: OWNER_FINANCE_PRODUCTION
-- Purchase price: $60,000
-- Down payment: $3,000
-- Monthly payment: $570
+- Offer lane: SELLER_FINANCE_LISTING_COUNTER
+- Purchase price: $74,000
+- Down payment: $5,000
+- Monthly payment: $690
 - Number of payments: 100
+- Interest: 0%
+- Prepayment penalty: None
+- Requires review: false
 - Math OK: true
-- Email subject: Owner Finance Offer on 4297 E 139th St, Cleveland, OH 44105
+- Email subject: Seller-Finance Counter on 4297 E 139th St, Cleveland, OH 44105
 
 Email body:
 
 ```text
 Hi Rakesh Baniya,
 
-I would like to submit the following owner-finance offer for 4297 E 139th St, Cleveland, OH 44105:
+I saw the seller is open to owner financing on 4297 E 139th St, Cleveland, OH 44105.
 
-Purchase Price: $60,000
-Down Payment: $3,000
-Monthly Payment: $570
+I can work with the list price if the seller can work with me on the terms. Would the seller consider the following?
+
+Purchase Price: $74,000
+Down Payment: $5,000
+Monthly Payment: $690
 Term: 100 months
-Earnest Money: $500 to be deposited with title/escrow upon completion or waiver of buyer's inspection/walkthrough period, unless otherwise agreed in writing.
-Closing Timeline: On or before 21 days after acceptance
-Inspection / Walkthrough Period: 10 days after acceptance
+Interest: 0%
+Prepayment Penalty: None
+
+If the seller needs closer to the advertised down payment, I’m open to reviewing a counter.
 
 Buyer is purchasing for investment/business purposes and not as an owner-occupant.
 
@@ -63,6 +71,9 @@ Michael B. | 229 Holdings LLC
 - Down payment: $3,750
 - Monthly payment: $712.50
 - Number of payments: 100
+- Interest: 0%
+- Prepayment penalty: N/A
+- Requires review: false
 - Math OK: true
 - Email subject: Owner Finance Offer on 10712 Grantwood Ave, Cleveland, OH 44108
 
@@ -103,6 +114,9 @@ Michael B. | 229 Holdings LLC
 - Down payment: $3,250
 - Monthly payment: $617.50
 - Number of payments: 100
+- Interest: 0%
+- Prepayment penalty: N/A
+- Requires review: false
 - Math OK: true
 - Email subject: Owner Finance Offer on 840 Work Dr, Akron, OH 44320
 
@@ -143,6 +157,9 @@ Michael B. | 229 Holdings LLC
 - Down payment: $0
 - Monthly payment: $0
 - Number of payments: 0
+- Interest: 0%
+- Prepayment penalty: N/A
+- Requires review: false
 - Math OK: true
 - Email subject: N/A - manual/review only
 

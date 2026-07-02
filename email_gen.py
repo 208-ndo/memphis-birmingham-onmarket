@@ -64,6 +64,8 @@ DUE_DILIGENCE_DAYS = 10
 
 def generate_emails(listing: dict, offer: dict) -> list[dict]:
     offer_type = offer.get("offer_type")
+    if offer_type == "seller_finance_counter":
+        return [_gen_seller_finance_counter_email(listing, offer)]
     if offer_type == "owner_finance":
         return [_gen_of_email(listing, offer)]
     if offer_type == "cash_lowball":
@@ -218,6 +220,56 @@ def _gen_of_email(listing: dict, offer: dict) -> dict:
     return {
         "variation": 1,
         "subject": f"Owner Finance Offer on {address}",
+        "body": "\n".join(lines),
+    }
+
+
+def _gen_seller_finance_counter_email(listing: dict, offer: dict) -> dict:
+    address = _address(listing)
+    purchase_price = (
+        offer.get("purchase_price")
+        or offer.get("owner_finance_offer")
+        or listing.get("list_price")
+        or listing.get("price")
+        or 0
+    )
+    down_payment = offer.get("down_payment") or max(5000, _number(purchase_price) * 0.05)
+    monthly_payment = offer.get("monthly_payment") or 0
+    term = offer.get("term") or offer.get("num_payments") or 100
+    interest_rate = offer.get("interest_rate", offer.get("seller_rate", 0))
+    prepayment_penalty = offer.get("prepayment_penalty") or "None"
+
+    lines = [
+        _agent_greeting(listing),
+        "",
+        f"I saw the seller is open to owner financing on {address}.",
+        "",
+        "I can work with the list price if the seller can work with me on the terms. Would the seller consider the following?",
+        "",
+        f"Purchase Price: {_money(purchase_price)}",
+        f"Down Payment: {_money(down_payment)}",
+        f"Monthly Payment: {_money(monthly_payment)}",
+        f"Term: {term:g} months" if isinstance(term, (int, float)) else f"Term: {term} months",
+        f"Interest: {_number(interest_rate):g}%",
+        f"Prepayment Penalty: {prepayment_penalty}",
+        "",
+        "If the seller needs closer to the advertised down payment, I’m open to reviewing a counter.",
+        "",
+        INVESTMENT_PURPOSE_LINE,
+        "",
+        BROKER_COMP_LINE,
+        "",
+        REVIEW_LINE,
+        "",
+        CLOSING_CTA_LINE,
+        "",
+        "Thank you,",
+        SIGN_OFF,
+    ]
+
+    return {
+        "variation": 1,
+        "subject": f"Seller-Finance Counter on {address}",
         "body": "\n".join(lines),
     }
 

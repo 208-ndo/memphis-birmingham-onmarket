@@ -27,14 +27,18 @@ FIXTURE_LEADS = [
         "city": "Cleveland",
         "state": "OH",
         "address": "4297 E 139th St, Cleveland, OH 44105",
-        "list_price": 60000,
-        "price": 60000,
+        "list_price": 74000,
+        "price": 74000,
         "agent_name": "Rakesh Baniya",
         "agent_email": "rbaniya@clevelandpropertymanagement.com",
         "agent_phone": "440-901-7145",
         "brokerage": "Cleveland Property Management Group, LLC",
         "brokerage_name": "Cleveland Property Management Group, LLC",
         "days_on_zillow": 36,
+        "description": (
+            "Owner financing option $15,000 down. 7% interest, "
+            "$310 monthly payment, 240 amortization, no PPP."
+        ),
     },
     {
         "market_key": "cleveland",
@@ -88,12 +92,16 @@ def classify_preview_offer_lane(list_price: float, offer: dict) -> str:
     """Match main.py dashboard/audit lane labels without importing main.py."""
     if list_price <= 0:
         return "UNCLASSIFIED"
+    offer_type = (offer or {}).get("offer_type", "")
+    if offer_type == "seller_finance_counter":
+        if (offer or {}).get("stale_seller_finance") or (offer or {}).get("requires_review"):
+            return "STALE_SELLER_FINANCE_REVIEW"
+        return "SELLER_FINANCE_LISTING_COUNTER"
     if OF_MIN_PRICE <= list_price <= OF_MAX_PRICE:
         return "OWNER_FINANCE_PRODUCTION"
     if OF_AUDIT_MIN_PRICE < list_price <= OF_AUDIT_MAX_PRICE:
         return "OWNER_FINANCE_AUDIT"
 
-    offer_type = (offer or {}).get("offer_type", "")
     if offer_type == "manual_review":
         return "NO_AUTO_OFFER_HIGH_PRICE"
     if offer_type == "cash_lowball":
@@ -131,12 +139,16 @@ def build_preview_records() -> list[dict]:
         monthly_payment = _round_money(offer.get("monthly_payment"))
         num_payments = int(offer.get("num_payments") or 0)
 
-        is_owner_finance = offer.get("offer_type") == "owner_finance"
-        expected_down = _round_money(list_price * 0.05)
+        is_terms_offer = offer.get("offer_type") in ("owner_finance", "seller_finance_counter")
+        expected_down = _round_money(
+            max(5000, list_price * 0.05)
+            if offer.get("offer_type") == "seller_finance_counter"
+            else list_price * 0.05
+        )
         expected_monthly = _round_money((list_price - expected_down) / 100)
         math_ok = True
         math_notes = []
-        if is_owner_finance:
+        if is_terms_offer:
             if down_payment != expected_down:
                 math_ok = False
                 math_notes.append(f"down_payment expected {expected_down}, got {down_payment}")
@@ -176,9 +188,13 @@ def build_preview_records() -> list[dict]:
                 "down_payment": down_payment,
                 "monthly_payment": monthly_payment,
                 "num_payments": num_payments,
+                "interest_rate": offer.get("interest_rate", offer.get("seller_rate", 0)),
+                "prepayment_penalty": offer.get("prepayment_penalty", ""),
+                "requires_review": bool(offer.get("requires_review") or offer.get("manual_review")),
+                "review_note": offer.get("review_note", ""),
                 "math_ok": math_ok,
                 "math_check": "PASS" if math_ok else "FAIL",
-                "math_notes": "; ".join(math_notes) if math_notes else "Owner-finance math matches fixture expectations",
+                "math_notes": "; ".join(math_notes) if math_notes else "Term-offer math matches fixture expectations",
                 "email_subject": email_subject,
                 "email_body": email_body,
                 "eligible_for_review": bool(email_body and lead.get("agent_email") and math_ok),
@@ -192,7 +208,11 @@ def build_summary(records: list[dict]) -> dict:
     return {
         "total_fixture_leads": len(records),
         "owner_finance_preview_count": sum(1 for row in records if row["offer_lane"] == "OWNER_FINANCE_PRODUCTION"),
-        "manual_review_count": sum(1 for row in records if row["offer_lane"] != "OWNER_FINANCE_PRODUCTION"),
+        "seller_finance_counter_count": sum(1 for row in records if row["offer_lane"] == "SELLER_FINANCE_LISTING_COUNTER"),
+        "stale_seller_finance_review_count": sum(1 for row in records if row["offer_lane"] == "STALE_SELLER_FINANCE_REVIEW"),
+        "manual_review_count": sum(
+            1 for row in records if row["requires_review"] or not row["email_body"]
+        ),
         "math_issues_count": sum(1 for row in records if not row["math_ok"]),
         "emails_eligible_for_review": sum(1 for row in records if row["eligible_for_review"]),
         "emails_sent": 0,
@@ -220,6 +240,8 @@ def write_report(records: list[dict], summary: dict) -> None:
         "",
         f"- Total fixture leads: {summary['total_fixture_leads']}",
         f"- Owner finance preview count: {summary['owner_finance_preview_count']}",
+        f"- Seller finance counter count: {summary['seller_finance_counter_count']}",
+        f"- Stale seller finance review count: {summary['stale_seller_finance_review_count']}",
         f"- Manual review count: {summary['manual_review_count']}",
         f"- Math issues count: {summary['math_issues_count']}",
         f"- Emails that would be eligible for review: {summary['emails_eligible_for_review']}",
@@ -240,6 +262,9 @@ def write_report(records: list[dict], summary: dict) -> None:
             f"- Down payment: {_format_money(row['down_payment'])}",
             f"- Monthly payment: {_format_money(row['monthly_payment'])}",
             f"- Number of payments: {row['num_payments']}",
+            f"- Interest: {row['interest_rate']:g}%",
+            f"- Prepayment penalty: {row['prepayment_penalty'] or 'N/A'}",
+            f"- Requires review: {str(row['requires_review']).lower()}",
             f"- Math OK: {str(row['math_ok']).lower()}",
             f"- Email subject: {row['email_subject'] or 'N/A - manual/review only'}",
             "",

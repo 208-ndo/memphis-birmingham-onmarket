@@ -18,6 +18,22 @@ from config import (
     ASSIGNMENT_FEE_MIN_SMALL, ASSIGNMENT_FEE_MAX_SMALL, TRUE_WALKAWAY_PCT,
 )
 
+SELLER_FINANCE_PHRASES = (
+    "owner financing",
+    "seller financing",
+    "owner finance",
+    "seller finance",
+    "no ppp",
+    "no prepayment penalty",
+    "amortization",
+    "interest",
+    "down payment",
+    "owner will carry",
+    "seller will carry",
+)
+SELLER_FINANCE_MIN_DOWN = 5000.0
+SELLER_FINANCE_REVIEW_DOM = 100
+
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -64,12 +80,36 @@ def calc_visible_spread(list_price: float, contract_price: float,
     return list_price - (contract_price + assignment_fee)
 
 
+def has_seller_finance_terms(listing: dict) -> bool:
+    """Detect whether the listing already advertises seller-finance terms."""
+    text_parts = [
+        listing.get("description"),
+        listing.get("listing_description"),
+        listing.get("remarks"),
+        listing.get("public_remarks"),
+        listing.get("listedByText"),
+    ]
+    text = " ".join(str(part or "") for part in text_parts).lower()
+    return any(phrase in text for phrase in SELLER_FINANCE_PHRASES)
+
+
+def _listing_dom(listing: dict) -> int:
+    for key in ("days_on_zillow", "days_on_market", "dom"):
+        try:
+            return int(float(listing.get(key) or 0))
+        except (TypeError, ValueError):
+            continue
+    return 0
+
+
 # ── Main entry point ───────────────────────────────────────────────────────────
 
 def calculate_offer(listing: dict) -> dict | None:
     list_price = float(listing.get("list_price") or listing.get("price") or 0)
     if not list_price:
         return None
+    if has_seller_finance_terms(listing):
+        return _calc_seller_finance_counter(listing, list_price)
 
     # Lane 1 — Owner Finance
     if OF_MIN_PRICE <= list_price <= OF_MAX_PRICE:
@@ -133,6 +173,46 @@ def _calc_owner_finance(listing: dict, list_price: float) -> dict:
 
 
 # ── Lane 2: Cash Lowball ───────────────────────────────────────────────────────
+
+def _calc_seller_finance_counter(listing: dict, list_price: float) -> dict:
+    offer_price = float(listing.get("purchase_price_override") or list_price)
+    dp          = max(SELLER_FINANCE_MIN_DOWN, offer_price * OF_DOWN_PCT)
+    balance     = offer_price - dp
+    monthly     = balance / OF_NUM_PAYMENTS
+    dom         = _listing_dom(listing)
+    stale       = dom >= SELLER_FINANCE_REVIEW_DOM
+    review_note = ""
+    if stale:
+        review_note = (
+            "Stale seller-finance listing: lead with list price on better terms first. "
+            "Only ask for a price discount later if seller rejects better terms."
+        )
+
+    return {
+        "offer_type":                "seller_finance_counter",
+        "list_price":                list_price,
+        "owner_finance_offer":       offer_price,
+        "purchase_price":            offer_price,
+        "down_payment":              dp,
+        "down_pct":                  (dp / offer_price * 100) if offer_price else 0,
+        "financed_balance":          balance,
+        "monthly_payment":           monthly,
+        "num_payments":              OF_NUM_PAYMENTS,
+        "seller_rate":               0.0,
+        "interest_rate":             0.0,
+        "prepayment_penalty":        "None",
+        "earnest":                   OF_EARNEST,
+        "close_days":                OF_CLOSE_DAYS,
+        "due_diligence_days":        OF_DD_DAYS,
+        "seller_finance_advertised": True,
+        "stale_seller_finance":      stale,
+        "requires_review":           stale or list_price > OF_MAX_PRICE,
+        "manual_review":             stale or list_price > OF_MAX_PRICE,
+        "review_note":               review_note,
+        "pitch_holds":               not stale and list_price <= OF_MAX_PRICE,
+        "commission_language":       COMMISSION_LANGUAGE,
+    }
+
 
 def _calc_cash_lowball(listing: dict, list_price: float) -> dict:
     arv     = float(listing.get("arv") or 0)

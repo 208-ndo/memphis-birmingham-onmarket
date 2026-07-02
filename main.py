@@ -79,13 +79,18 @@ def classify_offer_lane(list_price: float, offer: dict) -> str:
     if list_price <= 0:
         return "UNCLASSIFIED"
 
+    offer_type = (offer or {}).get("offer_type", "")
+    if offer_type == "seller_finance_counter":
+        if (offer or {}).get("stale_seller_finance") or (offer or {}).get("requires_review"):
+            return "STALE_SELLER_FINANCE_REVIEW"
+        return "SELLER_FINANCE_LISTING_COUNTER"
+
     if OF_MIN_PRICE <= list_price <= OF_MAX_PRICE:
         return "OWNER_FINANCE_PRODUCTION"
 
     if OF_AUDIT_MIN_PRICE < list_price <= OF_AUDIT_MAX_PRICE:
         return "OWNER_FINANCE_AUDIT"
 
-    offer_type = (offer or {}).get("offer_type", "")
     if offer_type == "manual_review":
         return "NO_AUTO_OFFER_HIGH_PRICE"
     if offer_type == "cash_lowball":
@@ -228,7 +233,7 @@ def save_pipeline_log(all_results: dict):
                 "market":       r["market_label"],
                 "price":        list_price,
                 "dom":          listing.get("days_on_market", 0),
-                "type":         "OF" if offer.get("offer_type") == "owner_finance" else "CL",
+                "type":         "OF" if offer.get("offer_type") in ("owner_finance", "seller_finance_counter") else "CL",
                 "offer_lane":   classify_offer_lane(list_price, offer),
                 "offer":        offer.get("owner_finance_offer") or offer.get("cash_offer", 0),
                 "agent":        listing.get("agent_name"),
@@ -404,7 +409,7 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
             chosen_email = pick_email(emails)
             send_queue.append({"listing": listing, "offer": offer, "email": chosen_email})
 
-            if offer.get("offer_type") == "owner_finance":
+            if offer.get("offer_type") in ("owner_finance", "seller_finance_counter"):
                 result["of_deals"] += 1
             else:
                 result["cl_deals"] += 1
