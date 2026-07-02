@@ -137,6 +137,96 @@ def save_overflow(leads: list):
     log.info(f"Saved {len(leads)} leads to overflow for next run")
 
 
+# ── Contact research export (2026-07-02) ────────────────────────────────────────
+# Top-scored leads that finished enrichment with NO verified/sendable email
+# (agent_email_finder exhausted every published-contact rung) are exported
+# here instead of being silently dropped, so they can be manually researched
+# rather than lost. This is a CSV export only — it never sends anything and
+# never affects offer math, outreach copy, or the normal ready-to-send queue.
+#
+# IMPORTANT: this is a SEPARATE file from data/contact_research_queue.csv.
+# That existing file holds real completed research (found_phone, contact
+# source notes, approved_to_send flags for 25+ already-researched leads) in
+# its own 22-column schema — this code must NEVER read, write, or otherwise
+# touch it. This is a brand-new, append-only file for fresh no-email leads
+# from the current run only.
+NO_EMAIL_CONTACT_RESEARCH_FILE = "data/no_email_contact_research_candidates.csv"
+NO_EMAIL_CONTACT_RESEARCH_COLUMNS = [
+    "run_date", "market", "score", "address", "price", "dom", "brokerage",
+    "listing_url", "zpid", "reason", "contact_status",
+    "suggested_search_1", "suggested_search_2", "suggested_search_3",
+]
+
+
+def build_contact_research_row(listing: dict, market_key: str, reason: str) -> dict:
+    address     = listing.get("address", "")
+    brokerage   = listing.get("brokerage_name") or listing.get("brokerName") or ""
+    listing_url = listing.get("listing_url") or listing.get("url") or ""
+    city        = listing.get("city") or MARKETS.get(market_key, {}).get("city", "")
+    dom         = listing.get("days_on_market", -1)
+    parts_1 = [p for p in ([f'"{address}"'] if address else []) +
+                          ([f'"{brokerage}"'] if brokerage else []) + ["email"] if p]
+    return {
+        "run_date":            datetime.now().date().isoformat(),
+        "market":              market_key,
+        "score":               listing.get("score", ""),
+        "address":             address,
+        "price":               listing.get("price", ""),
+        "dom":                 dom if dom is not None and dom >= 0 else "",
+        "brokerage":           brokerage,
+        "listing_url":         listing_url,
+        "zpid":                listing.get("zpid", ""),
+        "reason":              reason,
+        "contact_status":      "needs_contact_research",
+        "suggested_search_1":  " ".join(parts_1) if (address or brokerage) else "",
+        "suggested_search_2":  f'"{brokerage}" {city} office email'.strip() if brokerage else "",
+        "suggested_search_3":  listing_url,
+    }
+
+
+def save_contact_research_queue(rows: list):
+    """
+    Appends (does not overwrite) rows for this run to
+    data/no_email_contact_research_candidates.csv — a file dedicated to
+    fresh no-email leads ONLY. Never touches data/contact_research_queue.csv,
+    which holds separate, already-completed manual research in its own
+    schema. Dedupes by (market, address, run_date) against anything already
+    in this file so re-running the pipeline the same day doesn't create
+    duplicate rows for the same lead. Writes the header only if the file
+    doesn't exist yet.
+    """
+    import csv
+    os.makedirs("data", exist_ok=True)
+
+    existing_keys = set()
+    file_exists = os.path.exists(NO_EMAIL_CONTACT_RESEARCH_FILE)
+    if file_exists:
+        try:
+            with open(NO_EMAIL_CONTACT_RESEARCH_FILE, "r", newline="") as f:
+                for r in csv.DictReader(f):
+                    existing_keys.add((r.get("run_date", ""), r.get("market", ""), r.get("address", "")))
+        except Exception as e:
+            log.warning(f"Could not read existing {NO_EMAIL_CONTACT_RESEARCH_FILE} for dedup: {e}")
+
+    new_rows = [r for r in rows
+                if (r["run_date"], r["market"], r["address"]) not in existing_keys]
+
+    if not new_rows:
+        log.info("No-email contact research candidates: no new leads to add (all already queued today)")
+        return
+
+    write_header = not file_exists
+    with open(NO_EMAIL_CONTACT_RESEARCH_FILE, "a", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=NO_EMAIL_CONTACT_RESEARCH_COLUMNS)
+        if write_header:
+            writer.writeheader()
+        for row in new_rows:
+            writer.writerow(row)
+
+    log.info(f"No-email contact research candidates: added {len(new_rows)} leads needing manual research "
+             f"-> {NO_EMAIL_CONTACT_RESEARCH_FILE}")
+
+
 def save_dashboard_data(market_key: str, leads: list, sent_results: list):
     """
     Persists the FULL current scored lead list for this market — dashboard
@@ -374,14 +464,18 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
         save_overflow(other_overflow)
 
     log.info(f"[3/5] Calculating offers and generating emails...")
-    send_queue       = []
-    skipped_pitch    = 0
-    skipped_no_email = 0
+    send_queue         = []
+    skipped_pitch       = 0
+    skipped_no_email    = 0
+    needs_contact_research = []  # (2026-07-02) leads with no verified email
 
     for listing in todays_leads:
         try:
             if not listing.get("agent_email"):
                 skipped_no_email += 1
+                needs_contact_research.append(
+                    build_contact_research_row(listing, market_key,
+                                               reason="no_verified_email_after_enrichment"))
                 continue
 
             listing["list_price"] = listing.get("price", 0)
@@ -432,6 +526,9 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
             log.error(f"Error processing {listing.get('address')}: {e}")
 
     log.info(f"[3/5] {len(send_queue)} ready | Skipped: {skipped_pitch} pitch + {skipped_no_email} no email")
+
+    if needs_contact_research:
+        save_contact_research_queue(needs_contact_research)
 
     log.info(f"[4/5] Sending emails...")
     sent_results = send_batch(send_queue, market_key, dry_run=dry_run)

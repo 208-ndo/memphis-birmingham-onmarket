@@ -79,6 +79,14 @@ def send_email(
     dry_run: bool = False,
     email_confidence: str = ""
 ) -> bool:
+    # Dry run checked FIRST — no credential lookup happens above this line's
+    # outcome for a dry run (2026-07-02 fix, defense in depth: send_batch no
+    # longer even calls this function during a dry run, but any other/future
+    # caller passing dry_run=True must also never hit the credential check).
+    if dry_run:
+        log.info(f"[DRY RUN] Would send to {to_email} | Subject: {subject} | PDF: {bool(pdf_path)}")
+        return True
+
     market         = MARKETS[market_key]
     gmail_user     = market["gmail_user"]
     gmail_password = market["gmail_app_password"]
@@ -90,10 +98,6 @@ def send_email(
     if not to_email:
         log.warning("No agent email — skipping send")
         return False
-
-    if dry_run:
-        log.info(f"[DRY RUN] Would send to {to_email} | Subject: {subject} | PDF: {bool(pdf_path)}")
-        return True
 
     # ── In-process live-send hard guard (2026-07-02) ─────────────────────────
     # The workflow already forces --dry-run unless the LIVE_SEND_ENABLED
@@ -237,15 +241,25 @@ def send_batch(leads_with_emails: list, market_key: str, dry_run: bool = False) 
         except Exception as e:
             log.error(f"PDF error for {address}: {e} — sending without PDF")
 
-        success = send_email(
-            market_key=market_key,
-            to_email=to_email,
-            subject=subject,
-            body=body,
-            pdf_path=pdf_path,
-            dry_run=dry_run,
-            email_confidence=listing.get("email_confidence", ""),
-        )
+        # ── Dry run: never touch Gmail credentials, SMTP, or send_email() ──────
+        # (2026-07-02 fix) send_email() used to be called even in dry runs and
+        # logged "Missing Gmail credentials" + returned False whenever the
+        # workflow had no Gmail secrets configured (normal for a dry-run-only
+        # test), which then counted a perfectly good ready lead as "Failed".
+        # Dry run now short-circuits here — no credential lookup, no SMTP.
+        if dry_run:
+            success = True
+            log.info(f"[DRY RUN] Would send to {to_email} | Subject: {subject} | PDF: {bool(pdf_path)}")
+        else:
+            success = send_email(
+                market_key=market_key,
+                to_email=to_email,
+                subject=subject,
+                body=body,
+                pdf_path=pdf_path,
+                dry_run=False,
+                email_confidence=listing.get("email_confidence", ""),
+            )
 
         if success:
             sent_count += 1
@@ -282,5 +296,8 @@ def send_batch(leads_with_emails: list, market_key: str, dry_run: bool = False) 
 
     successful = sum(1 for r in sent_results if r["success"])
     failed     = len(sent_results) - successful
-    log.info(f"Batch complete | Sent: {successful} | Failed: {failed} | Market: {market_key}")
+    if dry_run:
+        log.info(f"DRY RUN — would send {successful} verified emails; Gmail skipped.")
+    else:
+        log.info(f"Batch complete | Sent: {successful} | Failed: {failed} | Market: {market_key}")
     return sent_results
