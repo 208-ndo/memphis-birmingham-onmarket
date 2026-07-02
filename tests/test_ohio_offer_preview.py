@@ -100,7 +100,10 @@ class OhioOfferPreviewTest(unittest.TestCase):
         self.assertTrue(row["rent_check_pass"])
         self.assertGreaterEqual(row["estimated_monthly_cashflow"], 200)
         self.assertLessEqual(row["payment_to_rent_ratio"], 0.65)
-        self.assertTrue(row["live_send_eligible"])
+        self.assertTrue(row["eligible_for_human_review"])
+        self.assertFalse(row["approved_to_send"])
+        self.assertFalse(row["live_send_allowed"])
+        self.assertFalse(row["live_send_allowed_after_manual_approval"])
 
     def test_rent_check_weak_rent_fails(self):
         row = self.by_address["95 Weak Rent Ave, Cleveland, OH 44105"]
@@ -109,7 +112,31 @@ class OhioOfferPreviewTest(unittest.TestCase):
         self.assertEqual(row["rent_check_status"], "FAIL")
         self.assertFalse(row["rent_check_pass"])
         self.assertTrue(row["requires_review"])
-        self.assertFalse(row["live_send_eligible"])
+        self.assertFalse(row["eligible_for_human_review"])
+        self.assertFalse(row["approved_to_send"])
+        self.assertFalse(row["live_send_allowed"])
+
+    def test_live_send_allowed_only_after_explicit_manual_approval(self):
+        base = {
+            "address": "Approved Rent Check",
+            "market_key": "cleveland",
+            "city": "Cleveland",
+            "list_price": 95000,
+            "estimated_rent": 1700,
+        }
+        offer = calculate_offer(base)
+        self.assertTrue(offer["rent_check_pass"])
+        self.assertTrue(offer["eligible_for_human_review"])
+        self.assertFalse(offer["approved_to_send"])
+        self.assertFalse(offer["live_send_allowed"])
+        self.assertFalse(offer["pitch_holds"])
+
+        approved_offer = calculate_offer({**base, "approved_to_send": True})
+        self.assertTrue(approved_offer["rent_check_pass"])
+        self.assertTrue(approved_offer["eligible_for_human_review"])
+        self.assertTrue(approved_offer["approved_to_send"])
+        self.assertTrue(approved_offer["live_send_allowed"])
+        self.assertTrue(approved_offer["pitch_holds"])
 
     def test_missing_rent_blocks_live_send(self):
         offer = calculate_offer(
@@ -123,13 +150,15 @@ class OhioOfferPreviewTest(unittest.TestCase):
         self.assertEqual(offer["offer_type"], "owner_finance_rent_check")
         self.assertEqual(offer["rent_check_status"], "RENT_CHECK_REQUIRED")
         self.assertTrue(offer["live_send_blocked"])
+        self.assertFalse(offer["approved_to_send"])
+        self.assertFalse(offer["live_send_allowed"])
         self.assertFalse(offer["pitch_holds"])
 
     def test_100k_to_125k_is_manual_review(self):
         row = self.by_address["115 Manual Review Ave, Akron, OH 44320"]
         self.assertEqual(row["offer_lane"], "OWNER_FINANCE_MANUAL_REVIEW_100_125")
         self.assertTrue(row["requires_review"])
-        self.assertFalse(row["live_send_eligible"])
+        self.assertFalse(row["live_send_allowed"])
         self.assertFalse(row["auto_send"])
 
     def test_stale_seller_finance_is_review_and_not_price_lowball(self):
@@ -175,7 +204,7 @@ class OhioOfferPreviewTest(unittest.TestCase):
         self.assertEqual(row["offer_lane"], "OWNER_FINANCE_MANUAL_REVIEW_100_125")
         self.assertEqual(row["offer_type"], "owner_finance_manual_review")
         self.assertFalse(row["auto_send"])
-        self.assertFalse(row["live_send_eligible"])
+        self.assertFalse(row["live_send_allowed"])
         self.assertTrue(row["requires_review"])
 
     def test_generated_email_includes_required_public_lines(self):

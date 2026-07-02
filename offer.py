@@ -266,6 +266,8 @@ def _calc_owner_finance_rent_check(listing: dict, list_price: float) -> dict:
         and payment_to_rent_ratio <= MAX_PAYMENT_TO_RENT_RATIO
     )
     rent_check_status = "PASS" if rent_check_pass else ("FAIL" if estimated_rent else "RENT_CHECK_REQUIRED")
+    approved_to_send = bool(listing.get("approved_to_send"))
+    live_send_allowed = bool(rent_check_pass and approved_to_send)
 
     return {
         "offer_type":              "owner_finance_rent_check",
@@ -291,11 +293,14 @@ def _calc_owner_finance_rent_check(listing: dict, list_price: float) -> dict:
         "max_payment_to_rent_ratio": MAX_PAYMENT_TO_RENT_RATIO,
         "rent_check_status":       rent_check_status,
         "rent_check_pass":         rent_check_pass,
-        "live_send_blocked":       not rent_check_pass,
-        "requires_review":         not rent_check_pass,
-        "manual_review":           not rent_check_pass,
+        "eligible_for_human_review": rent_check_pass,
+        "approved_to_send":        approved_to_send,
+        "live_send_allowed":       live_send_allowed,
+        "live_send_blocked":       not live_send_allowed,
+        "requires_review":         True,
+        "manual_review":           True,
         "review_note":             "" if rent_check_pass else "RENT_CHECK_REQUIRED",
-        "pitch_holds":             rent_check_pass,
+        "pitch_holds":             live_send_allowed,
         "commission_language":     COMMISSION_LANGUAGE,
     }
 
@@ -337,6 +342,9 @@ def _calc_owner_finance_manual_review(listing: dict, list_price: float) -> dict:
         "max_payment_to_rent_ratio": MAX_PAYMENT_TO_RENT_RATIO,
         "rent_check_status":       "MANUAL_REVIEW",
         "rent_check_pass":         False,
+        "eligible_for_human_review": False,
+        "approved_to_send":        bool(listing.get("approved_to_send")),
+        "live_send_allowed":       False,
         "live_send_blocked":       True,
         "requires_review":         True,
         "manual_review":           True,

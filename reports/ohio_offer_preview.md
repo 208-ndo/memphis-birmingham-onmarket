@@ -10,7 +10,7 @@ Fixture-only Cleveland/Akron preview. No scraper, Apify, enrichment, Gmail, or G
 - Rent check count: 2
 - Rent check pass count: 1
 - Stale seller finance review count: 0
-- Manual review count: 3
+- Manual review count: 4
 - Math issues count: 0
 - Emails that would be eligible for review: 7
 - Emails sent: 0
@@ -35,7 +35,11 @@ Fixture-only Cleveland/Akron preview. No scraper, Apify, enrichment, Gmail, or G
 - Estimated monthly cashflow: $0
 - Payment-to-rent ratio: N/A
 - Rent check status: N/A
-- Live-send eligible: true
+- Rent check pass: false
+- Eligible for human review: false
+- Approved to send: false
+- Live send allowed: false
+- Live send allowed after manual approval: false
 - Requires review: false
 - Math OK: true
 - Email subject: Seller-Finance Counter on 4297 E 139th St, Cleveland, OH 44105
@@ -88,7 +92,11 @@ Michael B. | 229 Holdings LLC
 - Estimated monthly cashflow: $0
 - Payment-to-rent ratio: N/A
 - Rent check status: N/A
-- Live-send eligible: true
+- Rent check pass: false
+- Eligible for human review: false
+- Approved to send: false
+- Live send allowed: false
+- Live send allowed after manual approval: false
 - Requires review: false
 - Math OK: true
 - Email subject: Owner Finance Offer on 10712 Grantwood Ave, Cleveland, OH 44108
@@ -138,8 +146,12 @@ Michael B. | 229 Holdings LLC
 - Estimated monthly cashflow: $210
 - Payment-to-rent ratio: 0.531
 - Rent check status: PASS
-- Live-send eligible: true
-- Requires review: false
+- Rent check pass: true
+- Eligible for human review: true
+- Approved to send: false
+- Live send allowed: false
+- Live send allowed after manual approval: false
+- Requires review: true
 - Math OK: true
 - Email subject: Owner Finance Offer on 95 Strong Rent Ave, Cleveland, OH 44105
 
@@ -188,7 +200,11 @@ Michael B. | 229 Holdings LLC
 - Estimated monthly cashflow: $-172.50
 - Payment-to-rent ratio: 0.722
 - Rent check status: FAIL
-- Live-send eligible: false
+- Rent check pass: false
+- Eligible for human review: false
+- Approved to send: false
+- Live send allowed: false
+- Live send allowed after manual approval: false
 - Requires review: true
 - Math OK: true
 - Email subject: Owner Finance Offer on 95 Weak Rent Ave, Cleveland, OH 44105
@@ -238,7 +254,11 @@ Michael B. | 229 Holdings LLC
 - Estimated monthly cashflow: $35
 - Payment-to-rent ratio: 0.607
 - Rent check status: MANUAL_REVIEW
-- Live-send eligible: false
+- Rent check pass: false
+- Eligible for human review: false
+- Approved to send: false
+- Live send allowed: false
+- Live send allowed after manual approval: false
 - Requires review: true
 - Math OK: true
 - Email subject: Owner Finance Offer on 115 Manual Review Ave, Akron, OH 44320
@@ -288,7 +308,11 @@ Michael B. | 229 Holdings LLC
 - Estimated monthly cashflow: $0
 - Payment-to-rent ratio: N/A
 - Rent check status: N/A
-- Live-send eligible: true
+- Rent check pass: false
+- Eligible for human review: false
+- Approved to send: false
+- Live send allowed: false
+- Live send allowed after manual approval: false
 - Requires review: false
 - Math OK: true
 - Email subject: Owner Finance Offer on 840 Work Dr, Akron, OH 44320
@@ -338,7 +362,11 @@ Michael B. | 229 Holdings LLC
 - Estimated monthly cashflow: $0
 - Payment-to-rent ratio: N/A
 - Rent check status: MANUAL_REVIEW
-- Live-send eligible: false
+- Rent check pass: false
+- Eligible for human review: false
+- Approved to send: false
+- Live send allowed: false
+- Live send allowed after manual approval: false
 - Requires review: true
 - Math OK: true
 - Email subject: Owner Finance Offer on 123 Example Review Ave, Cleveland, OH 44105
