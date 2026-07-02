@@ -173,13 +173,36 @@ MIN_SQFT      = 750
 MAX_VIEWS_DAY = 25
 MIN_DOM       = 30   # hard rule — never lowered, never made 7-29 auto-send eligible
 
+def _int_env_override(env_name: str, default: int) -> int:
+    """Read an optional integer override from a workflow input env var.
+    Falls back to the given default if unset, blank, or unparsable."""
+    raw = os.environ.get(env_name, "")
+    try:
+        return int(raw) if raw.strip() else default
+    except ValueError:
+        return default
+
+
 # ─── Apify Safety ──────────────────────────────────────────────────────────────
-# Hard cap on Apify actor calls per workflow run (across ALL actors — Zillow
-# scraper AND Google email-search share this single budget; any future actor
-# must check it too). Prevents runaway credit spend if market list grows,
-# loops misbehave, or email enrichment runs on too many leads.
-# Set to 10 as safe default; raise deliberately if adding more markets/bands.
-MAX_APIFY_RUNS_PER_WORKFLOW = 10
+# BUDGETS ARE NOW SPLIT (2026-07-02 fix): the old single shared cap let
+# Cleveland's email enrichment eat Akron's Zillow band budget (Cleveland used
+# 3 Zillow + 5 Google = 8 of 10, Akron got 2 Zillow calls and band 3 was
+# skipped). Zillow scraping and email enrichment now have independent caps so
+# they cannot starve each other. MAX_APIFY_RUNS_PER_WORKFLOW remains as a
+# pure EMERGENCY global hard stop across all actors combined.
+
+# Zillow scrape calls: 3 bands x 2 markets = 6 minimum for the standard
+# Cleveland/Akron (or Memphis/Birmingham) 2-market run.
+MAX_ZILLOW_CALLS_PER_WORKFLOW = _int_env_override(
+    "MAX_ZILLOW_CALLS_OVERRIDE", 6
+)
+
+# Emergency global hard stop — every actor call (Zillow + Google + future)
+# still counts against this. Must be >= zillow cap + email cap for a normal
+# run to complete (6 + 10 = 16); 20 leaves headroom without allowing runaway.
+MAX_APIFY_RUNS_PER_WORKFLOW = _int_env_override(
+    "MAX_APIFY_RUNS_OVERRIDE", 20
+)
 
 # ─── Price-Reduced OF Variant ───────────────────────────────────────────────────
 # When True: $30k-$80k OF bands get a second Apify pass with isReducedPrice=True.
@@ -191,16 +214,6 @@ MAX_APIFY_RUNS_PER_WORKFLOW = 10
 ENABLE_PRICE_REDUCED_OF_VARIANT = False
 
 
-def _int_env_override(env_name: str, default: int) -> int:
-    """Read an optional integer override from a workflow input env var.
-    Falls back to the given default if unset, blank, or unparsable."""
-    raw = os.environ.get(env_name, "")
-    try:
-        return int(raw) if raw.strip() else default
-    except ValueError:
-        return default
-
-
 # ─── Email Enrichment Budget ────────────────────────────────────────────────────
 # Separate, lower sub-cap on Google email-search Apify calls specifically.
 # This is IN ADDITION TO MAX_APIFY_RUNS_PER_WORKFLOW above — a Google call must
@@ -208,7 +221,14 @@ def _int_env_override(env_name: str, default: int) -> int:
 # it is allowed to run. Overridable per-run via the max_email_enrichment_calls
 # workflow input (passed through as MAX_EMAIL_ENRICHMENT_CALLS_OVERRIDE).
 MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW = _int_env_override(
-    "MAX_EMAIL_ENRICHMENT_CALLS_OVERRIDE", 5
+    "MAX_EMAIL_ENRICHMENT_CALLS_OVERRIDE", 10
+)
+
+# Per-market slice of the email budget (2026-07-02 fix) so market #1 cannot
+# consume the whole email budget before market #2 runs. 5 per market x 2
+# markets = the 10-call workflow cap above.
+MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET = _int_env_override(
+    "MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET_OVERRIDE", 5
 )
 
 # ─── Lead Shortlist Before Enrichment ───────────────────────────────────────────

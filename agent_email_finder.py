@@ -1,40 +1,55 @@
 """
 agent_email_finder.py
-Finds published agent email using Google Search via Apify.
-Uses agent name + brokerage to find their published business email.
 
-Budget safety: every client.actor() call in this file is gated by an optional
-can_make_call() check and reported via register_call(), passed in by the
-caller (scraper.py). This lets a single shared Apify budget (Zillow + Google,
-see scraper.py's MAX_APIFY_RUNS_PER_WORKFLOW) and a Google-specific sub-cap
-(MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW) both apply here without this module
-needing to import scraper.py directly (which would create a circular import,
-since scraper.py imports from this module).
+Deterministic published-contact ladder for listing agents
+(listing-agent-contact-finder.skill + zompz-deal-finder rules).
 
-If no hooks are passed (e.g. standalone/manual use), calls are unrestricted —
-callers that care about budget MUST pass can_make_call/register_call.
+Ladder implemented by find_published_agent_contact(), in strict order:
+  1. zillow_contact    — email already present in the Zillow/Apify item
+  2. listing_contact   — contact data tied to the live listing URL (searched
+                         via the listing URL / exact address, since direct
+                         Zillow page fetches are bot-blocked in this pipeline)
+  3. google_snippet    — exact property address + brokerage (+ agent if valid)
+  4. google_snippet    — agent name + brokerage + city + email (valid names only)
+  5. zillow_profile / homes_profile / brokerage_roster — profile & roster pages
+                         discovered through Google (site: queries)
+  6. mailto:/visible-email extraction from every snippet/url examined above
+  7. office_fallback   — office intake email from the official brokerage site
+  8. phone-only        — ONLY after every rung above has failed
+
+Every found email is stored with source URL, source type, confidence, and a
+sendable flag. Live sending only ever allows source_verified /
+snippet_verified / office_fallback (see contact_validation.py). Numeric junk
+agent names ("33", "82") are never used in queries — invalid names fall back
+to property-address + brokerage + listing-URL queries.
+
+Budget safety: every client.actor() call is gated by can_make_call() and
+reported via register_call(), passed in by scraper.py. Per-market and
+per-workflow email caps plus the global emergency Apify cap all apply there.
 """
 
 import os
-import re
 import time
 import logging
-from apify_client import ApifyClient
+
+try:
+    from apify_client import ApifyClient
+except Exception:            # pragma: no cover - allows import without apify
+    ApifyClient = None
+
+from contact_validation import (
+    is_valid_agent_name, clean_agent_name, extract_emails_from_text,
+    is_plausible_business_email, email_is_sendable, EMAIL_RE, SKIP_DOMAINS,
+)
 
 logger = logging.getLogger(__name__)
 
-APIFY_TOKEN      = os.environ.get("APIFY_API_TOKEN")
-GOOGLE_ACTOR_ID  = "apify/google-search-scraper"
+APIFY_TOKEN     = os.environ.get("APIFY_API_TOKEN")
+GOOGLE_ACTOR_ID = "apify/google-search-scraper"
 
-# Regex to extract email from text
-EMAIL_RE = re.compile(r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}")
-
-# Domains that are NOT agent emails — skip these
-SKIP_DOMAINS = {
-    "zillow.com", "realtor.com", "redfin.com", "homes.com",
-    "trulia.com", "gmail.com", "yahoo.com", "hotmail.com",
-    "outlook.com", "icloud.com", "aol.com", "example.com",
-}
+# Kept for backward compatibility with existing imports/tests
+def is_valid_agent_email(email: str) -> bool:
+    return is_plausible_business_email(email)
 
 
 def _default_can_make_call() -> bool:
@@ -45,179 +60,254 @@ def _default_register_call():
     return None
 
 
-def is_valid_agent_email(email: str) -> bool:
-    """Return True if email looks like a real brokerage/agent email."""
-    if not email:
-        return False
-    domain = email.split("@")[-1].lower()
-    return domain not in SKIP_DOMAINS
+def _sanitize_query_for_log(query: str) -> str:
+    """Queries contain only public listing data, but keep logs tidy/safe."""
+    return query[:160]
 
 
-def search_agent_email(
-    agent_name: str,
-    brokerage: str,
-    city: str,
-    client: ApifyClient,
-    can_make_call=None,
-    register_call=None,
-) -> str:
+def _run_google_query(query, client, can_make_call, register_call,
+                      results_per_page=5):
     """
-    Google search for agent's published business email.
-    Returns email string or empty string.
+    One budget-gated Google actor call. Returns list of result dicts:
+    {title, description, url}. Empty list on budget stop or failure.
+    """
+    if not can_make_call():
+        logger.warning("EMAIL ENRICHMENT BUDGET REACHED — skipping query: %s",
+                       _sanitize_query_for_log(query))
+        return []
+    try:
+        register_call()
+        logger.info("Google query: %s", _sanitize_query_for_log(query))
+        run = client.actor(GOOGLE_ACTOR_ID).call(
+            run_input={
+                "queries":          query,
+                "maxPagesPerQuery": 1,
+                "resultsPerPage":   results_per_page,
+                "languageCode":     "en",
+                "countryCode":      "us",
+            },
+            timeout_secs=60,
+        )
+        items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
+        results = []
+        for item in items:
+            for result in item.get("organicResults", []):
+                results.append({
+                    "title":       result.get("title", "") or "",
+                    "description": result.get("description", "") or "",
+                    "url":         result.get("url", "") or "",
+                })
+        time.sleep(1)
+        return results
+    except Exception as e:
+        logger.debug("Google search failed for '%s': %s",
+                     _sanitize_query_for_log(query), e)
+        return []
 
-    Checks can_make_call() before EVERY client.actor() call (up to 3 per
-    invocation: 2 primary queries + 1 brokerage-site fallback). Stops and
-    returns "" as soon as budget is exhausted, without raising.
+
+def _classify_result_source(url: str) -> str:
+    u = (url or "").lower()
+    if "zillow.com/profile" in u:
+        return "zillow_profile"
+    if "homes.com" in u:
+        return "homes_profile"
+    return "google_snippet"
+
+
+def _emails_from_results(results, source_type_hint=None):
+    """
+    Yield (email, source_url, source_type) from snippets + mailto links.
+    Confidence for all of these is snippet-derived (visible, not invented).
+    """
+    for r in results:
+        text = " ".join([r["title"], r["description"], r["url"]])
+        for email in extract_emails_from_text(text):
+            source_type = source_type_hint or _classify_result_source(r["url"])
+            yield email, r["url"], source_type
+
+
+def _contact_dict(email="", source_url="", source_type="", confidence="",
+                  phone=""):
+    return {
+        "email":             email,
+        "email_source_url":  source_url,
+        "email_source_type": source_type,
+        "email_confidence":  confidence,
+        "email_is_sendable": email_is_sendable(confidence) if email else False,
+        "agent_phone":       phone,
+    }
+
+
+def find_published_agent_contact(lead, client, can_make_call=None,
+                                 register_call=None):
+    """
+    Deterministic published-contact ladder. Returns a contact dict (see
+    _contact_dict). Never invents/pattern-guesses an email. Uses property
+    address + brokerage + listing URL when the agent name is invalid/missing.
     """
     can_make_call = can_make_call or _default_can_make_call
     register_call = register_call or _default_register_call
 
-    if not agent_name and not brokerage:
-        return ""
+    agent_name = clean_agent_name(
+        lead.get("listing_agent_name") or lead.get("agent_name") or "")
+    brokerage  = (lead.get("brokerage_name") or lead.get("brokerName") or "").strip()
+    # Guard: brokerName historically fell back to agent_name — never let a
+    # junk numeric value through as a brokerage either.
+    if brokerage and not is_valid_agent_name(brokerage):
+        brokerage = ""
+    address     = (lead.get("address") or "").strip()
+    city        = (lead.get("city") or lead.get("market") or "").strip()
+    listing_url = (lead.get("listing_url") or lead.get("url") or "").strip()
+    phone       = (lead.get("listing_agent_phone") or lead.get("agent_phone") or "").strip()
 
-    # Build search queries — try most specific first
-    queries = []
-    if agent_name and brokerage:
-        queries.append(f'"{agent_name}" "{brokerage}" email {city}')
-        queries.append(f'"{agent_name}" "{brokerage}" contact')
-    elif agent_name:
-        queries.append(f'"{agent_name}" real estate agent email {city}')
-    elif brokerage:
-        queries.append(f'"{brokerage}" {city} real estate agent contact email')
+    # ── Rung 1: contact data already present in the Zillow/Apify item ──────
+    existing = (lead.get("agent_email") or "").strip().lower()
+    if existing and is_plausible_business_email(existing):
+        return _contact_dict(existing, listing_url or "zillow_item",
+                             "zillow_contact", "source_verified", phone)
 
-    for query in queries:
-        if not can_make_call():
-            logger.warning("EMAIL ENRICHMENT BUDGET REACHED — skipping remaining Google search queries")
-            return ""
+    # ── Rung 2: contact data tied to the live listing (listing URL query) ──
+    if listing_url:
+        results = _run_google_query(f'"{address}" listing agent contact {listing_url}',
+                                    client, can_make_call, register_call, 3)
+        for email, src_url, _ in _emails_from_results(results, "listing_contact"):
+            return _contact_dict(email, src_url, "listing_contact",
+                                 "snippet_verified", phone)
 
-        try:
-            register_call()
-            run = client.actor(GOOGLE_ACTOR_ID).call(
-                run_input={
-                    "queries":        query,
-                    "maxPagesPerQuery": 1,
-                    "resultsPerPage": 5,
-                    "languageCode":   "en",
-                    "countryCode":    "us",
-                },
-                timeout_secs=60
-            )
-            items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
+    # ── Rung 3: exact property address + brokerage (+ agent if valid) ──────
+    if address and brokerage:
+        q = f'"{address}" "{brokerage}"'
+        if agent_name:
+            q += f' "{agent_name}"'
+        q += " email"
+        results = _run_google_query(q, client, can_make_call, register_call)
+        for email, src_url, source_type in _emails_from_results(results):
+            return _contact_dict(email, src_url, source_type,
+                                 "snippet_verified", phone)
 
-            for item in items:
-                # Check organic results
-                for result in item.get("organicResults", []):
-                    text = " ".join([
-                        result.get("title", ""),
-                        result.get("description", ""),
-                        result.get("url", ""),
-                    ])
-                    emails = EMAIL_RE.findall(text)
-                    for email in emails:
-                        if is_valid_agent_email(email):
-                            logger.info(f"Found email via Google: {email} for {agent_name} / {brokerage}")
-                            return email.lower()
+    # ── Rung 4: agent name + brokerage + city + email (valid names ONLY) ───
+    if agent_name:
+        pieces = [f'"{agent_name}"']
+        if brokerage:
+            pieces.append(f'"{brokerage}"')
+        if city:
+            pieces.append(city)
+        pieces.append("email")
+        results = _run_google_query(" ".join(pieces), client,
+                                    can_make_call, register_call)
+        for email, src_url, source_type in _emails_from_results(results):
+            return _contact_dict(email, src_url, source_type,
+                                 "snippet_verified", phone)
 
-            time.sleep(2)
-
-        except Exception as e:
-            logger.debug(f"Google search failed for '{query}': {e}")
-            continue
-
-    # Fallback: try brokerage website directly
+    # ── Rung 5: Zillow / Homes.com profiles + brokerage roster via Google ──
+    profile_queries = []
+    if agent_name:
+        profile_queries.append(
+            f'site:zillow.com/profile OR site:homes.com "{agent_name}"'
+            + (f' "{brokerage}"' if brokerage else ""))
     if brokerage:
-        if not can_make_call():
-            logger.warning("EMAIL ENRICHMENT BUDGET REACHED — skipping brokerage-site fallback search")
-            return ""
-        try:
-            register_call()
-            brokerage_domain = brokerage.lower().replace(" ", "").replace(",", "").replace(".", "")[:20]
-            fallback_query = f'site:{brokerage_domain}.com "{agent_name}"'
-            run = client.actor(GOOGLE_ACTOR_ID).call(
-                run_input={
-                    "queries":          fallback_query,
-                    "maxPagesPerQuery": 1,
-                    "resultsPerPage":   3,
-                },
-                timeout_secs=60
-            )
-            items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
-            for item in items:
-                for result in item.get("organicResults", []):
-                    text = result.get("description", "") + " " + result.get("title", "")
-                    emails = EMAIL_RE.findall(text)
-                    for email in emails:
-                        if is_valid_agent_email(email):
-                            logger.info(f"Found email via brokerage site: {email}")
-                            return email.lower()
-        except Exception:
-            pass
+        profile_queries.append(
+            f'"{brokerage}" {city} agent roster staff directory'
+            + (f' "{agent_name}"' if agent_name else ""))
+    for q in profile_queries:
+        results = _run_google_query(q, client, can_make_call, register_call)
+        # Rung 6 (mailto/visible emails) is applied to every page examined
+        for email, src_url, source_type in _emails_from_results(results):
+            if source_type == "google_snippet" and brokerage:
+                source_type = "brokerage_roster"
+            return _contact_dict(email, src_url, source_type,
+                                 "snippet_verified", phone)
 
-    return ""
+    # ── Rung 7: office intake email from the official brokerage site ───────
+    if brokerage:
+        q = f'"{brokerage}" {city} office email contact'
+        results = _run_google_query(q, client, can_make_call, register_call, 3)
+        for email, src_url, _ in _emails_from_results(results, "office_fallback"):
+            logger.info("Office-fallback email for %s: %s", brokerage, email)
+            return _contact_dict(email, src_url, "office_fallback",
+                                 "office_fallback", phone)
+
+    # ── Rung 8: phone-only, all email rungs exhausted ───────────────────────
+    if phone:
+        logger.info("Phone-only lead (all email rungs exhausted): %s | %s",
+                    agent_name or address, brokerage or "no brokerage")
+    return _contact_dict(phone=phone)
 
 
-def enrich_leads_with_emails(
-    leads: list,
-    market: dict,
-    client: ApifyClient,
-    can_make_call=None,
-    register_call=None,
-) -> list:
+# ── Backward-compatible wrapper used by older tests/tools ──────────────────────
+
+def search_agent_email(agent_name, brokerage, city, client,
+                       can_make_call=None, register_call=None) -> str:
+    lead = {"agent_name": agent_name, "brokerage_name": brokerage,
+            "city": city, "address": ""}
+    contact = find_published_agent_contact(lead, client,
+                                           can_make_call, register_call)
+    return contact["email"]
+
+
+def enrich_leads_with_emails(leads, market, client,
+                             can_make_call=None, register_call=None) -> list:
     """
-    For each lead missing an agent email, try to find one via Google.
-    Returns leads list with emails filled in where found.
-
-    Stops cleanly (does not crash) once can_make_call() reports budget
-    exhausted. Remaining un-enriched leads simply keep agent_email=""
-    (displayed downstream as "NONE").
+    For each lead missing an agent email, walk the published-contact ladder.
+    Stores email + source/confidence/sendable fields on the lead. Stops
+    cleanly once budget is exhausted; remaining leads keep agent_email="".
     """
     can_make_call = can_make_call or _default_can_make_call
     register_call = register_call or _default_register_call
 
-    city          = market.get("city", "")
-    needs_email   = [l for l in leads if not l.get("agent_email")]
-    has_email     = [l for l in leads if l.get("agent_email")]
+    city        = market.get("city", "")
+    needs_email = [l for l in leads if not l.get("agent_email")]
+    has_email   = [l for l in leads if l.get("agent_email")]
 
-    logger.info(f"Email lookup: {len(needs_email)} leads need emails, {len(has_email)} already have one")
+    # Leads whose email came straight from the Zillow item get source fields too
+    for lead in has_email:
+        if not lead.get("email_source_type"):
+            lead.update(_contact_dict(
+                lead["agent_email"],
+                lead.get("listing_url") or lead.get("url") or "zillow_item",
+                "zillow_contact", "source_verified",
+                lead.get("agent_phone", "")))
+            lead["agent_email"] = lead["email"]
 
-    # Deduplicate by brokerage — don't search same brokerage twice
-    brokerage_emails = {}
-    budget_exhausted = False
+    logger.info("Email lookup: %s leads need emails, %s already have one",
+                len(needs_email), len(has_email))
 
+    brokerage_cache = {}
     for idx, lead in enumerate(needs_email):
-        if budget_exhausted:
-            break  # leave remaining leads with agent_email="" (NONE) — no crash
+        if not lead.get("city"):
+            lead["city"] = city
+        brokerage = (lead.get("brokerage_name") or lead.get("brokerName") or "").strip()
 
-        agent_name = lead.get("agent_name", "")
-        brokerage  = lead.get("brokerName") or lead.get("agent_name", "")
-
-        # Check if we already found an email for this brokerage (no Apify call needed)
-        if brokerage in brokerage_emails:
-            lead["agent_email"] = brokerage_emails[brokerage]
-            logger.info(f"Reused cached email for {brokerage}: {lead['agent_email']}")
+        cache_key = brokerage.lower()
+        if cache_key and cache_key in brokerage_cache:
+            cached = brokerage_cache[cache_key]
+            if cached["email"]:
+                lead.update(cached)
+                lead["agent_email"] = cached["email"]
+                logger.info("Reused cached %s email for %s: %s",
+                            cached["email_source_type"], brokerage, cached["email"])
             continue
 
         if not can_make_call():
             logger.warning(
-                "EMAIL ENRICHMENT BUDGET REACHED — keeping remaining leads without email "
-                f"({len(needs_email) - idx} leads left un-enriched)"
-            )
-            budget_exhausted = True
+                "EMAIL ENRICHMENT BUDGET REACHED — keeping remaining leads "
+                "without email (%s leads left un-enriched)",
+                len(needs_email) - idx)
             break
 
-        email = search_agent_email(agent_name, brokerage, city, client,
-                                    can_make_call=can_make_call,
-                                    register_call=register_call)
-        if email:
-            lead["agent_email"] = email
-            brokerage_emails[brokerage] = email
-        else:
-            brokerage_emails[brokerage] = ""  # Cache miss too
-            logger.info(f"No email found for {agent_name} / {brokerage}")
-
-        time.sleep(1)
+        contact = find_published_agent_contact(
+            lead, client, can_make_call=can_make_call,
+            register_call=register_call)
+        lead.update(contact)
+        lead["agent_email"] = contact["email"]
+        if cache_key:
+            brokerage_cache[cache_key] = contact
+        if not contact["email"]:
+            logger.info("No published email found: %s / %s (%s)",
+                        lead.get("agent_name") or "no-name", brokerage or "no-brokerage",
+                        "phone-only" if contact["agent_phone"] else "no contact")
 
     found = sum(1 for l in needs_email if l.get("agent_email"))
-    logger.info(f"Email enrichment complete: found {found}/{len(needs_email)} emails")
-
+    logger.info("Email enrichment complete: found %s/%s emails",
+                found, len(needs_email))
     return has_email + needs_email

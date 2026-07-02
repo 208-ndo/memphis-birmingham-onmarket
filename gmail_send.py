@@ -12,6 +12,8 @@ from config import MARKETS, EMAIL, DEDUP, GLOBAL_DAILY_CAP, PER_INBOX_CAP
 from generate_offer_pdf import generate_offer_pdf
 from dedup import mark_bounced
 
+from contact_validation import email_is_sendable as cv_email_is_sendable
+
 log = logging.getLogger(__name__)
 
 
@@ -74,7 +76,8 @@ def send_email(
     subject: str,
     body: str,
     pdf_path: str = None,
-    dry_run: bool = False
+    dry_run: bool = False,
+    email_confidence: str = ""
 ) -> bool:
     market         = MARKETS[market_key]
     gmail_user     = market["gmail_user"]
@@ -91,6 +94,32 @@ def send_email(
     if dry_run:
         log.info(f"[DRY RUN] Would send to {to_email} | Subject: {subject} | PDF: {bool(pdf_path)}")
         return True
+
+    # ── In-process live-send hard guard (2026-07-02) ─────────────────────────
+    # The workflow already forces --dry-run unless the LIVE_SEND_ENABLED
+    # secret is "true", but this guard makes the process itself refuse real
+    # SMTP sends even if dry_run parsing was weird upstream. Belt and
+    # suspenders: no LIVE_SEND_ENABLED=true env, no live email. Ever.
+    live_send_env = os.environ.get("LIVE_SEND_ENABLED", "").lower().strip()
+    if live_send_env != "true":
+        log.warning(
+            f"[LIVE-SEND BLOCKED] LIVE_SEND_ENABLED env is '{live_send_env or 'unset'}' "
+            f"(not 'true') — refusing real send to {to_email} despite dry_run={dry_run}. "
+            f"Treating as dry run."
+        )
+        return True
+
+    # ── Sendable-confidence guard (2026-07-02) ───────────────────────────────
+    # Live sends only to source_verified / snippet_verified / office_fallback
+    # emails. pattern_guess is never sendable unless ALLOW_PATTERN_GUESS_SENDS
+    # is explicitly enabled (see contact_validation.py).
+    confidence = (email_confidence or "").strip()
+    if confidence and not cv_email_is_sendable(confidence):
+        log.warning(
+            f"[LIVE-SEND BLOCKED] email confidence '{confidence}' is not sendable "
+            f"— skipping {to_email}"
+        )
+        return False
 
     try:
         msg             = MIMEMultipart("mixed")
@@ -215,6 +244,7 @@ def send_batch(leads_with_emails: list, market_key: str, dry_run: bool = False) 
             body=body,
             pdf_path=pdf_path,
             dry_run=dry_run,
+            email_confidence=listing.get("email_confidence", ""),
         )
 
         if success:

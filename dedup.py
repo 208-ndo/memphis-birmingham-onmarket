@@ -139,9 +139,17 @@ def agent_person_key(listing: dict) -> tuple[str, str]:
 
 # ── Gate: business hours ───────────────────────────────────────────────────────
 
+_force_run_logged = False
+
+
 def is_business_hours() -> bool:
+    global _force_run_logged
     if FORCE_RUN:
-        log.info("FORCE_RUN=true — bypassing business hours gate")
+        # Logged ONCE per run (2026-07-02 fix) — this line used to print for
+        # every single lead, spamming hundreds of identical log lines.
+        if not _force_run_logged:
+            log.info("FORCE_RUN=true — bypassing business hours gate (logged once per run)")
+            _force_run_logged = True
         return True
     try:
         import zoneinfo

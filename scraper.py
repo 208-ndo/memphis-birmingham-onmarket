@@ -3,6 +3,7 @@ scraper.py — Apify Zillow scraper + Google email enrichment
 """
 
 import os
+import sys
 import time
 import logging
 import re
@@ -16,12 +17,15 @@ except ModuleNotFoundError:
 from config import (
     DISTRESSED_KEYWORDS, MAX_VIEWS_DAY, MAX_APIFY_RUNS_PER_WORKFLOW,
     ENABLE_PRICE_REDUCED_OF_VARIANT, MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW,
+    MAX_ZILLOW_CALLS_PER_WORKFLOW, MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET,
     MAX_LEADS_TO_ENRICH_PER_WORKFLOW,
 )
 try:
     from agent_email_finder import enrich_leads_with_emails
 except ModuleNotFoundError:
     enrich_leads_with_emails = None
+
+from contact_validation import is_valid_agent_name, clean_agent_name
 
 logger = logging.getLogger(__name__)
 
@@ -64,6 +68,7 @@ MARKET_BOUNDS = {
 _apify_call_count             = 0  # total across ALL actors (Zillow + Google + any future actor)
 _zillow_call_count            = 0  # subset of the above, Zillow actor only
 _email_enrichment_call_count  = 0  # subset of the above, Google actor only
+_email_market_counts          = {}  # per-market Google email calls (2026-07-02 fix)
 
 
 class ApifyQuotaError(RuntimeError):
@@ -90,8 +95,19 @@ def is_apify_quota_error(exc: Exception) -> bool:
 
 
 def can_make_apify_call() -> bool:
-    """True if any actor (Zillow or otherwise) may still be called this workflow."""
+    """EMERGENCY global stop: True if any actor may still be called this workflow."""
     return _apify_call_count < MAX_APIFY_RUNS_PER_WORKFLOW
+
+
+def can_make_zillow_call() -> bool:
+    """
+    True only if BOTH the Zillow-specific cap AND the emergency global cap
+    still have room (2026-07-02 fix: Zillow and email enrichment now have
+    independent budgets so one cannot starve the other).
+    """
+    if not can_make_apify_call():
+        return False
+    return _zillow_call_count < MAX_ZILLOW_CALLS_PER_WORKFLOW
 
 
 def register_zillow_call() -> int:
@@ -109,23 +125,30 @@ def register_apify_call() -> int:
     return _apify_call_count
 
 
-def can_make_email_enrichment_call() -> bool:
+def can_make_email_enrichment_call(market_key: str = None) -> bool:
     """
-    True only if BOTH the shared total budget AND the email-specific sub-cap
-    still have room. Checked before every Google email actor call.
+    True only if the emergency global cap, the email workflow cap, AND (when
+    a market_key is given) the per-market email cap all still have room.
+    Checked before every Google email actor call.
     """
     if _apify_call_count >= MAX_APIFY_RUNS_PER_WORKFLOW:
         return False
     if _email_enrichment_call_count >= MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW:
         return False
+    if market_key is not None:
+        used = _email_market_counts.get(market_key, 0)
+        if used >= MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET:
+            return False
     return True
 
 
-def register_email_enrichment_call() -> tuple:
-    """Record one Google email actor call against both the shared and email counters."""
+def register_email_enrichment_call(market_key: str = None) -> tuple:
+    """Record one Google email actor call against global, workflow, and per-market counters."""
     global _apify_call_count, _email_enrichment_call_count
     _apify_call_count            += 1
     _email_enrichment_call_count += 1
+    if market_key is not None:
+        _email_market_counts[market_key] = _email_market_counts.get(market_key, 0) + 1
     return _apify_call_count, _email_enrichment_call_count
 
 
@@ -136,6 +159,9 @@ def get_apify_budget_status() -> dict:
         "zillow_calls_used": _zillow_call_count,
         "google_calls_used": _email_enrichment_call_count,
         "google_calls_max":  MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW,
+        "zillow_calls_max":  MAX_ZILLOW_CALLS_PER_WORKFLOW,
+        "google_calls_by_market": dict(_email_market_counts),
+        "google_calls_per_market_max": MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET,
     }
 
 
@@ -304,11 +330,19 @@ def parse_listed_by_text(text: str) -> dict:
     """
     Extract only contact details visibly present in Zillow-style Listed By text.
     This never guesses an email from a name or brokerage domain.
+
+    2026-07-02 fix: previously, when the item had NO "Listed by:" marker and
+    NO email/phone anywhere in the (fully concatenated, item-wide) text, this
+    fell through to using the ENTIRE concatenated blob as agent_name — a
+    multi-hundred-character garbage string that then passed validation. Now,
+    without a real "Listed by:" marker, only text within a bounded window of
+    an actual email/phone match is used, never the whole blob.
     """
     text = re.sub(r"\s+", " ", text or "").strip()
     if not text:
         return {}
     listed_by_match = re.search(r"(?i)\blisted\s+by\s*:?", text)
+    has_listed_by = bool(listed_by_match)
     if listed_by_match:
         text = text[listed_by_match.start():]
 
@@ -319,18 +353,28 @@ def parse_listed_by_text(text: str) -> dict:
 
     agent_name = ""
     brokerage_name = ""
-    before_contact = text
     contact_positions = [m.start() for m in (email_match, phone_match) if m]
-    if contact_positions:
-        before_contact = text[:min(contact_positions)]
-    before_contact = re.sub(r"(?i)\blisted\s+by\s*:?", "", before_contact).strip(" ,.-")
-    if before_contact:
-        agent_name = before_contact
+
+    if has_listed_by:
+        # Bounded by the "Listed by:" marker itself — safe to use.
+        before_contact = text[:min(contact_positions)] if contact_positions else text
+        before_contact = re.sub(r"(?i)\blisted\s+by\s*:?", "", before_contact).strip(" ,.-")
+        if before_contact and len(before_contact) <= 80:
+            agent_name = before_contact
+    elif contact_positions:
+        # No marker, but there IS a real contact match — only take a short
+        # bounded window immediately before it, never the whole blob.
+        window_start = max(0, min(contact_positions) - 80)
+        before_contact = text[window_start:min(contact_positions)].strip(" ,.-")
+        if before_contact and len(before_contact) <= 80:
+            agent_name = before_contact
+    # else: no marker AND no contact match anywhere — do not guess a name
+    # from arbitrary concatenated item text.
 
     if email_match:
         after_email = text[email_match.end():].strip(" ,.-")
         if after_email:
-            brokerage_name = after_email.split(". ")[0].strip(" ,.-")
+            brokerage_name = after_email.split(". ")[0].strip(" ,.-")[:80]
 
     return {
         "agent_name": agent_name,
@@ -350,44 +394,80 @@ def get_nested_value(data: dict, *keys):
 
 
 def extract_contact_info(listing: dict) -> dict:
+    """
+    Extract listing-attribution contact data with validation (2026-07-02 fix).
+    Numeric junk ("33", "82"), IDs, counts, and phone fragments are never
+    accepted as agent names — the old text-soup parser produced those and
+    they poisoned every downstream Google email search. Structured fields
+    (attributionInfo etc.) are preferred; the visible-text parse is a last
+    resort and is validated like everything else. source_contact_fields
+    records exactly which item fields supplied each value.
+    """
     visible = get_all_visible_text(listing)
     parsed = parse_listed_by_text(visible)
-    agent_name = (
-        listing.get("agentName")
-        or listing.get("listingAgentName")
-        or get_nested_value(listing, "attributionInfo", "agentName")
-        or parsed.get("agent_name")
-        or ""
-    )
-    brokerage_name = (
-        listing.get("brokerName")
-        or listing.get("brokerageName")
-        or get_nested_value(listing, "attributionInfo", "brokerName")
-        or parsed.get("brokerage_name")
-        or ""
-    )
-    agent_email = (
-        listing.get("agentEmail")
-        or listing.get("agent_email")
-        or get_nested_value(listing, "attributionInfo", "agentEmail")
-        or get_nested_value(listing, "attributionInfo", "email")
-        or parsed.get("agent_email")
-        or ""
-    )
-    agent_phone = (
-        listing.get("agentPhoneNumber")
-        or listing.get("agent_phone")
-        or get_nested_value(listing, "attributionInfo", "agentPhoneNumber")
-        or get_nested_value(listing, "attributionInfo", "phoneNumber")
-        or parsed.get("agent_phone")
-        or listing.get("brokerPhoneNumber")
-        or ""
-    )
+    source_fields = {}
+
+    agent_name = ""
+    for field_name, value in (
+        ("agentName",                        listing.get("agentName")),
+        ("listingAgentName",                 listing.get("listingAgentName")),
+        ("attributionInfo.agentName",        get_nested_value(listing, "attributionInfo", "agentName")),
+        ("attributionInfo.listingAgentName", get_nested_value(listing, "attributionInfo", "listingAgentName")),
+        ("visible_text_parse",               parsed.get("agent_name")),
+    ):
+        cleaned = clean_agent_name(value)
+        if cleaned:
+            agent_name = cleaned
+            source_fields["listing_agent_name"] = field_name
+            break
+
+    brokerage_name = ""
+    for field_name, value in (
+        ("brokerName",                    listing.get("brokerName")),
+        ("brokerageName",                 listing.get("brokerageName")),
+        ("attributionInfo.brokerName",    get_nested_value(listing, "attributionInfo", "brokerName")),
+        ("attributionInfo.brokerageName", get_nested_value(listing, "attributionInfo", "brokerageName")),
+        ("visible_text_parse",            parsed.get("brokerage_name")),
+    ):
+        cleaned = clean_agent_name(value)  # same junk rules apply to brokerage
+        if cleaned:
+            brokerage_name = cleaned
+            source_fields["brokerage_name"] = field_name
+            break
+
+    agent_email = ""
+    for field_name, value in (
+        ("agentEmail",                  listing.get("agentEmail")),
+        ("agent_email",                 listing.get("agent_email")),
+        ("attributionInfo.agentEmail",  get_nested_value(listing, "attributionInfo", "agentEmail")),
+        ("attributionInfo.email",       get_nested_value(listing, "attributionInfo", "email")),
+        ("visible_text_parse",          parsed.get("agent_email")),
+    ):
+        if value:
+            agent_email = str(value).strip().lower()
+            source_fields["agent_email"] = field_name
+            break
+
+    agent_phone = ""
+    for field_name, value in (
+        ("agentPhoneNumber",                       listing.get("agentPhoneNumber")),
+        ("agent_phone",                            listing.get("agent_phone")),
+        ("attributionInfo.agentPhoneNumber",       get_nested_value(listing, "attributionInfo", "agentPhoneNumber")),
+        ("attributionInfo.phoneNumber",            get_nested_value(listing, "attributionInfo", "phoneNumber")),
+        ("visible_text_parse",                     parsed.get("agent_phone")),
+        ("brokerPhoneNumber",                      listing.get("brokerPhoneNumber")),
+    ):
+        if value:
+            agent_phone = clean_phone(str(value))
+            source_fields["listing_agent_phone"] = field_name
+            break
+
     return {
         "agent_name": agent_name,
         "brokerage_name": brokerage_name,
         "agent_email": agent_email,
-        "agent_phone": clean_phone(agent_phone),
+        "agent_phone": agent_phone,
+        "source_contact_fields": source_fields,
     }
 
 
@@ -619,6 +699,60 @@ def score_lead(lead: dict) -> dict:
     return {"score": total, "breakdown": breakdown}
 
 
+# ── Dry-run contact-field debug (2026-07-02) ────────────────────────────────────
+# Goal: identify the REAL Apify item fields for listing agent name, brokerage,
+# phone, listing URL, and attribution data, so extraction stops guessing.
+# Logs sanitized key names + short type info for the first N leads per market,
+# DRY-RUN ONLY. Never logs tokens or secrets (only item structure + public
+# listing attribution values like agent/brokerage names).
+_CONTACT_KEY_HINTS = ("agent", "broker", "attribution", "contact", "listed",
+                      "phone", "email", "mls", "office", "name", "url", "zpid")
+_debug_items_logged = {}
+
+
+def _is_dry_run_env() -> bool:
+    return "--dry-run" in sys.argv or os.environ.get("DRY_RUN", "").lower().strip() == "true"
+
+
+def _sanitize_debug_value(key: str, value):
+    """Key names + safe short values only. Emails/phones masked, no secrets."""
+    kl = key.lower()
+    if isinstance(value, dict):
+        return f"dict(keys={sorted(value.keys())[:15]})"
+    if isinstance(value, list):
+        return f"list(len={len(value)})"
+    text = str(value)
+    if "token" in kl or "secret" in kl or "password" in kl or "key" == kl:
+        return "<redacted>"
+    if "email" in kl and "@" in text:
+        user, _, domain = text.partition("@")
+        return f"{user[:2]}***@{domain}"
+    if "phone" in kl:
+        return f"***-***-{text[-4:]}" if len(text) >= 4 else "***"
+    return text[:80]
+
+
+def log_contact_field_debug(item: dict, market_city: str, max_per_market: int = 3) -> None:
+    if not _is_dry_run_env():
+        return
+    count = _debug_items_logged.get(market_city, 0)
+    if count >= max_per_market:
+        return
+    _debug_items_logged[market_city] = count + 1
+
+    top_keys = sorted(item.keys())
+    logger.info(f"[CONTACT-DEBUG {market_city} #{count + 1}] top-level keys: {top_keys}")
+    for key in top_keys:
+        if any(h in key.lower() for h in _CONTACT_KEY_HINTS):
+            logger.info(f"[CONTACT-DEBUG {market_city} #{count + 1}]   {key} = "
+                        f"{_sanitize_debug_value(key, item.get(key))}")
+    attribution = item.get("attributionInfo")
+    if isinstance(attribution, dict):
+        for key in sorted(attribution.keys()):
+            logger.info(f"[CONTACT-DEBUG {market_city} #{count + 1}]   attributionInfo.{key} = "
+                        f"{_sanitize_debug_value(key, attribution.get(key))}")
+
+
 def extract_lead(listing: dict, market: dict, candidate_reason: str = "") -> dict | None:
     try:
         address  = listing.get("address") or listing.get("streetAddress") or ""
@@ -668,10 +802,14 @@ def extract_lead(listing: dict, market: dict, candidate_reason: str = "") -> dic
             "zpid":                zpid,
             "url":                 url,
             "agent_name":          agent_name,
+            "listing_agent_name":  agent_name,
             "agent_email":         agent_email,
             "agent_phone":         agent_phone,
-            "brokerName":          brokerage_name or agent_name,
+            "listing_agent_phone": agent_phone,
+            "brokerName":          brokerage_name,
             "brokerage_name":      brokerage_name,
+            "listing_url":         url,
+            "source_contact_fields": contact.get("source_contact_fields", {}),
             "days_on_market":      dom if dom is not None else -1,
             "bedrooms":            bedrooms,
             "bathrooms":           bathrooms,
@@ -711,15 +849,17 @@ def scrape_market(market: dict) -> list[dict]:
     of_bands         = sum(1 for b in market_price_bands if b["max"] <= 80000)
     pr_extra_calls   = of_bands if ENABLE_PRICE_REDUCED_OF_VARIANT else 0
     planned_zillow_calls = planned_bands + pr_extra_calls
-    planned_email_calls  = MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW if email_enrichment_enabled else 0
+    planned_email_calls  = MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET if email_enrichment_enabled else 0
     est_actor_calls  = planned_zillow_calls + planned_email_calls
 
     logger.info("=" * 60)
     logger.info(f"SCRAPER: {city}")
     logger.info(f"  APIFY_ENABLED                       : {apify_enabled} (raw='{apify_enabled_raw}')")
     logger.info(f"  EMAIL_ENRICHMENT_ENABLED            : {email_enrichment_enabled} (raw='{email_enrichment_enabled_raw}')")
-    logger.info(f"  MAX_APIFY_RUNS_PER_WORKFLOW         : {MAX_APIFY_RUNS_PER_WORKFLOW} (shared — Zillow + Google + any future actor)")
+    logger.info(f"  MAX_APIFY_RUNS_PER_WORKFLOW         : {MAX_APIFY_RUNS_PER_WORKFLOW} (EMERGENCY global cap — all actors)")
+    logger.info(f"  MAX_ZILLOW_CALLS_PER_WORKFLOW       : {MAX_ZILLOW_CALLS_PER_WORKFLOW} (Zillow only — independent of email budget)")
     logger.info(f"  MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW: {MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW}")
+    logger.info(f"  MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET: {MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET}")
     logger.info(f"  MAX_LEADS_TO_ENRICH_PER_WORKFLOW    : {MAX_LEADS_TO_ENRICH_PER_WORKFLOW} (top-scored leads sent to enrichment)")
     logger.info(f"  ENABLE_PRICE_REDUCED_OF_VARIANT     : {ENABLE_PRICE_REDUCED_OF_VARIANT}")
     logger.info(f"  Apify calls used so far — total     : {_apify_call_count}")
@@ -774,10 +914,15 @@ def scrape_market(market: dict) -> list[dict]:
 
             try:
                 # ── Shared Apify budget check (Zillow draws from the same pool) ──
-                if not can_make_apify_call():
+                if not can_make_zillow_call():
+                    which = (
+                        f"MAX_APIFY_RUNS_PER_WORKFLOW={MAX_APIFY_RUNS_PER_WORKFLOW} (emergency global)"
+                        if _apify_call_count >= MAX_APIFY_RUNS_PER_WORKFLOW
+                        else f"MAX_ZILLOW_CALLS_PER_WORKFLOW={MAX_ZILLOW_CALLS_PER_WORKFLOW}"
+                    )
                     logger.warning(
-                        f"MAX_APIFY_RUNS_PER_WORKFLOW={MAX_APIFY_RUNS_PER_WORKFLOW} reached "
-                        f"after {_apify_call_count} calls — stopping scrape for {city}"
+                        f"{which} reached (zillow={_zillow_call_count}, total={_apify_call_count}) "
+                        f"— stopping Zillow scrape for {city}"
                     )
                     break
 
@@ -795,6 +940,8 @@ def scrape_market(market: dict) -> list[dict]:
                 logger.info(f"Band {band_label} [{variant}]: {len(items)} raw results")
 
                 real_items = [i for i in items if "error" not in i]
+                for debug_item in real_items[:3]:
+                    log_contact_field_debug(debug_item, city)
                 if not real_items:
                     if items:
                         logger.warning(f"Result: {items[0]}")
@@ -913,11 +1060,12 @@ def scrape_market(market: dict) -> list[dict]:
         logger.warning(
             "agent_email_finder dependencies are not installed — keeping shortlisted leads without email enrichment"
         )
-    elif not can_make_email_enrichment_call():
+    elif not can_make_email_enrichment_call(market_key=city):
         logger.warning(
             "EMAIL ENRICHMENT BUDGET REACHED — keeping remaining leads without email "
-            f"(shared: {_apify_call_count}/{MAX_APIFY_RUNS_PER_WORKFLOW}, "
-            f"google: {_email_enrichment_call_count}/{MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW})"
+            f"(global: {_apify_call_count}/{MAX_APIFY_RUNS_PER_WORKFLOW}, "
+            f"google workflow: {_email_enrichment_call_count}/{MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW}, "
+            f"google {city}: {_email_market_counts.get(city, 0)}/{MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET})"
         )
     else:
         logger.info(
@@ -927,8 +1075,8 @@ def scrape_market(market: dict) -> list[dict]:
         )
         shortlist = enrich_leads_with_emails(
             shortlist, market, client,
-            can_make_call=can_make_email_enrichment_call,
-            register_call=register_email_enrichment_call,
+            can_make_call=lambda: can_make_email_enrichment_call(market_key=city),
+            register_call=lambda: register_email_enrichment_call(market_key=city),
         )
 
     leads = shortlist + remainder
@@ -939,8 +1087,12 @@ def scrape_market(market: dict) -> list[dict]:
             f"LEAD: {lead['address']} | ${lead['price']:,} | "
             f"DOM: {dom_display} | score={lead.get('score', 0):.1f} | "
             f"reason: {lead.get('candidate_reason', '')} | "
-            f"Agent: {lead['agent_name']} | "
+            f"Agent: {lead['agent_name'] or 'UNKNOWN'} | "
+            f"Brokerage: {lead.get('brokerage_name') or 'NONE'} | "
             f"Email: {lead.get('agent_email') or 'NONE'}"
+            + (f" [{lead.get('email_source_type')}/{lead.get('email_confidence')}"
+               f"{'/sendable' if lead.get('email_is_sendable') else '/NOT-sendable'}]"
+               if lead.get('agent_email') else "")
         )
 
     logger.info(

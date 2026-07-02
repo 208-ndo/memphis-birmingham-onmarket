@@ -53,7 +53,15 @@ on:
         required: false
         default: 'false'
       max_email_enrichment_calls:
-        description: 'Override MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW (blank = use config.py default of 5)'
+        description: 'Override MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW (blank = use config.py default of 10)'
+        required: false
+        default: ''
+      max_email_enrichment_calls_per_market:
+        description: 'Override MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET (blank = use config.py default of 5)'
+        required: false
+        default: ''
+      max_zillow_calls:
+        description: 'Override MAX_ZILLOW_CALLS_PER_WORKFLOW (blank = use config.py default of 6)'
         required: false
         default: ''
       max_leads_to_enrich:
@@ -189,8 +197,10 @@ jobs:
           PLANNED_ZILLOW_CALLS=$((4 * SELECTED_MARKET_COUNT))
           echo "TARGET_MARKETS: ${TARGET_MARKETS_TRIMMED:-ACTIVE_MARKETS}"
           echo "Selected markets: ${SELECTED_MARKETS}"
-          echo "  MAX_APIFY_RUNS_PER_WORKFLOW         : 10 (config.py — shared, covers Zillow + Google + any future actor)"
-          echo "  MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW: 5 default (config.py — Google sub-cap; override='${{ github.event.inputs.max_email_enrichment_calls }}')"
+          echo "  MAX_APIFY_RUNS_PER_WORKFLOW         : 20 default (config.py — EMERGENCY global cap only; no workflow input — env MAX_APIFY_RUNS_OVERRIDE only)"
+          echo "  MAX_ZILLOW_CALLS_PER_WORKFLOW       : 6 default (config.py — Zillow-only cap, independent of email; override='${{ github.event.inputs.max_zillow_calls }}')"
+          echo "  MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW: 10 default (config.py — Google workflow cap; override='${{ github.event.inputs.max_email_enrichment_calls }}')"
+          echo "  MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET: 5 default (config.py — per-market Google slice; override='${{ github.event.inputs.max_email_enrichment_calls_per_market }}')"
           echo "  MAX_LEADS_TO_ENRICH_PER_WORKFLOW    : 10 default (config.py — top-scored shortlist before enrichment; override='${{ github.event.inputs.max_leads_to_enrich }}')"
           echo "  Price bands per market                : 4 max; market config may cap final band"
           echo "  Planned Zillow calls                  : ${PLANNED_ZILLOW_CALLS} (4 bands x ${SELECTED_MARKET_COUNT} selected market(s), max estimate)"
@@ -226,6 +236,9 @@ jobs:
           export EMAIL_ENRICHMENT_ENABLED="${EMAIL_ENRICHMENT_ENABLED_NORMALIZED}"
           export TARGET_MARKETS="${TARGET_MARKETS_TRIMMED}"
           export MAX_EMAIL_ENRICHMENT_CALLS_OVERRIDE="${{ github.event.inputs.max_email_enrichment_calls }}"
+          export MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET_OVERRIDE="${{ github.event.inputs.max_email_enrichment_calls_per_market }}"
+          export MAX_ZILLOW_CALLS_OVERRIDE="${{ github.event.inputs.max_zillow_calls }}"
+          export DRY_RUN="${DRY_RUN_NORMALIZED}"
           export MAX_LEADS_TO_ENRICH_OVERRIDE="${{ github.event.inputs.max_leads_to_enrich }}"
           export CLEAR_OVERFLOW_BEFORE_RUN="${CLEAR_OVERFLOW_NORMALIZED}"
 
