@@ -1,4 +1,5 @@
 import unittest
+from pathlib import Path
 
 from email_gen import BROKER_COMP_LINE, INVESTMENT_PURPOSE_LINE, generate_emails
 from offer import calculate_offer
@@ -90,7 +91,7 @@ class OhioOfferPreviewTest(unittest.TestCase):
         )
 
     def test_rent_check_strong_rent_passes(self):
-        row = self.by_address["95 Strong Rent Ave, Cleveland, OH 44105"]
+        row = self.by_address["SYNTHETIC FIXTURE - Strong Rent Seller Finance"]
         self.assertEqual(row["offer_lane"], "OWNER_FINANCE_RENT_CHECK_80_100")
         self.assertEqual(row["purchase_price"], 95000)
         self.assertEqual(row["down_payment"], 4750)
@@ -106,7 +107,7 @@ class OhioOfferPreviewTest(unittest.TestCase):
         self.assertFalse(row["live_send_allowed_after_manual_approval"])
 
     def test_rent_check_weak_rent_fails(self):
-        row = self.by_address["95 Weak Rent Ave, Cleveland, OH 44105"]
+        row = self.by_address["SYNTHETIC FIXTURE - Weak Rent Seller Finance"]
         self.assertEqual(row["offer_lane"], "OWNER_FINANCE_RENT_CHECK_80_100")
         self.assertEqual(row["estimated_rent"], 1250)
         self.assertEqual(row["rent_check_status"], "FAIL")
@@ -155,7 +156,7 @@ class OhioOfferPreviewTest(unittest.TestCase):
         self.assertFalse(offer["pitch_holds"])
 
     def test_100k_to_125k_is_manual_review(self):
-        row = self.by_address["115 Manual Review Ave, Akron, OH 44320"]
+        row = self.by_address["SYNTHETIC FIXTURE - High Price Manual Review"]
         self.assertEqual(row["offer_lane"], "OWNER_FINANCE_MANUAL_REVIEW_100_125")
         self.assertTrue(row["requires_review"])
         self.assertFalse(row["live_send_allowed"])
@@ -200,7 +201,7 @@ class OhioOfferPreviewTest(unittest.TestCase):
             self.assertIn("@", row["agent_email"])
 
     def test_higher_price_manual_review_lead_is_not_auto_send(self):
-        row = self.by_address["123 Example Review Ave, Cleveland, OH 44105"]
+        row = self.by_address["SYNTHETIC FIXTURE - High Price Manual Review 125k"]
         self.assertEqual(row["offer_lane"], "OWNER_FINANCE_MANUAL_REVIEW_100_125")
         self.assertEqual(row["offer_type"], "owner_finance_manual_review")
         self.assertFalse(row["auto_send"])
@@ -219,6 +220,35 @@ class OhioOfferPreviewTest(unittest.TestCase):
             body = (row["email_body"] or "").lower()
             for term in FORBIDDEN_PUBLIC_TERMS:
                 self.assertNotIn(term.lower(), body, f"{term} leaked in {row['address']}")
+
+    def test_synthetic_fixtures_do_not_generate_public_email(self):
+        synthetic_rows = [row for row in self.records if row["synthetic_fixture"]]
+        self.assertGreaterEqual(len(synthetic_rows), 1)
+        for row in synthetic_rows:
+            self.assertEqual(row["email_body"], "")
+            self.assertEqual(row["email_subject"], "")
+            self.assertFalse(row["public_email_generated"])
+            self.assertTrue(row["do_not_send"])
+            self.assertFalse(row["approved_to_send"])
+            self.assertFalse(row["live_send_allowed"])
+            self.assertFalse(row["eligible_for_review"])
+
+    def test_4297_still_generates_public_email_preview(self):
+        row = self.by_address["4297 E 139th St, Cleveland, OH 44105"]
+        self.assertFalse(row["synthetic_fixture"])
+        self.assertTrue(row["real_listing"])
+        self.assertTrue(row["human_verified_example"])
+        self.assertTrue(row["public_email_generated"])
+        self.assertIn("Hi Rakesh Baniya,", row["email_body"])
+
+    def test_synthetic_fixture_report_does_not_show_real_looking_email(self):
+        report = Path("reports/ohio_offer_preview.md").read_text(encoding="utf-8")
+        self.assertNotIn("Hi Strong Rent Agent", report)
+        self.assertNotIn("95 Strong Rent Ave", report)
+        self.assertIn(
+            "SYNTHETIC FIXTURE - math test only. No public email generated. Do not send.",
+            report,
+        )
 
 
 if __name__ == "__main__":

@@ -1,5 +1,7 @@
 # Cash Offer Review Preview
 
+Rows marked synthetic_fixture=true are math/test examples only. They are not real leads, do not have real agent contacts, and must never generate sendable public email.
+
 Fixture-only cash review preview. No scraper, Apify, enrichment, Gmail, or GHL call was made.
 
 ## Summary
@@ -11,11 +13,17 @@ Fixture-only cash review preview. No scraper, Apify, enrichment, Gmail, or GHL c
 - Public copy forbidden terms found: false
 - Emails sent: 0
 
-## Lead Previews
+## Synthetic Math Fixtures - No Public Email Generated
 
-### 85 Cash Review Ave, Cleveland, OH 44105
+### SYNTHETIC FIXTURE - Cash Review 85k
 
 - Market: Cleveland, OH
+- Synthetic fixture: true
+- Real listing: false
+- Do not send: true
+- Public email generated: false
+- Approved to send: false
+- Live send allowed: false
 - List price: $85,000
 - Estimated value: $120,000
 - Conservative 20pct offer: $24,000
@@ -23,12 +31,12 @@ Fixture-only cash review preview. No scraper, Apify, enrichment, Gmail, or GHL c
 - Selected cash offer: N/A
 - Offer lane: CASH_REVIEW_ARV_REQUIRED
 - Manual review reason: Manual review required: verify ARV, repairs, comps, and visible spread before any cash offer.
-- Email subject: N/A - manual review only
+- Email subject: SYNTHETIC FIXTURE - math test only. No public email generated. Do not send.
 
 Email body:
 
 ```text
-N/A - manual review only; no auto-send email generated.
+SYNTHETIC FIXTURE - math test only. No public email generated. Do not send.
 ```
 
 INTERNAL_ONLY:
@@ -39,9 +47,15 @@ INTERNAL_ONLY:
 - net_spread_after_optional_agent_comp: N/A
 - manual_approval_agent_comp: false
 
-### 100 Cash Review Ave, Cleveland, OH 44105
+### SYNTHETIC FIXTURE - Cash Review 100k
 
 - Market: Cleveland, OH
+- Synthetic fixture: true
+- Real listing: false
+- Do not send: true
+- Public email generated: false
+- Approved to send: false
+- Live send allowed: false
 - List price: $100,000
 - Estimated value: $150,000
 - Conservative 20pct offer: $30,000
@@ -49,12 +63,12 @@ INTERNAL_ONLY:
 - Selected cash offer: N/A
 - Offer lane: CASH_REVIEW_ARV_REQUIRED
 - Manual review reason: Manual review required: verify ARV, repairs, comps, and visible spread before any cash offer.
-- Email subject: N/A - manual review only
+- Email subject: SYNTHETIC FIXTURE - math test only. No public email generated. Do not send.
 
 Email body:
 
 ```text
-N/A - manual review only; no auto-send email generated.
+SYNTHETIC FIXTURE - math test only. No public email generated. Do not send.
 ```
 
 INTERNAL_ONLY:
@@ -65,9 +79,15 @@ INTERNAL_ONLY:
 - net_spread_after_optional_agent_comp: N/A
 - manual_approval_agent_comp: false
 
-### 125 Cash Review Ave, Akron, OH 44320
+### SYNTHETIC FIXTURE - Cash Review 125k
 
 - Market: Akron, OH
+- Synthetic fixture: true
+- Real listing: false
+- Do not send: true
+- Public email generated: false
+- Approved to send: false
+- Live send allowed: false
 - List price: $125,000
 - Estimated value: $180,000
 - Conservative 20pct offer: $36,000
@@ -75,12 +95,12 @@ INTERNAL_ONLY:
 - Selected cash offer: N/A
 - Offer lane: CASH_REVIEW_ARV_REQUIRED
 - Manual review reason: Manual review required: verify ARV, repairs, comps, and visible spread before any cash offer.
-- Email subject: N/A - manual review only
+- Email subject: SYNTHETIC FIXTURE - math test only. No public email generated. Do not send.
 
 Email body:
 
 ```text
-N/A - manual review only; no auto-send email generated.
+SYNTHETIC FIXTURE - math test only. No public email generated. Do not send.
 ```
 
 INTERNAL_ONLY:
@@ -91,9 +111,15 @@ INTERNAL_ONLY:
 - net_spread_after_optional_agent_comp: N/A
 - manual_approval_agent_comp: false
 
-### 75 Owner Finance Only Ave, Cleveland, OH 44105
+### SYNTHETIC FIXTURE - Owner Finance Only 75k
 
 - Market: Cleveland, OH
+- Synthetic fixture: true
+- Real listing: false
+- Do not send: true
+- Public email generated: false
+- Approved to send: false
+- Live send allowed: false
 - List price: $75,000
 - Estimated value: $90,000
 - Conservative 20pct offer: N/A
@@ -101,12 +127,12 @@ INTERNAL_ONLY:
 - Selected cash offer: N/A
 - Offer lane: OWNER_FINANCE_ONLY
 - Manual review reason: 30k-80k houses route to owner-finance only; no cash offer created.
-- Email subject: N/A - manual review only
+- Email subject: SYNTHETIC FIXTURE - math test only. No public email generated. Do not send.
 
 Email body:
 
 ```text
-N/A - manual review only; no auto-send email generated.
+SYNTHETIC FIXTURE - math test only. No public email generated. Do not send.
 ```
 
 INTERNAL_ONLY:

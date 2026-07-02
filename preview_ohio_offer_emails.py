@@ -36,6 +36,9 @@ FIXTURE_LEADS = [
         "brokerage_name": "Cleveland Property Management Group, LLC",
         "days_on_zillow": 36,
         "estimated_rent": 1300,
+        "synthetic_fixture": False,
+        "real_listing": True,
+        "human_verified_example": True,
         "description": (
             "Owner financing option $15,000 down. 7% interest, "
             "$310 monthly payment, 240 amortization, no PPP."
@@ -55,13 +58,16 @@ FIXTURE_LEADS = [
         "brokerage": "Coldwell Banker Schmidt Realty",
         "brokerage_name": "Coldwell Banker Schmidt Realty",
         "days_on_zillow": 88,
+        "synthetic_fixture": False,
+        "real_listing": True,
+        "human_verified_example": True,
     },
     {
         "market_key": "cleveland",
         "market": "Cleveland, OH",
         "city": "Cleveland",
         "state": "OH",
-        "address": "95 Strong Rent Ave, Cleveland, OH 44105",
+        "address": "SYNTHETIC FIXTURE - Strong Rent Seller Finance",
         "list_price": 95000,
         "price": 95000,
         "estimated_rent": 1700,
@@ -71,6 +77,12 @@ FIXTURE_LEADS = [
         "brokerage": "Example Realty",
         "brokerage_name": "Example Realty",
         "days_on_zillow": 45,
+        "synthetic_fixture": True,
+        "real_listing": False,
+        "do_not_send": True,
+        "approved_to_send": False,
+        "live_send_allowed": False,
+        "public_email_generated": False,
         "description": "Investor-style house with strong rent demand.",
     },
     {
@@ -78,7 +90,7 @@ FIXTURE_LEADS = [
         "market": "Cleveland, OH",
         "city": "Cleveland",
         "state": "OH",
-        "address": "95 Weak Rent Ave, Cleveland, OH 44105",
+        "address": "SYNTHETIC FIXTURE - Weak Rent Seller Finance",
         "list_price": 95000,
         "price": 95000,
         "estimated_rent": 1250,
@@ -88,6 +100,12 @@ FIXTURE_LEADS = [
         "brokerage": "Example Realty",
         "brokerage_name": "Example Realty",
         "days_on_zillow": 45,
+        "synthetic_fixture": True,
+        "real_listing": False,
+        "do_not_send": True,
+        "approved_to_send": False,
+        "live_send_allowed": False,
+        "public_email_generated": False,
         "description": "Investor-style house with weaker rent support.",
     },
     {
@@ -95,7 +113,7 @@ FIXTURE_LEADS = [
         "market": "Akron, OH",
         "city": "Akron",
         "state": "OH",
-        "address": "115 Manual Review Ave, Akron, OH 44320",
+        "address": "SYNTHETIC FIXTURE - High Price Manual Review",
         "list_price": 115000,
         "price": 115000,
         "estimated_rent": 1800,
@@ -105,6 +123,12 @@ FIXTURE_LEADS = [
         "brokerage": "Example Realty",
         "brokerage_name": "Example Realty",
         "days_on_zillow": 35,
+        "synthetic_fixture": True,
+        "real_listing": False,
+        "do_not_send": True,
+        "approved_to_send": False,
+        "live_send_allowed": False,
+        "public_email_generated": False,
         "description": "Clean house; review terms manually.",
     },
     {
@@ -121,13 +145,16 @@ FIXTURE_LEADS = [
         "brokerage": "Coldwell Banker Schmidt Realty",
         "brokerage_name": "Coldwell Banker Schmidt Realty",
         "days_on_zillow": 40,
+        "synthetic_fixture": False,
+        "real_listing": True,
+        "human_verified_example": True,
     },
     {
         "market_key": "cleveland",
         "market": "Cleveland, OH",
         "city": "Cleveland",
         "state": "OH",
-        "address": "123 Example Review Ave, Cleveland, OH 44105",
+        "address": "SYNTHETIC FIXTURE - High Price Manual Review 125k",
         "list_price": 125000,
         "price": 125000,
         "agent_name": "Test Agent",
@@ -136,6 +163,12 @@ FIXTURE_LEADS = [
         "brokerage": "Example Brokerage",
         "brokerage_name": "Example Brokerage",
         "days_on_zillow": 60,
+        "synthetic_fixture": True,
+        "real_listing": False,
+        "do_not_send": True,
+        "approved_to_send": False,
+        "live_send_allowed": False,
+        "public_email_generated": False,
     },
 ]
 
@@ -184,6 +217,8 @@ def build_preview_records() -> list[dict]:
         offer_lane = classify_preview_offer_lane(list_price, offer)
         emails = generate_emails(lead, offer)
         email = emails[0] if emails else {"subject": "", "body": ""}
+        synthetic_fixture = bool(lead.get("synthetic_fixture") or lead.get("real_listing") is False or lead.get("do_not_send"))
+        public_email_generated = bool(email.get("body")) and not synthetic_fixture
 
         purchase_price = _round_money(
             offer.get("owner_finance_offer")
@@ -222,8 +257,8 @@ def build_preview_records() -> list[dict]:
         else:
             math_notes.append("manual/review lead; no owner-finance payment math generated")
 
-        email_body = email["body"]
-        email_subject = email["subject"]
+        email_body = email["body"] if public_email_generated else ""
+        email_subject = email["subject"] if public_email_generated else ""
         email_has_required_lines = (
             (not email_body)
             or (INVESTMENT_PURPOSE_LINE in email_body and BROKER_COMP_LINE in email_body)
@@ -243,6 +278,10 @@ def build_preview_records() -> list[dict]:
                 "agent_email": lead["agent_email"],
                 "agent_phone": lead.get("agent_phone", ""),
                 "brokerage": lead.get("brokerage") or lead.get("brokerage_name", ""),
+                "synthetic_fixture": synthetic_fixture,
+                "real_listing": bool(lead.get("real_listing", not synthetic_fixture)),
+                "human_verified_example": bool(lead.get("human_verified_example", False)),
+                "do_not_send": True if synthetic_fixture else bool(lead.get("do_not_send", False)),
                 "offer_type": offer.get("offer_type", ""),
                 "offer_lane": offer_lane,
                 "purchase_price": purchase_price,
@@ -259,9 +298,9 @@ def build_preview_records() -> list[dict]:
                 "rent_check_status": offer.get("rent_check_status", ""),
                 "rent_check_pass": bool(offer.get("rent_check_pass")),
                 "eligible_for_human_review": bool(offer.get("eligible_for_human_review", False)),
-                "approved_to_send": bool(offer.get("approved_to_send", False)),
-                "live_send_allowed": bool(offer.get("live_send_allowed", False)),
-                "live_send_allowed_after_manual_approval": bool(offer.get("live_send_allowed", False)),
+                "approved_to_send": False if synthetic_fixture else bool(offer.get("approved_to_send", False)),
+                "live_send_allowed": False if synthetic_fixture else bool(offer.get("live_send_allowed", False)),
+                "live_send_allowed_after_manual_approval": False if synthetic_fixture else bool(offer.get("live_send_allowed", False)),
                 "requires_review": bool(offer.get("requires_review") or offer.get("manual_review")),
                 "review_note": offer.get("review_note", ""),
                 "math_ok": math_ok,
@@ -269,7 +308,8 @@ def build_preview_records() -> list[dict]:
                 "math_notes": "; ".join(math_notes) if math_notes else "Term-offer math matches fixture expectations",
                 "email_subject": email_subject,
                 "email_body": email_body,
-                "eligible_for_review": bool(email_body and lead.get("agent_email") and math_ok),
+                "public_email_generated": public_email_generated,
+                "eligible_for_review": bool(email_body and lead.get("agent_email") and math_ok and not synthetic_fixture),
                 "auto_send": False,
             }
         )
@@ -308,6 +348,8 @@ def write_report(records: list[dict], summary: dict) -> None:
     lines = [
         "# Ohio Offer Email Preview",
         "",
+        "Rows marked synthetic_fixture=true are math/test examples only. They are not real leads, do not have real agent contacts, and must never generate sendable public email.",
+        "",
         "Fixture-only Cleveland/Akron preview. No scraper, Apify, enrichment, Gmail, or GHL call was made.",
         "",
         "## Summary",
@@ -323,45 +365,66 @@ def write_report(records: list[dict], summary: dict) -> None:
         f"- Emails that would be eligible for review: {summary['emails_eligible_for_review']}",
         "- Emails sent: 0",
         "",
-        "## Lead Previews",
+        "## Human-Verified Examples With Public Email Previews",
         "",
     ]
-    for row in records:
-        lines += [
-            f"### {row['address']}",
-            "",
-            f"- Market: {row['market']}",
-            f"- List price: ${row['list_price']:,.0f}",
-            f"- Agent email: {row['agent_email']}",
-            f"- Offer lane: {row['offer_lane']}",
-            f"- Purchase price: {_format_money(row['purchase_price'])}",
-            f"- Down payment: {_format_money(row['down_payment'])}",
-            f"- Monthly payment: {_format_money(row['monthly_payment'])}",
-            f"- Number of payments: {row['num_payments']}",
-            f"- Interest: {row['interest_rate']:g}%",
-            f"- Prepayment penalty: {row['prepayment_penalty'] or 'N/A'}",
-            f"- Estimated rent: {_format_money(row['estimated_rent'])}",
-            f"- Estimated taxes/insurance: {_format_money(row['estimated_taxes_insurance'])}",
-            f"- Estimated repairs/vacancy/management: {_format_money(row['estimated_repairs_vacancy_management'])}",
-            f"- Estimated monthly cashflow: {_format_money(row['estimated_monthly_cashflow'])}",
-            f"- Payment-to-rent ratio: {row['payment_to_rent_ratio']:.3f}" if row["payment_to_rent_ratio"] is not None else "- Payment-to-rent ratio: N/A",
-            f"- Rent check status: {row['rent_check_status'] or 'N/A'}",
-            f"- Rent check pass: {str(row['rent_check_pass']).lower()}",
-            f"- Eligible for human review: {str(row['eligible_for_human_review']).lower()}",
-            f"- Approved to send: {str(row['approved_to_send']).lower()}",
-            f"- Live send allowed: {str(row['live_send_allowed']).lower()}",
-            f"- Live send allowed after manual approval: {str(row['live_send_allowed_after_manual_approval']).lower()}",
-            f"- Requires review: {str(row['requires_review']).lower()}",
-            f"- Math OK: {str(row['math_ok']).lower()}",
-            f"- Email subject: {row['email_subject'] or 'N/A - manual/review only'}",
-            "",
-            "Email body:",
-            "",
-            "```text",
-            row["email_body"] or "N/A - manual/review only; no auto-send email generated.",
-            "```",
-            "",
-        ]
+    for section_rows, section_title in (
+        ([row for row in records if not row["synthetic_fixture"]], None),
+        ([row for row in records if row["synthetic_fixture"]], "## Synthetic Math Fixtures - No Public Email Generated"),
+    ):
+        if section_title:
+            lines += [section_title, ""]
+        for row in section_rows:
+            email_display = (
+                row["email_body"]
+                if row["public_email_generated"]
+                else "SYNTHETIC FIXTURE - math test only. No public email generated. Do not send."
+            )
+            subject_display = (
+                row["email_subject"]
+                if row["public_email_generated"]
+                else "SYNTHETIC FIXTURE - math test only. No public email generated. Do not send."
+            )
+            lines += [
+                f"### {row['address']}",
+                "",
+                f"- Market: {row['market']}",
+                f"- Synthetic fixture: {str(row['synthetic_fixture']).lower()}",
+                f"- Real listing: {str(row['real_listing']).lower()}",
+                f"- Human verified example: {str(row['human_verified_example']).lower()}",
+                f"- Do not send: {str(row['do_not_send']).lower()}",
+                f"- Public email generated: {str(row['public_email_generated']).lower()}",
+                f"- List price: ${row['list_price']:,.0f}",
+                f"- Agent email: {row['agent_email'] if row['real_listing'] else 'N/A - synthetic fixture'}",
+                f"- Offer lane: {row['offer_lane']}",
+                f"- Purchase price: {_format_money(row['purchase_price'])}",
+                f"- Down payment: {_format_money(row['down_payment'])}",
+                f"- Monthly payment: {_format_money(row['monthly_payment'])}",
+                f"- Number of payments: {row['num_payments']}",
+                f"- Interest: {row['interest_rate']:g}%",
+                f"- Prepayment penalty: {row['prepayment_penalty'] or 'N/A'}",
+                f"- Estimated rent: {_format_money(row['estimated_rent'])}",
+                f"- Estimated taxes/insurance: {_format_money(row['estimated_taxes_insurance'])}",
+                f"- Estimated repairs/vacancy/management: {_format_money(row['estimated_repairs_vacancy_management'])}",
+                f"- Estimated monthly cashflow: {_format_money(row['estimated_monthly_cashflow'])}",
+                f"- Payment-to-rent ratio: {row['payment_to_rent_ratio']:.3f}" if row["payment_to_rent_ratio"] is not None else "- Payment-to-rent ratio: N/A",
+                f"- Rent check status: {row['rent_check_status'] or 'N/A'}",
+                f"- Rent check pass: {str(row['rent_check_pass']).lower()}",
+                f"- Eligible for human review: {str(row['eligible_for_human_review']).lower()}",
+                f"- Approved to send: {str(row['approved_to_send']).lower()}",
+                f"- Live send allowed: {str(row['live_send_allowed']).lower()}",
+                f"- Live send allowed after manual approval: {str(row['live_send_allowed_after_manual_approval']).lower()}",
+                f"- Requires review: {str(row['requires_review']).lower()}",
+                f"- Math OK: {str(row['math_ok']).lower()}",
+                f"- Email subject: {subject_display}",
+                "",
+                "Email body:",
+                "",
+                "```text",
+                email_display,
+                "```",
+                "",
+            ]
     REPORT_PATH.write_text("\n".join(lines), encoding="utf-8")
 
 
