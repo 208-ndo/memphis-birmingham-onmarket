@@ -1,0 +1,108 @@
+{
+  "summary": {
+    "total_fixture_leads": 4,
+    "cash_review_count": 3,
+    "owner_finance_only_count": 1,
+    "auto_send_eligible_count": 0,
+    "public_copy_forbidden_terms_found": false,
+    "emails_sent": 0,
+    "scraper_ran": false,
+    "apify_ran": false,
+    "gmail_ran": false,
+    "ghl_ran": false
+  },
+  "records": [
+    {
+      "address": "85 Cash Review Ave, Cleveland, OH 44105",
+      "market": "Cleveland, OH",
+      "market_key": "cleveland",
+      "list_price": 85000.0,
+      "estimated_value": 120000.0,
+      "conservative_20pct_offer": 24000.0,
+      "zompz_bracket_offer": 48000.0,
+      "selected_cash_offer": null,
+      "offer_lane": "CASH_REVIEW_ARV_REQUIRED",
+      "manual_review_reason": "Manual review required: verify ARV, repairs, comps, and visible spread before any cash offer.",
+      "email_subject": "",
+      "email_body": "",
+      "public_copy_forbidden_terms_found": false,
+      "auto_send": false,
+      "INTERNAL_ONLY": {
+        "expected_assignment_fee_target": 9600.0,
+        "optional_agent_comp_reserve": 0.0,
+        "suggested_optional_agent_comp_reserve": 1500.0,
+        "net_spread_after_optional_agent_comp": null,
+        "manual_approval_agent_comp": false
+      }
+    },
+    {
+      "address": "100 Cash Review Ave, Cleveland, OH 44105",
+      "market": "Cleveland, OH",
+      "market_key": "cleveland",
+      "list_price": 100000.0,
+      "estimated_value": 150000.0,
+      "conservative_20pct_offer": 30000.0,
+      "zompz_bracket_offer": 60000.0,
+      "selected_cash_offer": null,
+      "offer_lane": "CASH_REVIEW_ARV_REQUIRED",
+      "manual_review_reason": "Manual review required: verify ARV, repairs, comps, and visible spread before any cash offer.",
+      "email_subject": "",
+      "email_body": "",
+      "public_copy_forbidden_terms_found": false,
+      "auto_send": false,
+      "INTERNAL_ONLY": {
+        "expected_assignment_fee_target": 12000.0,
+        "optional_agent_comp_reserve": 0.0,
+        "suggested_optional_agent_comp_reserve": 1500.0,
+        "net_spread_after_optional_agent_comp": null,
+        "manual_approval_agent_comp": false
+      }
+    },
+    {
+      "address": "125 Cash Review Ave, Akron, OH 44320",
+      "market": "Akron, OH",
+      "market_key": "akron",
+      "list_price": 125000.0,
+      "estimated_value": 180000.0,
+      "conservative_20pct_offer": 36000.0,
+      "zompz_bracket_offer": 90000.0,
+      "selected_cash_offer": null,
+      "offer_lane": "CASH_REVIEW_ARV_REQUIRED",
+      "manual_review_reason": "Manual review required: verify ARV, repairs, comps, and visible spread before any cash offer.",
+      "email_subject": "",
+      "email_body": "",
+      "public_copy_forbidden_terms_found": false,
+      "auto_send": false,
+      "INTERNAL_ONLY": {
+        "expected_assignment_fee_target": 14400.0,
+        "optional_agent_comp_reserve": 0.0,
+        "suggested_optional_agent_comp_reserve": 1500.0,
+        "net_spread_after_optional_agent_comp": null,
+        "manual_approval_agent_comp": false
+      }
+    },
+    {
+      "address": "75 Owner Finance Only Ave, Cleveland, OH 44105",
+      "market": "Cleveland, OH",
+      "market_key": "cleveland",
+      "list_price": 75000.0,
+      "estimated_value": 90000.0,
+      "conservative_20pct_offer": null,
+      "zompz_bracket_offer": null,
+      "selected_cash_offer": null,
+      "offer_lane": "OWNER_FINANCE_ONLY",
+      "manual_review_reason": "30k-80k houses route to owner-finance only; no cash offer created.",
+      "email_subject": "",
+      "email_body": "",
+      "public_copy_forbidden_terms_found": false,
+      "auto_send": false,
+      "INTERNAL_ONLY": {
+        "expected_assignment_fee_target": 7500.0,
+        "optional_agent_comp_reserve": 0.0,
+        "suggested_optional_agent_comp_reserve": 1500.0,
+        "net_spread_after_optional_agent_comp": null,
+        "manual_approval_agent_comp": false
+      }
+    }
+  ]
+}

@@ -84,6 +84,10 @@ def classify_offer_lane(list_price: float, offer: dict) -> str:
         if (offer or {}).get("stale_seller_finance") or (offer or {}).get("requires_review"):
             return "STALE_SELLER_FINANCE_REVIEW"
         return "SELLER_FINANCE_LISTING_COUNTER"
+    if offer_type == "owner_finance_rent_check":
+        return "OWNER_FINANCE_RENT_CHECK_80_100"
+    if offer_type == "owner_finance_manual_review":
+        return "OWNER_FINANCE_MANUAL_REVIEW_100_125"
 
     if OF_MIN_PRICE <= list_price <= OF_MAX_PRICE:
         return "OWNER_FINANCE_PRODUCTION"
@@ -233,7 +237,12 @@ def save_pipeline_log(all_results: dict):
                 "market":       r["market_label"],
                 "price":        list_price,
                 "dom":          listing.get("days_on_market", 0),
-                "type":         "OF" if offer.get("offer_type") in ("owner_finance", "seller_finance_counter") else "CL",
+                "type":         "OF" if offer.get("offer_type") in (
+                    "owner_finance",
+                    "seller_finance_counter",
+                    "owner_finance_rent_check",
+                    "owner_finance_manual_review",
+                ) else "CL",
                 "offer_lane":   classify_offer_lane(list_price, offer),
                 "offer":        offer.get("owner_finance_offer") or offer.get("cash_offer", 0),
                 "agent":        listing.get("agent_name"),
@@ -409,7 +418,12 @@ def run_market(market_key: str, dry_run: bool = False) -> dict:
             chosen_email = pick_email(emails)
             send_queue.append({"listing": listing, "offer": offer, "email": chosen_email})
 
-            if offer.get("offer_type") in ("owner_finance", "seller_finance_counter"):
+            if offer.get("offer_type") in (
+                "owner_finance",
+                "seller_finance_counter",
+                "owner_finance_rent_check",
+                "owner_finance_manual_review",
+            ):
                 result["of_deals"] += 1
             else:
                 result["cl_deals"] += 1

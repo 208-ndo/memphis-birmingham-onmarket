@@ -43,7 +43,7 @@ INVESTMENT_PURPOSE_LINE = (
 )
 BROKER_COMP_LINE = (
     "Seller to handle any listing broker compensation per the existing "
-    "listing agreement from seller proceeds at closing, down payment/closing "
+    "listing agreement from seller proceeds, down payment/closing "
     "funds, or as otherwise agreed in writing by the seller and broker."
 )
 REVIEW_LINE = (
@@ -66,7 +66,7 @@ def generate_emails(listing: dict, offer: dict) -> list[dict]:
     offer_type = offer.get("offer_type")
     if offer_type == "seller_finance_counter":
         return [_gen_seller_finance_counter_email(listing, offer)]
-    if offer_type == "owner_finance":
+    if offer_type in ("owner_finance", "owner_finance_rent_check", "owner_finance_manual_review"):
         return [_gen_of_email(listing, offer)]
     if offer_type == "cash_lowball":
         return [_gen_cl_email(listing, offer)]

@@ -1,7 +1,7 @@
 """
 offer.py — 229 Holdings LLC
 Two offer lanes:
-  1. Owner Finance: full list, 5% down, seller carries, no buyer agent bonus
+  1. Owner Finance: full list, 5% down, seller carries, clean broker-comp language
   2. Cash Lowball:  MAO-capped + Listed Property Visible Spread Rule
                     ARV required — no ARV = no cash offer
 """
@@ -33,6 +33,12 @@ SELLER_FINANCE_PHRASES = (
 )
 SELLER_FINANCE_MIN_DOWN = 5000.0
 SELLER_FINANCE_REVIEW_DOM = 100
+RENT_CHECK_MIN_PRICE = 80000.0
+RENT_CHECK_MAX_PRICE = 100000.0
+MANUAL_OF_REVIEW_MAX_PRICE = 125000.0
+MINIMUM_CASHFLOW_REQUIRED = 200.0
+MAX_PAYMENT_TO_RENT_RATIO = 0.65
+OHIO_EMAIL_FIRST_MARKETS = {"cleveland", "akron"}
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -102,6 +108,28 @@ def _listing_dom(listing: dict) -> int:
     return 0
 
 
+def _is_ohio_email_first_market(listing: dict) -> bool:
+    market_key = str(listing.get("market_key") or listing.get("market") or "").lower()
+    city = str(listing.get("city") or "").lower()
+    return any(key in market_key or key in city for key in OHIO_EMAIL_FIRST_MARKETS)
+
+
+def _estimate_taxes_insurance(purchase_price: float) -> float:
+    return max(250.0, 0.0035 * purchase_price)
+
+
+def _estimate_repairs_vacancy_management(estimated_rent: float) -> float:
+    return max(150.0, 0.15 * estimated_rent)
+
+
+def _calc_terms_offer_base(list_price: float, min_down: float = 0.0) -> tuple[float, float, float, float]:
+    offer_price = list_price
+    dp = max(min_down, offer_price * OF_DOWN_PCT)
+    balance = offer_price - dp
+    monthly = balance / OF_NUM_PAYMENTS
+    return offer_price, dp, balance, monthly
+
+
 # ── Main entry point ───────────────────────────────────────────────────────────
 
 def calculate_offer(listing: dict) -> dict | None:
@@ -114,6 +142,12 @@ def calculate_offer(listing: dict) -> dict | None:
     # Lane 1 — Owner Finance
     if OF_MIN_PRICE <= list_price <= OF_MAX_PRICE:
         return _calc_owner_finance(listing, list_price)
+
+    if _is_ohio_email_first_market(listing):
+        if OF_MAX_PRICE < list_price <= RENT_CHECK_MAX_PRICE:
+            return _calc_owner_finance_rent_check(listing, list_price)
+        if RENT_CHECK_MAX_PRICE < list_price <= MANUAL_OF_REVIEW_MAX_PRICE:
+            return _calc_owner_finance_manual_review(listing, list_price)
 
     # Lane 2 — Cash
     if list_price > OF_MAX_PRICE:
@@ -211,6 +245,104 @@ def _calc_seller_finance_counter(listing: dict, list_price: float) -> dict:
         "review_note":               review_note,
         "pitch_holds":               not stale and list_price <= OF_MAX_PRICE,
         "commission_language":       COMMISSION_LANGUAGE,
+    }
+
+
+def _calc_owner_finance_rent_check(listing: dict, list_price: float) -> dict:
+    offer_price, dp, balance, monthly = _calc_terms_offer_base(list_price)
+    estimated_rent = float(listing.get("estimated_rent") or 0)
+    taxes_insurance = _estimate_taxes_insurance(offer_price)
+    repairs_vacancy_management = (
+        _estimate_repairs_vacancy_management(estimated_rent) if estimated_rent else 0.0
+    )
+    estimated_cashflow = (
+        estimated_rent - monthly - taxes_insurance - repairs_vacancy_management
+        if estimated_rent else None
+    )
+    payment_to_rent_ratio = monthly / estimated_rent if estimated_rent else None
+    rent_check_pass = bool(
+        estimated_rent
+        and estimated_cashflow >= MINIMUM_CASHFLOW_REQUIRED
+        and payment_to_rent_ratio <= MAX_PAYMENT_TO_RENT_RATIO
+    )
+    rent_check_status = "PASS" if rent_check_pass else ("FAIL" if estimated_rent else "RENT_CHECK_REQUIRED")
+
+    return {
+        "offer_type":              "owner_finance_rent_check",
+        "list_price":              list_price,
+        "owner_finance_offer":     offer_price,
+        "purchase_price":          offer_price,
+        "down_payment":            dp,
+        "down_pct":                OF_DOWN_PCT * 100,
+        "financed_balance":        balance,
+        "monthly_payment":         monthly,
+        "num_payments":            OF_NUM_PAYMENTS,
+        "seller_rate":             OF_SELLER_RATE,
+        "interest_rate":           OF_SELLER_RATE,
+        "earnest":                 OF_EARNEST,
+        "close_days":              OF_CLOSE_DAYS,
+        "due_diligence_days":      OF_DD_DAYS,
+        "estimated_rent":          estimated_rent,
+        "estimated_taxes_insurance": taxes_insurance,
+        "estimated_repairs_vacancy_management": repairs_vacancy_management,
+        "estimated_monthly_cashflow": estimated_cashflow,
+        "minimum_cashflow_required": MINIMUM_CASHFLOW_REQUIRED,
+        "payment_to_rent_ratio":   payment_to_rent_ratio,
+        "max_payment_to_rent_ratio": MAX_PAYMENT_TO_RENT_RATIO,
+        "rent_check_status":       rent_check_status,
+        "rent_check_pass":         rent_check_pass,
+        "live_send_blocked":       not rent_check_pass,
+        "requires_review":         not rent_check_pass,
+        "manual_review":           not rent_check_pass,
+        "review_note":             "" if rent_check_pass else "RENT_CHECK_REQUIRED",
+        "pitch_holds":             rent_check_pass,
+        "commission_language":     COMMISSION_LANGUAGE,
+    }
+
+
+def _calc_owner_finance_manual_review(listing: dict, list_price: float) -> dict:
+    offer_price, dp, balance, monthly = _calc_terms_offer_base(list_price)
+    estimated_rent = float(listing.get("estimated_rent") or 0)
+    taxes_insurance = _estimate_taxes_insurance(offer_price)
+    repairs_vacancy_management = (
+        _estimate_repairs_vacancy_management(estimated_rent) if estimated_rent else 0.0
+    )
+    estimated_cashflow = (
+        estimated_rent - monthly - taxes_insurance - repairs_vacancy_management
+        if estimated_rent else None
+    )
+    payment_to_rent_ratio = monthly / estimated_rent if estimated_rent else None
+
+    return {
+        "offer_type":              "owner_finance_manual_review",
+        "list_price":              list_price,
+        "owner_finance_offer":     offer_price,
+        "purchase_price":          offer_price,
+        "down_payment":            dp,
+        "down_pct":                OF_DOWN_PCT * 100,
+        "financed_balance":        balance,
+        "monthly_payment":         monthly,
+        "num_payments":            OF_NUM_PAYMENTS,
+        "seller_rate":             OF_SELLER_RATE,
+        "interest_rate":           OF_SELLER_RATE,
+        "earnest":                 OF_EARNEST,
+        "close_days":              OF_CLOSE_DAYS,
+        "due_diligence_days":      OF_DD_DAYS,
+        "estimated_rent":          estimated_rent,
+        "estimated_taxes_insurance": taxes_insurance,
+        "estimated_repairs_vacancy_management": repairs_vacancy_management,
+        "estimated_monthly_cashflow": estimated_cashflow,
+        "minimum_cashflow_required": MINIMUM_CASHFLOW_REQUIRED,
+        "payment_to_rent_ratio":   payment_to_rent_ratio,
+        "max_payment_to_rent_ratio": MAX_PAYMENT_TO_RENT_RATIO,
+        "rent_check_status":       "MANUAL_REVIEW",
+        "rent_check_pass":         False,
+        "live_send_blocked":       True,
+        "requires_review":         True,
+        "manual_review":           True,
+        "review_note":             "OWNER_FINANCE_MANUAL_REVIEW_100_125",
+        "pitch_holds":             False,
+        "commission_language":     COMMISSION_LANGUAGE,
     }
 
 

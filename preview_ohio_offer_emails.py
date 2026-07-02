@@ -35,6 +35,7 @@ FIXTURE_LEADS = [
         "brokerage": "Cleveland Property Management Group, LLC",
         "brokerage_name": "Cleveland Property Management Group, LLC",
         "days_on_zillow": 36,
+        "estimated_rent": 1300,
         "description": (
             "Owner financing option $15,000 down. 7% interest, "
             "$310 monthly payment, 240 amortization, no PPP."
@@ -54,6 +55,57 @@ FIXTURE_LEADS = [
         "brokerage": "Coldwell Banker Schmidt Realty",
         "brokerage_name": "Coldwell Banker Schmidt Realty",
         "days_on_zillow": 88,
+    },
+    {
+        "market_key": "cleveland",
+        "market": "Cleveland, OH",
+        "city": "Cleveland",
+        "state": "OH",
+        "address": "95 Strong Rent Ave, Cleveland, OH 44105",
+        "list_price": 95000,
+        "price": 95000,
+        "estimated_rent": 1700,
+        "agent_name": "Strong Rent Agent",
+        "agent_email": "strong@example.com",
+        "agent_phone": "",
+        "brokerage": "Example Realty",
+        "brokerage_name": "Example Realty",
+        "days_on_zillow": 45,
+        "description": "Investor-style house with strong rent demand.",
+    },
+    {
+        "market_key": "cleveland",
+        "market": "Cleveland, OH",
+        "city": "Cleveland",
+        "state": "OH",
+        "address": "95 Weak Rent Ave, Cleveland, OH 44105",
+        "list_price": 95000,
+        "price": 95000,
+        "estimated_rent": 1250,
+        "agent_name": "Weak Rent Agent",
+        "agent_email": "weak@example.com",
+        "agent_phone": "",
+        "brokerage": "Example Realty",
+        "brokerage_name": "Example Realty",
+        "days_on_zillow": 45,
+        "description": "Investor-style house with weaker rent support.",
+    },
+    {
+        "market_key": "akron",
+        "market": "Akron, OH",
+        "city": "Akron",
+        "state": "OH",
+        "address": "115 Manual Review Ave, Akron, OH 44320",
+        "list_price": 115000,
+        "price": 115000,
+        "estimated_rent": 1800,
+        "agent_name": "Manual Review Agent",
+        "agent_email": "manual@example.com",
+        "agent_phone": "",
+        "brokerage": "Example Realty",
+        "brokerage_name": "Example Realty",
+        "days_on_zillow": 35,
+        "description": "Clean house; review terms manually.",
     },
     {
         "market_key": "akron",
@@ -97,6 +149,10 @@ def classify_preview_offer_lane(list_price: float, offer: dict) -> str:
         if (offer or {}).get("stale_seller_finance") or (offer or {}).get("requires_review"):
             return "STALE_SELLER_FINANCE_REVIEW"
         return "SELLER_FINANCE_LISTING_COUNTER"
+    if offer_type == "owner_finance_rent_check":
+        return "OWNER_FINANCE_RENT_CHECK_80_100"
+    if offer_type == "owner_finance_manual_review":
+        return "OWNER_FINANCE_MANUAL_REVIEW_100_125"
     if OF_MIN_PRICE <= list_price <= OF_MAX_PRICE:
         return "OWNER_FINANCE_PRODUCTION"
     if OF_AUDIT_MIN_PRICE < list_price <= OF_AUDIT_MAX_PRICE:
@@ -139,7 +195,12 @@ def build_preview_records() -> list[dict]:
         monthly_payment = _round_money(offer.get("monthly_payment"))
         num_payments = int(offer.get("num_payments") or 0)
 
-        is_terms_offer = offer.get("offer_type") in ("owner_finance", "seller_finance_counter")
+        is_terms_offer = offer.get("offer_type") in (
+            "owner_finance",
+            "seller_finance_counter",
+            "owner_finance_rent_check",
+            "owner_finance_manual_review",
+        )
         expected_down = _round_money(
             max(5000, list_price * 0.05)
             if offer.get("offer_type") == "seller_finance_counter"
@@ -190,6 +251,14 @@ def build_preview_records() -> list[dict]:
                 "num_payments": num_payments,
                 "interest_rate": offer.get("interest_rate", offer.get("seller_rate", 0)),
                 "prepayment_penalty": offer.get("prepayment_penalty", ""),
+                "estimated_rent": offer.get("estimated_rent", lead.get("estimated_rent", 0)),
+                "estimated_taxes_insurance": offer.get("estimated_taxes_insurance"),
+                "estimated_repairs_vacancy_management": offer.get("estimated_repairs_vacancy_management"),
+                "estimated_monthly_cashflow": offer.get("estimated_monthly_cashflow"),
+                "payment_to_rent_ratio": offer.get("payment_to_rent_ratio"),
+                "rent_check_status": offer.get("rent_check_status", ""),
+                "rent_check_pass": bool(offer.get("rent_check_pass")),
+                "live_send_eligible": bool(email_body and math_ok and not offer.get("live_send_blocked") and offer.get("pitch_holds")),
                 "requires_review": bool(offer.get("requires_review") or offer.get("manual_review")),
                 "review_note": offer.get("review_note", ""),
                 "math_ok": math_ok,
@@ -209,6 +278,8 @@ def build_summary(records: list[dict]) -> dict:
         "total_fixture_leads": len(records),
         "owner_finance_preview_count": sum(1 for row in records if row["offer_lane"] == "OWNER_FINANCE_PRODUCTION"),
         "seller_finance_counter_count": sum(1 for row in records if row["offer_lane"] == "SELLER_FINANCE_LISTING_COUNTER"),
+        "rent_check_count": sum(1 for row in records if row["offer_lane"] == "OWNER_FINANCE_RENT_CHECK_80_100"),
+        "rent_check_pass_count": sum(1 for row in records if row["rent_check_pass"]),
         "stale_seller_finance_review_count": sum(1 for row in records if row["offer_lane"] == "STALE_SELLER_FINANCE_REVIEW"),
         "manual_review_count": sum(
             1 for row in records if row["requires_review"] or not row["email_body"]
@@ -241,6 +312,8 @@ def write_report(records: list[dict], summary: dict) -> None:
         f"- Total fixture leads: {summary['total_fixture_leads']}",
         f"- Owner finance preview count: {summary['owner_finance_preview_count']}",
         f"- Seller finance counter count: {summary['seller_finance_counter_count']}",
+        f"- Rent check count: {summary['rent_check_count']}",
+        f"- Rent check pass count: {summary['rent_check_pass_count']}",
         f"- Stale seller finance review count: {summary['stale_seller_finance_review_count']}",
         f"- Manual review count: {summary['manual_review_count']}",
         f"- Math issues count: {summary['math_issues_count']}",
@@ -264,6 +337,13 @@ def write_report(records: list[dict], summary: dict) -> None:
             f"- Number of payments: {row['num_payments']}",
             f"- Interest: {row['interest_rate']:g}%",
             f"- Prepayment penalty: {row['prepayment_penalty'] or 'N/A'}",
+            f"- Estimated rent: {_format_money(row['estimated_rent'])}",
+            f"- Estimated taxes/insurance: {_format_money(row['estimated_taxes_insurance'])}",
+            f"- Estimated repairs/vacancy/management: {_format_money(row['estimated_repairs_vacancy_management'])}",
+            f"- Estimated monthly cashflow: {_format_money(row['estimated_monthly_cashflow'])}",
+            f"- Payment-to-rent ratio: {row['payment_to_rent_ratio']:.3f}" if row["payment_to_rent_ratio"] is not None else "- Payment-to-rent ratio: N/A",
+            f"- Rent check status: {row['rent_check_status'] or 'N/A'}",
+            f"- Live-send eligible: {str(row['live_send_eligible']).lower()}",
             f"- Requires review: {str(row['requires_review']).lower()}",
             f"- Math OK: {str(row['math_ok']).lower()}",
             f"- Email subject: {row['email_subject'] or 'N/A - manual/review only'}",

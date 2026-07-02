@@ -2,6 +2,7 @@ import unittest
 
 from email_gen import BROKER_COMP_LINE, INVESTMENT_PURPOSE_LINE, generate_emails
 from offer import calculate_offer
+from preview_cash_offer_emails import FORBIDDEN_PUBLIC_TERMS
 from preview_ohio_offer_emails import build_preview_records, build_summary
 
 
@@ -88,6 +89,49 @@ class OhioOfferPreviewTest(unittest.TestCase):
             body,
         )
 
+    def test_rent_check_strong_rent_passes(self):
+        row = self.by_address["95 Strong Rent Ave, Cleveland, OH 44105"]
+        self.assertEqual(row["offer_lane"], "OWNER_FINANCE_RENT_CHECK_80_100")
+        self.assertEqual(row["purchase_price"], 95000)
+        self.assertEqual(row["down_payment"], 4750)
+        self.assertEqual(row["monthly_payment"], 902.5)
+        self.assertEqual(row["estimated_rent"], 1700)
+        self.assertEqual(row["rent_check_status"], "PASS")
+        self.assertTrue(row["rent_check_pass"])
+        self.assertGreaterEqual(row["estimated_monthly_cashflow"], 200)
+        self.assertLessEqual(row["payment_to_rent_ratio"], 0.65)
+        self.assertTrue(row["live_send_eligible"])
+
+    def test_rent_check_weak_rent_fails(self):
+        row = self.by_address["95 Weak Rent Ave, Cleveland, OH 44105"]
+        self.assertEqual(row["offer_lane"], "OWNER_FINANCE_RENT_CHECK_80_100")
+        self.assertEqual(row["estimated_rent"], 1250)
+        self.assertEqual(row["rent_check_status"], "FAIL")
+        self.assertFalse(row["rent_check_pass"])
+        self.assertTrue(row["requires_review"])
+        self.assertFalse(row["live_send_eligible"])
+
+    def test_missing_rent_blocks_live_send(self):
+        offer = calculate_offer(
+            {
+                "address": "Missing Rent",
+                "market_key": "cleveland",
+                "city": "Cleveland",
+                "list_price": 95000,
+            }
+        )
+        self.assertEqual(offer["offer_type"], "owner_finance_rent_check")
+        self.assertEqual(offer["rent_check_status"], "RENT_CHECK_REQUIRED")
+        self.assertTrue(offer["live_send_blocked"])
+        self.assertFalse(offer["pitch_holds"])
+
+    def test_100k_to_125k_is_manual_review(self):
+        row = self.by_address["115 Manual Review Ave, Akron, OH 44320"]
+        self.assertEqual(row["offer_lane"], "OWNER_FINANCE_MANUAL_REVIEW_100_125")
+        self.assertTrue(row["requires_review"])
+        self.assertFalse(row["live_send_eligible"])
+        self.assertFalse(row["auto_send"])
+
     def test_stale_seller_finance_is_review_and_not_price_lowball(self):
         listing = {
             "address": "Stale Seller Finance",
@@ -128,17 +172,24 @@ class OhioOfferPreviewTest(unittest.TestCase):
 
     def test_higher_price_manual_review_lead_is_not_auto_send(self):
         row = self.by_address["123 Example Review Ave, Cleveland, OH 44105"]
-        self.assertEqual(row["offer_lane"], "CASH_REVIEW_ARV_REQUIRED")
-        self.assertEqual(row["offer_type"], "no_arv")
+        self.assertEqual(row["offer_lane"], "OWNER_FINANCE_MANUAL_REVIEW_100_125")
+        self.assertEqual(row["offer_type"], "owner_finance_manual_review")
         self.assertFalse(row["auto_send"])
-        self.assertFalse(row["eligible_for_review"])
-        self.assertEqual(row["email_subject"], "")
-        self.assertEqual(row["email_body"], "")
+        self.assertFalse(row["live_send_eligible"])
+        self.assertTrue(row["requires_review"])
 
     def test_generated_email_includes_required_public_lines(self):
-        for row in self.records[:3]:
+        for row in self.records:
+            if not row["email_body"]:
+                continue
             self.assertIn(INVESTMENT_PURPOSE_LINE, row["email_body"])
             self.assertIn(BROKER_COMP_LINE, row["email_body"])
+
+    def test_public_seller_finance_emails_do_not_include_forbidden_terms(self):
+        for row in self.records:
+            body = (row["email_body"] or "").lower()
+            for term in FORBIDDEN_PUBLIC_TERMS:
+                self.assertNotIn(term.lower(), body, f"{term} leaked in {row['address']}")
 
 
 if __name__ == "__main__":
