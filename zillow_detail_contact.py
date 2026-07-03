@@ -40,6 +40,23 @@ logger = logging.getLogger(__name__)
 ZILLOW_DETAIL_ACTOR_ID = os.environ.get(
     "ZILLOW_DETAIL_ACTOR_ID", "maxcopell/zillow-detail-scraper")
 
+# Optional Playwright fallback (2026-07-02) — OFF by default, and only ever
+# used for a small number of TOP shortlisted detail pages, never every lead.
+USE_PLAYWRIGHT_ZILLOW_DETAIL = (
+    os.environ.get("USE_PLAYWRIGHT_ZILLOW_DETAIL", "").lower().strip() == "true")
+
+
+def _max_detail_fetches() -> int:
+    raw = os.environ.get("MAX_ZILLOW_DETAIL_FETCHES_PER_WORKFLOW", "")
+    try:
+        return int(raw) if raw.strip() else 10
+    except ValueError:
+        return 10
+
+
+# Workflow-level counter so Playwright (the expensive path) is hard-capped.
+_playwright_fetch_count = 0
+
 # Phone: matches 330-388-0566, (216) 269-3467, 216.375.4486, etc.
 PHONE_RE = re.compile(r"\(?\b\d{3}\)?[\s.\-]?\d{3}[\s.\-]?\d{4}\b")
 _LISTED_BY_RE = re.compile(r"(?i)listed\s+by\s*:?\s*")
@@ -165,51 +182,232 @@ def parse_listed_by_block(text: str) -> dict:
     }
 
 
+def _flatten_json(obj) -> str:
+    """
+    Recursively walk ANY dict/list/str/scalar and join every string value
+    into one text blob. This is the key fix (2026-07-02): the Zillow detail
+    actor nests the "Listed by" contact data under keys we can't guess, so
+    instead of probing guessed keys we flatten the ENTIRE item and parse the
+    whole thing. Order is preserved so "Listed by:" + following contact text
+    stay adjacent.
+    """
+    parts = []
+
+    def walk(node):
+        if node is None:
+            return
+        if isinstance(node, dict):
+            for v in node.values():
+                walk(v)
+        elif isinstance(node, (list, tuple)):
+            for v in node:
+                walk(v)
+        elif isinstance(node, str):
+            if node.strip():
+                parts.append(node)
+        else:
+            parts.append(str(node))
+
+    walk(obj)
+    return " ".join(parts)
+
+
+def _mask_email(email: str) -> str:
+    if "@" not in email:
+        return email
+    user, _, domain = email.partition("@")
+    return f"{user[:2]}***@{domain}"
+
+
+def _mask_emails_in_text(text: str) -> str:
+    return EMAIL_RE.sub(lambda m: _mask_email(m.group(0)), text or "")
+
+
+def _log_detail_diagnostics(url, actor_id, items, flat_text):
+    """INFO-level diagnostics so a failed detail fetch is debuggable from logs."""
+    logger.info("Zillow detail attempt: url=%s | actor=%s | items_returned=%s",
+                url, actor_id, len(items) if items is not None else 0)
+    if items:
+        top_keys = set()
+        for item in items:
+            if isinstance(item, dict):
+                top_keys.update(item.keys())
+        logger.info("Zillow detail item top-level keys: %s", sorted(top_keys)[:40])
+    has_email = bool(EMAIL_RE.search(flat_text or ""))
+    has_listed_by = bool(re.search(r"(?i)listed\s+by", flat_text or ""))
+    logger.info("Zillow detail flattened: len=%s | any_email=%s | has_'Listed by'=%s",
+                len(flat_text or ""), has_email, has_listed_by)
+    if flat_text:
+        snippet = _mask_emails_in_text(flat_text.strip())[:500]
+        logger.info("Zillow detail first 500 chars (emails masked): %s", snippet)
+
+
+def _fetch_via_actor(url, client):
+    """Return (items, flattened_text) from the Apify detail actor, or ([], '')."""
+    try:
+        run = client.actor(ZILLOW_DETAIL_ACTOR_ID).call(
+            run_input={"startUrls": [{"url": url}], "maxItems": 1},
+            timeout_secs=90,
+        )
+        items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
+        flat = _flatten_json(items)
+        return items, flat
+    except Exception as e:
+        logger.info("Zillow detail actor fetch failed for %s: %s", url, e)
+        return [], ""
+
+
+def _fetch_via_http(url):
+    """
+    Direct HTML fallback. Unescapes entities + decodes safe unicode escapes,
+    then returns the whole HTML/script text so parse_listed_by_block and the
+    email regex can find contacts literally present in the page. Only emails
+    actually in the HTML are ever used — nothing is guessed.
+    """
+    try:
+        import requests
+    except Exception:
+        logger.info("Zillow detail HTTP fallback unavailable: requests not installed")
+        return ""
+    try:
+        import html as _html
+        resp = requests.get(url, timeout=20, headers={
+            "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                           "AppleWebKit/537.36 (KHTML, like Gecko) "
+                           "Chrome/120.0 Safari/537.36"),
+            "Accept-Language": "en-US,en;q=0.9",
+        })
+        if resp.status_code != 200:
+            logger.info("Zillow detail HTTP fallback for %s returned status %s",
+                        url, resp.status_code)
+            return ""
+        text = resp.text
+        text = _html.unescape(text)
+        # Decode \u00XX / \/ style escapes that appear inside embedded JSON.
+        try:
+            text = text.encode("utf-8").decode("unicode_escape", "ignore")
+        except Exception:
+            pass
+        text = text.replace("\\/", "/")
+        return text
+    except Exception as e:
+        logger.info("Zillow detail HTTP fallback failed for %s: %s", url, e)
+        return ""
+
+
+def _fetch_via_playwright(url):
+    """
+    Optional Playwright fallback for TOP shortlisted pages only. OFF unless
+    USE_PLAYWRIGHT_ZILLOW_DETAIL=true AND playwright is importable. Hard
+    capped by MAX_ZILLOW_DETAIL_FETCHES_PER_WORKFLOW.
+    """
+    global _playwright_fetch_count
+    if not USE_PLAYWRIGHT_ZILLOW_DETAIL:
+        return ""
+    if _playwright_fetch_count >= _max_detail_fetches():
+        logger.info("Zillow detail Playwright cap reached (%s) — skipping %s",
+                    _max_detail_fetches(), url)
+        return ""
+    try:
+        from playwright.sync_api import sync_playwright
+    except Exception:
+        logger.info("Zillow detail Playwright fallback requested but Playwright "
+                    "is not installed — skipping")
+        return ""
+    try:
+        _playwright_fetch_count += 1
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page(user_agent=(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/120.0 Safari/537.36"))
+            page.goto(url, timeout=45000, wait_until="domcontentloaded")
+            page.wait_for_timeout(3000)
+            text = page.inner_text("body")
+            browser.close()
+            return text or ""
+    except Exception as e:
+        logger.info("Zillow detail Playwright fetch failed for %s: %s", url, e)
+        return ""
+
+
 def _fetch_detail_text(url: str, client=None) -> str:
     """
-    Return visible text of the Zillow detail page, or "" on failure.
-    Uses the Apify Zillow-detail actor when a client is provided (keeps us
-    on the same infra/proxying as the rest of the pipeline); otherwise a
-    plain HTTP GET as a best-effort fallback.
+    Return flattened detail-page text for parsing, or "" on failure.
+    Tries, in order: Apify detail actor (recursively flattened) → direct
+    HTML GET → optional Playwright (top pages only). Emits INFO diagnostics
+    at each step so empty results are debuggable.
     """
     if not url:
         return ""
+
+    # 1) Apify detail actor, fully flattened.
     if client is not None:
-        try:
-            run = client.actor(ZILLOW_DETAIL_ACTOR_ID).call(
-                run_input={"startUrls": [{"url": url}], "maxItems": 1},
-                timeout_secs=90,
-            )
-            items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
-            parts = []
-            for item in items:
-                for key in ("attributionInfo", "listed_by", "listedBy",
-                            "contact_recipients", "description", "text",
-                            "rawText", "pageText"):
-                    val = item.get(key)
-                    if isinstance(val, dict):
-                        parts.append(" ".join(str(v) for v in val.values()))
-                    elif isinstance(val, list):
-                        for v in val:
-                            parts.append(str(v) if not isinstance(v, dict)
-                                         else " ".join(str(x) for x in v.values()))
-                    elif val:
-                        parts.append(str(val))
-            return " ".join(parts)
-        except Exception as e:
-            logger.debug("Zillow detail actor fetch failed for %s: %s", url, e)
-            return ""
-    # Fallback: plain GET (best effort; may be bot-blocked, that's fine —
-    # we simply fall through to Google enrichment when this returns "").
-    try:
-        import requests
-        resp = requests.get(url, timeout=20, headers={
-            "User-Agent": "Mozilla/5.0 (compatible; contact-lookup/1.0)"})
-        if resp.status_code == 200:
-            return resp.text
-    except Exception as e:
-        logger.debug("Zillow detail HTTP fetch failed for %s: %s", url, e)
+        items, flat = _fetch_via_actor(url, client)
+        _log_detail_diagnostics(url, ZILLOW_DETAIL_ACTOR_ID, items, flat)
+        if flat and (re.search(r"(?i)listed\s+by", flat) or EMAIL_RE.search(flat)):
+            return flat
+
+    # 2) Direct HTML fallback.
+    html_text = _fetch_via_http(url)
+    if html_text:
+        _log_detail_diagnostics(url, "http_get", None, html_text)
+        if re.search(r"(?i)listed\s+by", html_text) or EMAIL_RE.search(html_text):
+            return html_text
+
+    # 3) Optional Playwright fallback (top shortlisted pages only).
+    pw_text = _fetch_via_playwright(url)
+    if pw_text:
+        _log_detail_diagnostics(url, "playwright", None, pw_text)
+        if re.search(r"(?i)listed\s+by", pw_text) or EMAIL_RE.search(pw_text):
+            return pw_text
+
     return ""
+
+
+def extract_contact_from_flat_text(flat_text: str) -> dict:
+    """
+    For actor output that carries the contact as STRUCTURED JSON (email +
+    phone + name present, but no literal "Listed by:" marker), pull the
+    contact directly from the flattened blob. Only accepts an email that is
+    literally present in the text. Never guesses.
+
+    Strategy: find the first plausible business email in the flattened text,
+    then look for a phone and a human name in a nearby window around it.
+    """
+    if not flat_text:
+        return {}
+    m = EMAIL_RE.search(flat_text)
+    email = ""
+    while m:
+        candidate = m.group(0).lower()
+        if is_plausible_business_email(candidate):
+            email = candidate
+            break
+        m = EMAIL_RE.search(flat_text, m.end())
+    if not email:
+        return {}
+
+    idx = flat_text.lower().find(email)
+    window = flat_text[max(0, idx - 200): idx + 200]
+
+    phone = ""
+    pm = PHONE_RE.search(window)
+    if pm:
+        phone = _clean_phone(pm.group(0))
+
+    # Name: look for a "First Last" style token sequence in the window that
+    # validates as an agent name and isn't part of the email/phone.
+    name = ""
+    for cand in re.findall(r"[A-Z][a-zA-Z'’.-]+(?:\s+[A-Z][a-zA-Z'’.-]+){1,3}", window):
+        if email.split("@")[0] in cand.lower().replace(" ", ""):
+            continue
+        if is_valid_agent_name(cand):
+            name = clean_agent_name(cand)
+            break
+
+    return {"agent_name": name, "agent_email": email, "agent_phone": phone,
+            "brokerage": ""}
 
 
 def fetch_detail_contact(url: str, client=None) -> dict:
@@ -222,19 +420,24 @@ def fetch_detail_contact(url: str, client=None) -> dict:
     if not text:
         return {}
     parsed = parse_listed_by_block(text)
+    # If there was no literal "Listed by:" block (structured actor JSON), fall
+    # back to pulling the contact straight from the flattened text.
     if not (parsed["agent_email"] or parsed["agent_phone"] or parsed["agent_name"]):
+        parsed = extract_contact_from_flat_text(text)
+    if not (parsed.get("agent_email") or parsed.get("agent_phone") or parsed.get("agent_name")):
         return {}
 
     contact = {
-        "agent_name":        parsed["agent_name"],
-        "brokerage_name":    parsed["brokerage"],
-        "agent_phone":       parsed["agent_phone"],
+        "agent_name":        parsed.get("agent_name", ""),
+        "brokerage_name":    parsed.get("brokerage", ""),
+        "agent_phone":       parsed.get("agent_phone", ""),
         "contact_source_url": url,
     }
-    if parsed["agent_email"]:
+    if parsed.get("agent_email"):
+        parsed_email = parsed["agent_email"]
         contact.update({
-            "agent_email":        parsed["agent_email"],
-            "email":              parsed["agent_email"],
+            "agent_email":        parsed_email,
+            "email":              parsed_email,
             "email_source_url":   url,
             "email_source_type":  "zillow_detail_listed_by",
             "email_confidence":   "source_verified",
@@ -243,9 +446,9 @@ def fetch_detail_contact(url: str, client=None) -> dict:
         })
         logger.info(
             "Zillow detail contact found: email=%s, phone=%s, source=zillow_detail_listed_by",
-            parsed["agent_email"], parsed["agent_phone"] or "none")
+            parsed_email, parsed.get("agent_phone") or "none")
     else:
         logger.info(
             "Zillow detail contact found (no email): name=%s, phone=%s, source=zillow_detail_listed_by",
-            parsed["agent_name"] or "unknown", parsed["agent_phone"] or "none")
+            parsed.get("agent_name") or "unknown", parsed.get("agent_phone") or "none")
     return contact

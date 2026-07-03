@@ -246,7 +246,16 @@ jobs:
           python main.py${FLAGS}
 
       - name: Commit dashboard data to repo
-        if: always() && github.event.inputs.apify_enabled != 'false'
+        # (2026-07-02 fix) Was if: always() — that committed partial/empty
+        # dashboard data even when the run was CANCELED or FAILED (e.g. a
+        # canceled dry run left stale/partial data committed). Now only
+        # commits on a genuinely successful run, and additionally skips
+        # scrape-disabled runs (nothing new to commit) and dry runs (a dry
+        # run must never write committed data).
+        if: >-
+          success()
+          && github.event.inputs.apify_enabled != 'false'
+          && github.event.inputs.dry_run != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

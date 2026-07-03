@@ -278,7 +278,10 @@ def send_batch(leads_with_emails: list, market_key: str, dry_run: bool = False) 
                 except Exception:
                     pass
 
-            if sent_count < effective_limit:
+            # Dry runs never actually send, so never sleep the 60-204s
+            # send stagger between "would send" lines (2026-07-02 fix) — that
+            # delay is anti-spam pacing for REAL sends only.
+            if not dry_run and sent_count < effective_limit:
                 jitter     = random.uniform(-15, 30)
                 sleep_time = max(60, delay + jitter)
                 log.info(f"Waiting {round(sleep_time)}s before next send ({sent_count}/{effective_limit} this batch)...")
