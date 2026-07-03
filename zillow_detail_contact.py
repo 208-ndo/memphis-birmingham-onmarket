@@ -31,8 +31,7 @@ import re
 import logging
 
 from contact_validation import (
-    is_valid_agent_name, clean_agent_name, is_plausible_business_email,
-    EMAIL_RE, extract_emails_from_text,
+    is_valid_agent_name, clean_agent_name, EMAIL_RE,
 )
 
 logger = logging.getLogger(__name__)
@@ -56,6 +55,69 @@ def _max_detail_fetches() -> int:
 
 # Workflow-level counter so Playwright (the expensive path) is hard-capped.
 _playwright_fetch_count = 0
+
+# ── Zillow-detail email acceptance (2026-07-02 fix) ─────────────────────────────
+# Zillow's own listing detail page publishes the agent's real email in the
+# "Listed by" block — and that email is frequently a gmail/yahoo/outlook
+# address (e.g. frefrederickteam@gmail.com on 19806 Shawnee Ave). The general
+# contact_validation skip-list rejects those free-mail domains GLOBALLY, which
+# is correct for Google snippets (where a gmail hit is usually noise) but WRONG
+# for an email literally printed on Zillow's own listing page. So detail-page
+# extraction uses its OWN acceptance rule that only rejects obvious junk /
+# image-filename domains, never free-mail providers. Google/snippet extraction
+# in contact_validation.py is left completely unchanged.
+
+# Only these are ever rejected for a Zillow-detail email: parser artifacts and
+# image/asset filenames that happen to match the email regex.
+_ZILLOW_DETAIL_JUNK_DOMAINS = {
+    "sentry.io", "wixpress.com", "example.com", "email.com", "domain.com",
+    "sentry-next.wixpress.com", "schema.org", "w3.org",
+}
+_IMAGE_EXTS = (".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".ico")
+
+# Zillow-detail email regex per spec (letters/digits/._%+- @ domain . tld{2,}).
+ZILLOW_DETAIL_EMAIL_RE = re.compile(
+    r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
+
+
+def is_valid_zillow_detail_email(email: str) -> bool:
+    """
+    Accept ANY normal email visibly published on a Zillow detail page,
+    INCLUDING gmail/yahoo/outlook/etc. Reject only empty values, obvious
+    parser junk domains, and image/asset filenames. This deliberately does
+    NOT call the general business-email skip list (which drops free-mail),
+    because these emails are literally printed on Zillow's own listing.
+    """
+    if not email or "@" not in email:
+        return False
+    email = email.strip().lower()
+    if not ZILLOW_DETAIL_EMAIL_RE.fullmatch(email):
+        return False
+    domain = email.split("@")[-1]
+    if domain in _ZILLOW_DETAIL_JUNK_DOMAINS:
+        return False
+    if domain.endswith(_IMAGE_EXTS):
+        return False
+    # "2x.png"-style local parts / obvious asset refs
+    local = email.split("@")[0]
+    if local.endswith(_IMAGE_EXTS):
+        return False
+    return True
+
+
+def extract_zillow_detail_emails(text: str) -> list:
+    """All Zillow-detail-acceptable emails in text, mailto links first, in
+    order of first appearance. Free-mail domains ARE kept (see rationale)."""
+    if not text:
+        return []
+    found, seen = [], set()
+    mailtos = re.findall(r"(?i)mailto:([A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,})", text)
+    for raw in mailtos + ZILLOW_DETAIL_EMAIL_RE.findall(text):
+        email = raw.lower().strip(" .,;:")
+        if email not in seen and is_valid_zillow_detail_email(email):
+            seen.add(email)
+            found.append(email)
+    return found
 
 # Phone: matches 330-388-0566, (216) 269-3467, 216.375.4486, etc.
 PHONE_RE = re.compile(r"\(?\b\d{3}\)?[\s.\-]?\d{3}[\s.\-]?\d{4}\b")
@@ -106,12 +168,9 @@ def parse_listed_by_block(text: str) -> dict:
     block = re.split(r"(?i)\b(?:source|mls#|listing provided|©|zillow group)\b", block)[0].strip()
 
     # First visible email anywhere in the block is THE listing email.
-    emails = [e for e in extract_emails_from_text(block)]
-    # extract_emails_from_text filters portal/free domains; for a listing
-    # page we also accept the raw first visible email if it's plausible.
-    if not emails:
-        raw = EMAIL_RE.findall(block)
-        emails = [e.lower() for e in raw if is_plausible_business_email(e.lower())]
+    # Uses Zillow-detail acceptance (accepts gmail/yahoo/outlook etc. because
+    # these are literally published on Zillow's own listing page).
+    emails = extract_zillow_detail_emails(block)
     primary_email = emails[0] if emails else ""
 
     # Split on commas: segments are agents, brokerage, or agent+contact.
@@ -121,8 +180,8 @@ def parse_listed_by_block(text: str) -> dict:
     brokerage = ""
     for seg in segments:
         seg_email = ""
-        seg_raw_emails = EMAIL_RE.findall(seg)
-        if seg_raw_emails and is_plausible_business_email(seg_raw_emails[0].lower()):
+        seg_raw_emails = ZILLOW_DETAIL_EMAIL_RE.findall(seg)
+        if seg_raw_emails and is_valid_zillow_detail_email(seg_raw_emails[0].lower()):
             seg_email = seg_raw_emails[0].lower()
         seg_phone_match = PHONE_RE.search(seg)
         seg_phone = _clean_phone(seg_phone_match.group(0)) if seg_phone_match else ""
@@ -372,19 +431,36 @@ def extract_contact_from_flat_text(flat_text: str) -> dict:
     contact directly from the flattened blob. Only accepts an email that is
     literally present in the text. Never guesses.
 
-    Strategy: find the first plausible business email in the flattened text,
-    then look for a phone and a human name in a nearby window around it.
+    Strategy: prefer an email that sits near a Zillow contact key
+    (attributionInfo/contactFormRenderData/agentEmail/brokerEmail/email),
+    else the first Zillow-detail-acceptable email; then look for a phone and
+    a human name in a nearby window. Accepts free-mail domains (gmail etc.)
+    because these are literally published on the Zillow listing.
     """
     if not flat_text:
         return {}
-    m = EMAIL_RE.search(flat_text)
-    email = ""
-    while m:
-        candidate = m.group(0).lower()
-        if is_plausible_business_email(candidate):
-            email = candidate
+
+    # Prefer an email that appears right after a known contact key.
+    key_email = ""
+    for key in ("agentEmail", "brokerEmail", "contactEmail",
+                "contactFormRenderData", "attributionInfo", "listedBy",
+                "email"):
+        km = re.search(re.escape(key), flat_text)
+        if not km:
+            continue
+        near = flat_text[km.start(): km.start() + 300]
+        cand = ZILLOW_DETAIL_EMAIL_RE.search(near)
+        if cand and is_valid_zillow_detail_email(cand.group(0).lower()):
+            key_email = cand.group(0).lower()
             break
-        m = EMAIL_RE.search(flat_text, m.end())
+
+    email = key_email
+    if not email:
+        for cand in ZILLOW_DETAIL_EMAIL_RE.finditer(flat_text):
+            c = cand.group(0).lower()
+            if is_valid_zillow_detail_email(c):
+                email = c
+                break
     if not email:
         return {}
 
@@ -419,11 +495,26 @@ def fetch_detail_contact(url: str, client=None) -> dict:
     text = _fetch_detail_text(url, client=client)
     if not text:
         return {}
+
+    # Parsing order (per spec):
+    #   1. exact "Listed by" window from flattened text
+    #   2. structured attributionInfo/contactFormRenderData/agentEmail/etc
+    #   3. any Zillow-detail email near phone/name/brokerage in the text
+    #   (Google is the LAST resort, handled by the enrichment ladder, not here)
     parsed = parse_listed_by_block(text)
-    # If there was no literal "Listed by:" block (structured actor JSON), fall
-    # back to pulling the contact straight from the flattened text.
-    if not (parsed["agent_email"] or parsed["agent_phone"] or parsed["agent_name"]):
-        parsed = extract_contact_from_flat_text(text)
+    # If the Listed-by block produced a name/phone but NO email, still try the
+    # structured/near-email extractor so a published email elsewhere in the
+    # flattened detail data isn't missed (this was the "no email" bug).
+    if not parsed.get("agent_email"):
+        structured = extract_contact_from_flat_text(text)
+        if structured.get("agent_email"):
+            # Keep the richer name/brokerage from the Listed-by block if present.
+            parsed = {
+                "agent_email": structured["agent_email"],
+                "agent_phone": parsed.get("agent_phone") or structured.get("agent_phone", ""),
+                "agent_name":  parsed.get("agent_name") or structured.get("agent_name", ""),
+                "brokerage":   parsed.get("brokerage", ""),
+            }
     if not (parsed.get("agent_email") or parsed.get("agent_phone") or parsed.get("agent_name")):
         return {}
 
