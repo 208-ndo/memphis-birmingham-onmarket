@@ -416,5 +416,20 @@
     }
   },
   "opted_out": [],
-  "bad_emails": []
+  "bad_emails": [
+    "melissa.harris@remax.net"
+  ],
+  "bounces": [
+    {
+      "address": "10513 Parkview Ave, Cleveland, OH 44104",
+      "property_key": "zpid:33415553",
+      "zpid": "33415553",
+      "agent_email": "melissa.harris@remax.net",
+      "market": "cleveland",
+      "email_subject": "Offer on 10513 Parkview Ave, Cleveland, OH 44104",
+      "sent_date": "2026-07-03",
+      "status": "bounced_invalid_recipient",
+      "reason": "Gmail bounce: Address not found / 554 no valid recipients"
+    }
+  ]
 }

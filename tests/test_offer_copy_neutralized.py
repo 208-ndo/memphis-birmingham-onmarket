@@ -15,7 +15,7 @@ if "apify_client" not in sys.modules:
     stub.ApifyClient = object
     sys.modules["apify_client"] = stub
 
-from email_gen import generate_emails, BROKER_COMP_LINE
+from email_gen import generate_emails, BROKER_COMP_LINE, _agent_greeting
 
 ADDRESS = "12 Maple Dr, Olmsted Falls, OH 44138"
 
@@ -107,6 +107,20 @@ class NoProhibitedLanguageTest(unittest.TestCase):
             for banned in ("agent bonus", "flat fee", "assignment",
                            "wholesale", "end buyer", "end-buyer"):
                 self.assertNotIn(banned, text, banned)
+
+
+class AgentGreetingSafetyTest(unittest.TestCase):
+    def test_boolean_junk_agent_name_uses_generic_greeting(self):
+        self.assertEqual(_agent_greeting({"agent_name": "False False True False"}), "Hi,")
+
+    def test_unknown_agent_name_uses_generic_greeting(self):
+        self.assertEqual(_agent_greeting({"agent_name": "UNKNOWN"}), "Hi,")
+
+    def test_blank_agent_name_uses_generic_greeting(self):
+        self.assertEqual(_agent_greeting({"agent_name": ""}), "Hi,")
+
+    def test_valid_agent_name_still_uses_name(self):
+        self.assertEqual(_agent_greeting({"agent_name": "Melissa Harris"}), "Hi Melissa Harris,")
 
 
 if __name__ == "__main__":

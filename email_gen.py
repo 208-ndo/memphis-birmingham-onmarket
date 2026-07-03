@@ -81,9 +81,25 @@ def _agent_greeting(listing: dict) -> str:
         or ""
     )
     name = str(name).strip()
+    if _looks_like_invalid_agent_name(name):
+        return "Hi,"
     if _looks_like_company_name(name):
         return "Hi,"
     return f"Hi {name}," if name else "Hi,"
+
+
+def _looks_like_invalid_agent_name(name: str) -> bool:
+    if not name:
+        return True
+    normalized = re.sub(r"\s+", " ", name.lower()).strip()
+    if normalized in {"unknown", "n/a", "na", "none", "null", "false", "true"}:
+        return True
+    tokens = normalized.split()
+    if tokens and all(token in {"true", "false", "unknown", "none", "null"} for token in tokens):
+        return True
+    if not re.search(r"[a-z]", normalized):
+        return True
+    return False
 
 
 def _looks_like_company_name(name: str) -> bool:

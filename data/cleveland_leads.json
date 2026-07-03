@@ -18,8 +18,11 @@
     "pitch_holds": true,
     "down_payment": 1500.0,
     "zillow_url": "https://www.zillow.com/homedetails/10513-Parkview-Ave-Cleveland-OH-44104/33415553_zpid/",
-    "email_sent": true,
-    "pipeline_date": "2026-07-03"
+    "email_sent": false,
+    "pipeline_date": "2026-07-03",
+    "email_bounced": true,
+    "contact_status": "bounced_invalid_recipient",
+    "bounce_reason": "Gmail bounce: Address not found / 554 no valid recipients"
   },
   {
     "address": "4309 E 73rd St, Cleveland, OH 44105",
