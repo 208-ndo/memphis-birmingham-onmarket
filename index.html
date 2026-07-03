@@ -196,6 +196,8 @@
       <option value="all_active">All Active Markets</option>
       <option value="little_rock">Little Rock AR</option>
       <option value="oklahoma_city">Oklahoma City OK</option>
+      <option value="cleveland">Cleveland OH</option>
+      <option value="akron">Akron OH</option>
       <option value="all_history">All Sent History</option>
       <option value="memphis_history">Memphis TN History</option>
       <option value="birmingham_history">Birmingham AL History</option>
@@ -422,7 +424,7 @@
 
 <footer>229 Holdings LLC &nbsp;|&nbsp; Little Rock AR &bull; Oklahoma City OK</footer>
 <script>
-var ofData=null,clData=null,ofEmails=[],clEmails=[],_rawQueue=[],_rawRuns=[],_rawHistory=[],_historyData=[],_scoredLRData=[],_scoredOKCData=[];
+var ofData=null,clData=null,ofEmails=[],clEmails=[],_rawQueue=[],_rawRuns=[],_rawHistory=[],_historyData=[],_scoredLRData=[],_scoredOKCData=[],_scoredCLEData=[],_scoredAKRData=[];
 
 // ─── Shared public-facing copy (Deal Analyzer panel) ────────────────────────
 // generateOFEmails()/generateCLEmails() below reference LOI_INVESTOR_LINE /
@@ -784,7 +786,7 @@ function toggleRunHistory(){
 
 // ── Summary cards — global, unfiltered by Market Filter ─────────────────────
 async function updateSummaryCards(){
-  var scoredCount = _scoredLRData.length + _scoredOKCData.length;
+  var scoredCount = _scoredLRData.length + _scoredOKCData.length + _scoredCLEData.length + _scoredAKRData.length;
   var el = document.getElementById('sum-scored'); if(el) el.textContent = scoredCount;
 
   var todayStr = new Date().toISOString().slice(0,10); // YYYY-MM-DD
@@ -826,6 +828,30 @@ async function loadScoredLeads(){
     var okcRes = await fetch('./data/oklahoma_city_leads.json');
     if(okcRes.ok) _scoredOKCData = await okcRes.json();
   }catch(e){}
+  // Cleveland/Akron test markets — only present when the pipeline wrote them.
+  try{
+    var cleRes = await fetch('./data/cleveland_leads.json');
+    if(cleRes.ok) _scoredCLEData = await cleRes.json();
+  }catch(e){}
+  try{
+    var akrRes = await fetch('./data/akron_leads.json');
+    if(akrRes.ok) _scoredAKRData = await akrRes.json();
+  }catch(e){}
+  updateMarketHint();
+}
+
+// Mentions Cleveland/Akron in the hint only when those test-market files
+// actually produced scored leads this run.
+function updateMarketHint(){
+  var hint = document.getElementById('market-filter-hint');
+  if(!hint) return;
+  var active = ['Little Rock AR','Oklahoma City OK'];
+  if(_scoredCLEData && _scoredCLEData.length) active.push('Cleveland OH');
+  if(_scoredAKRData && _scoredAKRData.length) active.push('Akron OH');
+  var list = active.length > 1
+    ? active.slice(0,-1).join(', ') + ' and ' + active[active.length-1]
+    : active[0];
+  hint.textContent = list + ' are the active current markets. Memphis TN and Birmingham AL are historical sent records only.';
 }
 
 // ── Market Filter — single source of truth for what's visible ───────────────
@@ -836,7 +862,7 @@ async function loadScoredLeads(){
 // 'memphis_history'    -> Scored Leads/Active Queue hidden (Memphis is not an active market), Memphis-only history
 // 'birmingham_history'  -> Scored Leads/Active Queue hidden (Birmingham is not an active market), Birmingham-only history
 var _currentFilter = 'all_active';
-var ACTIVE_MARKET_FILTERS = ['all_active','little_rock','oklahoma_city'];
+var ACTIVE_MARKET_FILTERS = ['all_active','little_rock','oklahoma_city','cleveland','akron'];
 var HISTORY_ONLY_FILTERS  = ['all_history','memphis_history','birmingham_history'];
 
 function applyMarketFilter(value){
@@ -873,6 +899,12 @@ function renderScoredLeadsFiltered(){
   }
   if(f==='all_active' || f==='oklahoma_city'){
     _scoredOKCData.forEach(function(l,idx){ combined.push({lead:l, source:'okc', idx:idx, marketLabel:'Oklahoma City OK'}); });
+  }
+  if(f==='all_active' || f==='cleveland'){
+    _scoredCLEData.forEach(function(l,idx){ combined.push({lead:l, source:'cle', idx:idx, marketLabel:'Cleveland OH'}); });
+  }
+  if(f==='all_active' || f==='akron'){
+    _scoredAKRData.forEach(function(l,idx){ combined.push({lead:l, source:'akr', idx:idx, marketLabel:'Akron OH'}); });
   }
 
   var countEl = document.getElementById('scored-leads-count');
@@ -915,6 +947,8 @@ function renderQueueFiltered(){
   var rows = _queueData;
   if(f==='little_rock')      rows = _queueData.filter(function(q){ return marketMatches(q.market,'little rock'); });
   else if(f==='oklahoma_city') rows = _queueData.filter(function(q){ return marketMatches(q.market,'oklahoma city'); });
+  else if(f==='cleveland')     rows = _queueData.filter(function(q){ return marketMatches(q.market,'cleveland'); });
+  else if(f==='akron')         rows = _queueData.filter(function(q){ return marketMatches(q.market,'akron'); });
 
   if(!rows.length){
     tbody.innerHTML = '<tr><td colspan="9" style="color:var(--muted);text-align:center;padding:24px">No leads sent in the current run for this filter.</td></tr>';
@@ -940,6 +974,8 @@ function renderHistoryFiltered(){
 
   if(f==='little_rock'){ rows = _historyData.filter(function(h){ return marketMatches(h.market,'little rock'); }); emptyLabel = 'Little Rock AR'; }
   else if(f==='oklahoma_city'){ rows = _historyData.filter(function(h){ return marketMatches(h.market,'oklahoma city'); }); emptyLabel = 'Oklahoma City OK'; }
+  else if(f==='cleveland'){ rows = _historyData.filter(function(h){ return marketMatches(h.market,'cleveland'); }); emptyLabel = 'Cleveland OH'; }
+  else if(f==='akron'){ rows = _historyData.filter(function(h){ return marketMatches(h.market,'akron'); }); emptyLabel = 'Akron OH'; }
   else if(f==='memphis_history'){ rows = _historyData.filter(function(h){ return marketMatches(h.market,'memphis'); }); emptyLabel = 'Memphis TN'; }
   else if(f==='birmingham_history'){ rows = _historyData.filter(function(h){ return marketMatches(h.market,'birmingham'); }); emptyLabel = 'Birmingham AL'; }
   // 'all_active' and 'all_history' both show the full unfiltered history list —
@@ -1289,7 +1325,7 @@ function adaptScoredLeadToQueueShape(lead){
     sent: lead.email_sent ? (lead.pipeline_date||'') : '',
     zillow_url: lead.zillow_url,
     email_subject: '',
-    email_body: lead.email_sent ? '(sent — open from Active Queue or Sent History for the saved copy)' : '(not sent yet — this is a scored lead under review)',
+    email_body: '',
     down_payment: lead.down_payment,
     monthly_payment: lead.monthly_payment,
     num_payments: null,
@@ -1307,6 +1343,22 @@ function adaptScoredLeadToQueueShape(lead){
   };
 }
 
+function findCurrentRunEmailForAddress(address){
+  // Match a lead to the CURRENT run's queue row (which carries this run's
+  // email_subject/email_body from main.py) by normalized address, so the
+  // modal shows the latest copy (e.g. "Offer on ...") instead of stale text.
+  if(!address || !_queueData || !_queueData.length) return null;
+  var target = String(address).trim().toLowerCase();
+  for(var i=0;i<_queueData.length;i++){
+    var q = _queueData[i];
+    if(q && String(q.address||'').trim().toLowerCase() === target
+       && (q.email_subject || q.email_body)){
+      return q;
+    }
+  }
+  return null;
+}
+
 function openPropModal(idx, source){
   source = source || 'queue';
   var rawLead =
@@ -1314,9 +1366,11 @@ function openPropModal(idx, source){
     source==='history' ? _historyData[idx] :
     source==='lr' ? _scoredLRData[idx] :
     source==='okc' ? _scoredOKCData[idx] :
+    source==='cle' ? _scoredCLEData[idx] :
+    source==='akr' ? _scoredAKRData[idx] :
     null;
   if(!rawLead) return;
-  var isScored = (source==='lr' || source==='okc');
+  var isScored = (source==='lr' || source==='okc' || source==='cle' || source==='akr');
   var lead = isScored ? adaptScoredLeadToQueueShape(rawLead) : rawLead;
   _modalRawLead = rawLead;
   _modalSource = source;
@@ -1331,9 +1385,17 @@ function openPropModal(idx, source){
   var zlink = document.getElementById('m-zillow');
   if(lead.zillow_url){zlink.href=lead.zillow_url;zlink.style.display='inline';}
   else{zlink.style.display='none';}
-  // Sent email
-  document.getElementById('m-email-subject').textContent = lead.email_subject||'(no subject saved)';
-  document.getElementById('m-email-body').textContent    = lead.email_body||'(email body not saved — run pipeline again to capture)';
+  // Sent email — always prefer the CURRENT run's saved copy from the
+  // pipeline_log queue (matched by address), so the modal never shows stale
+  // static wording. Falls back to any email fields already on the row, then
+  // to an explicit "no preview" message.
+  var liveEmail = findCurrentRunEmailForAddress(lead.address);
+  var emailSubject = (liveEmail && liveEmail.email_subject)
+    || lead.email_subject || '';
+  var emailBody = (liveEmail && liveEmail.email_body)
+    || lead.email_body || '';
+  document.getElementById('m-email-subject').textContent = emailSubject || '(no subject saved)';
+  document.getElementById('m-email-body').textContent    = emailBody || 'No email preview saved for this row.';
   // Offer summary bar
   var isOF = lead.type==='OF';
   var offerAmt = isOF ? (lead.price||0) : (lead.cash_offer||lead.offer||0);
