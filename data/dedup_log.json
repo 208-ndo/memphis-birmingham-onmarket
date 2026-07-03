@@ -258,6 +258,42 @@
       "sender_email": "bitonigroup@gmail.com",
       "sent_at": "2026-07-03T16:10:32.827089",
       "status": "sent"
+    },
+    "zpid:33426592": {
+      "address": "4309 E 73rd St, Cleveland, OH 44105",
+      "address_key": "4309 e 73rd st, cleveland, oh 44105",
+      "property_key": "zpid:33426592",
+      "zpid": "33426592",
+      "zillow_url": "https://www.zillow.com/homedetails/4309-E-73rd-St-Cleveland-OH-44105/33426592_zpid/",
+      "market": "cleveland",
+      "agent_name": "True False False False",
+      "agent_email": "lydiapope88@gmail.com",
+      "brokerage": "E & D Realty & Investment Co",
+      "list_price": 35000,
+      "days_on_market": 278,
+      "offer_type": "owner_finance",
+      "email_subject": "Offer on 4309 E 73rd St, Cleveland, OH 44105",
+      "sender_email": "229holdingsllc@gmail.com",
+      "sent_at": "2026-07-03T22:50:00.757973",
+      "status": "sent"
+    },
+    "4309 e 73rd st, cleveland, oh 44105": {
+      "address": "4309 E 73rd St, Cleveland, OH 44105",
+      "address_key": "4309 e 73rd st, cleveland, oh 44105",
+      "property_key": "zpid:33426592",
+      "zpid": "33426592",
+      "zillow_url": "https://www.zillow.com/homedetails/4309-E-73rd-St-Cleveland-OH-44105/33426592_zpid/",
+      "market": "cleveland",
+      "agent_name": "True False False False",
+      "agent_email": "lydiapope88@gmail.com",
+      "brokerage": "E & D Realty & Investment Co",
+      "list_price": 35000,
+      "days_on_market": 278,
+      "offer_type": "owner_finance",
+      "email_subject": "Offer on 4309 E 73rd St, Cleveland, OH 44105",
+      "sender_email": "229holdingsllc@gmail.com",
+      "sent_at": "2026-07-03T22:50:00.757973",
+      "status": "sent"
     }
   },
   "agents": {
@@ -413,6 +449,25 @@
       ],
       "first_contact": "2026-07-03T16:10:32.827089",
       "last_sent": "2026-07-03T16:10:32.827089"
+    },
+    "lydiapope88@gmail.com": {
+      "person_key": "true false false false",
+      "person_confidence": "high",
+      "agent_name": "True False False False",
+      "brokerage": "E & D Realty & Investment Co",
+      "total_contacted": 1,
+      "sends_in_window": [
+        {
+          "address": "4309 E 73rd St, Cleveland, OH 44105",
+          "prop_key": "zpid:33426592",
+          "sent_at": "2026-07-03T22:50:00.757973"
+        }
+      ],
+      "properties": [
+        "zpid:33426592"
+      ],
+      "first_contact": "2026-07-03T22:50:00.757973",
+      "last_sent": "2026-07-03T22:50:00.757973"
     }
   },
   "opted_out": [],
