@@ -109,9 +109,9 @@ def send_email(
         log.warning(
             f"[LIVE-SEND BLOCKED] LIVE_SEND_ENABLED env is '{live_send_env or 'unset'}' "
             f"(not 'true') — refusing real send to {to_email} despite dry_run={dry_run}. "
-            f"Treating as dry run."
+            "blocking real send and returning failure."
         )
-        return True
+        return False
 
     # ── Sendable-confidence guard (2026-07-02) ───────────────────────────────
     # Live sends only to source_verified / snippet_verified / office_fallback

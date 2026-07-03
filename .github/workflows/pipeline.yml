@@ -234,6 +234,7 @@ jobs:
           export FORCE_RUN="${FORCE_RUN_NORMALIZED}"
           export APIFY_ENABLED="${APIFY_ENABLED_NORMALIZED}"
           export EMAIL_ENRICHMENT_ENABLED="${EMAIL_ENRICHMENT_ENABLED_NORMALIZED}"
+          export LIVE_SEND_ENABLED="${LIVE_SEND_NORMALIZED}"
           export TARGET_MARKETS="${TARGET_MARKETS_TRIMMED}"
           export MAX_EMAIL_ENRICHMENT_CALLS_OVERRIDE="${{ github.event.inputs.max_email_enrichment_calls }}"
           export MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET_OVERRIDE="${{ github.event.inputs.max_email_enrichment_calls_per_market }}"

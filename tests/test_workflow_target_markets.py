@@ -42,6 +42,10 @@ class WorkflowMarketKeysTest(unittest.TestCase):
         self.assertIn('echo "TARGET_MARKETS: ${TARGET_MARKETS_TRIMMED:-ACTIVE_MARKETS}"', self.text)
         self.assertIn('echo "Selected markets: ${SELECTED_MARKETS}"', self.text)
 
+    def test_live_send_enabled_is_exported_to_python(self):
+        self.assertIn('LIVE_SEND_NORMALIZED="$(echo "$LIVE_SEND_ENABLED" | tr ', self.text)
+        self.assertIn('export LIVE_SEND_ENABLED="${LIVE_SEND_NORMALIZED}"', self.text)
+
     def test_cleveland_akron_selector_overrides_market_keys(self):
         self.assertIn('CLEVELAND_AKRON_TEST_RAW="${{ github.event.inputs.cleveland_akron_test }}"', self.text)
         self.assertIn('if [ "${CLEVELAND_AKRON_TEST_NORMALIZED}" = "true" ]; then', self.text)
