@@ -25201,3 +25201,517 @@
 2026-07-02 22:28:14,905 INFO All markets complete | Sent this run: 3 | Total today: 3/30
 2026-07-02 22:28:14,907 INFO pipeline_log.json written — 3 emails this run, 3 in active queue, 24 in sent history
 2026-07-02 22:28:14,907 INFO DRY RUN complete — no Gmail emails sent and no GHL contacts/texts triggered.
+2026-07-03 03:12:39,213 INFO Pipeline starting | Markets: cleveland, akron | Dry run: True | Force: True | Global cap: 30/day | Per-inbox: 15/day | Time: 03:12 UTC
+2026-07-03 03:12:39,213 INFO Global: 0/30 sent today (0 prior runs + 0 this run) | Remaining: 30
+2026-07-03 03:12:39,213 INFO ============================================================
+2026-07-03 03:12:39,213 INFO PIPELINE: CLEVELAND | 2026-07-03 03:12
+2026-07-03 03:12:39,213 INFO DRY RUN: True | LIMIT: 15 emails this run
+2026-07-03 03:12:39,213 INFO ============================================================
+2026-07-03 03:12:39,213 INFO CLEAR_OVERFLOW_BEFORE_RUN=true — ignoring data/overflow.json for this run (treating overflow as empty, file on disk left untouched)
+2026-07-03 03:12:39,213 INFO [1/5] Scraping Zillow for cleveland...
+2026-07-03 03:12:39,213 INFO ============================================================
+2026-07-03 03:12:39,213 INFO SCRAPER: Cleveland
+2026-07-03 03:12:39,213 INFO   APIFY_ENABLED                       : True (raw='true')
+2026-07-03 03:12:39,213 INFO   EMAIL_ENRICHMENT_ENABLED            : True (raw='true')
+2026-07-03 03:12:39,213 INFO   MAX_APIFY_RUNS_PER_WORKFLOW         : 20 (EMERGENCY global cap — all actors)
+2026-07-03 03:12:39,213 INFO   MAX_ZILLOW_CALLS_PER_WORKFLOW       : 6 (Zillow only — independent of email budget)
+2026-07-03 03:12:39,214 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW: 10
+2026-07-03 03:12:39,214 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET: 5
+2026-07-03 03:12:39,214 INFO   MAX_LEADS_TO_ENRICH_PER_WORKFLOW    : 10 (top-scored leads sent to enrichment)
+2026-07-03 03:12:39,214 INFO   ENABLE_PRICE_REDUCED_OF_VARIANT     : False
+2026-07-03 03:12:39,214 INFO   Apify calls used so far — total     : 0
+2026-07-03 03:12:39,214 INFO   Apify calls used so far — zillow    : 0
+2026-07-03 03:12:39,214 INFO   Apify calls used so far — google    : 0
+2026-07-03 03:12:39,214 INFO   Planned bands                       : 3 ($30,000-$55,000 | $55,001-$80,000 | $80,001-$125,000)
+2026-07-03 03:12:39,214 INFO   Planned Zillow calls this market    : 3
+2026-07-03 03:12:39,214 INFO   Planned max Google email calls      : 5 (only for top 10 scored leads)
+2026-07-03 03:12:39,214 INFO   Estimated actor calls this market   : 8 (Zillow + Google, capped)
+2026-07-03 03:12:39,214 INFO   Remaining shared budget              : 20 calls
+2026-07-03 03:12:39,214 INFO ============================================================
+2026-07-03 03:12:39,289 INFO Scraping band: $30,000-$55,000 [variant=base]
+2026-07-03 03:12:39,289 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-07-03 03:12:39,289 INFO Band $30,000-$55,000 [base]: maxResults=200 | actor call #1 (zillow call #1)
+2026-07-03 03:12:39,584 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-07-03 03:12:40,618 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/kSuA8jPUmhSxwifwm?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:12:47,620 INFO HTTP Request: GET https://api.apify.com/v2/datasets/Cuwm4E4bQERec94AZ/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:12:47,628 INFO Band $30,000-$55,000 [base]: 41 raw results
+2026-07-03 03:12:47,628 INFO [CONTACT-DEBUG Cleveland #1] top-level keys: ['address', 'addressCity', 'addressState', 'addressStreet', 'addressZipcode', 'area', 'baths', 'beds', 'brokerName', 'carouselPhotosComposable', 'contentType', 'countryCurrency', 'detailUrl', 'flexFieldText', 'foundFromSearchUrl', 'foundOnSearchPage', 'has3DModel', 'hasAdditionalAttributions', 'hasImage', 'hasVideo', 'hdpData', 'id', 'imgSrc', 'isFeaturedListing', 'isHomeRec', 'isPaidBuilderNewConstruction', 'isShowcaseListing', 'isUndisclosedAddress', 'isUserClaimingOwner', 'isUserConfirmedClaim', 'isZillowOwned', 'latLong', 'list', 'marketingStatusSimplifiedCd', 'palsId', 'pgapt', 'price', 'rawHomeStatusCd', 'relaxed', 'sgapt', 'shouldShowRequestOnPrice', 'shouldShowZestimateAsPrice', 'statusText', 'statusType', 'unformattedPrice', 'zestimate', 'zoomQuadrantSequence', 'zpid']
+2026-07-03 03:12:47,628 INFO [CONTACT-DEBUG Cleveland #1]   brokerName = Howard Hanna
+2026-07-03 03:12:47,628 INFO [CONTACT-DEBUG Cleveland #1]   detailUrl = https://www.zillow.com/homedetails/3351-E-145th-St-Cleveland-OH-44120/33421005_z
+2026-07-03 03:12:47,628 INFO [CONTACT-DEBUG Cleveland #1]   foundFromSearchUrl = https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3A
+2026-07-03 03:12:47,628 INFO [CONTACT-DEBUG Cleveland #1]   hasAdditionalAttributions = True
+2026-07-03 03:12:47,628 INFO [CONTACT-DEBUG Cleveland #1]   zpid = 33421005
+2026-07-03 03:12:47,628 INFO [CONTACT-DEBUG Cleveland #2] top-level keys: ['address', 'addressCity', 'addressState', 'addressStreet', 'addressZipcode', 'area', 'baths', 'beds', 'brokerName', 'carouselPhotosComposable', 'contentType', 'countryCurrency', 'detailUrl', 'flexFieldText', 'foundFromSearchUrl', 'foundOnSearchPage', 'has3DModel', 'hasAdditionalAttributions', 'hasImage', 'hasVideo', 'hdpData', 'id', 'imgSrc', 'info2String', 'isFeaturedListing', 'isHomeRec', 'isPaidBuilderNewConstruction', 'isShowcaseListing', 'isUndisclosedAddress', 'isUserClaimingOwner', 'isUserConfirmedClaim', 'isZillowOwned', 'latLong', 'list', 'marketingStatusSimplifiedCd', 'palsId', 'pgapt', 'price', 'rawHomeStatusCd', 'relaxed', 'sgapt', 'shouldShowRequestOnPrice', 'shouldShowZestimateAsPrice', 'statusText', 'statusType', 'unformattedPrice', 'zoomQuadrantSequence', 'zpid']
+2026-07-03 03:12:47,629 INFO [CONTACT-DEBUG Cleveland #2]   brokerName = TimberVine Group
+2026-07-03 03:12:47,629 INFO [CONTACT-DEBUG Cleveland #2]   detailUrl = https://www.zillow.com/homedetails/11817-Forest-Ave-Cleveland-OH-44120/33418024_
+2026-07-03 03:12:47,629 INFO [CONTACT-DEBUG Cleveland #2]   foundFromSearchUrl = https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3A
+2026-07-03 03:12:47,629 INFO [CONTACT-DEBUG Cleveland #2]   hasAdditionalAttributions = True
+2026-07-03 03:12:47,629 INFO [CONTACT-DEBUG Cleveland #2]   zpid = 33418024
+2026-07-03 03:12:47,629 INFO [CONTACT-DEBUG Cleveland #3] top-level keys: ['address', 'addressCity', 'addressState', 'addressStreet', 'addressZipcode', 'area', 'baths', 'beds', 'brokerName', 'carouselPhotosComposable', 'contentType', 'countryCurrency', 'detailUrl', 'flexFieldText', 'foundFromSearchUrl', 'foundOnSearchPage', 'has3DModel', 'hasAdditionalAttributions', 'hasImage', 'hasVideo', 'hdpData', 'id', 'imgSrc', 'info2String', 'isFeaturedListing', 'isHomeRec', 'isPaidBuilderNewConstruction', 'isShowcaseListing', 'isUndisclosedAddress', 'isUserClaimingOwner', 'isUserConfirmedClaim', 'isZillowOwned', 'latLong', 'list', 'marketingStatusSimplifiedCd', 'palsId', 'pgapt', 'price', 'rawHomeStatusCd', 'relaxed', 'sgapt', 'shouldShowRequestOnPrice', 'shouldShowZestimateAsPrice', 'statusText', 'statusType', 'unformattedPrice', 'zoomQuadrantSequence', 'zpid']
+2026-07-03 03:12:47,629 INFO [CONTACT-DEBUG Cleveland #3]   brokerName = John Lee Real Estate Group, LLC.
+2026-07-03 03:12:47,629 INFO [CONTACT-DEBUG Cleveland #3]   detailUrl = https://www.zillow.com/homedetails/669-E-117th-St-Cleveland-OH-44108/33391433_zp
+2026-07-03 03:12:47,629 INFO [CONTACT-DEBUG Cleveland #3]   foundFromSearchUrl = https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3A
+2026-07-03 03:12:47,629 INFO [CONTACT-DEBUG Cleveland #3]   hasAdditionalAttributions = True
+2026-07-03 03:12:47,629 INFO [CONTACT-DEBUG Cleveland #3]   zpid = 33391433
+2026-07-03 03:12:47,667 INFO Band $30,000-$55,000 [base]: raw=41 | dom30+=29 | candidates=29 | reasons: passed_by_dom=29 | reject_dom_too_low=11 | reject_dom_zero_fresh=1
+2026-07-03 03:12:52,667 INFO Band $30,000-$55,000 combined: 29 unique candidates across 1 variant(s)
+2026-07-03 03:12:52,667 INFO Scraping band: $55,001-$80,000 [variant=base]
+2026-07-03 03:12:52,668 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-07-03 03:12:52,668 INFO Band $55,001-$80,000 [base]: maxResults=200 | actor call #2 (zillow call #2)
+2026-07-03 03:12:52,918 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-07-03 03:12:53,934 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/1DjOShDOi7dwT27EX?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:13:02,943 INFO HTTP Request: GET https://api.apify.com/v2/datasets/ndFPAHhntpiPk8Rwa/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:13:02,961 INFO Band $55,001-$80,000 [base]: 94 raw results
+2026-07-03 03:13:03,029 INFO Band $55,001-$80,000 [base]: raw=94 | dom30+=57 | candidates=57 | reasons: passed_by_dom=57 | reject_dom_too_low=33 | reject_dom_zero_fresh=4
+2026-07-03 03:13:08,029 INFO Band $55,001-$80,000 combined: 57 unique candidates across 1 variant(s)
+2026-07-03 03:13:08,030 INFO Scraping band: $80,001-$125,000 [variant=base]
+2026-07-03 03:13:08,030 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-07-03 03:13:08,030 INFO Band $80,001-$125,000 [base]: maxResults=50 | actor call #3 (zillow call #3)
+2026-07-03 03:13:08,351 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-07-03 03:13:09,367 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/fuIjyafh3juByg1Gz?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:13:25,741 INFO HTTP Request: GET https://api.apify.com/v2/datasets/wolAVNlsJtN22li0f/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:13:25,845 INFO Band $80,001-$125,000 [base]: 312 raw results
+2026-07-03 03:13:26,120 INFO Band $80,001-$125,000 [base]: raw=312 | dom30+=216 | candidates=216 | reasons: passed_by_dom=216 | reject_dom_too_low=91 | reject_dom_zero_fresh=5
+2026-07-03 03:13:31,120 INFO Band $80,001-$125,000 combined: 216 unique candidates across 1 variant(s)
+2026-07-03 03:13:31,122 INFO ============================================================
+2026-07-03 03:13:31,123 INFO TOP SCORED LEADS — Cleveland (10 of 302 shown)
+2026-07-03 03:13:31,123 INFO   #1 score=103.0 | 10513 Parkview Ave, Cleveland, OH 44104 | $30,000 | DOM=137 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 10.0, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 0, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-07-03 03:13:31,123 INFO   #2 score=102.0 | 4309 E 73rd St, Cleveland, OH 44105 | $35,000 | DOM=277 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 9.0, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 0, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-07-03 03:13:31,123 INFO   #3 score=101.2 | 12 Maple Dr, Olmsted Falls, OH 44138 | $39,000 | DOM=173 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 8.2, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 0, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-07-03 03:13:31,123 INFO   #4 score=101.0 | 657 E 131st St, Cleveland, OH 44108 | $40,000 | DOM=349 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 8.0, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 0, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-07-03 03:13:31,123 INFO   #5 score=100.0 | 7300 Claasen Ave, Cleveland, OH 44105 | $32,600 | DOM=105 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 9.5, 'dom_age': 17.5, 'low_views': 15, 'few_photos': 0, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-07-03 03:13:31,123 INFO   #6 score=100.0 | 9807 Elizabeth Ave, Cleveland, OH 44105 | $44,900 | DOM=120 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 7.0, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 0, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-07-03 03:13:31,123 INFO   #7 score= 99.0 | 3379 E 130th St, Cleveland, OH 44120 | $50,000 | DOM=175 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 6.0, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 0, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-07-03 03:13:31,123 INFO   #8 score= 98.5 | 1822 Farmington Rd, East Cleveland, OH 44112 | $50,000 | DOM=117 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 6.0, 'dom_age': 19.5, 'low_views': 15, 'few_photos': 0, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-07-03 03:13:31,123 INFO   #9 score= 98.4 | 3633 E 78th St, Cleveland, OH 44105 | $53,000 | DOM=180 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 5.4, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 0, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-07-03 03:13:31,123 INFO   #10 score= 98.0 | 472 E 110th St, Cleveland, OH 44108 | $55,000 | DOM=174 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 5.0, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 0, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-07-03 03:13:31,123 INFO ============================================================
+2026-07-03 03:13:31,123 INFO 292 lower-scored leads will NOT be sent to email enrichment this run (MAX_LEADS_TO_ENRICH_PER_WORKFLOW=10). They are still kept for the dashboard/log with Email: NONE unless Zillow itself already supplied an email.
+2026-07-03 03:13:31,123 INFO Starting email enrichment for 10 shortlisted leads (google cap: 10 calls, shared budget remaining: 17)...
+2026-07-03 03:13:31,123 INFO Email lookup: 10 leads need emails, 0 already have one
+2026-07-03 03:13:31,441 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-detail-scraper/runs?timeout=90 "HTTP/1.1 201 Created"
+2026-07-03 03:13:32,458 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/wL4Baj5bOklbYXMEq?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:13:40,739 INFO HTTP Request: GET https://api.apify.com/v2/datasets/dgi1ZJ8yxd3EcSHfX/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:13:40,748 INFO Google query: "10513 Parkview Ave, Cleveland, OH 44104" listing agent contact https://www.zillow.com/homedetails/10513-Parkview-Ave-Cleveland-OH-44104/33415553_zpid/
+2026-07-03 03:13:40,970 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-07-03 03:13:41,988 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/p123Wt8nQvkVGtxsG?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:14:11,755 INFO HTTP Request: GET https://api.apify.com/v2/datasets/yLSKlslxStvTeA4ym/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:14:12,758 INFO Google query: "10513 Parkview Ave, Cleveland, OH 44104" "Platinum Real Estate" email
+2026-07-03 03:14:12,997 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-07-03 03:14:14,018 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/DKTdsjtfNkMnzS1KN?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:14:53,912 INFO HTTP Request: GET https://api.apify.com/v2/datasets/EXDqSJgzluvndFbZs/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:14:55,096 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-detail-scraper/runs?timeout=90 "HTTP/1.1 201 Created"
+2026-07-03 03:14:56,117 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/qkOhHYf3ZIt99GbvO?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:15:56,386 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/qkOhHYf3ZIt99GbvO?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:16:25,326 INFO HTTP Request: GET https://api.apify.com/v2/datasets/nD42i3e85vE4YnmMu/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:16:25,327 INFO Google query: "4309 E 73rd St, Cleveland, OH 44105" listing agent contact https://www.zillow.com/homedetails/4309-E-73rd-St-Cleveland-OH-44105/33426592_zpid/
+2026-07-03 03:16:25,608 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-07-03 03:16:26,627 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/ZxbefSiR4ryoAwjvm?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:16:35,959 INFO HTTP Request: GET https://api.apify.com/v2/datasets/M0hhmVJPEOWWIhoKY/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:16:36,962 INFO Google query: "4309 E 73rd St, Cleveland, OH 44105" "E & D Realty & Investment Co" email
+2026-07-03 03:16:37,401 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-07-03 03:16:38,421 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/GsdYraj4BFnWggaKU?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:16:45,423 INFO HTTP Request: GET https://api.apify.com/v2/datasets/k0UPvdRIffqNkMoF5/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:16:46,620 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-detail-scraper/runs?timeout=90 "HTTP/1.1 201 Created"
+2026-07-03 03:16:47,642 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/1yASGuwWx0Hqaiz9E?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:17:14,611 INFO HTTP Request: GET https://api.apify.com/v2/datasets/l8v3Ee3E9vUtawlmc/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:17:14,618 INFO Google query: "12 Maple Dr, Olmsted Falls, OH 44138" listing agent contact https://www.zillow.com/homedetails/12-Maple-Dr-Olmsted-Falls-OH-44138/459687290_zpid/
+2026-07-03 03:17:14,870 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-07-03 03:17:15,888 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/9IUadLXc3Td3d9Qqd?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:17:22,780 INFO HTTP Request: GET https://api.apify.com/v2/datasets/y8YgSnXF5mBziEBCK/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:17:23,782 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "12 Maple Dr, Olmsted Falls, OH 44138" "Keller Williams Elevate" email
+2026-07-03 03:17:23,782 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Keller Williams Elevate" Olmsted Falls agent roster staff directory
+2026-07-03 03:17:23,782 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Keller Williams Elevate" Olmsted Falls office email contact
+2026-07-03 03:17:23,782 INFO Phone-only lead (all email rungs exhausted): 12 Maple Dr, Olmsted Falls, OH 44138 | Keller Williams Elevate
+2026-07-03 03:17:23,782 INFO No published email found: no-name / Keller Williams Elevate (phone-only)
+2026-07-03 03:17:23,782 INFO Google email budget exhausted — running Zillow detail-page step only for remaining 7 leads (no Google calls)
+2026-07-03 03:17:23,933 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-detail-scraper/runs?timeout=90 "HTTP/1.1 201 Created"
+2026-07-03 03:17:24,953 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/9cGR9X03YtWcKfz4p?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:17:35,366 INFO HTTP Request: GET https://api.apify.com/v2/datasets/IIC2JymRJW7QwpJBs/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:17:35,375 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "657 E 131st St, Cleveland, OH 44108" listing agent contact https://www.zillow.com/homedetails/657-E-131st-St-Cleveland-OH-44108/33391873_zpid/
+2026-07-03 03:17:35,376 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "657 E 131st St, Cleveland, OH 44108" "Berkshire Hathaway HomeServices Professional Realty" email
+2026-07-03 03:17:35,376 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Berkshire Hathaway HomeServices Professional Realty" Cleveland agent roster staff directory
+2026-07-03 03:17:35,376 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Berkshire Hathaway HomeServices Professional Realty" Cleveland office email contact
+2026-07-03 03:17:35,376 INFO Phone-only lead (all email rungs exhausted): 657 E 131st St, Cleveland, OH 44108 | Berkshire Hathaway HomeServices Professional Realty
+2026-07-03 03:17:35,376 INFO No published email found: no-name / Berkshire Hathaway HomeServices Professional Realty (phone-only)
+2026-07-03 03:17:35,376 INFO Google email budget exhausted — running Zillow detail-page step only for remaining 6 leads (no Google calls)
+2026-07-03 03:17:35,574 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-detail-scraper/runs?timeout=90 "HTTP/1.1 201 Created"
+2026-07-03 03:17:36,590 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/bJsZGfFmZDPRcPVGE?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:18:17,783 INFO HTTP Request: GET https://api.apify.com/v2/datasets/JbUeHsvq9ixfQ5Nae/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:18:17,796 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "7300 Claasen Ave, Cleveland, OH 44105" listing agent contact https://www.zillow.com/homedetails/7300-Claasen-Ave-Cleveland-OH-44105/33426121_zpid/
+2026-07-03 03:18:17,796 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "7300 Claasen Ave, Cleveland, OH 44105" "Berkshire Hathaway HomeServices Stouffer Realty" email
+2026-07-03 03:18:17,796 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Berkshire Hathaway HomeServices Stouffer Realty" Cleveland agent roster staff directory
+2026-07-03 03:18:17,796 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Berkshire Hathaway HomeServices Stouffer Realty" Cleveland office email contact
+2026-07-03 03:18:17,797 INFO Phone-only lead (all email rungs exhausted): 7300 Claasen Ave, Cleveland, OH 44105 | Berkshire Hathaway HomeServices Stouffer Realty
+2026-07-03 03:18:17,797 INFO No published email found: no-name / Berkshire Hathaway HomeServices Stouffer Realty (phone-only)
+2026-07-03 03:18:17,797 INFO Google email budget exhausted — running Zillow detail-page step only for remaining 5 leads (no Google calls)
+2026-07-03 03:18:17,982 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-detail-scraper/runs?timeout=90 "HTTP/1.1 201 Created"
+2026-07-03 03:18:19,000 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/gDpsf59NbgMwx6c8h?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:19:04,556 INFO HTTP Request: GET https://api.apify.com/v2/datasets/XA3aADAfIe0j0YLF2/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:19:04,568 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "9807 Elizabeth Ave, Cleveland, OH 44105" listing agent contact https://www.zillow.com/homedetails/9807-Elizabeth-Ave-Cleveland-OH-44105/33430475_zpid/
+2026-07-03 03:19:04,568 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "9807 Elizabeth Ave, Cleveland, OH 44105" "Howard Hanna" email
+2026-07-03 03:19:04,568 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Howard Hanna" Cleveland agent roster staff directory
+2026-07-03 03:19:04,568 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Howard Hanna" Cleveland office email contact
+2026-07-03 03:19:04,568 INFO Phone-only lead (all email rungs exhausted): 9807 Elizabeth Ave, Cleveland, OH 44105 | Howard Hanna
+2026-07-03 03:19:04,569 INFO No published email found: no-name / Howard Hanna (phone-only)
+2026-07-03 03:19:04,569 INFO Google email budget exhausted — running Zillow detail-page step only for remaining 4 leads (no Google calls)
+2026-07-03 03:19:04,752 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-detail-scraper/runs?timeout=90 "HTTP/1.1 201 Created"
+2026-07-03 03:19:05,768 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/7sjklIV2QBgnmfCRd?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:19:15,055 INFO HTTP Request: GET https://api.apify.com/v2/datasets/9PyvLkkeiCEZUYAis/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:19:15,067 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "3379 E 130th St, Cleveland, OH 44120" listing agent contact https://www.zillow.com/homedetails/3379-E-130th-St-Cleveland-OH-44120/33420254_zpid/
+2026-07-03 03:19:15,067 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "3379 E 130th St, Cleveland, OH 44120" "Keller Williams Greater Metropolitan" email
+2026-07-03 03:19:15,067 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Keller Williams Greater Metropolitan" Cleveland agent roster staff directory
+2026-07-03 03:19:15,067 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Keller Williams Greater Metropolitan" Cleveland office email contact
+2026-07-03 03:19:15,067 INFO Phone-only lead (all email rungs exhausted): 3379 E 130th St, Cleveland, OH 44120 | Keller Williams Greater Metropolitan
+2026-07-03 03:19:15,067 INFO No published email found: no-name / Keller Williams Greater Metropolitan (phone-only)
+2026-07-03 03:19:15,067 INFO Google email budget exhausted — running Zillow detail-page step only for remaining 3 leads (no Google calls)
+2026-07-03 03:19:15,340 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-detail-scraper/runs?timeout=90 "HTTP/1.1 201 Created"
+2026-07-03 03:19:16,361 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/q5HrkLjUyDSS6d7fP?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:19:27,518 INFO HTTP Request: GET https://api.apify.com/v2/datasets/OCxjBiihwqsUIAxdA/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:19:27,524 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "1822 Farmington Rd, East Cleveland, OH 44112" listing agent contact https://www.zillow.com/homedetails/1822-Farmington-Rd-East-Cleveland-OH-44112/33646839_zpid
+2026-07-03 03:19:27,524 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "1822 Farmington Rd, East Cleveland, OH 44112" "HomeSmart Real Estate Momentum LLC" email
+2026-07-03 03:19:27,524 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "HomeSmart Real Estate Momentum LLC" East Cleveland agent roster staff directory
+2026-07-03 03:19:27,524 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "HomeSmart Real Estate Momentum LLC" East Cleveland office email contact
+2026-07-03 03:19:27,524 INFO Phone-only lead (all email rungs exhausted): 1822 Farmington Rd, East Cleveland, OH 44112 | HomeSmart Real Estate Momentum LLC
+2026-07-03 03:19:27,524 INFO No published email found: no-name / HomeSmart Real Estate Momentum LLC (phone-only)
+2026-07-03 03:19:27,524 INFO Google email budget exhausted — running Zillow detail-page step only for remaining 2 leads (no Google calls)
+2026-07-03 03:19:27,697 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-detail-scraper/runs?timeout=90 "HTTP/1.1 201 Created"
+2026-07-03 03:19:28,713 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/Dq4MPFx7G3FBdcFbc?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:20:28,985 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/Dq4MPFx7G3FBdcFbc?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:20:35,098 INFO HTTP Request: GET https://api.apify.com/v2/datasets/Ro6gxF0tGXcnslsQC/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:20:35,104 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "3633 E 78th St, Cleveland, OH 44105" listing agent contact https://www.zillow.com/homedetails/3633-E-78th-St-Cleveland-OH-44105/33425274_zpid/
+2026-07-03 03:20:35,104 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "3633 E 78th St, Cleveland, OH 44105" "Joseph Walter Realty, LLC" email
+2026-07-03 03:20:35,104 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Joseph Walter Realty, LLC" Cleveland agent roster staff directory
+2026-07-03 03:20:35,105 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Joseph Walter Realty, LLC" Cleveland office email contact
+2026-07-03 03:20:35,105 INFO Phone-only lead (all email rungs exhausted): 3633 E 78th St, Cleveland, OH 44105 | Joseph Walter Realty, LLC
+2026-07-03 03:20:35,105 INFO No published email found: no-name / Joseph Walter Realty, LLC (phone-only)
+2026-07-03 03:20:35,105 INFO Google email budget exhausted — running Zillow detail-page step only for remaining 1 leads (no Google calls)
+2026-07-03 03:20:35,370 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-detail-scraper/runs?timeout=90 "HTTP/1.1 201 Created"
+2026-07-03 03:20:36,387 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/x8ZrpkIVcLMDvgZ8c?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 03:20:44,505 INFO HTTP Request: GET https://api.apify.com/v2/datasets/wdJs2xlcufiqYaYZY/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 03:20:44,513 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "472 E 110th St, Cleveland, OH 44108" listing agent contact https://www.zillow.com/homedetails/472-E-110th-St-Cleveland-OH-44108/33387790_zpid/
+2026-07-03 03:20:44,513 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "472 E 110th St, Cleveland, OH 44108" "Century 21 Homestar" email
+2026-07-03 03:20:44,513 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Century 21 Homestar" Cleveland agent roster staff directory
+2026-07-03 03:20:44,513 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Century 21 Homestar" Cleveland office email contact
+2026-07-03 03:20:44,513 INFO Phone-only lead (all email rungs exhausted): 472 E 110th St, Cleveland, OH 44108 | Century 21 Homestar
+2026-07-03 03:20:44,513 INFO No published email found: no-name / Century 21 Homestar (phone-only)
+2026-07-03 03:20:44,513 INFO Email enrichment complete: found 2/10 emails
+2026-07-03 03:20:44,513 INFO LEAD: 10513 Parkview Ave, Cleveland, OH 44104 | $30,000 | DOM: 137 | score=103.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Platinum Real Estate | Email: melissa.harris@remax.net [homes_profile/snippet_verified/sendable]
+2026-07-03 03:20:44,513 INFO LEAD: 4309 E 73rd St, Cleveland, OH 44105 | $35,000 | DOM: 277 | score=102.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: E & D Realty & Investment Co | Email: support@plumtreerealty.com [homes_profile/snippet_verified/sendable]
+2026-07-03 03:20:44,513 INFO LEAD: 12 Maple Dr, Olmsted Falls, OH 44138 | $39,000 | DOM: 173 | score=101.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Elevate | Email: NONE
+2026-07-03 03:20:44,513 INFO LEAD: 657 E 131st St, Cleveland, OH 44108 | $40,000 | DOM: 349 | score=101.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Berkshire Hathaway HomeServices Professional Realty | Email: NONE
+2026-07-03 03:20:44,513 INFO LEAD: 7300 Claasen Ave, Cleveland, OH 44105 | $32,600 | DOM: 105 | score=100.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Berkshire Hathaway HomeServices Stouffer Realty | Email: NONE
+2026-07-03 03:20:44,513 INFO LEAD: 9807 Elizabeth Ave, Cleveland, OH 44105 | $44,900 | DOM: 120 | score=100.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,513 INFO LEAD: 3379 E 130th St, Cleveland, OH 44120 | $50,000 | DOM: 175 | score=99.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,513 INFO LEAD: 1822 Farmington Rd, East Cleveland, OH 44112 | $50,000 | DOM: 117 | score=98.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: HomeSmart Real Estate Momentum LLC | Email: NONE
+2026-07-03 03:20:44,513 INFO LEAD: 3633 E 78th St, Cleveland, OH 44105 | $53,000 | DOM: 180 | score=98.4 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Joseph Walter Realty, LLC | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 472 E 110th St, Cleveland, OH 44108 | $55,000 | DOM: 174 | score=98.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Homestar | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 16918 Grovewood Ave, Cleveland, OH 44110 | $59,900 | DOM: 148 | score=97.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Lokal Real Estate, LLC | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 14808 Pepper Ave, Cleveland, OH 44110 | $60,000 | DOM: 175 | score=97.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 1330 Elwood Rd, East Cleveland, OH 44112 | $60,000 | DOM: 209 | score=97.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Haven Realty | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 12628 Iroquois Ave, Cleveland, OH 44108 | $55,000 | DOM: 113 | score=96.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 7115 Park Ave, Cleveland, OH 44105 | $62,500 | DOM: 157 | score=96.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: TimberVine Group | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 15506 Elderwood Ave, East Cleveland, OH 44112 | $49,000 | DOM: 97 | score=95.4 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 14720 Coit Rd, Cleveland, OH 44110 | $70,000 | DOM: 155 | score=95.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Chosen Real Estate Group | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 521 E 112th St, Cleveland, OH 44108 | $65,000 | DOM: 114 | score=95.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Premiere Properties, Inc | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 10911 Hathaway Ave, Cleveland, OH 44108 | $72,000 | DOM: 157 | score=94.6 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: TimberVine Group | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 3271 Warrensville Center Rd APT 8B, Shaker Heights, OH 44122 | $74,500 | DOM: 146 | score=94.1 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 12520 Edgewater Dr APT 1609, Lakewood, OH 44107 | $74,900 | DOM: 122 | score=94.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 7919 Beman Ave, Cleveland, OH 44105 | $74,900 | DOM: 124 | score=94.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Plum Tree Realty, LLC | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 4110 E 143rd St, Cleveland, OH 44128 | $78,000 | DOM: 132 | score=93.4 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Hotdoors, LLC | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 46 Sycamore Dr, Olmsted Falls, OH 44138 | $44,900 | DOM: 80 | score=93.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Citywide | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 1317 E 115th St, Cleveland, OH 44106 | $78,500 | DOM: 127 | score=93.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 19901 Van Aken Blvd APT 7, Shaker Heights, OH 44122 | $72,900 | DOM: 113 | score=93.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Berkshire Hathaway HomeServices Professional Realty | Email: NONE
+2026-07-03 03:20:44,514 INFO LEAD: 7808 Force Ave, Cleveland, OH 44105 | $80,000 | DOM: 258 | score=93.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: REAFCO | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 3000 Brookpark Rd #15, Cleveland, OH 44134 | $33,500 | DOM: 63 | score=92.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Hotdoors, LLC | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 12600 Forest Hill Ave, Cleveland, OH 44112 | $57,500 | DOM: 92 | score=92.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 13800 Fairhill Rd APT 105, Shaker Heights, OH 44120 | $75,000 | DOM: 112 | score=92.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Homestar | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 10712 Grantwood Ave, Cleveland, OH 44108 | $58,000 | DOM: 90 | score=92.4 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 63 Parkway Dr, Olmsted Falls, OH 44138 | $69,900 | DOM: 104 | score=92.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Citywide | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 6100 Gertrude Ave, Cleveland, OH 44105 | $49,900 | DOM: 79 | score=92.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Dwelling Network Advisors | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 969 Evangeline Rd, Cleveland, OH 44110 | $74,500 | DOM: 108 | score=92.1 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Homestar | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 29 Carl Ln, Olmsted Falls, OH 44138 | $75,000 | DOM: 106 | score=91.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Crossroads Properties | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 10106 Parmelee Ave, Cleveland, OH 44108 | $62,000 | DOM: 90 | score=91.6 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 1276 E 133rd St, East Cleveland, OH 44112 | $45,000 | DOM: 69 | score=91.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Platinum Real Estate | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 6211 Fullerton Ave, Cleveland, OH 44105 | $69,000 | DOM: 98 | score=91.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Homestar | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 1107 Galewood Dr, Cleveland, OH 44110 | $79,900 | DOM: 110 | score=91.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Joseph Walter Realty, LLC | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 1257 E 170th St, Cleveland, OH 44110 | $45,000 | DOM: 66 | score=91.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Berkshire Hathaway HomeServices Stouffer Realty | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 1870 Mannering Rd, Cleveland, OH 44112 | $75,000 | DOM: 97 | score=90.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 12607 Oakfield Ave, Cleveland, OH 44105 | $48,000 | DOM: 64 | score=90.1 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Eberhardt Realty LLC | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 6835 Richmond Rd Trailer 26, Glenwillow, OH 44139 | $64,900 | DOM: 78 | score=89.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Living | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 1198 Rozelle Ave, Cleveland, OH 44112 | $75,000 | DOM: 89 | score=88.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 5 Michael Dr, Olmsted Falls, OH 44138 | $35,000 | DOM: 39 | score=88.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Citywide | Email: NONE
+2026-07-03 03:20:44,515 INFO LEAD: 987 E 129th St, Cleveland, OH 44108 | $50,000 | DOM: 57 | score=88.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Living | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 7112 Duluth Ave, Cleveland, OH 44103 | $55,000 | DOM: 62 | score=88.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: ListWithFreedom.com Inc | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 3706 E 71st St, Cleveland, OH 44105 | $50,000 | DOM: 55 | score=88.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 15610 Van Aken Blvd APT 4, Shaker Heights, OH 44120 | $50,000 | DOM: 55 | score=88.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 4712 Gifford Ave, Cleveland, OH 44144 | $72,900 | DOM: 83 | score=88.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Regal Realty, Inc | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 9 Overland Dr, Olmsted Falls, OH 44138 | $59,900 | DOM: 65 | score=87.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Citywide | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 1737 Lakefront Ave, East Cleveland, OH 44112 | $50,000 | DOM: 51 | score=87.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Premiere Properties, Inc | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 10309 Parkview Ave, Cleveland, OH 44104 | $68,000 | DOM: 72 | score=87.4 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Transitions | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 14304 Scioto Ave, East Cleveland, OH 44112 | $39,900 | DOM: 36 | score=87.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 16321 Stockbridge Ave, Cleveland, OH 44128 | $69,900 | DOM: 70 | score=86.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Realty Now, Inc | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 5911 Lexington Ave, Cleveland, OH 44103 | $47,500 | DOM: 42 | score=86.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Berkshire Hathaway HomeServices Stouffer Realty | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 1054 E 71st St, Cleveland, OH 44103 | $65,000 | DOM: 63 | score=86.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Fairfellow Realty LLC | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 422 Clearview Dr #J10, Euclid, OH 44123 | $65,000 | DOM: 63 | score=86.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Homestar | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 856 E 210th St, Euclid, OH 44119 | $47,500 | DOM: 41 | score=86.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 4115 E 56th St, Cleveland, OH 44105 | $79,000 | DOM: 77 | score=86.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: HomeSmart Real Estate Momentum LLC | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 22553 Ivan Ave, Cleveland, OH 44123 | $74,900 | DOM: 70 | score=85.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Realty Now, Inc | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 4289 E 136th St, Cleveland, OH 44105 | $49,900 | DOM: 35 | score=84.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 8018 Platt Ave, Cleveland, OH 44104 | $49,900 | DOM: 35 | score=84.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Haven Realty | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 841 E 130th St, Cleveland, OH 44108 | $75,000 | DOM: 64 | score=84.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Berkshire Hathaway HomeServices Professional Realty | Email: NONE
+2026-07-03 03:20:44,516 INFO LEAD: 13415 Shaker Blvd APT 11H4, Cleveland, OH 44120 | $74,900 | DOM: 63 | score=84.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Cleveland Northeast | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 3474 E 145th St, Cleveland, OH 44120 | $68,000 | DOM: 51 | score=83.9 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 13508 Mann Ave, East Cleveland, OH 44112 | $68,000 | DOM: 51 | score=83.9 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 3315 W 58th St, Cleveland, OH 44102 | $79,900 | DOM: 63 | score=83.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 1449 Clearaire Rd, Cleveland, OH 44110 | $60,000 | DOM: 34 | score=82.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: HomeSmart Real Estate Momentum LLC | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 1315 E 143rd St, East Cleveland, OH 44112 | $57,000 | DOM: 30 | score=82.6 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Progressive Urban Real Estate Co | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 3658 E 55th St, Cleveland, OH 44105 | $75,000 | DOM: 51 | score=82.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McDowell Homes Real Estate Services | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 7131 Park Ave, Cleveland, OH 44105 | $80,000 | DOM: 57 | score=82.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 11 Trenton Sq #T-36, Euclid, OH 44143 | $79,900 | DOM: 49 | score=81.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: HomeSmart Real Estate Momentum LLC | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 1379 E 219th St, Euclid, OH 44117 | $74,900 | DOM: 42 | score=81.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Platinum Real Estate | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 215 Dalepark Dr APT 1, Bedford, OH 44146 | $75,000 | DOM: 42 | score=81.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Above & Beyond | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 19101 Van Aken Blvd APT 219, Shaker Heights, OH 44122 | $75,000 | DOM: 41 | score=80.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 15825 Van Aken Blvd APT 304W, Shaker Heights, OH 44120 | $70,000 | DOM: 34 | score=80.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 797 Babbitt Rd APT 30, Euclid, OH 44123 | $68,000 | DOM: 31 | score=80.6 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McDowell Homes Real Estate Services | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 9016 Harris Ave, Cleveland, OH 44104 | $69,000 | DOM: 32 | score=80.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 4297 E 139th St, Cleveland, OH 44105 | $74,000 | DOM: 38 | score=80.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Cleveland Property Management Group, LLC | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 10210 Pierpont Ave, Cleveland, OH 44108 | $75,000 | DOM: 36 | score=80.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: B2B Realty | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 3600 E 75th St, Cleveland, OH 44105 | $80,000 | DOM: 42 | score=80.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Silvermetz Real Estate Corp | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 3541 E 113th St, Cleveland, OH 44105 | $80,000 | DOM: 41 | score=79.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-07-03 03:20:44,517 INFO LEAD: 3097 W 106th St, Cleveland, OH 44111 | $75,500 | DOM: 32 | score=79.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Citywide | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 1105 E 144th St, Cleveland, OH 44110 | $74,900 | DOM: 30 | score=79.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Progressive Urban Real Estate Co | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 1722 Burgess Rd, Cleveland, OH 44112 | $80,000 | DOM: 35 | score=78.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McDowell Homes Real Estate Services | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 25650 Richards Ave, Euclid, OH 44132 | $99,000 | DOM: 182 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Friendly Home Realty, Inc | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 13305 Svec Ave, Cleveland, OH 44120 | $125,000 | DOM: 196 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 9616 Lamontier Ave, Cleveland, OH 44104 | $115,000 | DOM: 197 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Living | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 4088 E 72nd St, Cleveland, OH 44105 | $95,000 | DOM: 198 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 10624 Grantwood Ave, Cleveland, OH 44108 | $88,000 | DOM: 198 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Living | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 14208 Jenne Ave, Cleveland, OH 44110 | $95,500 | DOM: 204 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 14410 Darwin Ave, Cleveland, OH 44110 | $86,500 | DOM: 204 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 4246 E 116th St, Cleveland, OH 44105 | $117,000 | DOM: 205 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 10001 Yale Ave, Cleveland, OH 44108 | $89,500 | DOM: 206 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 932 Stevenson Rd, Cleveland, OH 44110 | $122,000 | DOM: 208 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Sterling Integrated Realty Services LLC | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 1376 E 125th St, Cleveland, OH 44112 | $99,000 | DOM: 209 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CHN Real Estate Services, LLC | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 9700 Hilgert Dr, Cleveland, OH 44104 | $99,900 | DOM: 226 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 1979 W 54th St, Cleveland, OH 44102 | $122,500 | DOM: 234 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Platinum Real Estate | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 2167 W 96th St, Cleveland, OH 44102 | $116,500 | DOM: 234 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Platinum Real Estate | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 8303 Connecticut Ave, Cleveland, OH 44105 | $110,000 | DOM: 237 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: VSD Realty, LLC | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 9112 Parmelee Ave, Cleveland, OH 44108 | $98,450 | DOM: 240 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Russell Real Estate Services | Email: NONE
+2026-07-03 03:20:44,518 INFO LEAD: 2137 N Taylor Rd, Cleveland Heights, OH 44112 | $99,900 | DOM: 275 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Prettyman & Associates | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 3320 Beechwood Ave, Cleveland Heights, OH 44118 | $124,900 | DOM: 282 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Ai Brokers LLC | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 6618 Schaefer Ave, Cleveland, OH 44103 | $104,900 | DOM: 301 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Sterling Integrated Realty Services LLC | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 3661 E 146th St, Cleveland, OH 44120 | $115,900 | DOM: 303 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Sterling Integrated Realty Services LLC | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 14315 Viola Ave, Cleveland, OH 44111 | $115,000 | DOM: 312 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Elevate | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 821 E 156th St, Cleveland, OH 44110 | $104,000 | DOM: 324 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Citywide | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 3616 Newark Ave, Cleveland, OH 44109 | $119,000 | DOM: 328 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Elevate | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 20333 Detroit Rd APT 213B, Rocky River, OH 44116 | $107,500 | DOM: 344 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 144 Maria Dr, Bedford, OH 44146 | $125,000 | DOM: 449 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Above & Beyond | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 12520 Edgewater Dr APT 1108, Lakewood, OH 44107 | $89,900 | DOM: 121 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 3280 E 121st St, Cleveland, OH 44120 | $117,400 | DOM: 121 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Team Results Realty | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 3926 W 22nd St, Cleveland, OH 44109 | $100,000 | DOM: 123 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Real of Ohio | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 4179 Columbia Rd APT 213, North Olmsted, OH 44070 | $88,900 | DOM: 126 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Red 1 Realty, LLC | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 16241 Glenburn Ave, Maple Heights, OH 44128 | $125,000 | DOM: 129 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 10622 Hathaway Ave, Cleveland, OH 44108 | $125,000 | DOM: 129 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 2089 Wooster Rd #43, Rocky River, OH 44116 | $115,000 | DOM: 129 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 3140 W 33rd St, Cleveland, OH 44109 | $109,900 | DOM: 132 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Above & Beyond | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 15208 Elderwood Ave, East Cleveland, OH 44112 | $125,000 | DOM: 132 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 12520 Edgewater Dr APT 910, Lakewood, OH 44107 | $99,000 | DOM: 132 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 14008 Shaw Ave, East Cleveland, OH 44112 | $110,000 | DOM: 137 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Sterling Integrated Realty Services LLC | Email: NONE
+2026-07-03 03:20:44,519 INFO LEAD: 9607 Fuller Ave, Cleveland, OH 44104 | $93,000 | DOM: 140 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Elevate | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 12705 Soika Ave, Cleveland, OH 44120 | $125,000 | DOM: 141 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 4678 E 147th St, Cleveland, OH 44128 | $95,000 | DOM: 141 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 1753 Collamer Ave, Cleveland, OH 44112 | $114,900 | DOM: 142 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Aspire Community Realty, LLC | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 3226 W 54th St, Cleveland, OH 44102 | $99,000 | DOM: 142 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Elite Class Realty LLC | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 1133 W 9th St APT 120, Cleveland, OH 44113 | $110,000 | DOM: 143 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 797 Babbitt Rd APT 15, Euclid, OH 44123 | $104,900 | DOM: 147 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Haven Realty | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 3216 W 95th St, Cleveland, OH 44102 | $124,000 | DOM: 148 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: NONE | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 3833 E 144th St, Cleveland, OH 44128 | $99,000 | DOM: 149 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 626 E 130th St, Cleveland, OH 44108 | $105,000 | DOM: 154 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Market First Real Estate Services | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 474 E 128th St, Cleveland, OH 44108 | $102,000 | DOM: 154 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Chosen Real Estate Group | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 3349 E 132nd St, Cleveland, OH 44120 | $103,000 | DOM: 155 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Chosen Real Estate Group | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 2064 W 104th St, Cleveland, OH 44102 | $119,900 | DOM: 157 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Above & Beyond | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 3791 W 38th St, Cleveland, OH 44109 | $125,000 | DOM: 160 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 1012 E 72nd St, Cleveland, OH 44103 | $92,000 | DOM: 161 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 4170 E 113th St, Cleveland, OH 44105 | $95,000 | DOM: 162 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: DreamTeam Realty, Inc | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 3548 W 63rd St, Cleveland, OH 44102 | $99,900 | DOM: 162 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Classic Realty Group, Inc | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 3852 Lee Heights Blvd, Cleveland, OH 44128 | $110,000 | DOM: 164 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 16909 Harvard Ave, Cleveland, OH 44128 | $107,500 | DOM: 166 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,520 INFO LEAD: 8417 Tioga Ave, Cleveland, OH 44105 | $110,000 | DOM: 171 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 2841 E 125th St, Cleveland, OH 44120 | $124,900 | DOM: 174 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Dwelling Network Advisors | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 1 Tympani Trl, Olmsted Falls, OH 44138 | $94,900 | DOM: 175 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Citywide | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 3420 Westbury Rd, Shaker Heights, OH 44120 | $103,000 | DOM: 180 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 5403 Spencer Ave, Cleveland, OH 44103 | $100,000 | DOM: 119 | score=72.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Crossroads Properties | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 1755 E 63rd St, Cleveland, OH 44103 | $109,900 | DOM: 118 | score=72.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Carolyn Riley RL. Est. Srvcs, Inc | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 3303 E 123rd St, Cleveland, OH 44120 | $99,000 | DOM: 116 | score=72.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Vincent Patrick Realty | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 1253 E 135th St, East Cleveland, OH 44112 | $110,000 | DOM: 115 | score=72.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Classic Realty Group, Inc | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 11850 Edgewater Dr APT 1003, Lakewood, OH 44107 | $99,000 | DOM: 115 | score=72.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: HomeSource Real Estate LLC | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 4368 E 156th St, Cleveland, OH 44128 | $95,000 | DOM: 114 | score=72.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 4225 E 128th St, Cleveland, OH 44105 | $85,000 | DOM: 114 | score=72.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 20333 Detroit Rd APT 513, Rocky River, OH 44116 | $99,900 | DOM: 113 | score=71.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Elevate | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 3333 Warrensville Center Rd APT 305, Shaker Heights, OH 44122 | $99,900 | DOM: 112 | score=71.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 3291 W 54th St, Cleveland, OH 44102 | $96,500 | DOM: 111 | score=71.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: VSD Realty, LLC | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 10111 North Blvd, Cleveland, OH 44108 | $95,000 | DOM: 111 | score=71.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 985 E 74th St, Cleveland, OH 44103 | $99,000 | DOM: 110 | score=71.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 3104 Woodbridge Ave, Cleveland, OH 44109 | $99,000 | DOM: 108 | score=71.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Berkshire Hathaway HomeServices Professional Realty | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 456 E 149th St, Cleveland, OH 44110 | $99,000 | DOM: 107 | score=70.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Berkshire Hathaway HomeServices Professional Realty | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 1402 E 185th St, Cleveland, OH 44110 | $115,000 | DOM: 107 | score=70.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,521 INFO LEAD: 2346 E 82nd St, Cleveland, OH 44104 | $115,000 | DOM: 107 | score=70.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Omega | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 3606 E 54th St, Cleveland, OH 44105 | $99,900 | DOM: 106 | score=70.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 1140 E 144th St, Cleveland, OH 44110 | $95,000 | DOM: 105 | score=70.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Berkshire Hathaway HomeServices Professional Realty | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 14013 Milverton Rd, Cleveland, OH 44120 | $119,900 | DOM: 105 | score=70.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 4230 E 126th St, Cleveland, OH 44105 | $114,500 | DOM: 104 | score=70.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 12805 Parkhill Ave, Cleveland, OH 44120 | $115,000 | DOM: 104 | score=70.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 848 Greyton Rd, Cleveland Heights, OH 44112 | $109,900 | DOM: 104 | score=70.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Lokal Real Estate, LLC | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 3309 E 137th St, Cleveland, OH 44120 | $98,000 | DOM: 104 | score=70.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 14520 Dover Ave, East Cleveland, OH 44112 | $109,900 | DOM: 103 | score=70.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 4291 E 114th St, Cleveland, OH 44105 | $110,000 | DOM: 100 | score=69.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Living | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 1639 Delmont Ave, East Cleveland, OH 44112 | $95,500 | DOM: 98 | score=69.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 827 Sable Rd, Cleveland, OH 44119 | $87,000 | DOM: 97 | score=69.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 7909 Goodman Ave, Cleveland, OH 44105 | $99,900 | DOM: 97 | score=69.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 9220 Adams Ave, Cleveland, OH 44108 | $104,900 | DOM: 97 | score=69.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 3280 E 134th St, Cleveland, OH 44120 | $112,500 | DOM: 93 | score=68.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 78 W Glendale Ave, Bedford, OH 44146 | $100,000 | DOM: 92 | score=68.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Plum Tree Realty, LLC | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 526 E 118th St, Cleveland, OH 44108 | $100,000 | DOM: 92 | score=68.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Fairfellow Realty LLC | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 13405 Svec Ave, Cleveland, OH 44120 | $115,000 | DOM: 91 | score=68.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Platinum Real Estate | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 3060 Charles Carr Pl, Cleveland, OH 44104 | $115,990 | DOM: 90 | score=68.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Homestar | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 7202 Deveny Ave, Cleveland, OH 44105 | $109,900 | DOM: 87 | score=67.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,522 INFO LEAD: 10100 Grace Ave, Garfield Heights, OH 44125 | $120,000 | DOM: 87 | score=67.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Silvermetz Real Estate Corp | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 724 E 133rd St, Cleveland, OH 44110 | $87,900 | DOM: 86 | score=67.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Haven Realty | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 3710 Pennington Rd, Shaker Heights, OH 44120 | $110,000 | DOM: 85 | score=67.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McMullan Realty, Inc | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 18975 Van Aken Blvd APT 411, Shaker Heights, OH 44122 | $120,000 | DOM: 85 | score=67.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Berkshire Hathaway HomeServices Professional Realty | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 871 E 129th St, Cleveland, OH 44108 | $115,000 | DOM: 84 | score=67.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Premier Heights Realty LLC | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 1322 Shawview Ave, East Cleveland, OH 44112 | $95,000 | DOM: 84 | score=67.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Premier Heights Realty LLC | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 4234 E 111th St, Cleveland, OH 44105 | $115,000 | DOM: 84 | score=67.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Premier Heights Realty LLC | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 543 E 108th St, Cleveland, OH 44108 | $113,900 | DOM: 84 | score=67.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Living | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 3437 E 105th St, Cleveland, OH 44104 | $114,900 | DOM: 84 | score=67.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Living | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 11105 Revere Ave, Cleveland, OH 44105 | $111,500 | DOM: 84 | score=67.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Living | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 6930 Polonia Ave, Cleveland, OH 44105 | $110,000 | DOM: 83 | score=66.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 324 E 248th St, Euclid, OH 44123 | $120,000 | DOM: 83 | score=66.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Living | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 3675 Clague Rd Unit 409, North Olmsted, OH 44070 | $114,900 | DOM: 83 | score=66.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 1723 Noble Rd, East Cleveland, OH 44112 | $115,000 | DOM: 80 | score=66.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 8118 Goodman Ave, Cleveland, OH 44105 | $110,500 | DOM: 79 | score=66.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: BHR & Associates | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 13800 Fairhill Rd APT 101, Shaker Heights, OH 44120 | $85,900 | DOM: 78 | score=66.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Market First Real Estate Services | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 1474 E 175th St, Cleveland, OH 44110 | $99,998 | DOM: 78 | score=66.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 14202 Glendale Ave, Cleveland, OH 44128 | $100,000 | DOM: 78 | score=66.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Above & Beyond | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 4124 E 139th St, Cleveland, OH 44105 | $115,000 | DOM: 78 | score=66.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trowbridge Realty Corporation | Email: NONE
+2026-07-03 03:20:44,523 INFO LEAD: 1133 W 9th St APT 112, Cleveland, OH 44113 | $119,900 | DOM: 77 | score=65.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Chervenic Rlty | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 19280 Stafford Ave, Maple Heights, OH 44137 | $124,900 | DOM: 77 | score=65.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Elevate | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 18208 Edinboro Ave, Maple Heights, OH 44137 | $124,900 | DOM: 77 | score=65.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Elevate | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 817 Alhambra Rd, Cleveland, OH 44110 | $115,000 | DOM: 77 | score=65.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Berkshire Hathaway HomeServices Professional Realty | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 1333 E 68th St, Cleveland, OH 44103 | $115,000 | DOM: 76 | score=65.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Transitions | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 13809 Beachwood Ave, Cleveland, OH 44105 | $105,000 | DOM: 74 | score=65.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 3618 W 49th St, Cleveland, OH 44102 | $124,000 | DOM: 73 | score=65.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: D & K Property Management Services | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 7814 Lawn Ave, Cleveland, OH 44102 | $109,000 | DOM: 72 | score=65.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 9502 Empire Ave, Cleveland, OH 44108 | $118,900 | DOM: 71 | score=64.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 462 E 109th St, Cleveland, OH 44108 | $125,000 | DOM: 70 | score=64.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Glasshouse Realty Group, LLC | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 16100 Van Aken Blvd APT 507, Shaker Heights, OH 44120 | $99,900 | DOM: 70 | score=64.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Above & Beyond | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 2166 W 93rd St, Cleveland, OH 44102 | $109,900 | DOM: 70 | score=64.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Russell Real Estate Services | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 1245 Addison Rd, Cleveland, OH 44103 | $125,000 | DOM: 70 | score=64.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 13316 Edgewood Ave, Cleveland, OH 44105 | $104,900 | DOM: 70 | score=64.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Above & Beyond | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 14819 Westropp Ave, Cleveland, OH 44110 | $100,000 | DOM: 69 | score=64.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 13410 Kelso Ave, Cleveland, OH 44110 | $125,000 | DOM: 69 | score=64.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 4468 E 156th St, Cleveland, OH 44128 | $90,000 | DOM: 68 | score=64.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Platinum Real Estate | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 9106 Connecticut Ave, Cleveland, OH 44105 | $119,900 | DOM: 68 | score=64.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Russell Real Estate Services | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 14415 Alder Ave, East Cleveland, OH 44112 | $85,000 | DOM: 67 | score=64.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,524 INFO LEAD: 33 Henry St, Bedford, OH 44146 | $99,999 | DOM: 66 | score=64.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Carolyn Riley RL. Est. Srvcs, Inc | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 14101 Strathmore Ave, East Cleveland, OH 44112 | $99,900 | DOM: 66 | score=64.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: JAMM Real Estate Co | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 899 Herrick Rd, Cleveland, OH 44108 | $86,000 | DOM: 66 | score=64.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: DreamTeam Realty, Inc | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 6821 Fleet Ave, Cleveland, OH 44105 | $89,000 | DOM: 65 | score=63.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Glasshouse Realty Group, LLC | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 2624 E 114th St, Cleveland, OH 44104 | $115,000 | DOM: 65 | score=63.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 1178 E 147th St, Cleveland, OH 44110 | $89,000 | DOM: 65 | score=63.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Crossroads Properties | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 684 E 128th St, Cleveland, OH 44108 | $100,000 | DOM: 64 | score=63.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Key Realty | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 3455 E 142nd St, Cleveland, OH 44120 | $100,000 | DOM: 64 | score=63.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 12520 Edgewater Dr APT 1009, Lakewood, OH 44107 | $89,900 | DOM: 64 | score=63.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: On Target Realty, Inc | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 976 Rondel Rd, Cleveland, OH 44110 | $84,900 | DOM: 64 | score=63.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Key Realty | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 4132 Robert Ave, Cleveland, OH 44109 | $124,900 | DOM: 63 | score=63.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: M. C. Real Estate | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 4403 Fenwick Ave, Cleveland, OH 44113 | $98,900 | DOM: 63 | score=63.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: ListWithFreedom.com Inc | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 3008 Roanoke Ave, Cleveland, OH 44109 | $95,000 | DOM: 63 | score=63.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Haven Realty | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 17 Trolleyview Ln, Olmsted Falls, OH 44138 | $120,000 | DOM: 63 | score=63.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 18011 Windward Rd, Cleveland, OH 44119 | $109,900 | DOM: 62 | score=63.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Aspire Community Realty, LLC | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 7800 Guthrie Ave, Cleveland, OH 44102 | $99,000 | DOM: 58 | score=62.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Above & Beyond | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 15409 Parkgrove Ave, Cleveland, OH 44110 | $110,000 | DOM: 58 | score=62.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Glasshouse Realty Group, LLC | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 12700 Lake Ave APT 804, Lakewood, OH 44107 | $119,900 | DOM: 58 | score=62.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Above & Beyond | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 3057 W 115th St, Cleveland, OH 44111 | $125,000 | DOM: 57 | score=62.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: B2B Realty | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 10628 Englewood Ave, Cleveland, OH 44108 | $105,000 | DOM: 57 | score=62.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,525 INFO LEAD: 4107 E 146th St, Cleveland, OH 44128 | $85,000 | DOM: 56 | score=62.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Above & Beyond | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 3579 E 72nd St, Cleveland, OH 44105 | $125,000 | DOM: 56 | score=62.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Above & Beyond | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 3553 E 106th St, Cleveland, OH 44105 | $104,900 | DOM: 56 | score=62.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Above & Beyond | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 17316 Throckley Ave, Cleveland, OH 44128 | $104,900 | DOM: 56 | score=62.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Above & Beyond | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 675 E 127th St, Cleveland, OH 44108 | $115,000 | DOM: 56 | score=62.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 23885 David Dr Unit 215, North Olmsted, OH 44070 | $124,900 | DOM: 55 | score=62.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Skymount Realty, LLC | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 15825 Van Aken Blvd APT 105W, Shaker Heights, OH 44120 | $82,500 | DOM: 55 | score=62.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Fairfellow Realty LLC | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 10908 Tacoma Ave, Cleveland, OH 44108 | $110,000 | DOM: 54 | score=62.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 174 Columbus Rd, Bedford, OH 44146 | $114,900 | DOM: 54 | score=62.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Carolyn Riley RL. Est. Srvcs, Inc | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 878 E 130th St, Cleveland, OH 44108 | $89,900 | DOM: 52 | score=61.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: HomeSmart Real Estate Momentum LLC | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 9008 Birchdale Ave, Cleveland, OH 44106 | $119,999 | DOM: 51 | score=61.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McCrae & Co. Real Estate, LLC | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 4697 E 85th St, Garfield Heights, OH 44125 | $115,000 | DOM: 51 | score=61.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McDowell Homes Real Estate Services | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 1516 E 86th St, Cleveland, OH 44106 | $125,000 | DOM: 50 | score=61.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Premier Heights Realty LLC | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 3377 E 132nd St, Cleveland, OH 44120 | $109,900 | DOM: 50 | score=61.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Above & Beyond | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 12816 Dove Ave, Cleveland, OH 44105 | $99,900 | DOM: 50 | score=61.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Above & Beyond | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 14909 Lotus Dr, Cleveland, OH 44128 | $104,900 | DOM: 50 | score=61.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Assad & Crea Realty Group | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 8210 Dorver Ave, Cleveland, OH 44105 | $109,900 | DOM: 50 | score=61.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 12013 Gay Ave, Cleveland, OH 44105 | $115,000 | DOM: 50 | score=61.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Market Solutions | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 3557 E 139th St, Cleveland, OH 44120 | $86,500 | DOM: 48 | score=61.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Homestar | Email: NONE
+2026-07-03 03:20:44,526 INFO LEAD: 10412 N Church Dr APT 306, Parma Heights, OH 44130 | $125,000 | DOM: 48 | score=61.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 10401 Olivet Ave, Cleveland, OH 44108 | $98,000 | DOM: 48 | score=61.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Living | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 3162 W 104th St, Cleveland, OH 44111 | $114,900 | DOM: 48 | score=61.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Crossroads Properties | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 3513 E 103rd St, Cleveland, OH 44105 | $95,000 | DOM: 48 | score=61.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CHN Real Estate Services, LLC | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 2175 W 106th St, Cleveland, OH 44102 | $95,000 | DOM: 48 | score=61.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: DreamTeam Realty, Inc | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 3394 E 102nd St, Cleveland, OH 44104 | $81,000 | DOM: 48 | score=61.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Citywide | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 3522 E 149th St, Cleveland, OH 44120 | $115,000 | DOM: 44 | score=60.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McCrae & Co. Real Estate, LLC | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 14225 Rainbow Ave, Cleveland, OH 44111 | $120,000 | DOM: 43 | score=60.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Living | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 14227 Rainbow Ave, Cleveland, OH 44111 | $110,000 | DOM: 43 | score=60.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Living | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 7808 Connecticut Ave, Cleveland, OH 44105 | $109,000 | DOM: 43 | score=60.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Friendly Home Realty, Inc | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 675 E 305th St, Willowick, OH 44095 | $82,500 | DOM: 43 | score=60.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Russell Thomas Realty | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 3847 E 146th St, Cleveland, OH 44128 | $89,000 | DOM: 43 | score=60.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 1537 E 214th St, Euclid, OH 44117 | $109,900 | DOM: 42 | score=60.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 6531 Schaefer Ave, Cleveland, OH 44103 | $119,900 | DOM: 42 | score=60.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Above & Beyond | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 23804 Blackburn Rd, Bedford, OH 44146 | $99,000 | DOM: 42 | score=60.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Haven Realty | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 25735 Lorain Rd Unit 513, North Olmsted, OH 44070 | $84,900 | DOM: 42 | score=60.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 2652 E 115th St, Cleveland, OH 44104 | $119,900 | DOM: 42 | score=60.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Haven Realty | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 19806 Shawnee Ave, Cleveland, OH 44119 | $117,500 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 3285 E 137th St, Cleveland, OH 44120 | $119,900 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,527 INFO LEAD: 13900 Shaker Blvd APT 1214, Cleveland, OH 44120 | $99,000 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 15812 Grant Ave, Maple Heights, OH 44137 | $125,000 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 12520 Edgewater Dr APT 510, Lakewood, OH 44107 | $110,000 | DOM: 40 | score=59.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Beycome Brokerage Realty LLC | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 3315 E 142nd St, Cleveland, OH 44120 | $110,000 | DOM: 40 | score=59.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 13001 Arlington Ave, Cleveland, OH 44108 | $99,900 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 11400 Continental Ave, Cleveland, OH 44104 | $95,900 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 1848 Stanwood Rd, East Cleveland, OH 44112 | $119,900 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Red 1 Realty, LLC | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 4680 Beechgrove Ave, Garfield Heights, OH 44125 | $105,000 | DOM: 36 | score=59.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Homestar | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 3675 Clague Rd Unit 306, North Olmsted, OH 44070 | $116,900 | DOM: 36 | score=59.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Citywide | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 3885 W 20th St, Cleveland, OH 44109 | $114,900 | DOM: 36 | score=59.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Progressive Urban Real Estate Co | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 9709 Kempton Ave, Cleveland, OH 44108 | $90,000 | DOM: 35 | score=58.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 8005 Vineyard Ave, Cleveland, OH 44105 | $119,900 | DOM: 35 | score=58.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: (undisclosed Address), Cleveland, OH 44128 | $119,900 | DOM: 35 | score=58.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 1011 E 140th St, Cleveland, OH 44110 | $99,900 | DOM: 35 | score=58.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Elevate | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 2720 Pease Dr APT 218N, Rocky River, OH 44116 | $114,900 | DOM: 34 | score=58.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Elevate | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 1484 E 135th St, East Cleveland, OH 44112 | $99,900 | DOM: 34 | score=58.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 449 Cleveland Rd, Cleveland, OH 44108 | $85,000 | DOM: 34 | score=58.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Beycome Brokerage Realty LLC | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 13500 Shaker Blvd APT 203, Cleveland, OH 44120 | $95,000 | DOM: 34 | score=58.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McDowell Homes Real Estate Services | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 3417 Storer Ave, Cleveland, OH 44109 | $106,000 | DOM: 32 | score=58.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Citywide | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 17115 Harvard Ave, Cleveland, OH 44128 | $109,000 | DOM: 31 | score=58.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Cleveland Property Management Group, LLC | Email: NONE
+2026-07-03 03:20:44,528 INFO LEAD: 13613 Coath Ave, Cleveland, OH 44120 | $95,000 | DOM: 31 | score=58.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Haven Realty | Email: NONE
+2026-07-03 03:20:44,529 INFO LEAD: 21841 River Oaks Dr APT B5, Rocky River, OH 44116 | $125,000 | DOM: 31 | score=58.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Citywide | Email: NONE
+2026-07-03 03:20:44,529 INFO LEAD: 11705 Farringdon Ave, Cleveland, OH 44105 | $87,700 | DOM: 30 | score=58.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Hotdoors, LLC | Email: NONE
+2026-07-03 03:20:44,529 INFO LEAD: 4630 E 86th St, Garfield Heights, OH 44125 | $111,000 | DOM: 30 | score=58.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Cleveland Property Management Group, LLC | Email: NONE
+2026-07-03 03:20:44,529 INFO LEAD: 3400 Wooster Rd APT 502, Rocky River, OH 44116 | $125,000 | DOM: 30 | score=58.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 03:20:44,529 INFO LEAD: 7114 Lawn Ave, Cleveland, OH 44102 | $124,900 | DOM: 30 | score=58.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Source One Realty LLC | Email: NONE
+2026-07-03 03:20:44,529 INFO Scrape complete: Cleveland | 302 leads passed all screening gates | Apify totals — total=8 zillow=3 google=5
+2026-07-03 03:20:44,531 INFO [1/5] 302 fresh leads from Zillow
+2026-07-03 03:20:44,531 INFO FORCE_RUN=true — bypassing business hours gate (logged once per run)
+2026-07-03 03:20:44,584 INFO [2/5] 302 after dedup
+2026-07-03 03:20:44,595 INFO Saved 287 leads to overflow for next run
+2026-07-03 03:20:44,595 INFO Saved 287 leads to overflow for next run
+2026-07-03 03:20:44,595 INFO [3/5] Calculating offers and generating emails...
+2026-07-03 03:20:44,595 INFO [3/5] 2 ready | Skipped: 0 pitch + 13 no email
+2026-07-03 03:20:44,596 INFO No-email contact research candidates: added 13 leads needing manual research -> data/no_email_contact_research_candidates.csv
+2026-07-03 03:20:44,596 INFO [4/5] Sending emails...
+2026-07-03 03:20:44,596 INFO Starting batch | Market: cleveland | Sender:  | Leads: 2 | Inbox : 0/15 sent today, 15 remaining | Global: 0/30 sent today, 30 remaining | Effective limit this batch: 15
+2026-07-03 03:20:44,611 INFO PDF ready for 10513 Parkview Ave, Cleveland, OH 44104
+2026-07-03 03:20:44,611 INFO [DRY RUN] Would send to melissa.harris@remax.net | Subject: Owner Finance Offer on 10513 Parkview Ave, Cleveland, OH 44104 | PDF: True
+2026-07-03 03:20:44,611 INFO Waiting 204s before next send (1/15 this batch)...
+2026-07-03 03:24:08,910 INFO PDF ready for 4309 E 73rd St, Cleveland, OH 44105
+2026-07-03 03:24:08,910 INFO [DRY RUN] Would send to support@plumtreerealty.com | Subject: Owner Finance Offer on 4309 E 73rd St, Cleveland, OH 44105 | PDF: True
+2026-07-03 03:24:08,910 INFO Waiting 180s before next send (2/15 this batch)...
