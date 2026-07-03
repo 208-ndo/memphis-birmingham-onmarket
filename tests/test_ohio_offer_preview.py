@@ -80,7 +80,10 @@ class OhioOfferPreviewTest(unittest.TestCase):
 
     def test_seller_finance_counter_email_uses_terms_language(self):
         body = self.by_address["4297 E 139th St, Cleveland, OH 44105"]["email_body"]
-        self.assertIn("I saw the seller is open to owner financing", body)
+        # Public copy neutralized 2026-07-02: opening no longer references
+        # "owner financing"; it now reviews the listing and proposes terms.
+        self.assertIn("I reviewed the listing at", body)
+        self.assertNotIn("open to owner financing", body.lower())
         self.assertIn(
             "I can work with the list price if the seller can work with me on the terms",
             body,

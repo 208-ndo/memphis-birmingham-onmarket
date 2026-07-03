@@ -187,7 +187,7 @@ def _gen_of_email(listing: dict, offer: dict) -> dict:
     lines = [
         _agent_greeting(listing),
         "",
-        f"I would like to submit the following owner-finance offer for {address}:",
+        f"I would like to submit the following purchase offer for {address}:",
         "",
         f"Purchase Price: {_money(purchase_price)}",
         f"Down Payment: {_money(down_payment)}",
@@ -219,7 +219,7 @@ def _gen_of_email(listing: dict, offer: dict) -> dict:
 
     return {
         "variation": 1,
-        "subject": f"Owner Finance Offer on {address}",
+        "subject": f"Offer on {address}",
         "body": "\n".join(lines),
     }
 
@@ -242,7 +242,7 @@ def _gen_seller_finance_counter_email(listing: dict, offer: dict) -> dict:
     lines = [
         _agent_greeting(listing),
         "",
-        f"I saw the seller is open to owner financing on {address}.",
+        f"I reviewed the listing at {address}.",
         "",
         "I can work with the list price if the seller can work with me on the terms. Would the seller consider the following?",
         "",
@@ -269,7 +269,7 @@ def _gen_seller_finance_counter_email(listing: dict, offer: dict) -> dict:
 
     return {
         "variation": 1,
-        "subject": f"Seller-Finance Counter on {address}",
+        "subject": f"Offer on {address}",
         "body": "\n".join(lines),
     }
 
