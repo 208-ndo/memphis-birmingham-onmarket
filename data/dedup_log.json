@@ -186,6 +186,42 @@
       "subject": "Quick Close on 300 34th Ave NE. Good for Your Seller?",
       "offer_type": "cash_lowball",
       "zillow_url": "https://www.zillow.com/homedetails/300-34th-Ave-NE-Center-Point-AL-35215/886172_zpid/"
+    },
+    "zpid:33415553": {
+      "address": "10513 Parkview Ave, Cleveland, OH 44104",
+      "address_key": "10513 parkview ave, cleveland, oh 44104",
+      "property_key": "zpid:33415553",
+      "zpid": "33415553",
+      "zillow_url": "https://www.zillow.com/homedetails/10513-Parkview-Ave-Cleveland-OH-44104/33415553_zpid/",
+      "market": "cleveland",
+      "agent_name": "False False True False",
+      "agent_email": "melissa.harris@remax.net",
+      "brokerage": "Platinum Real Estate",
+      "list_price": 30000,
+      "days_on_market": 138,
+      "offer_type": "owner_finance",
+      "email_subject": "Offer on 10513 Parkview Ave, Cleveland, OH 44104",
+      "sender_email": "229holdingsllc@gmail.com",
+      "sent_at": "2026-07-03T14:30:02.223352",
+      "status": "sent"
+    },
+    "10513 parkview ave, cleveland, oh 44104": {
+      "address": "10513 Parkview Ave, Cleveland, OH 44104",
+      "address_key": "10513 parkview ave, cleveland, oh 44104",
+      "property_key": "zpid:33415553",
+      "zpid": "33415553",
+      "zillow_url": "https://www.zillow.com/homedetails/10513-Parkview-Ave-Cleveland-OH-44104/33415553_zpid/",
+      "market": "cleveland",
+      "agent_name": "False False True False",
+      "agent_email": "melissa.harris@remax.net",
+      "brokerage": "Platinum Real Estate",
+      "list_price": 30000,
+      "days_on_market": 138,
+      "offer_type": "owner_finance",
+      "email_subject": "Offer on 10513 Parkview Ave, Cleveland, OH 44104",
+      "sender_email": "229holdingsllc@gmail.com",
+      "sent_at": "2026-07-03T14:30:02.223352",
+      "status": "sent"
     }
   },
   "agents": {
@@ -303,6 +339,25 @@
       ],
       "first_contact": "2026-06-28T06:48:37.055284",
       "last_sent": "2026-06-28T06:48:37.055284"
+    },
+    "melissa.harris@remax.net": {
+      "person_key": "false false true false",
+      "person_confidence": "high",
+      "agent_name": "False False True False",
+      "brokerage": "Platinum Real Estate",
+      "total_contacted": 1,
+      "sends_in_window": [
+        {
+          "address": "10513 Parkview Ave, Cleveland, OH 44104",
+          "prop_key": "zpid:33415553",
+          "sent_at": "2026-07-03T14:30:02.223352"
+        }
+      ],
+      "properties": [
+        "zpid:33415553"
+      ],
+      "first_contact": "2026-07-03T14:30:02.223352",
+      "last_sent": "2026-07-03T14:30:02.223352"
     }
   },
   "opted_out": [],

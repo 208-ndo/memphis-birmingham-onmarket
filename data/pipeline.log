@@ -26127,3 +26127,166 @@
 2026-07-03 13:37:57,962 INFO All markets complete | Sent this run: 0 | Total today: 0/30
 2026-07-03 13:37:57,963 INFO pipeline_log.json written — 0 emails this run, 0 in active queue, 26 in sent history
 2026-07-03 13:37:57,963 INFO All markets complete. Dashboard updated. Check GHL for contacts.
+2026-07-03 14:26:38,683 INFO Pipeline starting | Markets: cleveland, akron | Dry run: False | Force: True | Global cap: 30/day | Per-inbox: 15/day | Time: 14:26 UTC
+2026-07-03 14:26:38,684 INFO Global sends already today (before this run): 0/30
+2026-07-03 14:26:38,684 INFO Global: 0/30 sent today (0 prior runs + 0 this run) | Remaining: 30
+2026-07-03 14:26:38,684 INFO ============================================================
+2026-07-03 14:26:38,684 INFO PIPELINE: CLEVELAND | 2026-07-03 14:26
+2026-07-03 14:26:38,684 INFO DRY RUN: False | LIMIT: 15 emails this run
+2026-07-03 14:26:38,684 INFO ============================================================
+2026-07-03 14:26:38,684 INFO CLEAR_OVERFLOW_BEFORE_RUN=true — ignoring data/overflow.json for this run (treating overflow as empty, file on disk left untouched)
+2026-07-03 14:26:38,684 INFO [1/5] Scraping Zillow for cleveland...
+2026-07-03 14:26:38,684 INFO ============================================================
+2026-07-03 14:26:38,684 INFO SCRAPER: Cleveland
+2026-07-03 14:26:38,684 INFO   APIFY_ENABLED                       : True (raw='true')
+2026-07-03 14:26:38,684 INFO   EMAIL_ENRICHMENT_ENABLED            : True (raw='true')
+2026-07-03 14:26:38,684 INFO   MAX_APIFY_RUNS_PER_WORKFLOW         : 20 (EMERGENCY global cap — all actors)
+2026-07-03 14:26:38,684 INFO   MAX_ZILLOW_CALLS_PER_WORKFLOW       : 1 (Zillow only — independent of email budget)
+2026-07-03 14:26:38,684 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW: 1
+2026-07-03 14:26:38,684 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET: 1
+2026-07-03 14:26:38,684 INFO   MAX_LEADS_TO_ENRICH_PER_WORKFLOW    : 1 (top-scored leads sent to enrichment)
+2026-07-03 14:26:38,684 INFO   ENABLE_PRICE_REDUCED_OF_VARIANT     : False
+2026-07-03 14:26:38,684 INFO   Apify calls used so far — total     : 0
+2026-07-03 14:26:38,684 INFO   Apify calls used so far — zillow    : 0
+2026-07-03 14:26:38,684 INFO   Apify calls used so far — google    : 0
+2026-07-03 14:26:38,684 INFO   Planned bands                       : 3 ($30,000-$55,000 | $55,001-$80,000 | $80,001-$125,000)
+2026-07-03 14:26:38,684 INFO   Planned Zillow calls this market    : 3
+2026-07-03 14:26:38,684 INFO   Planned max Google email calls      : 1 (only for top 1 scored leads)
+2026-07-03 14:26:38,684 INFO   Estimated actor calls this market   : 4 (Zillow + Google, capped)
+2026-07-03 14:26:38,684 INFO   Remaining shared budget              : 20 calls
+2026-07-03 14:26:38,684 INFO ============================================================
+2026-07-03 14:26:38,754 INFO Scraping band: $30,000-$55,000 [variant=base]
+2026-07-03 14:26:38,754 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-07-03 14:26:38,754 INFO Band $30,000-$55,000 [base]: maxResults=200 | actor call #1 (zillow call #1)
+2026-07-03 14:26:41,139 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-07-03 14:26:42,609 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/iPs41ZEeOZrr2Jojr?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 14:26:47,481 INFO HTTP Request: GET https://api.apify.com/v2/datasets/mYgBhQRaubzU7ZQM6/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 14:26:48,168 INFO Band $30,000-$55,000 [base]: 43 raw results
+2026-07-03 14:26:48,197 INFO Band $30,000-$55,000 [base]: raw=43 | dom30+=29 | candidates=29 | reasons: passed_by_dom=29 | reject_dom_too_low=12 | reject_dom_zero_fresh=2
+2026-07-03 14:26:53,197 INFO Band $30,000-$55,000 combined: 29 unique candidates across 1 variant(s)
+2026-07-03 14:26:53,197 INFO Scraping band: $55,001-$80,000 [variant=base]
+2026-07-03 14:26:53,197 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-07-03 14:26:53,197 WARNING MAX_ZILLOW_CALLS_PER_WORKFLOW=1 reached (zillow=1, total=1) — stopping Zillow scrape for Cleveland
+2026-07-03 14:26:53,197 INFO Band $55,001-$80,000 combined: 0 unique candidates across 1 variant(s)
+2026-07-03 14:26:53,198 INFO Scraping band: $80,001-$125,000 [variant=base]
+2026-07-03 14:26:53,198 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-07-03 14:26:53,198 WARNING MAX_ZILLOW_CALLS_PER_WORKFLOW=1 reached (zillow=1, total=1) — stopping Zillow scrape for Cleveland
+2026-07-03 14:26:53,198 INFO Band $80,001-$125,000 combined: 0 unique candidates across 1 variant(s)
+2026-07-03 14:26:53,198 INFO ============================================================
+2026-07-03 14:26:53,198 INFO TOP SCORED LEADS — Cleveland (1 of 29 shown)
+2026-07-03 14:26:53,198 INFO   #1 score=103.0 | 10513 Parkview Ave, Cleveland, OH 44104 | $30,000 | DOM=138 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 10.0, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 0, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-07-03 14:26:53,198 INFO ============================================================
+2026-07-03 14:26:53,199 INFO 28 lower-scored leads will NOT be sent to email enrichment this run (MAX_LEADS_TO_ENRICH_PER_WORKFLOW=1). They are still kept for the dashboard/log with Email: NONE unless Zillow itself already supplied an email.
+2026-07-03 14:26:53,199 INFO Starting email enrichment for 1 shortlisted leads (google cap: 1 calls, shared budget remaining: 19)...
+2026-07-03 14:26:53,199 INFO Email lookup: 1 leads need emails, 0 already have one
+2026-07-03 14:26:53,678 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-detail-scraper/runs?timeout=90 "HTTP/1.1 201 Created"
+2026-07-03 14:26:54,749 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/zBw5jI0SxqCypTpew?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-07-03 14:27:02,313 INFO HTTP Request: GET https://api.apify.com/v2/datasets/Z2Z3q1daulcWjwjYY/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-07-03 14:27:02,375 INFO Zillow detail attempt: url=https://www.zillow.com/homedetails/10513-Parkview-Ave-Cleveland-OH-44104/33415553_zpid/ | actor=maxcopell/zillow-detail-scraper | items_returned=1
+2026-07-03 14:27:02,375 INFO Zillow detail item top-level keys: ['ZoDsFsUpsellTop', 'abbreviatedAddress', 'adTargets', 'address', 'addressOrUrlFromInput', 'annualHomeownersInsurance', 'apartmentsForRentInZipcodeSearchUrl', 'attributionInfo', 'bathrooms', 'bedrooms', 'brokerIdDimension', 'brokerageName', 'city', 'cityId', 'citySearchUrl', 'collections', 'contactFormRenderData', 'country', 'county', 'countyFIPS', 'countyId', 'countySearchUrl', 'currency', 'datePostedString', 'daysOnZillow', 'description', 'desktopWebHdpImageLink', 'enhancedBrokerImageUrl', 'favoriteCount', 'featuredListingTypeDimension', 'foreclosureJudicialType', 'foreclosureTypes', 'formattedChip', 'hasApprovedThirdPartyVirtualTourUrl', 'hasBadGeocode', 'hasPublicVideo', 'hdpTypeDimension', 'hdpUrl', 'hiResImageLink', 'hideZestimate']
+2026-07-03 14:27:02,377 INFO Zillow detail flattened: len=26500 | any_email=True | has_'Listed by'=True
+2026-07-03 14:27:02,378 INFO Zillow detail first 500 chars (emails masked): Phoenix 33415553 Cleveland OH FOR_SALE 10513 Parkview Ave Cleveland OH 44104 False False 4 2 30000 1930 10513 Parkview Ave 44104 False Similar homes NEIGHBORHOOD https://photos.zillowstatic.com/fp/7470228a5d115d4ef1b563fd94c425df-p_c.jpg 30000 USD 4 2 2105 2105 Square Feet sqft True 3885 3885.552 Square Feet 8100 Simon Ave Cleveland OH 44103 St. Claire-Superior 8100 Simon Ave Cleveland, OH 44103 41.526913 -81.63171 33385641 FOR_SALE MULTI_FAMILY /homedetails/8100-Simon-Ave-Cleveland-OH-44103/333
+2026-07-03 14:27:02,383 INFO Zillow detail contact found: email=melissa.harris@remax.net, phone=208-092-0081, source=zillow_detail_listed_by
+2026-07-03 14:27:02,383 INFO Email enrichment complete: found 1/1 emails
+2026-07-03 14:27:02,383 INFO LEAD: 10513 Parkview Ave, Cleveland, OH 44104 | $30,000 | DOM: 138 | score=103.0 | reason: passed_by_dom|base | Agent: False False True False | Brokerage: Platinum Real Estate | Email: melissa.harris@remax.net [zillow_detail_listed_by/source_verified/sendable]
+2026-07-03 14:27:02,383 INFO LEAD: 4309 E 73rd St, Cleveland, OH 44105 | $35,000 | DOM: 277 | score=102.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: E & D Realty & Investment Co | Email: NONE
+2026-07-03 14:27:02,383 INFO LEAD: 12 Maple Dr, Olmsted Falls, OH 44138 | $39,000 | DOM: 173 | score=101.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Elevate | Email: NONE
+2026-07-03 14:27:02,383 INFO LEAD: 657 E 131st St, Cleveland, OH 44108 | $40,000 | DOM: 349 | score=101.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Berkshire Hathaway HomeServices Professional Realty | Email: NONE
+2026-07-03 14:27:02,383 INFO LEAD: 7300 Claasen Ave, Cleveland, OH 44105 | $32,600 | DOM: 105 | score=100.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Berkshire Hathaway HomeServices Stouffer Realty | Email: NONE
+2026-07-03 14:27:02,383 INFO LEAD: 9807 Elizabeth Ave, Cleveland, OH 44105 | $44,900 | DOM: 120 | score=100.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Howard Hanna | Email: NONE
+2026-07-03 14:27:02,383 INFO LEAD: 3379 E 130th St, Cleveland, OH 44120 | $50,000 | DOM: 175 | score=99.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 14:27:02,383 INFO LEAD: 1822 Farmington Rd, East Cleveland, OH 44112 | $50,000 | DOM: 118 | score=98.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: HomeSmart Real Estate Momentum LLC | Email: NONE
+2026-07-03 14:27:02,383 INFO LEAD: 3633 E 78th St, Cleveland, OH 44105 | $53,000 | DOM: 180 | score=98.4 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Joseph Walter Realty, LLC | Email: NONE
+2026-07-03 14:27:02,383 INFO LEAD: 472 E 110th St, Cleveland, OH 44108 | $55,000 | DOM: 174 | score=98.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Homestar | Email: NONE
+2026-07-03 14:27:02,383 INFO LEAD: 12628 Iroquois Ave, Cleveland, OH 44108 | $55,000 | DOM: 113 | score=96.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 15506 Elderwood Ave, East Cleveland, OH 44112 | $49,000 | DOM: 97 | score=95.4 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 46 Sycamore Dr, Olmsted Falls, OH 44138 | $44,900 | DOM: 80 | score=93.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Citywide | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 3000 Brookpark Rd #15, Cleveland, OH 44134 | $33,500 | DOM: 64 | score=93.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Hotdoors, LLC | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 6100 Gertrude Ave, Cleveland, OH 44105 | $49,900 | DOM: 80 | score=92.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Dwelling Network Advisors | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 1276 E 133rd St, East Cleveland, OH 44112 | $45,000 | DOM: 69 | score=91.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Platinum Real Estate | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 1257 E 170th St, Cleveland, OH 44110 | $45,000 | DOM: 66 | score=91.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Berkshire Hathaway HomeServices Stouffer Realty | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 12607 Oakfield Ave, Cleveland, OH 44105 | $48,000 | DOM: 64 | score=90.1 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Eberhardt Realty LLC | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 5 Michael Dr, Olmsted Falls, OH 44138 | $35,000 | DOM: 39 | score=88.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Citywide | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 987 E 129th St, Cleveland, OH 44108 | $50,000 | DOM: 57 | score=88.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Living | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 7112 Duluth Ave, Cleveland, OH 44103 | $55,000 | DOM: 62 | score=88.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: ListWithFreedom.com Inc | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 3706 E 71st St, Cleveland, OH 44105 | $50,000 | DOM: 55 | score=88.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 15610 Van Aken Blvd APT 4, Shaker Heights, OH 44120 | $50,000 | DOM: 55 | score=88.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 1737 Lakefront Ave, East Cleveland, OH 44112 | $50,000 | DOM: 52 | score=87.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Premiere Properties, Inc | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 14304 Scioto Ave, East Cleveland, OH 44112 | $39,900 | DOM: 36 | score=87.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: EXP Realty, LLC | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 5911 Lexington Ave, Cleveland, OH 44103 | $47,500 | DOM: 42 | score=86.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Berkshire Hathaway HomeServices Stouffer Realty | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 856 E 210th St, Euclid, OH 44119 | $47,500 | DOM: 41 | score=86.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Greater Metropolitan | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 8018 Platt Ave, Cleveland, OH 44104 | $49,900 | DOM: 36 | score=85.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Haven Realty | Email: NONE
+2026-07-03 14:27:02,384 INFO LEAD: 4289 E 136th St, Cleveland, OH 44105 | $49,900 | DOM: 35 | score=84.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Coldwell Banker Schmidt Realty | Email: NONE
+2026-07-03 14:27:02,384 INFO Scrape complete: Cleveland | 29 leads passed all screening gates | Apify totals — total=1 zillow=1 google=0
+2026-07-03 14:27:02,385 INFO [1/5] 29 fresh leads from Zillow
+2026-07-03 14:27:02,386 INFO FORCE_RUN=true — bypassing business hours gate (logged once per run)
+2026-07-03 14:27:02,392 INFO [2/5] 29 after dedup
+2026-07-03 14:27:02,393 INFO Saved 14 leads to overflow for next run
+2026-07-03 14:27:02,393 INFO Saved 14 leads to overflow for next run
+2026-07-03 14:27:02,393 INFO [3/5] Calculating offers and generating emails...
+2026-07-03 14:27:02,395 INFO [3/5] 1 ready | Skipped: 0 pitch + 14 no email
+2026-07-03 14:27:02,395 INFO No-email contact research candidates: no new leads to add (all already queued today)
+2026-07-03 14:27:02,395 INFO [4/5] Sending emails...
+2026-07-03 14:27:02,395 INFO Starting batch | Market: cleveland | Sender: 229holdingsllc@gmail.com | Leads: 1 | Inbox 229holdingsllc@gmail.com: 0/15 sent today, 15 remaining | Global: 0/30 sent today, 30 remaining | Effective limit this batch: 15
+2026-07-03 14:27:02,409 INFO PDF ready for 10513 Parkview Ave, Cleveland, OH 44104
+2026-07-03 14:27:02,409 WARNING [LIVE-SEND BLOCKED] LIVE_SEND_ENABLED env is 'unset' (not 'true') — refusing real send to melissa.harris@remax.net despite dry_run=False. Treating as dry run.
+2026-07-03 14:27:02,409 INFO Waiting 180s before next send (1/15 this batch)...
+2026-07-03 14:30:02,222 INFO Batch complete | Sent: 1 | Failed: 0 | Market: cleveland
+2026-07-03 14:30:02,222 INFO [4/5] 1 emails sent
+2026-07-03 14:30:02,223 INFO [5/5] Pushing to GHL...
+2026-07-03 14:30:02,224 INFO Logged: 10513 Parkview Ave, Cleveland, OH 44104 | Agent: melissa.harris@remax.net | Total: 1/3 | Window: 1/2 in 35d
+2026-07-03 14:30:02,558 ERROR GHL contact creation failed: 401 {"msg":"Api key is invalid."}
+2026-07-03 14:30:02,559 ERROR Could not create GHL contact for 10513 Parkview Ave, Cleveland, OH 44104
+2026-07-03 14:30:02,561 INFO Dashboard data saved: data/cleveland_leads.json (29 current scored leads)
+2026-07-03 14:30:02,561 INFO ============================================================
+2026-07-03 14:30:02,561 INFO COMPLETE: CLEVELAND | Scraped: 29 | Sent: 1 | Pitch skipped: 0 | No email: 14
+2026-07-03 14:30:02,561 INFO All-time: 19 properties | 15 agents
+2026-07-03 14:30:02,561 INFO ============================================================
+2026-07-03 14:30:02,561 INFO Global: 1/30 sent today (0 prior runs + 1 this run) | Remaining: 29
+2026-07-03 14:30:02,561 INFO Waiting 3 minutes between markets...
+2026-07-03 14:33:02,561 INFO ============================================================
+2026-07-03 14:33:02,561 INFO PIPELINE: AKRON | 2026-07-03 14:33
+2026-07-03 14:33:02,562 INFO DRY RUN: False | LIMIT: 15 emails this run
+2026-07-03 14:33:02,562 INFO ============================================================
+2026-07-03 14:33:02,562 INFO CLEAR_OVERFLOW_BEFORE_RUN=true — ignoring data/overflow.json for this run (treating overflow as empty, file on disk left untouched)
+2026-07-03 14:33:02,562 INFO [1/5] Scraping Zillow for akron...
+2026-07-03 14:33:02,562 INFO ============================================================
+2026-07-03 14:33:02,562 INFO SCRAPER: Akron
+2026-07-03 14:33:02,562 INFO   APIFY_ENABLED                       : True (raw='true')
+2026-07-03 14:33:02,562 INFO   EMAIL_ENRICHMENT_ENABLED            : True (raw='true')
+2026-07-03 14:33:02,562 INFO   MAX_APIFY_RUNS_PER_WORKFLOW         : 20 (EMERGENCY global cap — all actors)
+2026-07-03 14:33:02,562 INFO   MAX_ZILLOW_CALLS_PER_WORKFLOW       : 1 (Zillow only — independent of email budget)
+2026-07-03 14:33:02,562 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW: 1
+2026-07-03 14:33:02,562 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET: 1
+2026-07-03 14:33:02,562 INFO   MAX_LEADS_TO_ENRICH_PER_WORKFLOW    : 1 (top-scored leads sent to enrichment)
+2026-07-03 14:33:02,562 INFO   ENABLE_PRICE_REDUCED_OF_VARIANT     : False
+2026-07-03 14:33:02,562 INFO   Apify calls used so far — total     : 1
+2026-07-03 14:33:02,562 INFO   Apify calls used so far — zillow    : 1
+2026-07-03 14:33:02,562 INFO   Apify calls used so far — google    : 0
+2026-07-03 14:33:02,562 INFO   Planned bands                       : 3 ($30,000-$55,000 | $55,001-$80,000 | $80,001-$125,000)
+2026-07-03 14:33:02,562 INFO   Planned Zillow calls this market    : 3
+2026-07-03 14:33:02,563 INFO   Planned max Google email calls      : 1 (only for top 1 scored leads)
+2026-07-03 14:33:02,563 INFO   Estimated actor calls this market   : 4 (Zillow + Google, capped)
+2026-07-03 14:33:02,563 INFO   Remaining shared budget              : 19 calls
+2026-07-03 14:33:02,563 INFO ============================================================
+2026-07-03 14:33:02,599 INFO Scraping band: $30,000-$55,000 [variant=base]
+2026-07-03 14:33:02,599 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-07-03 14:33:02,599 WARNING MAX_ZILLOW_CALLS_PER_WORKFLOW=1 reached (zillow=1, total=1) — stopping Zillow scrape for Akron
+2026-07-03 14:33:02,599 INFO Band $30,000-$55,000 combined: 0 unique candidates across 1 variant(s)
+2026-07-03 14:33:02,599 INFO Scraping band: $55,001-$80,000 [variant=base]
+2026-07-03 14:33:02,599 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-07-03 14:33:02,599 WARNING MAX_ZILLOW_CALLS_PER_WORKFLOW=1 reached (zillow=1, total=1) — stopping Zillow scrape for Akron
+2026-07-03 14:33:02,599 INFO Band $55,001-$80,000 combined: 0 unique candidates across 1 variant(s)
+2026-07-03 14:33:02,599 INFO Scraping band: $80,001-$125,000 [variant=base]
+2026-07-03 14:33:02,599 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-07-03 14:33:02,599 WARNING MAX_ZILLOW_CALLS_PER_WORKFLOW=1 reached (zillow=1, total=1) — stopping Zillow scrape for Akron
+2026-07-03 14:33:02,600 INFO Band $80,001-$125,000 combined: 0 unique candidates across 1 variant(s)
+2026-07-03 14:33:02,600 INFO Scrape complete: Akron | 0 leads passed all screening gates | Apify totals — total=1 zillow=1 google=0
+2026-07-03 14:33:02,601 INFO [1/5] 0 fresh leads from Zillow
+2026-07-03 14:33:02,601 INFO [2/5] 0 after dedup
+2026-07-03 14:33:02,601 INFO No fresh leads — exiting market
+2026-07-03 14:33:02,601 INFO Saved 0 leads to overflow for next run
+2026-07-03 14:33:02,601 INFO Dashboard data saved: data/akron_leads.json (0 current scored leads)
+2026-07-03 14:33:02,601 INFO All markets complete | Sent this run: 1 | Total today: 1/30
+2026-07-03 14:33:02,603 INFO pipeline_log.json written — 1 emails this run, 1 in active queue, 27 in sent history
+2026-07-03 14:33:02,603 INFO All markets complete. Dashboard updated. Check GHL for contacts.
