@@ -6,6 +6,7 @@ from unittest.mock import patch
 
 def stub_module(name, **attrs):
     module = types.ModuleType(name)
+    module.__test_stub__ = True
     for key, value in attrs.items():
         setattr(module, key, value)
     sys.modules.setdefault(name, module)
@@ -28,6 +29,10 @@ stub_module("ghl_push", push_to_ghl=lambda listing, offer, email, market_key: No
 
 import main
 import scraper
+
+for module_name in ("offer", "email_gen", "dedup", "gmail_send", "ghl_push"):
+    if getattr(sys.modules.get(module_name), "__test_stub__", False):
+        sys.modules.pop(module_name, None)
 
 
 class FakeActor:
