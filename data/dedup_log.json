@@ -186,6 +186,78 @@
       "subject": "Quick Close on 300 34th Ave NE. Good for Your Seller?",
       "offer_type": "cash_lowball",
       "zillow_url": "https://www.zillow.com/homedetails/300-34th-Ave-NE-Center-Point-AL-35215/886172_zpid/"
+    },
+    "zpid:393658": {
+      "address": "11000 Donnie Dr, Shannon Hills, AR 72103",
+      "address_key": "11000 donnie dr, shannon hills, ar 72103",
+      "property_key": "zpid:393658",
+      "zpid": "393658",
+      "zillow_url": "https://www.zillow.com/homedetails/11000-Donnie-Dr-Shannon-Hills-AR-72103/393658_zpid/",
+      "market": "little rock",
+      "agent_name": "",
+      "agent_email": "stacy.smith@vylla.com",
+      "brokerage": "Vylla Home",
+      "list_price": 37700,
+      "days_on_market": 471,
+      "offer_type": "owner_finance",
+      "email_subject": "Offer on 11000 Donnie Dr, Shannon Hills, AR 72103",
+      "sender_email": "229holdingsllc@gmail.com",
+      "sent_at": "2026-07-03T15:58:19.398143",
+      "status": "sent"
+    },
+    "11000 donnie dr, shannon hills, ar 72103": {
+      "address": "11000 Donnie Dr, Shannon Hills, AR 72103",
+      "address_key": "11000 donnie dr, shannon hills, ar 72103",
+      "property_key": "zpid:393658",
+      "zpid": "393658",
+      "zillow_url": "https://www.zillow.com/homedetails/11000-Donnie-Dr-Shannon-Hills-AR-72103/393658_zpid/",
+      "market": "little rock",
+      "agent_name": "",
+      "agent_email": "stacy.smith@vylla.com",
+      "brokerage": "Vylla Home",
+      "list_price": 37700,
+      "days_on_market": 471,
+      "offer_type": "owner_finance",
+      "email_subject": "Offer on 11000 Donnie Dr, Shannon Hills, AR 72103",
+      "sender_email": "229holdingsllc@gmail.com",
+      "sent_at": "2026-07-03T15:58:19.398143",
+      "status": "sent"
+    },
+    "zpid:21840625": {
+      "address": "1135 NE Grand Blvd, Oklahoma City, OK 73117",
+      "address_key": "1135 ne grand blvd, oklahoma city, ok 73117",
+      "property_key": "zpid:21840625",
+      "zpid": "21840625",
+      "zillow_url": "https://www.zillow.com/homedetails/1135-NE-Grand-Blvd-Oklahoma-City-OK-73117/21840625_zpid/",
+      "market": "oklahoma city",
+      "agent_name": "",
+      "agent_email": "jalbert@mcgrawrealtors.com",
+      "brokerage": "LIME Realty",
+      "list_price": 60000,
+      "days_on_market": 130,
+      "offer_type": "owner_finance",
+      "email_subject": "Offer on 1135 NE Grand Blvd, Oklahoma City, OK 73117",
+      "sender_email": "bitonigroup@gmail.com",
+      "sent_at": "2026-07-03T16:10:32.827089",
+      "status": "sent"
+    },
+    "1135 ne grand blvd, oklahoma city, ok 73117": {
+      "address": "1135 NE Grand Blvd, Oklahoma City, OK 73117",
+      "address_key": "1135 ne grand blvd, oklahoma city, ok 73117",
+      "property_key": "zpid:21840625",
+      "zpid": "21840625",
+      "zillow_url": "https://www.zillow.com/homedetails/1135-NE-Grand-Blvd-Oklahoma-City-OK-73117/21840625_zpid/",
+      "market": "oklahoma city",
+      "agent_name": "",
+      "agent_email": "jalbert@mcgrawrealtors.com",
+      "brokerage": "LIME Realty",
+      "list_price": 60000,
+      "days_on_market": 130,
+      "offer_type": "owner_finance",
+      "email_subject": "Offer on 1135 NE Grand Blvd, Oklahoma City, OK 73117",
+      "sender_email": "bitonigroup@gmail.com",
+      "sent_at": "2026-07-03T16:10:32.827089",
+      "status": "sent"
     }
   },
   "agents": {
@@ -303,6 +375,44 @@
       ],
       "first_contact": "2026-06-28T06:48:37.055284",
       "last_sent": "2026-06-28T06:48:37.055284"
+    },
+    "stacy.smith@vylla.com": {
+      "person_key": "stacy.smith@vylla.com",
+      "person_confidence": "medium",
+      "agent_name": "",
+      "brokerage": "Vylla Home",
+      "total_contacted": 1,
+      "sends_in_window": [
+        {
+          "address": "11000 Donnie Dr, Shannon Hills, AR 72103",
+          "prop_key": "zpid:393658",
+          "sent_at": "2026-07-03T15:58:19.398143"
+        }
+      ],
+      "properties": [
+        "zpid:393658"
+      ],
+      "first_contact": "2026-07-03T15:58:19.398143",
+      "last_sent": "2026-07-03T15:58:19.398143"
+    },
+    "jalbert@mcgrawrealtors.com": {
+      "person_key": "jalbert@mcgrawrealtors.com",
+      "person_confidence": "medium",
+      "agent_name": "",
+      "brokerage": "LIME Realty",
+      "total_contacted": 1,
+      "sends_in_window": [
+        {
+          "address": "1135 NE Grand Blvd, Oklahoma City, OK 73117",
+          "prop_key": "zpid:21840625",
+          "sent_at": "2026-07-03T16:10:32.827089"
+        }
+      ],
+      "properties": [
+        "zpid:21840625"
+      ],
+      "first_contact": "2026-07-03T16:10:32.827089",
+      "last_sent": "2026-07-03T16:10:32.827089"
     }
   },
   "opted_out": [],
