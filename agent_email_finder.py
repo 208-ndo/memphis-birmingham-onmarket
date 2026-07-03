@@ -42,6 +42,11 @@ from contact_validation import (
     is_plausible_business_email, email_is_sendable, EMAIL_RE, SKIP_DOMAINS,
 )
 
+try:
+    from zillow_detail_contact import fetch_detail_contact
+except Exception:  # pragma: no cover - keep enrichment importable without it
+    fetch_detail_contact = None
+
 logger = logging.getLogger(__name__)
 
 APIFY_TOKEN     = os.environ.get("APIFY_API_TOKEN")
@@ -166,6 +171,39 @@ def find_published_agent_contact(lead, client, can_make_call=None,
         return _contact_dict(existing, listing_url or "zillow_item",
                              "zillow_contact", "source_verified", phone)
 
+    # ── Rung 1.5: Zillow DETAIL page "Listed by" block (2026-07-02) ─────────
+    # The search-results feed omits the agent email; the detail page's
+    # "Listed by" block has it. Run this BEFORE any Google call so we never
+    # spend Google/Apify email-search budget when the email is already
+    # published on the listing. Only uses emails literally visible on the
+    # page — never guessed. This is the strongest rung after a direct item
+    # email, so it short-circuits the whole Google ladder on success.
+    if fetch_detail_contact is not None and listing_url:
+        try:
+            detail = fetch_detail_contact(listing_url, client=client)
+        except Exception as e:
+            logger.debug("Zillow detail extraction failed for %s: %s", listing_url, e)
+            detail = {}
+        if detail.get("email"):
+            result = _contact_dict(
+                detail["email"], detail["email_source_url"],
+                "zillow_detail_listed_by", "source_verified",
+                detail.get("agent_phone") or phone)
+            # Carry through detail-page name/brokerage when the item lacked them
+            if detail.get("agent_name"):
+                result["agent_name"] = detail["agent_name"]
+            if detail.get("brokerage_name"):
+                result["brokerage_name"] = detail["brokerage_name"]
+            return result
+        # If the detail page gave a better phone/name but no email, keep them
+        # for the phone-only fallback and for the Google queries below.
+        if detail.get("agent_phone") and not phone:
+            phone = detail["agent_phone"]
+        if detail.get("agent_name") and not agent_name:
+            agent_name = clean_agent_name(detail["agent_name"])
+        if detail.get("brokerage_name") and not brokerage:
+            brokerage = detail["brokerage_name"]
+
     # ── Rung 2: contact data tied to the live listing (listing URL query) ──
     if listing_url:
         results = _run_google_query(f'"{address}" listing agent contact {listing_url}',
@@ -288,12 +326,16 @@ def enrich_leads_with_emails(leads, market, client,
                             cached["email_source_type"], brokerage, cached["email"])
             continue
 
+        # find_published_agent_contact() runs the Zillow detail-page "Listed
+        # by" rung FIRST (before any Google call), so call it even when the
+        # Google budget is exhausted — the detail rung doesn't use Google
+        # budget. can_make_call is still passed through so the Google rungs
+        # inside it self-gate and make zero Google calls once the cap is hit.
         if not can_make_call():
-            logger.warning(
-                "EMAIL ENRICHMENT BUDGET REACHED — keeping remaining leads "
-                "without email (%s leads left un-enriched)",
+            logger.info(
+                "Google email budget exhausted — running Zillow detail-page "
+                "step only for remaining %s leads (no Google calls)",
                 len(needs_email) - idx)
-            break
 
         contact = find_published_agent_contact(
             lead, client, can_make_call=can_make_call,
