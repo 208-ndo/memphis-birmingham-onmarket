@@ -37,6 +37,16 @@ class DashboardDisplaySanitizationTest(unittest.TestCase):
         self.assertNotIn("Hi True False False False,", bodies)
         self.assertNotIn("Hi False False True False,", bodies)
 
+    def test_4309_alias_send_displays_once_for_same_recipient(self):
+        data = json.loads(Path("data/pipeline_log.json").read_text(encoding="utf-8"))
+        rows = [
+            row for row in data.get("history", [])
+            if str(row.get("zillow_url", "")).endswith("/33426592_zpid/")
+            and str(row.get("agent_email", "")).lower() == "lydiapope88@gmail.com"
+            and str(row.get("email_subject", "")).strip() == "Offer on 4309 E 73rd St, Cleveland, OH 44105"
+        ]
+        self.assertEqual(len(rows), 1)
+
     def test_bounced_email_does_not_display_as_clean_success(self):
         data = json.loads(Path("data/pipeline_log.json").read_text(encoding="utf-8"))
         parkview_history = [

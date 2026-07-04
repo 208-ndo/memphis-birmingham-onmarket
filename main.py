@@ -382,7 +382,7 @@ def save_pipeline_log(all_results: dict):
     seen_keys = set()
     deduped_history = []
     for entry in merged_history:
-        key = (entry.get("address"), entry.get("agent_email"), entry.get("sent"))
+        key = _sent_history_display_key(entry)
         if key in seen_keys:
             continue
         seen_keys.add(key)
@@ -417,6 +417,35 @@ def save_pipeline_log(all_results: dict):
         f"pipeline_log.json written — {total_emails} emails this run, "
         f"{len(combined_queue)} in active queue, {len(combined_history)} in sent history"
     )
+
+
+def _sent_history_display_key(entry: dict) -> tuple:
+    """
+    Collapse dashboard sent-history aliases for the same outreach.
+
+    dedup_log.json intentionally stores multiple property keys for duplicate
+    protection, but the dashboard should show one row per outreach. Use zpid
+    when available, otherwise normalized address, plus recipient and subject.
+    Do not include the displayed timestamp because older aliases may carry a
+    different formatted time for the same send.
+    """
+    url = str(entry.get("zillow_url") or "")
+    zpid = ""
+    if "_zpid" in url:
+        import re
+        match = re.search(r"(\d+)_zpid", url)
+        if match:
+            zpid = match.group(1)
+    property_id = f"zpid:{zpid}" if zpid else _normalize_history_address(entry.get("address"))
+    return (
+        property_id,
+        str(entry.get("agent_email") or "").strip().lower(),
+        str(entry.get("email_subject") or "").strip().lower(),
+    )
+
+
+def _normalize_history_address(address) -> str:
+    return " ".join(str(address or "").strip().lower().split())
 
 
 def run_market(market_key: str, dry_run: bool = False) -> dict:

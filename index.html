@@ -753,6 +753,30 @@ function laneBadge(lane,fallbackLabel){
 var _allRunsData = [];
 var _runsExpanded = false;
 
+function normalizeHistoryAddress(address){return String(address||'').trim().toLowerCase().replace(/\s+/g,' ');}
+function historyDisplayKey(row){
+  row = row || {};
+  var url = String(row.zillow_url || '');
+  var match = url.match(/(\d+)_zpid/);
+  var propertyId = match ? ('zpid:' + match[1]) : normalizeHistoryAddress(row.address);
+  return [
+    propertyId,
+    String(row.agent_email || '').trim().toLowerCase(),
+    String(row.email_subject || '').trim().toLowerCase()
+  ].join('|');
+}
+function dedupeHistoryRows(rows){
+  var seen = {};
+  var out = [];
+  (rows || []).forEach(function(row){
+    var key = historyDisplayKey(row);
+    if(seen[key]) return;
+    seen[key] = true;
+    out.push(row);
+  });
+  return out;
+}
+
 async function loadRunData(){try{var res=await fetch('./data/pipeline_log.json');if(!res.ok)return;var d=await res.json();
 if(d.summary){
   var lastEl = document.getElementById('s-last');
@@ -761,7 +785,7 @@ if(d.summary){
 _allRunsData = d.runs || [];
 renderRunsTable();
 _queueData = d.queue || [];
-_historyData = d.history || [];
+_historyData = dedupeHistoryRows(d.history || []);
 }catch(e){}}
 
 function runRowHtml(r){
