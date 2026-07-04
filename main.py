@@ -11,9 +11,10 @@ from config import (
 from scraper import ApifyQuotaError, scrape_market
 from offer import calculate_offer
 from email_gen import generate_emails, pick_email
-from dedup import should_send, mark_sent, get_stats
+from dedup import should_send, mark_sent, get_stats, is_bad_email
 from gmail_send import send_batch
 from ghl_push import push_to_ghl
+from contact_validation import display_agent_name
 
 logging.basicConfig(
     level=logging.INFO,
@@ -243,6 +244,11 @@ def save_dashboard_data(market_key: str, leads: list, sent_results: list):
     dashboard_file = f"data/{market_key}_leads.json"
 
     sent_addresses = {r["listing"].get("address") for r in sent_results if r["success"]}
+    bounced_addresses = {
+        r["listing"].get("address")
+        for r in sent_results
+        if not r.get("success") and is_bad_email(r["listing"].get("agent_email"))
+    }
     new_entries = []
     for lead in leads:
         address    = lead.get("address", "")
@@ -255,7 +261,7 @@ def save_dashboard_data(market_key: str, leads: list, sent_results: list):
             "list_price":          list_price,
             "days_on_market":      lead.get("days_on_market", 0),
             "score":               lead.get("score", 0),
-            "agent_name":          lead.get("agent_name"),
+            "agent_name":          display_agent_name(lead.get("agent_name")),
             "agent_email":         lead.get("agent_email"),
             "agent_phone":         lead.get("agent_phone"),
             "offer_type":          offer.get("offer_type", ""),
@@ -268,6 +274,8 @@ def save_dashboard_data(market_key: str, leads: list, sent_results: list):
             "down_payment":        offer.get("down_payment", 0),
             "zillow_url":          lead.get("url"),
             "email_sent":          address in sent_addresses,
+            "email_bounced":       address in bounced_addresses,
+            "contact_status":      "bounced" if address in bounced_addresses else ("sent" if address in sent_addresses else ""),
             "pipeline_date":       datetime.now().strftime("%Y-%m-%d"),
         })
 
@@ -335,10 +343,11 @@ def save_pipeline_log(all_results: dict):
                 ) else "CL",
                 "offer_lane":   classify_offer_lane(list_price, offer),
                 "offer":        offer.get("owner_finance_offer") or offer.get("cash_offer", 0),
-                "agent":        listing.get("agent_name"),
+                "agent":        display_agent_name(listing.get("agent_name")),
                 "agent_email":  listing.get("agent_email"),
                 "agent_phone":  listing.get("agent_phone"),
                 "sent":         run_date,
+                "status":       "SENT",
                 "zillow_url":   listing.get("url"),
                 "email_subject": sent_email.get("subject"),
                 "email_body":   sent_email.get("body"),

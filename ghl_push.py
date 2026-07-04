@@ -15,6 +15,16 @@ def get_headers():
         "Version": "2021-04-15"
     }
 
+
+def _log_ghl_http_error(action: str, resp):
+    if resp.status_code == 401:
+        log.error(
+            f"GHL {action} failed: 401 unauthorized. GHL credential/config issue; "
+            "verify GitHub secrets GHL_API_KEY and GHL_LOCATION_ID. Gmail send status is separate."
+        )
+    else:
+        log.error(f"GHL {action} failed: {resp.status_code} {resp.text}")
+
 def find_contact_by_email(email: str) -> str | None:
     """Check if contact already exists in GHL by email."""
     try:
@@ -92,7 +102,7 @@ def create_contact(listing: dict, offer: dict, market_key: str) -> str | None:
             log.info(f"GHL contact created: {agent_email} | ID: {contact_id}")
             return contact_id
         else:
-            log.error(f"GHL contact creation failed: {resp.status_code} {resp.text}")
+            _log_ghl_http_error("contact creation", resp)
     except Exception as e:
         log.error(f"GHL create contact error: {e}")
     return None
@@ -142,7 +152,7 @@ def send_sms(contact_id: str, listing: dict, offer: dict, market_key: str) -> bo
             log.info(f"SMS sent to {contact_id} | {address} | '{message[:50]}...'")
             return True
         else:
-            log.error(f"SMS failed: {resp.status_code} {resp.text}")
+            _log_ghl_http_error("SMS send", resp)
     except Exception as e:
         log.error(f"GHL SMS error: {e}")
     return False

@@ -11,6 +11,8 @@ signatures were changed — only how the existing values are presented.
 import random
 import re
 
+from contact_validation import is_invalid_agent_name
+
 SIGN_OFF = "Michael B. | 229 Holdings LLC"
 COMPANY_NAME_INDICATORS = (
     "realty",
@@ -89,17 +91,7 @@ def _agent_greeting(listing: dict) -> str:
 
 
 def _looks_like_invalid_agent_name(name: str) -> bool:
-    if not name:
-        return True
-    normalized = re.sub(r"\s+", " ", name.lower()).strip()
-    if normalized in {"unknown", "n/a", "na", "none", "null", "false", "true"}:
-        return True
-    tokens = normalized.split()
-    if tokens and all(token in {"true", "false", "unknown", "none", "null"} for token in tokens):
-        return True
-    if not re.search(r"[a-z]", normalized):
-        return True
-    return False
+    return is_invalid_agent_name(name)
 
 
 def _looks_like_company_name(name: str) -> bool:

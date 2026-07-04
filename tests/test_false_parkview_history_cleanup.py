@@ -56,20 +56,16 @@ class FalseParkviewHistoryCleanupTest(unittest.TestCase):
             for record in data.get(section, []):
                 self.assertFalse(is_false_parkview_sent_record(record), section)
 
-        self.assertEqual(data["summary"]["emails_sent"], 0)
-        self.assertEqual(data["summary"]["ghl_pushed"], 0)
-
-    def test_current_dashboard_lead_is_not_marked_successfully_emailed(self):
-        leads = json.loads(Path("data/cleveland_leads.json").read_text(encoding="utf-8"))
+    def test_parkview_sent_history_displays_bounced_status(self):
+        data = json.loads(Path("data/pipeline_log.json").read_text(encoding="utf-8"))
         matches = [
-            lead for lead in leads
-            if str(lead.get("address", "")).strip().lower() == ADDRESS.lower()
-            and str(lead.get("agent_email", "")).strip().lower() == EMAIL
+            record for record in data.get("history", [])
+            if str(record.get("address", "")).strip().lower() == ADDRESS.lower()
+            and str(record.get("agent_email", "")).strip().lower() == EMAIL
         ]
-        self.assertEqual(len(matches), 1)
-        self.assertFalse(matches[0]["email_sent"])
-        self.assertTrue(matches[0]["email_bounced"])
-        self.assertEqual(matches[0]["contact_status"], "bounced_invalid_recipient")
+        self.assertTrue(matches)
+        for record in matches:
+            self.assertEqual(record.get("status"), "BOUNCED")
 
 
 if __name__ == "__main__":

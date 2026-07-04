@@ -877,6 +877,9 @@ function marketMatches(marketField, needle){
 }
 
 function scoredStatusBadge(l){
+  if(l.email_bounced || String(l.contact_status||'').toLowerCase().indexOf('bounc')>=0){
+    return '<span class="badge badge-cl" style="font-size:9px">BOUNCED</span>';
+  }
   return l.email_sent
     ? '<span class="badge badge-new" style="font-size:9px">SENT</span>'
     : (l.pitch_holds ? '<span class="badge badge-of" style="font-size:9px">READY</span>' : '<span class="badge badge-cl" style="font-size:9px">REVIEW</span>');
@@ -959,7 +962,7 @@ function renderQueueFiltered(){
 
   _rawQueue = rows.map(function(q){
     var idx = _queueData.indexOf(q);
-    return '<tr class="clickable-row" onclick="openPropModal('+idx+',\'queue\')" ondblclick="openPropModal('+idx+',\'queue\')" style="cursor:pointer"><td style="color:var(--teal);text-decoration:underline">'+(q.address||'--')+'</td><td>'+(q.market||'--')+'</td><td>'+(q.price?'$'+Number(q.price).toLocaleString():'--')+'</td><td>'+(q.dom!=null?q.dom:'--')+'</td><td><span class="badge '+(q.type==='OF'?'badge-of':'badge-cl')+'">'+(q.type||'--')+'</span></td><td>'+laneBadge(q.offer_lane)+'</td><td>'+(q.offer?'$'+Number(q.offer).toLocaleString():'--')+'</td><td>'+(q.agent||'--')+'</td><td>'+(q.sent||'--')+'</td></tr>';
+    return '<tr class="clickable-row" onclick="openPropModal('+idx+',\'queue\')" ondblclick="openPropModal('+idx+',\'queue\')" style="cursor:pointer"><td style="color:var(--teal);text-decoration:underline">'+(q.address||'--')+'</td><td>'+(q.market||'--')+'</td><td>'+(q.price?'$'+Number(q.price).toLocaleString():'--')+'</td><td>'+(q.dom!=null?q.dom:'--')+'</td><td><span class="badge '+(q.type==='OF'?'badge-of':'badge-cl')+'">'+(q.type||'--')+'</span></td><td>'+laneBadge(q.offer_lane)+'</td><td>'+(q.offer?'$'+Number(q.offer).toLocaleString():'--')+'</td><td>'+safeAgentDisplay(q.agent)+'</td><td>'+(q.sent||'--')+'</td></tr>';
   });
   tbody.innerHTML = _rawQueue.join('');
   updateSearchCount();
@@ -993,7 +996,7 @@ function renderHistoryFiltered(){
 
   _rawHistory = rows.map(function(h){
     var idx = _historyData.indexOf(h);
-    return '<tr class="clickable-row" onclick="openPropModal('+idx+',\'history\')" ondblclick="openPropModal('+idx+',\'history\')" style="cursor:pointer"><td style="color:var(--teal);text-decoration:underline">'+(h.address||'--')+'</td><td>'+(h.market||'--')+'</td><td>'+(h.price?'$'+Number(h.price).toLocaleString():'--')+'</td><td>'+(h.dom!=null?h.dom:'--')+'</td><td><span class="badge '+(h.type==='OF'?'badge-of':'badge-cl')+'">'+(h.type||'--')+'</span></td><td>'+laneBadge(h.offer_lane,'LEGACY_SENT')+'</td><td>'+(h.offer?'$'+Number(h.offer).toLocaleString():'--')+'</td><td>'+(h.agent||'--')+'</td><td><span class="badge badge-new" style="font-size:9px">SENT</span> '+(h.sent||'--')+'</td></tr>';
+    return '<tr class="clickable-row" onclick="openPropModal('+idx+',\'history\')" ondblclick="openPropModal('+idx+',\'history\')" style="cursor:pointer"><td style="color:var(--teal);text-decoration:underline">'+(h.address||'--')+'</td><td>'+(h.market||'--')+'</td><td>'+(h.price?'$'+Number(h.price).toLocaleString():'--')+'</td><td>'+(h.dom!=null?h.dom:'--')+'</td><td><span class="badge '+(h.type==='OF'?'badge-of':'badge-cl')+'">'+(h.type||'--')+'</span></td><td>'+laneBadge(h.offer_lane,'LEGACY_SENT')+'</td><td>'+(h.offer?'$'+Number(h.offer).toLocaleString():'--')+'</td><td>'+safeAgentDisplay(h.agent)+'</td><td><span class="badge badge-new" style="font-size:9px">'+statusBadgeText(h)+'</span> '+(h.sent||'--')+'</td></tr>';
   });
   tbody.innerHTML = _rawHistory.join('');
   updateHistorySearchCount();
@@ -1303,6 +1306,26 @@ function renderHistoryFiltered(){
 var _modalLead = null, _modalRawLead = null, _modalSource = 'queue';
 var _modalOFEmails = [], _modalCLEmails = [];
 var fmt2 = function(v){return v?'$'+Math.round(v).toLocaleString():'—';};
+function isInvalidAgentName(name){
+  if(!name) return true;
+  var normalized = String(name).replace(/\s+/g,' ').trim().toLowerCase();
+  if(!normalized) return true;
+  var invalid = {'true':1,'false':1,'unknown':1,'none':1,'null':1,'n/a':1,'na':1};
+  if(invalid[normalized]) return true;
+  var tokens = normalized.split(' ');
+  if(tokens.length && tokens.every(function(t){return invalid[t];})) return true;
+  return !/[a-z]/.test(normalized);
+}
+function safeAgentDisplay(name){return isInvalidAgentName(name) ? '-' : String(name).replace(/\s+/g,' ').trim();}
+function sanitizeDisplayedEmailBody(body){
+  if(!body) return '';
+  return String(body).replace(/^Hi\s+(?:true|false|unknown|none|null)(?:\s+(?:true|false|unknown|none|null))*\s*,/i,'Hi,');
+}
+function statusBadgeText(row){
+  var status = String((row && (row.status || row.contact_status)) || '').toLowerCase();
+  if(status.indexOf('bounc') >= 0 || (row && row.email_bounced)) return 'BOUNCED';
+  return 'SENT';
+}
 
 // Adapts a Current-Scored-Leads-shaped record (list_price, days_on_market,
 // agent_name, offer_type, etc. — written by main.py's save_dashboard_data)
@@ -1319,7 +1342,7 @@ function adaptScoredLeadToQueueShape(lead){
     dom: lead.days_on_market,
     type: isOF ? 'OF' : 'CL',
     offer: isOF ? lead.owner_finance_offer : lead.cash_offer,
-    agent: lead.agent_name,
+    agent: safeAgentDisplay(lead.agent_name),
     agent_email: lead.agent_email,
     agent_phone: lead.agent_phone,
     sent: lead.email_sent ? (lead.pipeline_date||'') : '',
@@ -1380,8 +1403,9 @@ function openPropModal(idx, source){
   document.getElementById('m-market').textContent  = lead.market||'—';
   document.getElementById('m-price').textContent   = fmt2(lead.price);
   document.getElementById('m-dom').textContent     = (lead.dom!=null?lead.dom+'d':'—');
-  document.getElementById('m-agent').textContent   = lead.agent||'—';
-  document.getElementById('m-sent').textContent    = lead.sent||'—';
+  document.getElementById('m-agent').textContent   = safeAgentDisplay(lead.agent);
+  var sentStatus = statusBadgeText(lead);
+  document.getElementById('m-sent').textContent    = lead.sent ? (sentStatus + ' ' + lead.sent) : '-';
   var zlink = document.getElementById('m-zillow');
   if(lead.zillow_url){zlink.href=lead.zillow_url;zlink.style.display='inline';}
   else{zlink.style.display='none';}
@@ -1392,8 +1416,8 @@ function openPropModal(idx, source){
   var liveEmail = findCurrentRunEmailForAddress(lead.address);
   var emailSubject = (liveEmail && liveEmail.email_subject)
     || lead.email_subject || '';
-  var emailBody = (liveEmail && liveEmail.email_body)
-    || lead.email_body || '';
+  var emailBody = sanitizeDisplayedEmailBody((liveEmail && liveEmail.email_body)
+    || lead.email_body || '');
   document.getElementById('m-email-subject').textContent = emailSubject || '(no subject saved)';
   document.getElementById('m-email-body').textContent    = emailBody || 'No email preview saved for this row.';
   // Offer summary bar
@@ -1416,7 +1440,7 @@ function openPropModal(idx, source){
   pitchBadge.style.background = pitchOk ? 'rgba(0,230,118,.15)' : 'rgba(255,71,87,.15)';
   pitchBadge.style.color = pitchOk ? 'var(--green)' : 'var(--red)';
   // Agent contact
-  document.getElementById('m-agent-name-full').textContent = lead.agent||'—';
+  document.getElementById('m-agent-name-full').textContent = safeAgentDisplay(lead.agent);
   var emailLink = document.getElementById('m-agent-email-link');
   var email = lead.agent_email||'';
   if(email){emailLink.href='mailto:'+email;emailLink.textContent=email;emailLink.style.display='inline';}
@@ -1885,7 +1909,7 @@ function resetLOITab(){
 
   var lead = _modalLead || {};
   document.getElementById('loi-ref-address').textContent = lead.address || '—';
-  document.getElementById('loi-ref-agent').textContent   = lead.agent || '—';
+  document.getElementById('loi-ref-agent').textContent   = safeAgentDisplay(lead.agent);
   document.getElementById('loi-ref-email').textContent   = lead.agent_email || 'NONE';
 }
 

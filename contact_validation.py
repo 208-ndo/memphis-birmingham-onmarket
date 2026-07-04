@@ -29,6 +29,7 @@ _ALL_NUMERIC_RE   = re.compile(r"^[\d\s\.,#-]+$")
 _ID_LIKE_RE       = re.compile(r"^(id|mls|zpid|lot|apn|#)?[\s:#-]*\d{1,12}$", re.IGNORECASE)
 _PHONE_FRAG_RE    = re.compile(r"^\(?\d{3}\)?[\s.-]?\d{0,4}[\s.-]?\d{0,4}$")
 _HAS_LETTERS_RE   = re.compile(r"[A-Za-z]")
+_INVALID_NAME_TOKENS = {"true", "false", "unknown", "none", "null", "n/a", "na"}
 # Counts / UI fragments that leak out of Zillow text soup
 _JUNK_PATTERNS = re.compile(
     r"^[\d\s.,#-]*(days?\s+on|photos?|views?|saves?|baths?|beds?|sqft|acres?|price|"
@@ -49,6 +50,8 @@ def is_valid_agent_name(value) -> bool:
     if not value or not isinstance(value, str):
         return False
     name = re.sub(r"\s+", " ", value).strip(" ,.-:;|")
+    if is_invalid_agent_name(name):
+        return False
     if len(name) < 3:
         return False
     if len(name) > 80:  # real names/teams are short; long strings are text-soup leaks
@@ -70,11 +73,34 @@ def is_valid_agent_name(value) -> bool:
     return True
 
 
+def is_invalid_agent_name(value) -> bool:
+    """Reject placeholder, boolean, and empty values that are not display names."""
+    if not value or not isinstance(value, str):
+        return True
+    name = re.sub(r"\s+", " ", value).strip(" ,.-:;|")
+    if not name:
+        return True
+    normalized = name.lower()
+    if normalized in _INVALID_NAME_TOKENS:
+        return True
+    tokens = normalized.split()
+    if tokens and all(token in _INVALID_NAME_TOKENS for token in tokens):
+        return True
+    if not _HAS_LETTERS_RE.search(normalized):
+        return True
+    return False
+
+
 def clean_agent_name(value) -> str:
     """Return the cleaned name if valid, else '' (never a numeric junk name)."""
     if not is_valid_agent_name(value):
         return ""
     return re.sub(r"\s+", " ", str(value)).strip(" ,.-:;|")
+
+
+def display_agent_name(value, fallback: str = "-") -> str:
+    """Dashboard/sent-history safe agent display value."""
+    return clean_agent_name(value) or fallback
 
 
 # ── Email source / confidence taxonomy ─────────────────────────────────────────

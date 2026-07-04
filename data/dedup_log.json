@@ -266,7 +266,7 @@
       "zpid": "33426592",
       "zillow_url": "https://www.zillow.com/homedetails/4309-E-73rd-St-Cleveland-OH-44105/33426592_zpid/",
       "market": "cleveland",
-      "agent_name": "True False False False",
+      "agent_name": "-",
       "agent_email": "lydiapope88@gmail.com",
       "brokerage": "E & D Realty & Investment Co",
       "list_price": 35000,
@@ -284,7 +284,7 @@
       "zpid": "33426592",
       "zillow_url": "https://www.zillow.com/homedetails/4309-E-73rd-St-Cleveland-OH-44105/33426592_zpid/",
       "market": "cleveland",
-      "agent_name": "True False False False",
+      "agent_name": "-",
       "agent_email": "lydiapope88@gmail.com",
       "brokerage": "E & D Realty & Investment Co",
       "list_price": 35000,
@@ -451,9 +451,9 @@
       "last_sent": "2026-07-03T16:10:32.827089"
     },
     "lydiapope88@gmail.com": {
-      "person_key": "true false false false",
-      "person_confidence": "high",
-      "agent_name": "True False False False",
+      "person_key": "lydiapope88@gmail.com",
+      "person_confidence": "medium",
+      "agent_name": "-",
       "brokerage": "E & D Realty & Investment Co",
       "total_contacted": 1,
       "sends_in_window": [

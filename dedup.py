@@ -4,6 +4,7 @@ import re
 import logging
 from datetime import datetime, timedelta
 from config import DEDUP
+from contact_validation import display_agent_name, is_invalid_agent_name
 
 log = logging.getLogger(__name__)
 
@@ -107,6 +108,8 @@ def _write_property_key(listing: dict) -> str:
 def _is_company_name(name: str) -> bool:
     """Return True if the name looks like a brokerage/company, not a person."""
     if not name:
+        return True
+    if is_invalid_agent_name(name):
         return True
     name_lower = name.lower()
     return any(ind in name_lower for ind in COMPANY_INDICATORS)
@@ -247,7 +250,7 @@ def is_agent_window_maxed(listing: dict) -> bool:
 
     person_key, confidence = agent_person_key(listing)
     agent_email = (listing.get("agent_email") or "").lower().strip()
-    agent_name  = (listing.get("agent_name") or "").strip()
+    agent_name  = display_agent_name(listing.get("agent_name"), fallback="")
     cutoff      = datetime.now() - timedelta(days=AGENT_WINDOW_DAYS)
 
     # Count sends in window across ALL agent records that share this person_key
