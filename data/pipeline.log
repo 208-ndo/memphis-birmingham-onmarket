@@ -33194,3 +33194,37 @@
 2026-07-24 15:21:44,461 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 403 Forbidden"
 2026-07-24 15:21:44,461 ERROR APIFY QUOTA BLOCKED — preserving previous dashboard data and stopping workflow.
 2026-07-24 15:21:44,462 ERROR APIFY QUOTA BLOCKED — preserving previous dashboard data and stopping workflow.
+2026-07-24 18:10:12,366 INFO Pipeline starting | Markets: little_rock, oklahoma_city | Dry run: False | Force: False | Global cap: 30/day | Per-inbox: 15/day | Time: 18:10 UTC
+2026-07-24 18:10:12,366 INFO Global sends already today (before this run): 0/30
+2026-07-24 18:10:12,366 INFO Global: 0/30 sent today (0 prior runs + 0 this run) | Remaining: 30
+2026-07-24 18:10:12,367 INFO ============================================================
+2026-07-24 18:10:12,367 INFO PIPELINE: LITTLE_ROCK | 2026-07-24 18:10
+2026-07-24 18:10:12,367 INFO DRY RUN: False | LIMIT: 15 emails this run
+2026-07-24 18:10:12,367 INFO ============================================================
+2026-07-24 18:10:12,374 INFO Loaded 774 overflow leads from previous run
+2026-07-24 18:10:12,374 INFO [1/5] Scraping Zillow for little_rock...
+2026-07-24 18:10:12,374 INFO ============================================================
+2026-07-24 18:10:12,374 INFO SCRAPER: Little Rock
+2026-07-24 18:10:12,374 INFO   APIFY_ENABLED                       : True (raw='true')
+2026-07-24 18:10:12,374 INFO   EMAIL_ENRICHMENT_ENABLED            : True (raw='true')
+2026-07-24 18:10:12,374 INFO   MAX_APIFY_RUNS_PER_WORKFLOW         : 20 (EMERGENCY global cap — all actors)
+2026-07-24 18:10:12,374 INFO   MAX_ZILLOW_CALLS_PER_WORKFLOW       : 6 (Zillow only — independent of email budget)
+2026-07-24 18:10:12,374 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW: 10
+2026-07-24 18:10:12,374 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET: 5
+2026-07-24 18:10:12,374 INFO   MAX_LEADS_TO_ENRICH_PER_WORKFLOW    : 10 (top-scored leads sent to enrichment)
+2026-07-24 18:10:12,374 INFO   ENABLE_PRICE_REDUCED_OF_VARIANT     : False
+2026-07-24 18:10:12,375 INFO   Apify calls used so far — total     : 0
+2026-07-24 18:10:12,375 INFO   Apify calls used so far — zillow    : 0
+2026-07-24 18:10:12,375 INFO   Apify calls used so far — google    : 0
+2026-07-24 18:10:12,375 INFO   Planned bands                       : 4 ($30,000-$55,000 | $55,001-$80,000 | $80,001-$150,000 | $150,001-$300,000)
+2026-07-24 18:10:12,375 INFO   Planned Zillow calls this market    : 4
+2026-07-24 18:10:12,375 INFO   Planned max Google email calls      : 5 (only for top 10 scored leads)
+2026-07-24 18:10:12,375 INFO   Estimated actor calls this market   : 9 (Zillow + Google, capped)
+2026-07-24 18:10:12,375 INFO   Remaining shared budget              : 20 calls
+2026-07-24 18:10:12,375 INFO ============================================================
+2026-07-24 18:10:12,452 INFO Scraping band: $30,000-$55,000 [variant=base]
+2026-07-24 18:10:12,453 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-07-24 18:10:12,453 INFO Band $30,000-$55,000 [base]: maxResults=200 | actor call #1 (zillow call #1)
+2026-07-24 18:10:12,756 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 403 Forbidden"
+2026-07-24 18:10:12,757 ERROR APIFY QUOTA BLOCKED — preserving previous dashboard data and stopping workflow.
+2026-07-24 18:10:12,757 ERROR APIFY QUOTA BLOCKED — preserving previous dashboard data and stopping workflow.
