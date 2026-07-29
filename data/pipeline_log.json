@@ -1,7 +1,7 @@
 {
   "summary": {
-    "run_date": "2026-07-29 18:17",
-    "total_leads": 832,
+    "run_date": "2026-07-29 21:11",
+    "total_leads": 829,
     "emails_sent": 0,
     "ghl_pushed": 0,
     "of_deals": 0,
@@ -12,6 +12,26 @@
     ]
   },
   "runs": [
+    {
+      "date": "2026-07-29 21:11",
+      "market": "Little Rock AR",
+      "leads": 806,
+      "emails": 0,
+      "of": 0,
+      "cl": 0,
+      "ghl": 0,
+      "status": "NO SENDS"
+    },
+    {
+      "date": "2026-07-29 21:11",
+      "market": "Oklahoma City OK",
+      "leads": 23,
+      "emails": 0,
+      "of": 0,
+      "cl": 0,
+      "ghl": 0,
+      "status": "NO SENDS"
+    },
     {
       "date": "2026-07-29 18:17",
       "market": "Little Rock AR",
@@ -291,26 +311,6 @@
       "cl": 0,
       "ghl": 0,
       "status": "NO SENDS"
-    },
-    {
-      "date": "2026-07-02 18:54",
-      "market": "Little Rock AR",
-      "leads": 761,
-      "emails": 1,
-      "of": 1,
-      "cl": 0,
-      "ghl": 0,
-      "status": "OK"
-    },
-    {
-      "date": "2026-07-02 18:54",
-      "market": "Oklahoma City OK",
-      "leads": 19,
-      "emails": 1,
-      "of": 1,
-      "cl": 0,
-      "ghl": 0,
-      "status": "OK"
     }
   ],
   "queue": [],
