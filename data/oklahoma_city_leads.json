@@ -4,7 +4,7 @@
     "city": "Oklahoma City",
     "state": "OK",
     "list_price": 69000,
-    "days_on_market": 142,
+    "days_on_market": 143,
     "score": 110.2,
     "agent_name": "-",
     "agent_email": "",
@@ -21,7 +21,7 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "1941 SW 14th St, Oklahoma City, OK 73108",
@@ -45,14 +45,14 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "3314 S Kelley Ave, Oklahoma City, OK 73129",
     "city": "Oklahoma City",
     "state": "OK",
     "list_price": 69900,
-    "days_on_market": 164,
+    "days_on_market": 165,
     "score": 110.0,
     "agent_name": "-",
     "agent_email": "",
@@ -69,7 +69,7 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "1811 N Stonewall Ave, Oklahoma City, OK 73111",
@@ -93,7 +93,7 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "415 SE 23rd St, Oklahoma City, OK 73129",
@@ -117,7 +117,7 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "1308 Windemere Dr, Oklahoma City, OK 73117",
@@ -141,7 +141,7 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "2620 N Ann Arbor Ave APT 208, Oklahoma City, OK 73127",
@@ -165,15 +165,15 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "1236 SW 16th St, Oklahoma City, OK 73108",
     "city": "Oklahoma City",
     "state": "OK",
     "list_price": 59000,
-    "days_on_market": 65,
-    "score": 103.0,
+    "days_on_market": 66,
+    "score": 103.2,
     "agent_name": "-",
     "agent_email": "",
     "agent_phone": "867-418-8800",
@@ -189,7 +189,31 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
+  },
+  {
+    "address": "1921 N Vine St, Oklahoma City, OK 73121",
+    "city": "Oklahoma City",
+    "state": "OK",
+    "list_price": 65000,
+    "days_on_market": 90,
+    "score": 102.0,
+    "agent_name": "-",
+    "agent_email": "",
+    "agent_phone": "974-533-8800",
+    "offer_type": "owner_finance",
+    "offer_lane": "OWNER_FINANCE_PRODUCTION",
+    "owner_finance_offer": 65000.0,
+    "cash_offer": 0,
+    "monthly_payment": 617.5,
+    "your_fee_estimate": 4550.0,
+    "pitch_holds": true,
+    "down_payment": 3250.0,
+    "zillow_url": "https://www.zillow.com/homedetails/1921-N-Vine-St-Oklahoma-City-OK-73121/21974533_zpid/",
+    "email_sent": false,
+    "email_bounced": false,
+    "contact_status": "",
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "1225 N Page Ave, Oklahoma City, OK 73117",
@@ -213,31 +237,7 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
-  },
-  {
-    "address": "1921 N Vine St, Oklahoma City, OK 73121",
-    "city": "Oklahoma City",
-    "state": "OK",
-    "list_price": 65000,
-    "days_on_market": 89,
-    "score": 101.8,
-    "agent_name": "-",
-    "agent_email": "",
-    "agent_phone": "974-533-8800",
-    "offer_type": "owner_finance",
-    "offer_lane": "OWNER_FINANCE_PRODUCTION",
-    "owner_finance_offer": 65000.0,
-    "cash_offer": 0,
-    "monthly_payment": 617.5,
-    "your_fee_estimate": 4550.0,
-    "pitch_holds": true,
-    "down_payment": 3250.0,
-    "zillow_url": "https://www.zillow.com/homedetails/1921-N-Vine-St-Oklahoma-City-OK-73121/21974533_zpid/",
-    "email_sent": false,
-    "email_bounced": false,
-    "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "1429 SW 30th St, Oklahoma City, OK 73119",
@@ -261,15 +261,15 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "7123 NW 16th St, Bethany, OK 73008",
     "city": "Bethany",
     "state": "OK",
     "list_price": 68000,
-    "days_on_market": 65,
-    "score": 97.2,
+    "days_on_market": 66,
+    "score": 97.4,
     "agent_name": "-",
     "agent_email": "",
     "agent_phone": "015-627-8800",
@@ -285,15 +285,15 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "6020 Nw Expy, Oklahoma City, OK 73132",
     "city": "Oklahoma City",
     "state": "OK",
     "list_price": 80000,
-    "days_on_market": 91,
-    "score": 95.2,
+    "days_on_market": 92,
+    "score": 95.3,
     "agent_name": "-",
     "agent_email": "",
     "agent_phone": "205-326-6323",
@@ -309,7 +309,7 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "2901 N Westminster Rd #B, Spencer, OK 73084",
@@ -333,14 +333,14 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "6742 N Meridian Ave, Oklahoma City, OK 73116",
     "city": "Oklahoma City",
     "state": "OK",
     "list_price": 75000,
-    "days_on_market": 210,
+    "days_on_market": 211,
     "score": 94.0,
     "agent_name": "-",
     "agent_email": "",
@@ -357,14 +357,14 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "2628 N Ann Arbor Ave APT 102, Oklahoma City, OK 73127",
     "city": "Oklahoma City",
     "state": "OK",
     "list_price": 79500,
-    "days_on_market": 185,
+    "days_on_market": 186,
     "score": 93.1,
     "agent_name": "-",
     "agent_email": "",
@@ -381,14 +381,14 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "2620 N Ann Arbor Ave APT 112, Oklahoma City, OK 73127",
     "city": "Oklahoma City",
     "state": "OK",
     "list_price": 79500,
-    "days_on_market": 185,
+    "days_on_market": 186,
     "score": 93.1,
     "agent_name": "-",
     "agent_email": "",
@@ -405,15 +405,15 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "1805 N Kelham Ave, Oklahoma City, OK 73111",
     "city": "Oklahoma City",
     "state": "OK",
     "list_price": 55000,
-    "days_on_market": 69,
-    "score": 89.5,
+    "days_on_market": 70,
+    "score": 89.7,
     "agent_name": "-",
     "agent_email": "",
     "agent_phone": "843-569-8800",
@@ -429,15 +429,15 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "602 SE 34th St, Oklahoma City, OK 73129",
     "city": "Oklahoma City",
     "state": "OK",
     "list_price": 79999,
-    "days_on_market": 73,
-    "score": 88.2,
+    "days_on_market": 74,
+    "score": 88.3,
     "agent_name": "-",
     "agent_email": "",
     "agent_phone": "886-949-8800",
@@ -453,15 +453,15 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "1421 NW 7th St, Oklahoma City, OK 73106",
     "city": "Oklahoma City",
     "state": "OK",
     "list_price": 60000,
-    "days_on_market": 39,
-    "score": 83.5,
+    "days_on_market": 40,
+    "score": 83.7,
     "agent_name": "-",
     "agent_email": "",
     "agent_phone": "840-122-8800",
@@ -477,15 +477,15 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "6728 N Meridian Ave APT C, Oklahoma City, OK 73116",
     "city": "Oklahoma City",
     "state": "OK",
     "list_price": 79000,
-    "days_on_market": 53,
-    "score": 82.0,
+    "days_on_market": 54,
+    "score": 82.2,
     "agent_name": "-",
     "agent_email": "",
     "agent_phone": "954-225-8800",
@@ -501,7 +501,7 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   },
   {
     "address": "6704 N Meridian Ave APT A, Oklahoma City, OK 73116",
@@ -525,6 +525,6 @@
     "email_sent": false,
     "email_bounced": false,
     "contact_status": "",
-    "pipeline_date": "2026-08-11"
+    "pipeline_date": "2026-08-12"
   }
 ]
