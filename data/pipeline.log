@@ -73571,3 +73571,1014 @@
 2026-08-12 21:01:27,593 INFO All markets complete | Sent this run: 0 | Total today: 0/30
 2026-08-12 21:01:27,595 INFO pipeline_log.json written — 0 emails this run, 0 in active queue, 26 in sent history
 2026-08-12 21:01:27,595 INFO All markets complete. Dashboard updated. Check GHL for contacts.
+2026-08-13 15:00:43,596 INFO Pipeline starting | Markets: little_rock, oklahoma_city | Dry run: False | Force: False | Global cap: 30/day | Per-inbox: 15/day | Time: 15:00 UTC
+2026-08-13 15:00:43,596 INFO Global sends already today (before this run): 0/30
+2026-08-13 15:00:43,596 INFO Global: 0/30 sent today (0 prior runs + 0 this run) | Remaining: 30
+2026-08-13 15:00:43,596 INFO ============================================================
+2026-08-13 15:00:43,596 INFO PIPELINE: LITTLE_ROCK | 2026-08-13 15:00
+2026-08-13 15:00:43,596 INFO DRY RUN: False | LIMIT: 15 emails this run
+2026-08-13 15:00:43,596 INFO ============================================================
+2026-08-13 15:00:43,731 INFO Loaded 18448 overflow leads from previous run
+2026-08-13 15:00:43,734 INFO [1/5] Scraping Zillow for little_rock...
+2026-08-13 15:00:43,734 INFO ============================================================
+2026-08-13 15:00:43,734 INFO SCRAPER: Little Rock
+2026-08-13 15:00:43,734 INFO   APIFY_ENABLED                       : True (raw='true')
+2026-08-13 15:00:43,734 INFO   EMAIL_ENRICHMENT_ENABLED            : True (raw='true')
+2026-08-13 15:00:43,734 INFO   MAX_APIFY_RUNS_PER_WORKFLOW         : 20 (EMERGENCY global cap — all actors)
+2026-08-13 15:00:43,734 INFO   MAX_ZILLOW_CALLS_PER_WORKFLOW       : 6 (Zillow only — independent of email budget)
+2026-08-13 15:00:43,734 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW: 10
+2026-08-13 15:00:43,734 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET: 5
+2026-08-13 15:00:43,734 INFO   MAX_LEADS_TO_ENRICH_PER_WORKFLOW    : 10 (top-scored leads sent to enrichment)
+2026-08-13 15:00:43,734 INFO   ENABLE_PRICE_REDUCED_OF_VARIANT     : False
+2026-08-13 15:00:43,734 INFO   Apify calls used so far — total     : 0
+2026-08-13 15:00:43,734 INFO   Apify calls used so far — zillow    : 0
+2026-08-13 15:00:43,734 INFO   Apify calls used so far — google    : 0
+2026-08-13 15:00:43,734 INFO   Planned bands                       : 4 ($30,000-$55,000 | $55,001-$80,000 | $80,001-$150,000 | $150,001-$300,000)
+2026-08-13 15:00:43,734 INFO   Planned Zillow calls this market    : 4
+2026-08-13 15:00:43,734 INFO   Planned max Google email calls      : 5 (only for top 10 scored leads)
+2026-08-13 15:00:43,734 INFO   Estimated actor calls this market   : 9 (Zillow + Google, capped)
+2026-08-13 15:00:43,734 INFO   Remaining shared budget              : 20 calls
+2026-08-13 15:00:43,734 INFO ============================================================
+2026-08-13 15:00:43,793 INFO Scraping band: $30,000-$55,000 [variant=base]
+2026-08-13 15:00:43,793 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-08-13 15:00:43,793 INFO Band $30,000-$55,000 [base]: maxResults=200 | actor call #1 (zillow call #1)
+2026-08-13 15:00:44,422 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-08-13 15:00:45,546 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/LTUMLrgPT6oMHidIF?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-08-13 15:01:15,638 INFO HTTP Request: GET https://api.apify.com/v2/datasets/uyHqItufThOTvAhKx/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-08-13 15:01:15,671 INFO Band $30,000-$55,000 [base]: 22 raw results
+2026-08-13 15:01:15,697 INFO Band $30,000-$55,000 [base]: raw=22 | dom30+=15 | candidates=16 | reasons: passed_by_dom=15 | passed_by_low_price_of_dom_unknown_fallback=1 | reject_dom_too_low=5 | reject_dom_zero_fresh=1
+2026-08-13 15:01:20,697 INFO Band $30,000-$55,000 combined: 16 unique candidates across 1 variant(s)
+2026-08-13 15:01:20,698 INFO Scraping band: $55,001-$80,000 [variant=base]
+2026-08-13 15:01:20,698 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-08-13 15:01:20,698 INFO Band $55,001-$80,000 [base]: maxResults=200 | actor call #2 (zillow call #2)
+2026-08-13 15:01:21,118 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-08-13 15:01:22,166 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/6HIAvMFp0EB8aQTm9?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-08-13 15:01:28,988 INFO HTTP Request: GET https://api.apify.com/v2/datasets/bY0Sc6XVKbogaU0gt/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-08-13 15:01:29,057 INFO Band $55,001-$80,000 [base]: 64 raw results
+2026-08-13 15:01:29,132 INFO Band $55,001-$80,000 [base]: raw=64 | dom30+=47 | candidates=47 | reasons: passed_by_dom=47 | reject_dom_too_low=16 | reject_dom_zero_fresh=1
+2026-08-13 15:01:34,133 INFO Band $55,001-$80,000 combined: 47 unique candidates across 1 variant(s)
+2026-08-13 15:01:34,133 INFO Scraping band: $80,001-$150,000 [variant=base]
+2026-08-13 15:01:34,133 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-08-13 15:01:34,133 INFO Band $80,001-$150,000 [base]: maxResults=50 | actor call #3 (zillow call #3)
+2026-08-13 15:01:34,497 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-08-13 15:01:35,549 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/arfHBgaLbhLdbWPS6?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-08-13 15:01:46,462 INFO HTTP Request: GET https://api.apify.com/v2/datasets/zxMCAoAaSbEpvVuaf/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-08-13 15:01:46,646 INFO Band $80,001-$150,000 [base]: 335 raw results
+2026-08-13 15:01:47,044 INFO Band $80,001-$150,000 [base]: raw=335 | dom30+=243 | candidates=243 | reasons: passed_by_dom=243 | reject_dom_too_low=88 | reject_dom_zero_fresh=4
+2026-08-13 15:01:52,044 INFO Band $80,001-$150,000 combined: 243 unique candidates across 1 variant(s)
+2026-08-13 15:01:52,044 INFO Scraping band: $150,001-$300,000 [variant=base]
+2026-08-13 15:01:52,044 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-08-13 15:01:52,044 INFO Band $150,001-$300,000 [base]: maxResults=50 | actor call #4 (zillow call #4)
+2026-08-13 15:01:52,605 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-08-13 15:01:53,747 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/rUDYdeY1e3cEk81AS?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-08-13 15:02:07,857 INFO HTTP Request: GET https://api.apify.com/v2/datasets/zxOBAIqY3QFAxoL8x/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-08-13 15:02:08,667 INFO Band $150,001-$300,000 [base]: 808 raw results
+2026-08-13 15:02:09,551 INFO Band $150,001-$300,000 [base]: raw=808 | dom30+=514 | candidates=514 | reasons: passed_by_dom=514 | reject_dom_too_low=282 | reject_dom_zero_fresh=12
+2026-08-13 15:02:14,551 INFO Band $150,001-$300,000 combined: 514 unique candidates across 1 variant(s)
+2026-08-13 15:02:14,553 INFO Final dedup: 820 -> 806 after URL/address dedup
+2026-08-13 15:02:14,555 INFO ============================================================
+2026-08-13 15:02:14,555 INFO TOP SCORED LEADS — Little Rock (10 of 806 shown)
+2026-08-13 15:02:14,555 INFO   #1 score=115.4 | 1519 Julian St, North Little Rock, AR 72114 | $43,000 | DOM=196 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 7.4, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 15, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-08-13 15:02:14,555 INFO   #2 score=115.0 | 4519 W 25th St, Little Rock, AR 72204 | $44,900 | DOM=122 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 7.0, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 15, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-08-13 15:02:14,555 INFO   #3 score=114.0 | 3214 W 16th St, Little Rock, AR 72204 | $49,900 | DOM=122 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 6.0, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 15, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-08-13 15:02:14,556 INFO   #4 score=114.0 | 4604 W 24th St, Little Rock, AR 72204 | $49,900 | DOM=122 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 6.0, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 15, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-08-13 15:02:14,556 INFO   #5 score=114.0 | 1801 N Poplar St, North Little Rock, AR 72114 | $50,000 | DOM=728 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 6.0, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 15, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-08-13 15:02:14,556 INFO   #6 score=113.7 | 3716 W 17th St, Little Rock, AR 72204 | $45,000 | DOM=112 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 7.0, 'dom_age': 18.7, 'low_views': 15, 'few_photos': 15, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-08-13 15:02:14,556 INFO   #7 score=113.6 | 404 W 16th St, North Little Rock, AR 72114 | $52,000 | DOM=728 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 5.6, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 15, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-08-13 15:02:14,556 INFO   #8 score=113.0 | (undisclosed Address), Little Rock, AR 72204 | $54,900 | DOM=122 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 5.0, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 15, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-08-13 15:02:14,556 INFO   #9 score=112.1 | 4221 Rogers St, North Little Rock, AR 72117 | $59,500 | DOM=510 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 4.1, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 15, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-08-13 15:02:14,556 INFO   #10 score=112.0 | 2006 S Valentine St, Little Rock, AR 72204 | $55,000 | DOM=142 | breakdown={'active_status': 10, 'of_band_price': 25, 'lower_price_in_band': 5.0, 'dom_age': 20.0, 'low_views': 15, 'few_photos': 14, 'weak_description': 8, 'distress_keyword': 0, 'sqft_ok': 10, 'agent_listed': 5}
+2026-08-13 15:02:14,556 INFO ============================================================
+2026-08-13 15:02:14,556 INFO 796 lower-scored leads will NOT be sent to email enrichment this run (MAX_LEADS_TO_ENRICH_PER_WORKFLOW=10). They are still kept for the dashboard/log with Email: NONE unless Zillow itself already supplied an email.
+2026-08-13 15:02:14,556 INFO Starting email enrichment for 10 shortlisted leads (google cap: 10 calls, shared budget remaining: 16)...
+2026-08-13 15:02:14,556 INFO Email lookup: 10 leads need emails, 0 already have one
+2026-08-13 15:02:15,209 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-detail-scraper/runs?timeout=90 "HTTP/1.1 201 Created"
+2026-08-13 15:02:16,248 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/WPjvhA9yC4zhtRy4A?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-08-13 15:02:28,487 INFO HTTP Request: GET https://api.apify.com/v2/datasets/IZxGkxCVliRzgiLrh/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-08-13 15:02:28,524 INFO Zillow detail attempt: url=https://www.zillow.com/homedetails/1519-Julian-St-North-Little-Rock-AR-72114/304108_zpid/ | actor=maxcopell/zillow-detail-scraper | items_returned=1
+2026-08-13 15:02:28,525 INFO Zillow detail item top-level keys: ['ZoDsFsUpsellTop', 'abbreviatedAddress', 'adTargets', 'address', 'addressOrUrlFromInput', 'agent', 'annualHomeownersInsurance', 'apartmentsForRentInZipcodeSearchUrl', 'atAGlanceFacts', 'attributionInfo', 'bathrooms', 'bathroomsDetail', 'bedrooms', 'broker', 'brokerIdDimension', 'brokerageName', 'buildingAttributes', 'city', 'cityId', 'citySearchUrl', 'collections', 'contactFormRenderData', 'coordinates', 'country', 'county', 'countyFIPS', 'countyId', 'countySearchUrl', 'currency', 'datePosted', 'datePostedString', 'dateSold', 'daysOnZillow', 'description', 'desktopWebHdpImageLink', 'enhancedBrokerImageUrl', 'favoriteCount', 'featuredListingTypeDimension', 'foreclosureJudicialType', 'foreclosureTypes']
+2026-08-13 15:02:28,526 INFO Zillow detail flattened: len=37019 | any_email=False | has_'Listed by'=True
+2026-08-13 15:02:28,527 INFO Zillow detail first 500 chars (emails masked): Phoenix 304108 North Little Rock AR FOR_SALE 1519 Julian St North Little Rock AR 72114 Laskers 2nd False False 2 1 43000 1935 1519 Julian St 72114 False Similar homes NEIGHBORHOOD https://photos.zillowstatic.com/fp/1b0da013095ced5920b6116f5de943d5-p_c.jpg 50000 USD 3 1 1122 1122 Square Feet sqft True 6534 6534 Square Feet 1620 Pike Ave North Little Rock AR 72114 72114 1620 Pike Ave North Little Rock, AR 72114 34.770786 -92.278336 303791 FOR_SALE SINGLE_FAMILY /homedetails/1620-Pike-Ave-North-Lit
+2026-08-13 15:02:28,532 INFO Zillow detail contact found (no email): name=unknown, phone=501-554-0274, source=zillow_detail_listed_by
+2026-08-13 15:02:28,532 INFO Google query: "1519 Julian St, North Little Rock, AR 72114" listing agent contact https://www.zillow.com/homedetails/1519-Julian-St-North-Little-Rock-AR-72114/304108_zpid/
+2026-08-13 15:02:28,903 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-08-13 15:02:29,956 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/XNniNQKqdYiA2gzfB?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-08-13 15:02:45,504 INFO HTTP Request: GET https://api.apify.com/v2/datasets/cddZ2zCRLVRhijTj4/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-08-13 15:02:46,507 INFO Google query: "1519 Julian St, North Little Rock, AR 72114" "RGB Appraisals & Realty" email
+2026-08-13 15:02:46,841 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-08-13 15:02:47,882 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/k60WUoEjatWiPwgUx?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-08-13 15:03:00,205 INFO HTTP Request: GET https://api.apify.com/v2/datasets/A2bQSchIo9sJrfSqm/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-08-13 15:03:01,209 INFO Google query: "RGB Appraisals & Realty" North Little Rock agent roster staff directory
+2026-08-13 15:03:01,515 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-08-13 15:03:02,559 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/fbHZ0K54ZjIgWAhXB?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-08-13 15:04:01,868 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/fbHZ0K54ZjIgWAhXB?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-08-13 15:04:01,931 INFO HTTP Request: GET https://api.apify.com/v2/datasets/bpawLKTjNsQ8ZlzT7/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-08-13 15:04:02,932 INFO Google query: "RGB Appraisals & Realty" North Little Rock office email contact
+2026-08-13 15:04:03,590 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 201 Created"
+2026-08-13 15:04:04,635 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/I59m4ljCgLTfObVti?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-08-13 15:04:38,855 INFO HTTP Request: GET https://api.apify.com/v2/datasets/4gjj1DJpTb7LNicX2/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-08-13 15:04:39,855 INFO Phone-only lead (all email rungs exhausted): 1519 Julian St, North Little Rock, AR 72114 | RGB Appraisals & Realty
+2026-08-13 15:04:39,855 INFO No published email found: no-name / RGB Appraisals & Realty (phone-only)
+2026-08-13 15:04:39,913 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-detail-scraper/runs?timeout=90 "HTTP/1.1 403 Forbidden"
+2026-08-13 15:04:39,914 INFO Zillow detail actor fetch failed for https://www.zillow.com/homedetails/4519-W-25th-St-Little-Rock-AR-72204/312725_zpid/: Monthly usage hard limit exceeded. Please upgrade your subscription or contact support@apify.com
+2026-08-13 15:04:39,914 INFO Zillow detail attempt: url=https://www.zillow.com/homedetails/4519-W-25th-St-Little-Rock-AR-72204/312725_zpid/ | actor=maxcopell/zillow-detail-scraper | items_returned=0
+2026-08-13 15:04:39,914 INFO Zillow detail flattened: len=0 | any_email=False | has_'Listed by'=False
+2026-08-13 15:04:40,118 INFO Zillow detail HTTP fallback for https://www.zillow.com/homedetails/4519-W-25th-St-Little-Rock-AR-72204/312725_zpid/ returned status 403
+2026-08-13 15:04:40,119 INFO Google query: "4519 W 25th St, Little Rock, AR 72204" listing agent contact https://www.zillow.com/homedetails/4519-W-25th-St-Little-Rock-AR-72204/312725_zpid/
+2026-08-13 15:04:40,220 INFO HTTP Request: POST https://api.apify.com/v2/acts/apify~google-search-scraper/runs?timeout=60 "HTTP/1.1 403 Forbidden"
+2026-08-13 15:04:40,221 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "4519 W 25th St, Little Rock, AR 72204" "Faith Realty & Associates" email
+2026-08-13 15:04:40,221 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Faith Realty & Associates" Little Rock agent roster staff directory
+2026-08-13 15:04:40,221 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Faith Realty & Associates" Little Rock office email contact
+2026-08-13 15:04:40,221 INFO Phone-only lead (all email rungs exhausted): 4519 W 25th St, Little Rock, AR 72204 | Faith Realty & Associates
+2026-08-13 15:04:40,221 INFO No published email found: no-name / Faith Realty & Associates (phone-only)
+2026-08-13 15:04:40,221 INFO Google email budget exhausted — running Zillow detail-page step only for remaining 5 leads (no Google calls)
+2026-08-13 15:04:40,290 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-detail-scraper/runs?timeout=90 "HTTP/1.1 403 Forbidden"
+2026-08-13 15:04:40,290 INFO Zillow detail actor fetch failed for https://www.zillow.com/homedetails/3716-W-17th-St-Little-Rock-AR-72204/313093_zpid/: Monthly usage hard limit exceeded. Please upgrade your subscription or contact support@apify.com
+2026-08-13 15:04:40,290 INFO Zillow detail attempt: url=https://www.zillow.com/homedetails/3716-W-17th-St-Little-Rock-AR-72204/313093_zpid/ | actor=maxcopell/zillow-detail-scraper | items_returned=0
+2026-08-13 15:04:40,290 INFO Zillow detail flattened: len=0 | any_email=False | has_'Listed by'=False
+2026-08-13 15:04:40,434 INFO Zillow detail HTTP fallback for https://www.zillow.com/homedetails/3716-W-17th-St-Little-Rock-AR-72204/313093_zpid/ returned status 403
+2026-08-13 15:04:40,434 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "3716 W 17th St, Little Rock, AR 72204" listing agent contact https://www.zillow.com/homedetails/3716-W-17th-St-Little-Rock-AR-72204/313093_zpid/
+2026-08-13 15:04:40,434 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "3716 W 17th St, Little Rock, AR 72204" "CENTURY 21 Real Estate Unlimited" email
+2026-08-13 15:04:40,434 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "CENTURY 21 Real Estate Unlimited" Little Rock agent roster staff directory
+2026-08-13 15:04:40,434 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "CENTURY 21 Real Estate Unlimited" Little Rock office email contact
+2026-08-13 15:04:40,434 INFO Phone-only lead (all email rungs exhausted): 3716 W 17th St, Little Rock, AR 72204 | CENTURY 21 Real Estate Unlimited
+2026-08-13 15:04:40,434 INFO No published email found: no-name / CENTURY 21 Real Estate Unlimited (phone-only)
+2026-08-13 15:04:40,434 INFO Google email budget exhausted — running Zillow detail-page step only for remaining 2 leads (no Google calls)
+2026-08-13 15:04:40,495 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-detail-scraper/runs?timeout=90 "HTTP/1.1 403 Forbidden"
+2026-08-13 15:04:40,495 INFO Zillow detail actor fetch failed for https://www.zillow.com/homedetails/4221-Rogers-St-North-Little-Rock-AR-72117/276820_zpid/: Monthly usage hard limit exceeded. Please upgrade your subscription or contact support@apify.com
+2026-08-13 15:04:40,495 INFO Zillow detail attempt: url=https://www.zillow.com/homedetails/4221-Rogers-St-North-Little-Rock-AR-72117/276820_zpid/ | actor=maxcopell/zillow-detail-scraper | items_returned=0
+2026-08-13 15:04:40,495 INFO Zillow detail flattened: len=0 | any_email=False | has_'Listed by'=False
+2026-08-13 15:04:40,693 INFO Zillow detail HTTP fallback for https://www.zillow.com/homedetails/4221-Rogers-St-North-Little-Rock-AR-72117/276820_zpid/ returned status 403
+2026-08-13 15:04:40,694 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "4221 Rogers St, North Little Rock, AR 72117" listing agent contact https://www.zillow.com/homedetails/4221-Rogers-St-North-Little-Rock-AR-72117/276820_zpid/
+2026-08-13 15:04:40,694 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "4221 Rogers St, North Little Rock, AR 72117" "Rackley Realty" email
+2026-08-13 15:04:40,694 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Rackley Realty" North Little Rock agent roster staff directory
+2026-08-13 15:04:40,694 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "Rackley Realty" North Little Rock office email contact
+2026-08-13 15:04:40,694 INFO Phone-only lead (all email rungs exhausted): 4221 Rogers St, North Little Rock, AR 72117 | Rackley Realty
+2026-08-13 15:04:40,694 INFO No published email found: no-name / Rackley Realty (phone-only)
+2026-08-13 15:04:40,694 INFO Google email budget exhausted — running Zillow detail-page step only for remaining 1 leads (no Google calls)
+2026-08-13 15:04:40,751 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-detail-scraper/runs?timeout=90 "HTTP/1.1 403 Forbidden"
+2026-08-13 15:04:40,751 INFO Zillow detail actor fetch failed for https://www.zillow.com/homedetails/2006-S-Valentine-St-Little-Rock-AR-72204/314395_zpid/: Monthly usage hard limit exceeded. Please upgrade your subscription or contact support@apify.com
+2026-08-13 15:04:40,751 INFO Zillow detail attempt: url=https://www.zillow.com/homedetails/2006-S-Valentine-St-Little-Rock-AR-72204/314395_zpid/ | actor=maxcopell/zillow-detail-scraper | items_returned=0
+2026-08-13 15:04:40,751 INFO Zillow detail flattened: len=0 | any_email=False | has_'Listed by'=False
+2026-08-13 15:04:40,892 INFO Zillow detail HTTP fallback for https://www.zillow.com/homedetails/2006-S-Valentine-St-Little-Rock-AR-72204/314395_zpid/ returned status 403
+2026-08-13 15:04:40,892 WARNING EMAIL ENRICHMENT BUDGET REACHED — skipping query: "2006 S Valentine St, Little Rock, AR 72204" listing agent contact https://www.zillow.com/homedetails/2006-S-Valentine-St-Little-Rock-AR-72204/314395_zpid/
+2026-08-13 15:04:40,892 INFO Phone-only lead (all email rungs exhausted): 2006 S Valentine St, Little Rock, AR 72204 | no brokerage
+2026-08-13 15:04:40,892 INFO No published email found: no-name / no-brokerage (phone-only)
+2026-08-13 15:04:40,893 INFO Email enrichment complete: found 0/10 emails
+2026-08-13 15:04:40,893 INFO LEAD: 1519 Julian St, North Little Rock, AR 72114 | $43,000 | DOM: 196 | score=115.4 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RGB Appraisals & Realty | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 4519 W 25th St, Little Rock, AR 72204 | $44,900 | DOM: 122 | score=115.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Faith Realty & Associates | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 3214 W 16th St, Little Rock, AR 72204 | $49,900 | DOM: 122 | score=114.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Faith Realty & Associates | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 4604 W 24th St, Little Rock, AR 72204 | $49,900 | DOM: 122 | score=114.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Faith Realty & Associates | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 1801 N Poplar St, North Little Rock, AR 72114 | $50,000 | DOM: 728 | score=114.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RGB Appraisals & Realty | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 3716 W 17th St, Little Rock, AR 72204 | $45,000 | DOM: 112 | score=113.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Real Estate Unlimited | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 404 W 16th St, North Little Rock, AR 72114 | $52,000 | DOM: 728 | score=113.6 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RGB Appraisals & Realty | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: (undisclosed Address), Little Rock, AR 72204 | $54,900 | DOM: 122 | score=113.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Faith Realty & Associates | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 4221 Rogers St, North Little Rock, AR 72117 | $59,500 | DOM: 510 | score=112.1 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Rackley Realty | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 2006 S Valentine St, Little Rock, AR 72204 | $55,000 | DOM: 142 | score=112.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: NONE | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 4319 W 23rd St, Little Rock, AR 72204 | $59,900 | DOM: 120 | score=112.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Faith Realty & Associates | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 4212 W 19th St, Little Rock, AR 72204 | $59,900 | DOM: 122 | score=112.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Faith Realty & Associates | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 2208 S Valmar St, Little Rock, AR 72204 | $60,000 | DOM: 140 | score=112.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Edge Realty | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: (undisclosed Address), North Little Rock, AR 72114 | $62,500 | DOM: 817 | score=111.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RGB Appraisals & Realty | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 2001 Brown St, Little Rock, AR 72204 | $60,000 | DOM: 122 | score=111.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: NONE | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 3205 Center St, Little Rock, AR 72206 | $59,900 | DOM: 232 | score=111.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 2101 Muldrow Dr, N Little Rock, AR 72117 | $40,000 | DOM: 107 | score=110.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Affiliates Realty | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 1920 Flora St, N Little Rock, AR 72114 | $61,500 | DOM: 133 | score=109.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Michele Phillips & Co. Realtors | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 2203 S Park St, Little Rock, AR 72202 | $68,000 | DOM: 114 | score=109.4 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 1401 S Harrison St, Little Rock, AR 72204 | $75,000 | DOM: 196 | score=109.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RGB Appraisals & Realty | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 822 S Elm St, Little Rock, AR 72204 | $60,000 | DOM: 309 | score=109.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 1911 S Cross St, Little Rock, AR 72206 | $30,000 | DOM: 61 | score=108.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Maumelle | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 1815 Thayer St, Little Rock, AR 72202 | $70,000 | DOM: 142 | score=108.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: NONE | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 1515 W 22nd St, Little Rock, AR 72202 | $55,000 | DOM: 88 | score=107.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Properties | Email: NONE
+2026-08-13 15:04:40,893 INFO LEAD: 3904 W 11th St, Little Rock, AR 72204 | $76,500 | DOM: 119 | score=107.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Faith Realty & Associates | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 1321 W 57th St, N Little Rock, AR 72118 | $79,900 | DOM: 140 | score=107.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Blair & Co. Realtors | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 103 Central Ave, Jacksonville, AR 72076 | $78,500 | DOM: 106 | score=106.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Rackley Realty | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 3301 S Battery St, Little Rock, AR 72206 | $75,000 | DOM: 169 | score=106.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: NONE | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 1224 W 31st St, Little Rock, AR 72206 | $59,900 | DOM: 429 | score=105.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 2703 Madison St, Little Rock, AR 72204 | $80,000 | DOM: 305 | score=104.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Access Realty, Inc | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 2501 S Pine St, Little Rock, AR 72204 | $73,000 | DOM: 215 | score=103.4 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Real Broker | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 1109 W 49th St, North Little Rock, AR 72118 | $39,900 | DOM: 44 | score=103.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Cabot Branch | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 4020 Malloy St, Little Rock, AR 72204 | $75,000 | DOM: 305 | score=102.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Access Realty, Inc | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 5924 Tammy Ln, North Little Rock, AR 72117 | $70,000 | DOM: 112 | score=101.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Cabot | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 34 N Meadowcliff Dr, Little Rock, AR 72209 | $69,000 | DOM: 65 | score=101.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 263 Morgan Rd, Jacksonville, AR 72076 | $75,000 | DOM: 134 | score=101.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 3304 Marshall St, Little Rock, AR 72206 | $69,900 | DOM: 84 | score=100.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 1708 S Cedar St, Little Rock, AR 72204 | $70,000 | DOM: 169 | score=100.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: NONE | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 2126 Fendley Dr, North Little Rock, AR 72114 | $69,900 | DOM: 58 | score=99.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mason and Company | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 2506 S Taylor St, Little Rock, AR 72204 | $49,900 | DOM: 153 | score=99.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Rock Realty Company | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 2715 Dr Martin Luther King Dr, Little Rock, AR 72206 | $50,000 | DOM: 58 | score=98.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: NONE | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 2111 Whyte Dr, North Little Rock, AR 72117 | $70,000 | DOM: 47 | score=97.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Bang Realty | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 2217 Valmar St, Little Rock, AR 72204 | $70,000 | DOM: 50 | score=97.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 2405 Wolfe St, Little Rock, AR 72206 | $59,000 | DOM: 264 | score=97.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 2102 S Cross St, Little Rock, AR 72206 | $70,000 | DOM: 42 | score=97.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 2918 W 15th St, Little Rock, AR 72204 | $79,900 | DOM: 173 | score=97.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Berkshire Hathaway HomeServices Arkansas Realty | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 6 S Wakefield Dr, Little Rock, AR 72209 | $80,000 | DOM: 48 | score=96.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Family Roots Realty | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 7 Durham Dr, Little Rock, AR 72209 | $79,900 | DOM: 82 | score=94.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 2401/2405 S Pulaski St, Little Rock, AR 72206 | $75,000 | DOM: 122 | score=94.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: NONE | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 3501 Elam St, Little Rock, AR 72204 | $75,000 | DOM: 244 | score=94.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 United | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 4101 W 13th St, Little Rock, AR 72204 | $75,000 | DOM: 305 | score=94.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Access Realty, Inc | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 5405 Alpha St, North Little Rock, AR 72117 | $69,000 | DOM: 64 | score=93.9 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 1214 W 48th St, N Little Rock, AR 72118 | $75,440 | DOM: 467 | score=93.9 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trammell & Company Real Estate | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 4412 Malloy St, Little Rock, AR 72204 | $55,000 | DOM: unknown | score=93.0 | reason: passed_by_low_price_of_dom_unknown_fallback|base | Agent: UNKNOWN | Brokerage: LPT Selling Luxury | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 1721 Leonard Dr, Jacksonville, AR 72076 | $65,000 | DOM: 73 | score=89.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Ownit Global Property Group | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 2615 S Summit St, Little Rock, AR 72206 | $62,400 | DOM: 55 | score=88.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Access Realty, Inc | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 5020 E Broadway St Unit 1/2, North Little Rock, AR 72117 | $135,000 | DOM: 728 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RGB Appraisals & Realty | Email: NONE
+2026-08-13 15:04:40,894 INFO LEAD: 25 Allyson Cir, Little Rock, AR 72209 | $115,000 | DOM: 120 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Rock Realty Company | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: (undisclosed Address), North Little Rock, AR 72117 | $90,000 | DOM: 136 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Epic Real Estate | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 8 Locust St, Mayflower, AR 72106 | $105,000 | DOM: 148 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Portfolio | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 1811 Peyton St, Little Rock, AR 72204 | $100,000 | DOM: 196 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RGB Appraisals & Realty | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 1824 Abigail St, Little Rock, AR 72204 | $115,000 | DOM: 196 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RGB Appraisals & Realty | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 220 & 222 College Park Cir, North Little Rock, AR 72114 | $81,500 | DOM: 212 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Rackley Realty | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 8920 W 37th St, Little Rock, AR 72204 | $90,000 | DOM: 305 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Access Realty, Inc | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 4512 W 16th St, Little Rock, AR 72204 | $90,000 | DOM: 305 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Access Realty, Inc | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 1420 Washington St, Little Rock, AR 72204 | $99,900 | DOM: 326 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 600 W 34th St, North Little Rock, AR 72118 | $81,900 | DOM: 330 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Prestige Realty | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 609 Newcastle Dr, Sherwood, AR 72120 | $145,900 | DOM: 330 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Prestige Realty | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: (undisclosed Address), Sherwood, AR 72120 | $199,000 | DOM: 126 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Encore | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 312 Clint Rd, Jacksonville, AR 72076 | $209,900 | DOM: 165 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Chase Calhoun Real Estate LLC | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 622-624 Newcastle Dr, Sherwood, AR 72120 | $199,000 | DOM: 330 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Prestige Realty | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 619-621 Newcastle Dr, Sherwood, AR 72120 | $199,000 | DOM: 330 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Prestige Realty | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 8218 Park Ave, Sherwood, AR 72120 | $209,000 | DOM: 330 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Prestige Realty | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 5820 Alta Vista Dr, N Little Rock, AR 72118 | $170,000 | DOM: 149 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Portfolio | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: (undisclosed Address), North Little Rock, AR 72116 | $161,000 | DOM: 330 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Prestige Realty | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 202 Vernon Ave, Little Rock, AR 72205 | $225,000 | DOM: 139 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Charlotte John Company (Little Rock) | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 416 S Park St, Little Rock, AR 72205 | $225,000 | DOM: 146 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Realty Group | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 11 Libby Ln, Little Rock, AR 72206 | $162,000 | DOM: 156 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Sandstone Real Estate Group | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 6 Java Ct, Little Rock, AR 72204 | $175,000 | DOM: 171 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Lotus Realty | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 14908 E Azalea, Alexander, AR 72002 | $194,900 | DOM: 172 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 6101 Ridgecrest Dr, Little Rock, AR 72205 | $180,000 | DOM: 196 | score=88.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RGB Appraisals & Realty | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 2724 Longcoy St, Little Rock, AR 72204 | $130,000 | DOM: 117 | score=87.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Rock Realty Company | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 1516 W 34th St, Little Rock, AR 72206 | $89,900 | DOM: 120 | score=87.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Faith Realty & Associates | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 5101 N Woodland Dr, North Little Rock, AR 72117 | $90,000 | DOM: 135 | score=87.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Vylla Home | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 18 Woodbriar Dr, Jacksonville, AR 72076 | $125,000 | DOM: 238 | score=87.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Lotus Realty | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 158 Deer Acres, Cabot, AR 72023 | $200,000 | DOM: 152 | score=87.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty NLR | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 3405 Wynne St, Little Rock, AR 72204 | $128,000 | DOM: 111 | score=86.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Rock Realty Company | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 103 Ray St, North Little Rock, AR 72118 | $88,500 | DOM: 145 | score=86.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty Central | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 9 Allison Dr, Cabot, AR 72023 | $180,000 | DOM: 119 | score=85.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Parker & Scroggins Realty - Conway | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 201 Natalie Ln, Sherwood, AR 72076 | $95,000 | DOM: 110 | score=85.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Homefinders | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 45 E Ridge Rd, Mayflower, AR 72106 | $153,000 | DOM: 103 | score=85.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Conway | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 700 E 9th St APT 6L, Little Rock, AR 72202 | $140,000 | DOM: 411 | score=85.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: The Mike Rushin Co. Inc | Email: NONE
+2026-08-13 15:04:40,895 INFO LEAD: 4803 Lynn Ln, North Little Rock, AR 72118 | $139,500 | DOM: 126 | score=85.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Hometown Investments & Realty | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 12 Purdue Cir, Little Rock, AR 72204 | $139,900 | DOM: 130 | score=85.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Nash Realty | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 12 Woodcliff Cir, Little Rock, AR 72204 | $129,900 | DOM: 138 | score=85.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McGraw Realtors - Little Rock | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 57 Meadowlark Dr, Cabot, AR 72023 | $149,900 | DOM: 150 | score=85.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 2932 S Ringo St, Little Rock, AR 72206 | $125,000 | DOM: 169 | score=85.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Realty One Group - Pinnacle | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 1424 W 16th St, North Little Rock, AR 72114 | $129,500 | DOM: 196 | score=85.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: NONE | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 2706 Martin Luther King Dr, Little Rock, AR 72206 | $90,000 | DOM: 251 | score=85.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Maumelle | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 7702 Iowa Dr, Little Rock, AR 72227 | $170,000 | DOM: 135 | score=85.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Ultra Properties | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 4 Sheffield Dr, Little Rock, AR 72209 | $74,900 | DOM: 63 | score=84.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 5220 Buford Rd, North Little Rock, AR 72117 | $110,000 | DOM: 141 | score=84.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Rock Realty Company | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 203 W Scenic Dr, N Little Rock, AR 72118 | $119,700 | DOM: 209 | score=84.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Vylla Home | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 17 Newland Dr, Little Rock, AR 72209 | $120,000 | DOM: 94 | score=83.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 4723 Buckingham Pl, Little Rock, AR 72209 | $135,000 | DOM: 94 | score=83.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 8601 W 33rd St, Little Rock, AR 72204 | $134,000 | DOM: 93 | score=83.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 2005 Valmar St, Little Rock, AR 72204 | $134,000 | DOM: 93 | score=83.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 5400 Southboro Dr, Little Rock, AR 72209 | $115,000 | DOM: 93 | score=83.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Rock Realty Company | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 37 Clifton Dr, Little Rock, AR 72209 | $79,900 | DOM: 62 | score=83.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 503 Green Mountain Cir APT 45, Little Rock, AR 72211 | $89,000 | DOM: 90 | score=83.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 2408 S Harrison St, Little Rock, AR 72204 | $110,000 | DOM: 90 | score=83.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: TKP Management | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 7323 Mabelvale Pike, Little Rock, AR 72209 | $140,000 | DOM: 121 | score=83.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McDaniel & Co. REALTORS Inc | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 9307 Southwest Dr, Little Rock, AR 72209 | $117,000 | DOM: 156 | score=83.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Natural State Realty of Arkansas | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 207 E 21st St, North Little Rock, AR 72114 | $120,000 | DOM: 169 | score=83.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Realty One Group - Pinnacle | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 4 Beechwood St, Cabot, AR 72023 | $205,500 | DOM: 254 | score=83.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Brick Real Estate | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 6305 Rolling Hills Dr, N Little Rock, AR 72118 | $184,900 | DOM: 158 | score=83.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Affiliates Realty | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 108 Dales Dr, Jacksonville, AR 72076 | $179,900 | DOM: 90 | score=83.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Nash Realty | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 4819 Lee Ave, Little Rock, AR 72205 | $239,000 | DOM: 184 | score=83.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trademark Real Estate, Inc | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 1004 N Jeff Davis Ave, Jacksonville, AR 72076 | $124,000 | DOM: 89 | score=82.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Blue Collar Real Estate | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 62 Hill Ln, Little Rock, AR 72209 | $115,000 | DOM: 87 | score=82.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 108 Smart St, Jacksonville, AR 72076 | $119,500 | DOM: 104 | score=82.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 13801 Clayton Dr, Shannon Hills, AR 72103 | $119,000 | DOM: 84 | score=82.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Diamond Rock Realty | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 122 & 124 College Park Cir, North Little Rock, AR 72114 | $84,500 | DOM: 388 | score=82.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Rackley Realty | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 4300 W 9th St, Little Rock, AR 72204 | $135,000 | DOM: 122 | score=82.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Plush Homes Co. Realtors | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 9824 Chicot Rd, Little Rock, AR 72209 | $139,900 | DOM: 126 | score=82.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Plush Homes Co. Realtors | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 1724 Augusta St, North Little Rock, AR 72114 | $99,500 | DOM: 321 | score=82.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Innovative Realty | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 520 E Charles Bussey Ave, Little Rock, AR 72206 | $129,000 | DOM: 82 | score=81.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 2000 S Harrison St, Little Rock, AR 72204 | $145,000 | DOM: 112 | score=81.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Rock Realty Company | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 11324 Ponderosa Dr, Little Rock, AR 72209 | $117,000 | DOM: 111 | score=81.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Rock Realty Company | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 1718 Nichols Rd, Little Rock, AR 72205 | $79,900 | DOM: 50 | score=81.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 26 Glendale Dr, Little Rock, AR 72209 | $79,900 | DOM: 50 | score=81.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 5200 W 28th St, Little Rock, AR 72204 | $79,900 | DOM: 49 | score=81.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 350 E Military Dr, North Little Rock, AR 72118 | $90,000 | DOM: 148 | score=81.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Truman Ball Real Estate | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 2324 Moss St, N Little Rock, AR 72114 | $116,900 | DOM: 204 | score=81.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Chase Calhoun Real Estate LLC | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 700 E 9th St APT 7A, Little Rock, AR 72202 | $87,040 | DOM: 260 | score=81.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty Central | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 615 Water St, North Little Rock, AR 72117 | $171,000 | DOM: 344 | score=81.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Capital Real Estate Advisors | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 601 Hillcrest Rd, Sherwood, AR 72120 | $200,000 | DOM: 166 | score=81.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Realty One Group - Pinnacle | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 10200 Stardust Trl, Little Rock, AR 72209 | $155,000 | DOM: 172 | score=81.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Kanis Branch | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 2010 S Summit St, Little Rock, AR 72202 | $175,000 | DOM: 200 | score=81.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 8916 Macarthur Dr, North Little Rock, AR 72118 | $139,900 | DOM: 77 | score=80.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Michele Phillips & Co. Realtors | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: (undisclosed Address), Jacksonville, AR 72076 | $99,900 | DOM: 77 | score=80.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Aclin Realty | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 1406 Vine St N, North Little Rock, AR 72114 | $115,000 | DOM: 76 | score=80.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Fathom Realty Central | Email: NONE
+2026-08-13 15:04:40,896 INFO LEAD: 4619 Pike Ave, North Little Rock, AR 72118 | $104,900 | DOM: 76 | score=80.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Prestige Realty | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 6 Compass Point, Sherwood, AR 72120 | $139,900 | DOM: 76 | score=80.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Simpli HOM | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 10601 Harper Rd, Little Rock, AR 72206 | $210,000 | DOM: 118 | score=80.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Compass Group Real Estate | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 3107 S Gaines St, Little Rock, AR 72206 | $184,500 | DOM: 75 | score=80.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty NLR | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 3701 Atwood Rd, Little Rock, AR 72206 | $190,000 | DOM: 75 | score=80.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Truman Ball Real Estate | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 2306 Valmar St, Little Rock, AR 72204 | $195,000 | DOM: 110 | score=80.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Rackley Realty | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 8915 Merrivale Dr, Little Rock, AR 72209 | $125,000 | DOM: 73 | score=80.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Compass Group Real Estate | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 617 N Cedar St, North Little Rock, AR 72114 | $110,000 | DOM: 73 | score=80.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Compass Group Real Estate | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 14 Althea Cir, Little Rock, AR 72209 | $129,900 | DOM: 73 | score=80.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Compass Group Real Estate | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 3817 W 10th St, Little Rock, AR 72204 | $135,000 | DOM: 73 | score=80.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Compass Group Real Estate | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 3100 Malloy St, Little Rock, AR 72204 | $135,000 | DOM: 73 | score=80.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Compass Group Real Estate | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 14914 E Azalea Dr, Alexander, AR 72002 | $90,000 | DOM: 103 | score=80.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Truman Ball Real Estate | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 515 Poe St, North Little Rock, AR 72117 | $108,000 | DOM: 84 | score=80.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: SB Realty & Property Management | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 1013 Graham Ave, North Little Rock, AR 72117 | $110,900 | DOM: 135 | score=80.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Epique Realty | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 18 Paige Ave, Cabot, AR 72023 | $165,000 | DOM: 133 | score=80.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 96 Dam Rd, Mayflower, AR 72106 | $160,000 | DOM: 305 | score=80.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: ASAP Realty | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 2116 Cumberland St, Little Rock, AR 72206 | $195,000 | DOM: 231 | score=80.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Hawks Realty | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 102 Cross St, Jacksonville, AR 72076 | $129,900 | DOM: 77 | score=79.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Aclin Realty | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 2302 S Harrison St, Little Rock, AR 72204 | $84,900 | DOM: 82 | score=79.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 1600 Moss St, North Little Rock, AR 72114 | $95,000 | DOM: 67 | score=79.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 26 Cato Fire Station Rd, Sherwood, AR 72120 | $151,000 | DOM: 85 | score=79.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 104 Foxdell Cir, Jacksonville, AR 72076 | $199,900 | DOM: 91 | score=79.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Lotus Realty | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 117 Shadow Oaks Dr, Sherwood, AR 72120 | $274,000 | DOM: 97 | score=79.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 212 Rice St, Little Rock, AR 72205 | $239,900 | DOM: 67 | score=79.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Real Broker | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 8623 Kennesaw Mountain Dr, Mabelvale, AR 72103 | $135,000 | DOM: 72 | score=79.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 3000 S Arch St, Little Rock, AR 72206 | $119,900 | DOM: 120 | score=79.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Faith Realty & Associates | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 2112 W 19th St, Little Rock, AR 72202 | $85,000 | DOM: 142 | score=79.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Encore | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 21 Winners Cir, Cabot, AR 72023 | $209,000 | DOM: 136 | score=79.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Solid Rock Property Management | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 12007 Lemoncrest Ln, Little Rock, AR 72210 | $210,000 | DOM: 204 | score=79.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Access Realty, Inc | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 904 S Oak St, Little Rock, AR 72204 | $159,900 | DOM: 208 | score=79.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Capital Real Estate Advisors | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 6609 W Wakefield Dr, Little Rock, AR 72209 | $110,000 | DOM: 69 | score=78.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Neighborhood Assistance Corp of America | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 4501 W 28th St, Little Rock, AR 72204 | $95,000 | DOM: 67 | score=78.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 514 Middle St, North Little Rock, AR 72117 | $95,000 | DOM: 67 | score=78.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 316 Pine Valley Rd, Little Rock, AR 72207 | $280,000 | DOM: 61 | score=78.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 7401 Grace Dr, Little Rock, AR 72209 | $168,000 | DOM: 61 | score=78.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Kanis Branch | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 2309 S Tyler St, Little Rock, AR 72204 | $109,900 | DOM: 140 | score=78.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Rock Realty Company | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 1508 Keaton St, Jacksonville, AR 72076 | $127,000 | DOM: 226 | score=78.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Parker & Scroggins Realty - Benton | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 5212 W 31st St, Little Rock, AR 72204 | $107,000 | DOM: 308 | score=78.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Capital Real Estate Advisors | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 3629 Williams Rd, Little Rock, AR 72206 | $165,000 | DOM: 462 | score=78.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Innovative Realty | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 32 Woodland Ct, Jacksonville, AR 72076 | $298,500 | DOM: 164 | score=78.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Capital Real Estate Advisors | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 1914 S Van Buren St, Little Rock, AR 72204 | $127,400 | DOM: 71 | score=77.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Real Property Management Central AR | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 1613 Johnson St, Little Rock, AR 72204 | $95,000 | DOM: 65 | score=77.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 1024 Highland Blvd, Cabot, AR 72023 | $199,900 | DOM: 101 | score=77.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 5020 Lynn Ln, North Little Rock, AR 72118 | $137,000 | DOM: 88 | score=77.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Sandstone Real Estate Group | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 28 John Hancock Dr, Jacksonville, AR 72076 | $148,500 | DOM: 58 | score=77.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Carmichael & Co Realty | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 4319 W 28th St, Little Rock, AR 72204 | $100,000 | DOM: 58 | score=77.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Encore | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 3301 W Capitol Ave, Little Rock, AR 72205 | $208,000 | DOM: 58 | score=77.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Arkansas Home Collective Realty | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 8622 Highway 161, North Little Rock, AR 72117 | $85,000 | DOM: 99 | score=77.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Venture Realty Group - Cabot | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 3601 Parker St, North Little Rock, AR 72118 | $123,000 | DOM: 111 | score=77.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,897 INFO LEAD: 401 Mulberry St, Jacksonville, AR 72076 | $145,000 | DOM: 124 | score=77.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 1608 S Tyler St, Little Rock, AR 72204 | $100,000 | DOM: 54 | score=77.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 1701 S Pierce St, Little Rock, AR 72204 | $83,600 | DOM: 54 | score=77.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Bang Realty | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 1222 S Pierce St, Little Rock, AR 72204 | $145,000 | DOM: 164 | score=77.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Realty One Group Lock and Key | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 130 Sheridan Rd, N Little Rock, AR 72116 | $220,000 | DOM: 127 | score=77.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Hometown Investments & Realty | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 127 Point West Cir, Little Rock, AR 72211 | $205,900 | DOM: 127 | score=77.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Southern Homes Realty | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 6501 Onyx Dr, Little Rock, AR 72209 | $163,000 | DOM: 133 | score=77.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Capital Real Estate Advisors | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 101 Pine Forest Dr #E17, Maumelle, AR 72113 | $120,000 | DOM: 83 | score=76.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Arkansas Property Management & Real Estate | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 2311 W 17th St, Little Rock, AR 72202 | $168,000 | DOM: 113 | score=76.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 804 Towering Oaks Dr, Jacksonville, AR 72076 | $89,900 | DOM: 82 | score=76.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 417 Lindenhurst Dr, North Little Rock, AR 72118 | $110,000 | DOM: 112 | score=76.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Sandstone Real Estate Group | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 40 Single Oaks Dr, Sherwood, AR 72120 | $170,000 | DOM: 52 | score=76.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 4916 Pike Ave, North Little Rock, AR 72118 | $125,900 | DOM: 75 | score=76.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 1510 Parkway Dr, N Little Rock, AR 72118 | $140,000 | DOM: 51 | score=76.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Lotus Realty | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 21024 Arch St, Little Rock, AR 72206 | $215,000 | DOM: 51 | score=76.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McDaniel Realty Inc | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 10 Overby Cir, Little Rock, AR 72205 | $165,000 | DOM: 51 | score=76.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Lotus Realty | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 50 Swayze Rhys Ln, Cabot, AR 72023 | $232,000 | DOM: 57 | score=76.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Dream Space Realty Group | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 7325 Knollwood Dr, Little Rock, AR 72209 | $89,000 | DOM: 68 | score=76.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 220 Willow St, Jacksonville, AR 72076 | $119,000 | DOM: 72 | score=76.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Encore | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 405 Healy St, N Little Rock, AR 72117 | $110,000 | DOM: 132 | score=76.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 1013 Healy St, N Little Rock, AR 72117 | $140,000 | DOM: 133 | score=76.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Realty One Group Lock and Key | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 12 Lance Dr, Sherwood, AR 72120 | $228,900 | DOM: 121 | score=76.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 3215 Katherine St, Little Rock, AR 72204 | $159,000 | DOM: 155 | score=76.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 6112 Evergreen Dr, Little Rock, AR 72207 | $249,900 | DOM: 166 | score=76.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 1423 Allis St, Little Rock, AR 72204 | $82,500 | DOM: 98 | score=75.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 1404 Frank St, N Little Rock, AR 72114 | $84,000 | DOM: 44 | score=75.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 5700 Windamere Dr, Little Rock, AR 72209 | $135,000 | DOM: 85 | score=75.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Rock Realty Company | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: (undisclosed Address), Little Rock, AR 72205 | $149,000 | DOM: 315 | score=75.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Brooklyn Real Estate Property Management | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 801 Anemone Dr, N Little Rock, AR 72117 | $237,000 | DOM: 60 | score=75.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Move Realty | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 606 Brierley Dr, Sherwood, AR 72120 | $198,000 | DOM: 102 | score=75.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 1906 Leander Dr, Little Rock, AR 72204 | $199,950 | DOM: 173 | score=75.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Trail Properties | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 22 Quillen Ave, N Little Rock, AR 72117 | $135,000 | DOM: 76 | score=74.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Cabot Branch | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 3806 Southern St, Little Rock, AR 72206 | $168,000 | DOM: 40 | score=74.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Access Realty, Inc | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 1 Danbury Ln, Jacksonville, AR 72076 | $164,500 | DOM: 100 | score=74.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 2603 Dr Martin Luther King Dr, Little Rock, AR 72206 | $104,000 | DOM: 99 | score=74.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 6169 Saddle Hill Dr, Alexander, AR 72002 | $224,000 | DOM: 45 | score=74.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Plush Homes Co. Realtors | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 1630 Gum St, N Little Rock, AR 72114 | $119,900 | DOM: 110 | score=74.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Chase Calhoun Real Estate LLC | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 39 Cliffwood Cir, N Little Rock, AR 72118 | $169,900 | DOM: 98 | score=74.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates, Realtors - 50 Pine | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 605 W Martin St, Jacksonville, AR 72076 | $117,700 | DOM: 37 | score=74.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Michele Phillips & Co. Realtors | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 5008 Lynch Dr, North Little Rock, AR 72117 | $95,000 | DOM: 67 | score=74.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 100 Meadowlark St, Jacksonville, AR 72076 | $190,000 | DOM: 61 | score=74.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Unlimited Properties | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 2111 S Tyler St, Little Rock, AR 72204 | $112,900 | DOM: 184 | score=74.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: (undisclosed Address), Scott, AR 72142 | $235,000 | DOM: 121 | score=74.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Signature Properties | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: (undisclosed Address), Little Rock, AR 72206 | $210,000 | DOM: 84 | score=74.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McDaniel & Co. REALTORS Inc | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 5315 Peach Leaf Cv, Little Rock, AR 72206 | $215,000 | DOM: 135 | score=74.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Front Porch Realty | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 7201 M St, Little Rock, AR 72207 | $266,500 | DOM: 181 | score=74.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 6432 Tulip Rd, Little Rock, AR 72209 | $139,500 | DOM: 95 | score=73.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 116 North Ave, Jacksonville, AR 72076 | $109,000 | DOM: 113 | score=73.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Simpli HOM | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 10309 Nash Ln, Mabelvale, AR 72103 | $249,000 | DOM: 77 | score=73.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Signature Properties | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 11420 David O Dodd Rd, Little Rock, AR 72204 | $130,000 | DOM: 76 | score=73.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Vylla Home | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 11 Spear Rd, North Little Rock, AR 72117 | $129,900 | DOM: 106 | score=73.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Realty One Group Lock and Key | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 1518 W 35th St, North Little Rock, AR 72118 | $105,000 | DOM: 91 | score=73.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 6505 Farmstead Rd, N Little Rock, AR 72117 | $139,600 | DOM: 49 | score=73.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Rock Realty Company | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 2600 Wolfe St, Little Rock, AR 72206 | $92,000 | DOM: 426 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Access Realty, Inc | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 1104 Parkway Dr, N Little Rock, AR 72118 | $136,000 | DOM: 584 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Metro Real Estate Group | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 1804 Kelly Dr, Jacksonville, AR 72076 | $120,000 | DOM: 120 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Ownit Global Property Group | Email: NONE
+2026-08-13 15:04:40,898 INFO LEAD: 1824 N Hughes St APT 11, Little Rock, AR 72207 | $134,500 | DOM: 121 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Bryant | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 2906 Richland Dr, Little Rock, AR 72206 | $109,000 | DOM: 131 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Vylla Home | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 5305 Vaughn Rd, North Little Rock, AR 72118 | $115,000 | DOM: 132 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Fathom Realty Central | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 455 Highway 89 N, Mayflower, AR 72106 | $129,900 | DOM: 133 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Maumelle | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 7610 Nolen Dr, Little Rock, AR 72209 | $118,500 | DOM: 134 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 2111 Backbone Rd, Cabot, AR 72023 | $145,000 | DOM: 138 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Blair & Co. Realtors | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 1501 W 58th St, North Little Rock, AR 72118 | $150,000 | DOM: 141 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: NextHome Local Realty Group | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 2315 Brasco Rd, Jacksonville, AR 72076 | $149,000 | DOM: 143 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 82 McKenzie Ln, Lonoke, AR 72142 | $115,000 | DOM: 149 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 4 Hamby Ln, Little Rock, AR 72206 | $147,900 | DOM: 153 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McGraw Realtors - Benton | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 27 Edgehill Cv, Maumelle, AR 72113 | $134,000 | DOM: 154 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 6 Wagon Cir, Little Rock, AR 72209 | $114,900 | DOM: 166 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 3505 Orange St, North Little Rock, AR 72118 | $120,000 | DOM: 184 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Venture Realty Group - Cabot | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 15 Hanover Dr, Little Rock, AR 72209 | $89,900 | DOM: 208 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 51 Hill Ln, Little Rock, AR 72209 | $109,000 | DOM: 240 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Baxley-Penfield-Moudy Realtors | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 3 Renee Cv, Little Rock, AR 72209 | $150,000 | DOM: 247 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Access Realty, Inc | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 5303 Westminister Dr, Little Rock, AR 72209 | $89,000 | DOM: 252 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 11440 Jacksonville Cato Rd, North Little Rock, AR 72120 | $144,900 | DOM: 300 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Trail Properties | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 3709 W 12th St, Little Rock, AR 72204 | $145,000 | DOM: 305 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Access Realty, Inc | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 2123 Bragg St, Little Rock, AR 72206 | $105,000 | DOM: 305 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Access Realty, Inc | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 1401 Tamara Park, Jacksonville, AR 72076 | $149,900 | DOM: 386 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Prestige Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 3717 Loch Ln, North Little Rock, AR 72116 | $283,500 | DOM: 131 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Nichols Realty Express | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 7 Shelby Cir, Little Rock, AR 72206 | $190,000 | DOM: 145 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Encore | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 39 Plantation Dr, Little Rock, AR 72206 | $240,000 | DOM: 146 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Resource Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 4005 Royal Oak Dr, N Little Rock, AR 72116 | $239,900 | DOM: 189 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 1324 Skyline Dr, North Little Rock, AR 72116 | $265,000 | DOM: 288 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 20 Forest Glades Cir, North Little Rock, AR 72120 | $273,999 | DOM: 124 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Prestige Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 3100 Fern Cv S, Sherwood, AR 72120 | $245,000 | DOM: 131 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 20 Fox Run Dr, Cabot, AR 72023 | $184,900 | DOM: 137 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Lotus Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 448 Candlewood Cir, Cabot, AR 72023 | $225,000 | DOM: 137 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Encore | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 2409 Ozark Dr, N Little Rock, AR 72116 | $254,900 | DOM: 140 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 910 Carson Bridge Rd, Lonoke, AR 72086 | $274,900 | DOM: 147 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Re/Max Encore - NLR | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 7809 Hayley Dr, Sherwood, AR 72120 | $220,000 | DOM: 159 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Ownit Global Property Group | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 6118 Gribble Rd, Jacksonville, AR 72076 | $250,000 | DOM: 168 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Cabot | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 208 Elwood St, Jacksonville, AR 72076 | $199,999 | DOM: 177 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 305 Stevenson St, Jacksonville, AR 72076 | $178,000 | DOM: 259 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Prestige Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 19 Sycamore St, Cabot, AR 72023 | $219,000 | DOM: 260 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Edge Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 214 Lone Oak Dr, Jacksonville, AR 72076 | $252,900 | DOM: 278 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Real Broker | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 3 Danube Dr, Maumelle, AR 72113 | $274,000 | DOM: 120 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Maumelle | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 98 Emerald Dr, Maumelle, AR 72113 | $299,900 | DOM: 122 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Blue Ink Real Estate | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 5500 McMurtrey Dr, N Little Rock, AR 72118 | $229,900 | DOM: 126 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 11 E Ridge Rd, Mayflower, AR 72106 | $215,000 | DOM: 127 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty Conway | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 5 Random Oaks Cv, Maumelle, AR 72113 | $255,000 | DOM: 131 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: ListWithFreedom.com, Inc | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 4613 E Reed Rd, N Little Rock, AR 72118 | $184,500 | DOM: 132 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 701 Emerald Gardens Dr, N Little Rock, AR 72118 | $239,900 | DOM: 133 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 16 Perin Rd, N Little Rock, AR 72118 | $199,000 | DOM: 134 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 104 Venezia Ln, Maumelle, AR 72113 | $204,900 | DOM: 160 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: The Sumbles Team Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 900 W 51st St, N Little Rock, AR 72118 | $169,900 | DOM: 162 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty Conway | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 6808 Pryer Ln, North Little Rock, AR 72118 | $265,000 | DOM: 164 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 6920 Holtdale Ln, North Little Rock, AR 72118 | $200,000 | DOM: 172 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 7023 Barberry St, N Little Rock, AR 72118 | $215,000 | DOM: 180 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 10300 Debbie Dr, North Little Rock, AR 72113 | $233,500 | DOM: 205 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 901 E 53rd Pl, N Little Rock, AR 72116 | $264,000 | DOM: 263 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty Conway | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 2215 S 425th Hwy, Monticello, AR 71655 | $215,000 | DOM: 272 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Hope & Company Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 4413 N Locust St, N Little Rock, AR 72116 | $192,000 | DOM: 60 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Twin City Properties | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 1020 W 21st St, Little Rock, AR 72206 | $234,000 | DOM: 120 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,899 INFO LEAD: 5618 Pecan Lake Rd, Little Rock, AR 72204 | $199,900 | DOM: 120 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 3812 Hillside Dr, North Little Rock, AR 72118 | $219,900 | DOM: 121 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: SB Realty & Property Management | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 236 A St, Bryant, AR 72022 | $290,000 | DOM: 122 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 1901 S Arch St, Little Rock, AR 72206 | $277,500 | DOM: 125 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Engel & Volkers | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 19019 Quail Run Dr, Little Rock, AR 72210 | $234,000 | DOM: 126 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Big Little Brokerage | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 409 W H Ave, N Little Rock, AR 72116 | $210,000 | DOM: 127 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 3119 S Gaines St, Little Rock, AR 72206 | $275,000 | DOM: 128 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 10323 W 20th St, Little Rock, AR 72205 | $180,000 | DOM: 128 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Baxley-Penfield-Moudy Realtors | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 3211 Dartmouth Ct, Little Rock, AR 72204 | $169,900 | DOM: 131 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 United | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 2916 Dalewood Rd, Little Rock, AR 72207 | $280,000 | DOM: 132 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 523 Louisiana St APT 7A, Little Rock, AR 72201 | $154,900 | DOM: 132 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: The Property Group | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 2109 Stagecoach Village Ct, Little Rock, AR 72210 | $245,000 | DOM: 133 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - LR | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 2312 S Summit St, Little Rock, AR 72206 | $250,000 | DOM: 135 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: The Property Group | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 2215 Biscayne Dr, Little Rock, AR 72227 | $275,000 | DOM: 138 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Rackley Realty | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 700 E 9th 10m St, Little Rock, AR 72202 | $200,000 | DOM: 138 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 506 Parkway Place Dr, Little Rock, AR 72211 | $229,000 | DOM: 139 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 2200 Andover Ct APT 301, Little Rock, AR 72227 | $184,900 | DOM: 145 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 11902 Chariot Dr, Little Rock, AR 72206 | $245,000 | DOM: 145 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Maumelle | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 2520 Riverfront Dr APT 2, Little Rock, AR 72202 | $209,000 | DOM: 146 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Engel & Volkers | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 7400 Briarwood Dr, Little Rock, AR 72205 | $183,500 | DOM: 147 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Maumelle | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 2009 Romine Rd, Little Rock, AR 72205 | $174,900 | DOM: 153 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 United | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 8 Kingsbridge Way, Little Rock, AR 72212 | $184,500 | DOM: 155 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 3902 Cameo Dr, Little Rock, AR 72212 | $279,900 | DOM: 156 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Janet Jones Company | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 2411 W 16th St, Little Rock, AR 72202 | $210,000 | DOM: 170 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Superior Real Estate, Inc | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 4522 W 21st St, Little Rock, AR 72204 | $159,000 | DOM: 172 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Southern Dwellings & Designs Inc | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 10209 Ronald Dr, Little Rock, AR 72205 | $173,500 | DOM: 187 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: NONE | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 80 Bame Cir, Bryant, AR 72022 | $285,000 | DOM: 187 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Plush Homes Co. Realtors | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 215 Johnson St, Little Rock, AR 72205 | $299,900 | DOM: 195 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Aspire Realty Group | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 100 Dennison St, Little Rock, AR 72205 | $210,000 | DOM: 195 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 823 Bryan St, Little Rock, AR 72205 | $226,399 | DOM: 197 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Real Property Management Central AR | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 823 N Bryan St, Little Rock, AR 72205 | $226,400 | DOM: 197 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Real Property Management Central AR | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 2818 W 11th St, Little Rock, AR 72204 | $195,000 | DOM: 199 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 5522 & 5524 B St, Little Rock, AR 72205 | $300,000 | DOM: 211 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Rackley Realty | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 11163 Southridge Dr, Little Rock, AR 72212 | $267,500 | DOM: 215 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Todd Armstrong Real Estate | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 11301 Eric Ln, Little Rock, AR 72211 | $239,400 | DOM: 219 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Todd Armstrong Real Estate | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 107 Claremore Ct, Little Rock, AR 72227 | $299,900 | DOM: 223 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Bailey & Company Real Estate | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 2208 Nichols Rd, Little Rock, AR 72205 | $275,000 | DOM: 247 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Chase Calhoun Real Estate LLC | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 2210 Nichols Rd, Little Rock, AR 72205 | $275,000 | DOM: 247 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Chase Calhoun Real Estate LLC | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 5009 N Lookout Rd, Little Rock, AR 72205 | $289,500 | DOM: 268 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Properties | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 1715 Main St, North Little Rock, AR 72114 | $270,000 | DOM: 289 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Capital Real Estate Advisors | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 2219-2221 Blackwood Rd, Little Rock, AR 72207 | $298,000 | DOM: 316 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Chase Calhoun Real Estate LLC | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 2801 Foxcroft Rd APT 11, Little Rock, AR 72227 | $184,999 | DOM: 373 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Janet Jones Company | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 2323 S Izard St, Little Rock, AR 72206 | $275,000 | DOM: 584 | score=73.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Metro Real Estate Group | Email: NONE
+2026-08-13 15:04:40,900 INFO LEAD: 1000 Towering Oaks Dr, Jacksonville, AR 72076 | $139,900 | DOM: 77 | score=72.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Vylla Home | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 6310 Shaner Cir, Little Rock, AR 72210 | $120,000 | DOM: 65 | score=72.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 1 Devon Ln, Jacksonville, AR 72076 | $199,000 | DOM: 119 | score=72.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 24 Kingspark Rd, Little Rock, AR 72227 | $249,900 | DOM: 119 | score=72.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McLellan & Associates Real Estate Group | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 18 Georgeann Cir, Jacksonville, AR 72076 | $115,500 | DOM: 112 | score=72.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 508 E 23rd St, Little Rock, AR 72206 | $150,000 | DOM: 118 | score=72.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Nash Realty | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 2716 Dr Martin Luther King Dr, Little Rock, AR 72206 | $114,900 | DOM: 118 | score=72.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty - NLR | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 57 White Oak Ln, Little Rock, AR 72227 | $85,000 | DOM: 118 | score=72.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 122 Illinois Bayou Dr, Sherwood, AR 72120 | $284,900 | DOM: 118 | score=72.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Jon Underhill Real Estate | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 7311 W Markham St, Little Rock, AR 72205 | $199,900 | DOM: 118 | score=72.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Hometown Investments & Realty | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 5418 C St, Little Rock, AR 72205 | $237,000 | DOM: 118 | score=72.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: The Lasley Company | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 600 S Maple St, Little Rock, AR 72205 | $219,000 | DOM: 76 | score=72.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 816 N Monroe St, Little Rock, AR 72205 | $189,000 | DOM: 40 | score=72.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 2500 Booker St, Little Rock, AR 72204 | $95,000 | DOM: 105 | score=72.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Maumelle | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 6803 W 34th St, Little Rock, AR 72204 | $109,900 | DOM: 117 | score=72.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 3123 S Gaines St, Little Rock, AR 72206 | $108,000 | DOM: 57 | score=72.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty Hot Springs | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 307 Aspen Ct, North Little Rock, AR 72117 | $145,000 | DOM: 63 | score=72.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 7 Phyllis Ct, Jacksonville, AR 72076 | $169,900 | DOM: 93 | score=72.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 10012 Ronald Dr, Little Rock, AR 72205 | $200,000 | DOM: 117 | score=72.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: NONE | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 13918 Wimbledon Loop, Little Rock, AR 72210 | $225,000 | DOM: 69 | score=72.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 7100 Redwood Dr, Little Rock, AR 72209 | $90,000 | DOM: 116 | score=72.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Sandstone Real Estate Group | Email: NONE
+2026-08-13 15:04:40,901 INFO LEAD: 6312 Allwood Dr, N Little Rock, AR 72118 | $274,000 | DOM: 116 | score=72.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: The Sumbles Team Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 136 Cambridge Place Dr #136, Little Rock, AR 72227 | $265,000 | DOM: 116 | score=72.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Michele Phillips & Company, Realtors-Cabot Branch | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 9105 Peach Tree Ln, Sherwood, AR 72120 | $193,500 | DOM: 56 | score=72.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Carmichael & Co Realty | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 35 Oakview Dr, N Little Rock, AR 72118 | $145,000 | DOM: 73 | score=72.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Compass Group Real Estate | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 9217 Malabri Dr, Little Rock, AR 72209 | $137,200 | DOM: 49 | score=72.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Rock Realty Company | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 1611 Grove Hill Rd, N Little Rock, AR 72116 | $235,000 | DOM: 114 | score=72.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: ESQ. Realty Group | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 5329 Lee Ave, Little Rock, AR 72205 | $229,000 | DOM: 114 | score=72.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 400 S Booker St, Little Rock, AR 72205 | $210,000 | DOM: 114 | score=72.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 215 Willow St #217, Jacksonville, AR 72076 | $100,000 | DOM: 113 | score=71.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Encore | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 605 E 21st St, Little Rock, AR 72206 | $189,500 | DOM: 113 | score=71.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: The Property Group | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 2820 Bonnie Ln, Little Rock, AR 72206 | $224,900 | DOM: 41 | score=71.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 3 Vista Dr, Little Rock, AR 72210 | $145,000 | DOM: 112 | score=71.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Kanis Branch | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 905 Nicole Dr, N Little Rock, AR 72118 | $134,900 | DOM: 105 | score=71.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Partners Realty - Glenwood | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 4511/4513 Atkins St, North Little Rock, AR 72117 | $90,000 | DOM: 110 | score=71.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Deaton Group Realty | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 5633 Sonora Dr, N Little Rock, AR 72118 | $139,900 | DOM: 44 | score=71.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Cabot Branch | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 37 Mustang Dr, Cabot, AR 72023 | $215,000 | DOM: 110 | score=71.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 323 Bradley Ln, Lonoke, AR 72086 | $209,900 | DOM: 110 | score=71.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Bias 4 U Realty | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 12 Winter Creek Dr, Mayflower, AR 72106 | $265,000 | DOM: 110 | score=71.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 6 Fairfield Dr, Sherwood, AR 72120 | $174,900 | DOM: 86 | score=71.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Maumelle | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 3 S Spring St, Little Rock, AR 72201 | $265,000 | DOM: 98 | score=71.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Innovative Realty | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 2200 Andover Ct APT 402, Little Rock, AR 72227 | $189,500 | DOM: 110 | score=71.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 304 Thayer St, Little Rock, AR 72205 | $280,000 | DOM: 110 | score=71.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Charlotte John Company (Little Rock) | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 1305 Fair Park Blvd, Little Rock, AR 72204 | $250,000 | DOM: 110 | score=71.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Green Realty & Associates, LLC | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 3901 Cedar Hill Rd APT 23, Little Rock, AR 72202 | $219,900 | DOM: 110 | score=71.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 16 Pheasant Run Dr, Cabot, AR 72023 | $129,900 | DOM: 43 | score=71.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates, Realtors - 50 Pine | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 5202 S Wakefield Dr, Little Rock, AR 72209 | $145,000 | DOM: 55 | score=71.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Rock Realty Company | Email: NONE
+2026-08-13 15:04:40,902 INFO LEAD: 20 Ledrick Cir, Mayflower, AR 72106 | $299,900 | DOM: 91 | score=71.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 8 Mesa Verde Cv, Maumelle, AR 72113 | $219,900 | DOM: 109 | score=71.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Real Broker | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 7811 Pat Ln, Mabelvale, AR 72103 | $220,000 | DOM: 91 | score=71.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Prestige Realty | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 1119 Ray Rd, Jacksonville, AR 72076 | $109,900 | DOM: 77 | score=70.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 11557 Ridgetop Dr, Sherwood, AR 72120 | $240,000 | DOM: 83 | score=70.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Start To Finish Realty | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 200 Pine Forest Dr #3-B, Maumelle, AR 72113 | $155,000 | DOM: 106 | score=70.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Real Estate Unlimited | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 201 Honeysuckle Ln, Cabot, AR 72023 | $217,900 | DOM: 100 | score=70.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Carolyn Russell Real Estate, Inc | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 25 Shoreline Dr, Mayflower, AR 72106 | $135,000 | DOM: 105 | score=70.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: The Legacy Team | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 9 Whispering Dr, Alexander, AR 72002 | $219,000 | DOM: 105 | score=70.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Big Little Brokerage | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 203 N Monroe St, Little Rock, AR 72205 | $275,000 | DOM: 105 | score=70.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Janet Jones Company | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 4110 Malloy St, Little Rock, AR 72204 | $175,000 | DOM: 105 | score=70.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Access Realty, Inc | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 7316 Geronimo Cir, N Little Rock, AR 72116 | $200,000 | DOM: 57 | score=70.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 3137 Center St, Little Rock, AR 72206 | $155,000 | DOM: 98 | score=70.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 307 Sunnymeade Dr, Little Rock, AR 72205 | $239,000 | DOM: 104 | score=70.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 1412 Green Mountain Dr, Little Rock, AR 72211 | $239,999 | DOM: 104 | score=70.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Fathom Realty Central | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 618 Hall Dr, Little Rock, AR 72205 | $269,900 | DOM: 103 | score=70.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 7 Evert Ct, Little Rock, AR 72210 | $232,750 | DOM: 103 | score=70.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 114 Panola Rd, Lonoke, AR 72086 | $225,000 | DOM: 102 | score=70.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 8025 Danwood Dr, Little Rock, AR 72204 | $248,000 | DOM: 102 | score=70.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Ownit Global Property Group | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 315 Rock St APT 1704, Little Rock, AR 72202 | $254,000 | DOM: 72 | score=70.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Janet Jones Company | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 5807 Hutsell Rd, Little Rock, AR 72209 | $125,000 | DOM: 59 | score=69.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 5627 Bayou Meto Loop, Cabot, AR 72023 | $175,900 | DOM: 101 | score=69.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 72 Cinnamon Dr, Sherwood, AR 72120 | $199,900 | DOM: 101 | score=69.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Knox Realty | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 2207 Rock St, Little Rock, AR 72206 | $245,000 | DOM: 35 | score=69.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Joseph Walter Realty, LLC | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 3423 S Chester St, Little Rock, AR 72206 | $189,000 | DOM: 100 | score=69.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 1115 Briar Creek Rd, Little Rock, AR 72211 | $239,000 | DOM: 82 | score=69.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Betts Real Estate | Email: NONE
+2026-08-13 15:04:40,903 INFO LEAD: 429 Lingo Rd, Lonoke, AR 72086 | $135,000 | DOM: 93 | score=69.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 5907 Jacksonville Conway Rd, Jacksonville, AR 72076 | $269,000 | DOM: 99 | score=69.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 2706 Northeastern Ave, Jacksonville, AR 72076 | $216,000 | DOM: 99 | score=69.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: America's Best Realty | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 46 Chateaus Ln, Little Rock, AR 72210 | $250,000 | DOM: 99 | score=69.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Start To Finish Realty | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 4616 Charles St, N Little Rock, AR 72117 | $130,000 | DOM: 80 | score=69.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Plush Homes Co. Realtors | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 10701 Chicot Rd, Mabelvale, AR 72103 | $109,900 | DOM: 98 | score=69.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 6109 Whitby Ln, North Little Rock, AR 72118 | $199,900 | DOM: 98 | score=69.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Aclin Realty | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 120 Pineview Ave, Sherwood, AR 72120 | $199,995 | DOM: 74 | score=69.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Gold Star Realty | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 1723 N Fillmore St, Little Rock, AR 72207 | $260,000 | DOM: 92 | score=69.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Diamond Rock Realty | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 3101 Boyd St, Little Rock, AR 72204 | $117,500 | DOM: 97 | score=69.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Access Realty, Inc | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 5120 W 34th St, Little Rock, AR 72204 | $84,900 | DOM: 37 | score=69.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Signature Properties | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 6809 Sandpiper Cir, Little Rock, AR 72205 | $159,900 | DOM: 97 | score=69.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 14616 Woodside Place Loop, Alexander, AR 72002 | $199,900 | DOM: 97 | score=69.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Parker & Scroggins Realty - Bryant | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 5515 F St, Little Rock, AR 72205 | $259,900 | DOM: 97 | score=69.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 2911 Wynne Dr, Little Rock, AR 72204 | $155,000 | DOM: 97 | score=69.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Maumelle | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 5817 Alta Vista Dr, N Little Rock, AR 72118 | $129,000 | DOM: 96 | score=69.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Back Porch Realty | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 3994 Mountaincrest Cir, Alexander, AR 72002 | $220,000 | DOM: 96 | score=69.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Innovative Realty | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 1112 Hanger St, Little Rock, AR 72202 | $155,000 | DOM: 96 | score=69.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 1705 S Pierce St, Little Rock, AR 72204 | $89,900 | DOM: 71 | score=68.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McDaniel & Co. REALTORS Inc | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 2020 Romine Rd, Little Rock, AR 72205 | $136,499 | DOM: 77 | score=68.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 22 Edgehill Cv, Maumelle, AR 72113 | $129,999 | DOM: 77 | score=68.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Real Property Management Central AR | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 52 Cardinal Valley Dr, Sherwood, AR 72120 | $220,000 | DOM: 95 | score=68.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 6405 Sullivan Rd, Little Rock, AR 72210 | $239,999 | DOM: 83 | score=68.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Realty Solution | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 21 Woodlore Cir, Little Rock, AR 72211 | $179,900 | DOM: 95 | score=68.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Adkins & Associates Real Estate | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 5114 Loetscher Ln, Little Rock, AR 72209 | $135,000 | DOM: 76 | score=68.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Encore | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 1023 Booker St, Little Rock, AR 72204 | $117,000 | DOM: 76 | score=68.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Prestige Realty | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 1521 Graham Rd, Jacksonville, AR 72076 | $128,800 | DOM: 40 | score=68.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Michele Phillips & Co. Realtors | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 37 Pinedale Cir, Mabelvale, AR 72103 | $149,000 | DOM: 40 | score=68.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 2600 S Van Buren St, Little Rock, AR 72204 | $117,900 | DOM: 93 | score=68.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,904 INFO LEAD: 3380 Garden Club Dr, Bryant, AR 72022 | $218,000 | DOM: 93 | score=68.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 17 Compass Point St, Sherwood, AR 72120 | $139,900 | DOM: 73 | score=68.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Compass Group Real Estate | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 3 Shari Ct, Little Rock, AR 72204 | $139,900 | DOM: 91 | score=68.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 5813 Granby Rd, North Little Rock, AR 72118 | $155,000 | DOM: 37 | score=68.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Bryant | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 5104 N Cedar St, N Little Rock, AR 72116 | $210,000 | DOM: 91 | score=68.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Homefinders | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 9758 Clove Rd, Cabot, AR 72023 | $228,400 | DOM: 91 | score=68.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 50 Wesley Dr, Sherwood, AR 72120 | $194,900 | DOM: 91 | score=68.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 717 Healy St, North Little Rock, AR 72117 | $99,000 | DOM: 30 | score=68.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: SSD Realty Group | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 4105 Bunker Hill Dr, N Little Rock, AR 72116 | $295,000 | DOM: 90 | score=68.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: The Property Group | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 8024 Kim Dr, North Little Rock, AR 72113 | $220,000 | DOM: 42 | score=68.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Bryant | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 7210 W Wakefield Dr, Little Rock, AR 72209 | $169,900 | DOM: 90 | score=68.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Dawn Realty | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 1809 Saratoga Dr, N Little Rock, AR 72116 | $239,900 | DOM: 89 | score=67.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Bailey & Company Real Estate | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 20 Forest Oaks St, Sherwood, AR 72120 | $215,000 | DOM: 35 | score=67.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Kanis Branch | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 12413 Pleasant Forest Dr, Little Rock, AR 72212 | $215,000 | DOM: 89 | score=67.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Hawks Realty | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 5 Roxbury Dr, Little Rock, AR 72209 | $159,900 | DOM: 89 | score=67.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Superior Real Estate, Inc | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 7905 Woodhaven Dr, Little Rock, AR 72209 | $115,000 | DOM: 76 | score=67.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Epique Realty | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 1509 Wewoka Dr, N Little Rock, AR 72116 | $299,995 | DOM: 70 | score=67.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Homecoin.com | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 21 Westfield Cir, Little Rock, AR 72210 | $218,000 | DOM: 40 | score=67.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Vylla Home | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 4003 W Berkley Dr, North Little Rock, AR 72118 | $132,000 | DOM: 75 | score=67.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Charlotte John Company (Little Rock) | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 7601 Geronimo Cir, N Little Rock, AR 72116 | $265,000 | DOM: 87 | score=67.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 424 Healy St, North Little Rock, AR 72117 | $134,900 | DOM: 86 | score=67.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Deaton Group Realty | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 31 Park Ridge Dr, Maumelle, AR 72113 | $276,000 | DOM: 86 | score=67.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Maumelle | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 1814 N Mississippi St, Little Rock, AR 72227 | $160,000 | DOM: 86 | score=67.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Signature Properties | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 514 Cambridge Place Dr, Little Rock, AR 72227 | $190,000 | DOM: 86 | score=67.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: The Legacy Team | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 6517 Delhaven Dr, North Little Rock, AR 72117 | $115,000 | DOM: 43 | score=67.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Unlimited Properties | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 2118 W 18th St, North Little Rock, AR 72114 | $88,000 | DOM: 49 | score=67.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Michele Phillips & Company, Realtors-Cabot Branch | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 44 Red Oak Dr, Cabot, AR 72023 | $230,000 | DOM: 85 | score=67.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 1421 Hatcher Rd, Sherwood, AR 72120 | $219,900 | DOM: 85 | score=67.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Trail Properties | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 9308 W 6th St, Little Rock, AR 72205 | $195,000 | DOM: 85 | score=67.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Edge Realty | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 300 Rosetta St, Little Rock, AR 72205 | $285,000 | DOM: 85 | score=67.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Janet Jones Company | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 2101 Coraltree Dr, Bryant, AR 72022 | $157,900 | DOM: 85 | score=67.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Baxley-Penfield-Moudy Realtors | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 11120 Birchwood Dr, Little Rock, AR 72211 | $155,000 | DOM: 67 | score=67.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 820 N Polk St, Little Rock, AR 72205 | $129,000 | DOM: 30 | score=67.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: The Property Group | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 5 Neal Pl, Little Rock, AR 72217 | $124,000 | DOM: 42 | score=67.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Hawks Realty | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 7707 W 45th St, Little Rock, AR 72204 | $145,000 | DOM: 83 | score=66.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Michele Phillips & Co. Realtors Searcy Branch | Email: NONE
+2026-08-13 15:04:40,905 INFO LEAD: 10901 W David O Dodd Rd, Little Rock, AR 72204 | $139,500 | DOM: 83 | score=66.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Lisa Attwood Realty | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 34 Bent Tree Dr, Cabot, AR 72023 | $179,900 | DOM: 83 | score=66.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Prestige Realty | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 1801 Williford St, Sherwood, AR 72120 | $265,000 | DOM: 83 | score=66.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McGraw Realtors - Benton | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 320 W 18th St, N Little Rock, AR 72114 | $275,000 | DOM: 83 | score=66.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 86 Bame Cir, Bryant, AR 72022 | $299,000 | DOM: 83 | score=66.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Prestige Realty | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 2604 S Spring St, Little Rock, AR 72206 | $187,000 | DOM: 83 | score=66.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Plush Homes Co. Realtors | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 1516 S Chester St, Little Rock, AR 72202 | $289,900 | DOM: 83 | score=66.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty - NLR | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 523 W K Ave, North Little Rock, AR 72116 | $232,500 | DOM: 71 | score=66.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 905 Stirrup Pl, Jacksonville, AR 72076 | $125,000 | DOM: 82 | score=66.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Michele Phillips & Co. Realtors Searcy Branch | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 94 Broadmoor Dr, Little Rock, AR 72204 | $94,900 | DOM: 82 | score=66.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 22 Cliffwood Cir, N Little Rock, AR 72118 | $135,000 | DOM: 34 | score=66.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Compass Group Real Estate | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 1855 S Izard St, Little Rock, AR 72206 | $225,000 | DOM: 82 | score=66.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Arkansas Property Management & Real Estate | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 5024 Woodlawn Dr, Little Rock, AR 72205 | $300,000 | DOM: 82 | score=66.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Jon Underhill Real Estate | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 1407 S Cleveland St, Little Rock, AR 72204 | $173,000 | DOM: 46 | score=66.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Truman Ball Real Estate | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 91 Dartmouth Dr, Little Rock, AR 72204 | $199,000 | DOM: 81 | score=66.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trammell & Company Real Estate | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 10 Cherrywood Ct, Little Rock, AR 72211 | $270,000 | DOM: 81 | score=66.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Rock Realty Company | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 5609 Kari Hill Pl, N Little Rock, AR 72118 | $210,600 | DOM: 56 | score=66.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Carmichael & Co Realty | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 1318 Pine Valley Rd, Little Rock, AR 72207 | $299,500 | DOM: 50 | score=66.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Charlotte John Company (Little Rock) | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 715 Maple St, Little Rock, AR 72205 | $189,500 | DOM: 79 | score=66.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Adkins & Associates Real Estate | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 616 Lehman Dr, Jacksonville, AR 72076 | $117,500 | DOM: 30 | score=66.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Homefinders | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 3423 Tatum St, Little Rock, AR 72204 | $120,000 | DOM: 36 | score=66.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Capital Real Estate Advisors | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 37 Elk Bear Ln, Cabot, AR 72023 | $182,900 | DOM: 78 | score=66.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 10 Brookway Ln, North Little Rock, AR 72120 | $160,000 | DOM: 78 | score=66.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 409 Sunnymeade Dr, Little Rock, AR 72205 | $169,900 | DOM: 48 | score=66.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 United | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 701 Sheffield Dr, Bryant, AR 72022 | $294,000 | DOM: 54 | score=66.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Family First Realty, LLC | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 20 Fox Run Dr, Little Rock, AR 72210 | $209,000 | DOM: 78 | score=66.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 5105 W 28th St, Little Rock, AR 72204 | $84,900 | DOM: 77 | score=65.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 5813 Wisteria Ct, N Little Rock, AR 72118 | $114,900 | DOM: 77 | score=65.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 32 Oakview Dr, North Little Rock, AR 72118 | $114,900 | DOM: 77 | score=65.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 912 Greenlea Dr, North Little Rock, AR 72117 | $125,000 | DOM: 77 | score=65.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Compass Group Real Estate | Email: NONE
+2026-08-13 15:04:40,906 INFO LEAD: 5 Buck Point Cv, Little Rock, AR 72209 | $115,000 | DOM: 35 | score=65.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 25 Collins Rd, Jacksonville, AR 72076 | $95,000 | DOM: 47 | score=65.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Homefinders | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 33 Thompson Dr, Cabot, AR 72023 | $289,900 | DOM: 77 | score=65.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Edge Realty | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 6317 Hopi Dr, North Little Rock, AR 72116 | $214,900 | DOM: 41 | score=65.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike Realtors Financial Centre Branch | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 22 Point South Ct, Little Rock, AR 72211 | $279,900 | DOM: 77 | score=65.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Berkshire Hathaway HomeServices Arkansas Realty | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 10024 Whispering Pine Dr, Little Rock, AR 72209 | $179,500 | DOM: 77 | score=65.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Gold Star Realty | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 42 N Meadowcliff Dr, Little Rock, AR 72209 | $99,900 | DOM: 76 | score=65.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 8205 Stacey Ln, North Little Rock, AR 72113 | $257,500 | DOM: 76 | score=65.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Rackley Realty | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 115 Earnhardt Cir, Crk, AR 72023 | $270,000 | DOM: 76 | score=65.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Edge Realty | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 2300 Loop Acres Rd, Jacksonville, AR 72076 | $229,900 | DOM: 76 | score=65.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 10 Quapaw Trl, Jacksonville, AR 72076 | $175,000 | DOM: 75 | score=65.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 35 Courtside Pl, Little Rock, AR 72210 | $290,000 | DOM: 75 | score=65.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 15 Red Maple Ct, Little Rock, AR 72211 | $295,000 | DOM: 75 | score=65.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Capital Real Estate Advisors | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 700 E 9th St APT 3C, Little Rock, AR 72202 | $119,000 | DOM: 73 | score=65.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 8109 McDaniel Dr, Little Rock, AR 72209 | $127,000 | DOM: 73 | score=65.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Dawn Realty | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 4408 John Barrow Rd, Little Rock, AR 72204 | $125,000 | DOM: 73 | score=65.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Compass Group Real Estate | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 107 Dexter Ave, North Little Rock, AR 72116 | $249,900 | DOM: 73 | score=65.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Rock Realty Company | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 616 E Woodruff Ave, Sherwood, AR 72120 | $299,900 | DOM: 73 | score=65.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 1005 Thompson St, Jacksonville, AR 72076 | $179,900 | DOM: 73 | score=65.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Truman Ball Real Estate | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 1117-1119 Ruth Ann Dr, Jacksonville, AR 72076 | $240,000 | DOM: 73 | score=65.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Capital Real Estate Advisors | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 2200 Andover Ct APT 605, Little Rock, AR 72227 | $212,000 | DOM: 67 | score=65.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Charlotte John Company (Little Rock) | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 6096 Saddle Hill Dr, Alexander, AR 72002 | $225,000 | DOM: 73 | score=65.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 1311 Starfield Rd, N Little Rock, AR 72116 | $254,900 | DOM: 73 | score=65.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Rock Realty Company | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 4905 Mabelvale Pike, Little Rock, AR 72209 | $129,900 | DOM: 72 | score=65.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Compass Group Real Estate | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 101 Venezia Ln, Maumelle, AR 72113 | $204,900 | DOM: 72 | score=65.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: The Sumbles Team Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 124 Springwood Dr, Little Rock, AR 72211 | $244,999 | DOM: 72 | score=65.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Joseph Walter Realty, LLC | Email: NONE
+2026-08-13 15:04:40,907 INFO LEAD: 520 Water St, North Little Rock, AR 72117 | $200,000 | DOM: 48 | score=65.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: NONE | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 1401 S Bailey St, Jacksonville, AR 72076 | $119,000 | DOM: 59 | score=64.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Hometown Investments & Realty | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 24315 Highway 365 N, Maumelle, AR 72113 | $249,900 | DOM: 71 | score=64.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Maumelle | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 116 Pleasantwood Dr, Maumelle, AR 72113 | $275,000 | DOM: 71 | score=64.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty Conway | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 5503 Irish Ln, North Little Rock, AR 72118 | $199,900 | DOM: 71 | score=64.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Maumelle | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 2204 Osage Dr, N Little Rock, AR 72116 | $175,000 | DOM: 71 | score=64.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 109 Concord Cir, Jacksonville, AR 72076 | $239,000 | DOM: 71 | score=64.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Prestige Realty | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 1309 Stamps St, Jacksonville, AR 72076 | $179,000 | DOM: 35 | score=64.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Capital Real Estate Advisors | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 1007 Clinton Ct, Alexander, AR 72002 | $205,000 | DOM: 71 | score=64.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 3700 Cantrell Rd APT 301, Little Rock, AR 72202 | $245,000 | DOM: 71 | score=64.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Charlotte John Company (Little Rock) | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 10 Odonnell Ct, Little Rock, AR 72205 | $269,900 | DOM: 71 | score=64.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - LR | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 165 89th Hwy, Mayflower, AR 72106 | $115,000 | DOM: 64 | score=64.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Red Door Realty, LLC | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 958 Villa Vista Loop, Cabot, AR 72023 | $264,000 | DOM: 70 | score=64.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 7924 Mabelvale Cut Off Rd, Mabelvale, AR 72103 | $200,000 | DOM: 70 | score=64.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Homeward Realty | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 1024 E 16th St, North Little Rock, AR 72114 | $129,900 | DOM: 69 | score=64.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Real Broker | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 5 Village Way, Maumelle, AR 72113 | $229,000 | DOM: 69 | score=64.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Lotus Realty | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 505 Parrish St, Jacksonville, AR 72076 | $240,000 | DOM: 69 | score=64.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Bryant | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 1708 Osceola Dr, North Little Rock, AR 72116 | $261,000 | DOM: 69 | score=64.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Tanner Realty | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 2516 Millbrook Rd, Little Rock, AR 72227 | $265,000 | DOM: 69 | score=64.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Charlotte John Company (Little Rock) | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 21 Kingsbridge Way, Little Rock, AR 72212 | $199,500 | DOM: 69 | score=64.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Janet Jones Company | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 12507 Vimy Ridge Rd, Alexander, AR 72002 | $226,500 | DOM: 45 | score=64.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Capital Real Estate Advisors | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 1403 W Daisy L Gatson Bates Dr, Little Rock, AR 72202 | $150,000 | DOM: 68 | score=64.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 210 Belmont Dr, Pine Bluff, AR 72116 | $124,900 | DOM: 68 | score=64.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 25 Sarah Alyse Ln, Cabot, AR 72023 | $219,900 | DOM: 68 | score=64.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 1820 Aztec Dr, North Little Rock, AR 72116 | $255,000 | DOM: 68 | score=64.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: NONE | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: (undisclosed Address), Little Rock, AR 72212 | $244,900 | DOM: 62 | score=64.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Taxwise Wealth Realty | Email: NONE
+2026-08-13 15:04:40,908 INFO LEAD: 52 Berkshire Dr, Little Rock, AR 72204 | $200,000 | DOM: 68 | score=64.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: REMAX Ultimate | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 1107 Crossing Loop, Bryant, AR 72022 | $249,900 | DOM: 68 | score=64.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 4700 N Vine St, North Little Rock, AR 72116 | $228,750 | DOM: 68 | score=64.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Aligned Realty | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 209 Stevenson St, Jacksonville, AR 72076 | $94,900 | DOM: 49 | score=64.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 20 W Windsor Dr, Little Rock, AR 72209 | $129,900 | DOM: 67 | score=64.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: NONE | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 96 Creekwood Dr, Jacksonville, AR 72076 | $220,000 | DOM: 67 | score=64.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Engel & Volkers | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 35 Daniel Dr, Sherwood, AR 72120 | $289,900 | DOM: 67 | score=64.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty - NLR | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 2 Inlet St, Little Rock, AR 72204 | $85,000 | DOM: 42 | score=64.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Ausum Realty | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 103 Cambridge Place Dr, Little Rock, AR 72227 | $210,000 | DOM: 66 | score=64.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Clark & Co. Realty | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: (undisclosed Address), Cabot, AR 72023 | $195,000 | DOM: 65 | score=63.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: KW Market Pro Realty | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 12908 Westglen Dr, Little Rock, AR 72211 | $255,000 | DOM: 65 | score=63.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 4816 W 30th St, Little Rock, AR 72204 | $158,000 | DOM: 65 | score=63.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Kanis Branch | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 1306 Crossing Loop, Bryant, AR 72022 | $265,000 | DOM: 47 | score=63.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Unlimited Properties | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 5008 N Vine St, N Little Rock, AR 72116 | $298,000 | DOM: 64 | score=63.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 921 Villa Vista Loop, Cabot, AR 72023 | $265,000 | DOM: 64 | score=63.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 2810 Gray Fox Ln, Jacksonville, AR 72076 | $199,900 | DOM: 64 | score=63.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Dawn Realty | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 1504 Sheridan Dr, Jacksonville, AR 72076 | $230,000 | DOM: 34 | score=63.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike Realtors Financial Centre Branch | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 86 Kingsbridge Way, Little Rock, AR 72212 | $159,900 | DOM: 64 | score=63.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 2613 S State St, Little Rock, AR 72206 | $240,000 | DOM: 64 | score=63.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Aclin Realty | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 117 N Elm St, Little Rock, AR 72205 | $265,000 | DOM: 64 | score=63.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Janet Jones Company | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 40 Regency Cir, Little Rock, AR 72209 | $99,900 | DOM: 63 | score=63.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 28 Greenview Cir, Sherwood, AR 72120 | $252,500 | DOM: 63 | score=63.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 15 Red Oak Dr, Cabot, AR 72023 | $229,990 | DOM: 63 | score=63.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Venture Realty Group - Cabot | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 1909 Madden Rd, Jacksonville, AR 72076 | $230,000 | DOM: 63 | score=63.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Homefinders | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 7 Marlene Ct, Little Rock, AR 72206 | $299,300 | DOM: 63 | score=63.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McDaniel & Co. REALTORS - Hensley | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 2410 Fair Park Blvd, Little Rock, AR 72204 | $218,500 | DOM: 63 | score=63.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Properties | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 18411 Highway 300, Roland, AR 72135 | $169,000 | DOM: 62 | score=63.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,909 INFO LEAD: 2108 Bragg St, Little Rock, AR 72206 | $189,000 | DOM: 56 | score=63.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Engel & Volkers | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 3403 Millbrook Rd, Little Rock, AR 72227 | $249,900 | DOM: 62 | score=63.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Christopher Realty, Inc | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 13825 Ridgecrest Dr, Alexander, AR 72002 | $178,900 | DOM: 62 | score=63.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 11443 Southridge Dr, Little Rock, AR 72212 | $289,000 | DOM: 62 | score=63.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Engel & Volkers | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 13 Kingsbridge Way, Little Rock, AR 72212 | $199,999 | DOM: 62 | score=63.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: The Property Group | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 2506 Riverfront Dr, Little Rock, AR 72202 | $270,000 | DOM: 62 | score=63.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 30 Sheila Dr, Sherwood, AR 72120 | $159,900 | DOM: 44 | score=63.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 306 Ray St, Cabot, AR 72023 | $196,000 | DOM: 62 | score=63.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Homefinders | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 5006 Madison Ave, Jacksonville, AR 72076 | $250,000 | DOM: 62 | score=63.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 5500 Sonora Dr, N Little Rock, AR 72118 | $149,900 | DOM: 61 | score=63.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Maumelle | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 411 Brown St, Little Rock, AR 72205 | $190,000 | DOM: 61 | score=63.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 2501 Maple St, Little Rock, AR 72204 | $174,900 | DOM: 61 | score=63.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - LR | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 7601 Flintrock Rd, N Little Rock, AR 72116 | $299,000 | DOM: 61 | score=63.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Engel & Volkers | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 1707 Crestwood Rd, N Little Rock, AR 72116 | $209,000 | DOM: 60 | score=63.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Charlotte John Company (Little Rock) | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 2921 W 17th St, Little Rock, AR 72204 | $124,900 | DOM: 59 | score=62.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 4625 Crestline Dr, N Little Rock, AR 72116 | $190,000 | DOM: 58 | score=62.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Diamond Rock Realty | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 1410 Vine St, North Little Rock, AR 72114 | $249,000 | DOM: 58 | score=62.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Fathom Realty Central | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 12501 County Line Rd, Alexander, AR 72002 | $280,000 | DOM: 58 | score=62.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Ausum Realty | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 3 Spotwood Rd, Little Rock, AR 72207 | $184,900 | DOM: 34 | score=62.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: The Property Group | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 508 Green Mountain Cir APT 78, Little Rock, AR 72211 | $96,000 | DOM: 57 | score=62.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty Conway | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 4823 Rogers St, North Little Rock, AR 72117 | $139,900 | DOM: 57 | score=62.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Deaton Group Realty | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 5118 Lynch Dr, North Little Rock, AR 72117 | $129,900 | DOM: 57 | score=62.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Compass Group Real Estate | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 310 Kay St, North Little Rock, AR 72117 | $129,900 | DOM: 57 | score=62.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Compass Group Real Estate | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 8 Parkview Dr, Bryant, AR 72022 | $270,000 | DOM: 57 | score=62.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Bryant | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 1401 Maple St, N Little Rock, AR 72114 | $265,000 | DOM: 57 | score=62.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Engel & Volkers | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 18 White Willow Ct, Little Rock, AR 72212 | $249,000 | DOM: 57 | score=62.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: NONE | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 8302 Merriwood Ct, Sherwood, AR 72120 | $222,900 | DOM: 57 | score=62.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty - NLR | Email: NONE
+2026-08-13 15:04:40,910 INFO LEAD: 334 Alanbrook Ave, Sherwood, AR 72120 | $269,500 | DOM: 57 | score=62.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Bailey & Company Real Estate | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 10213 Lori Kaye Dr, North Little Rock, AR 72113 | $229,900 | DOM: 32 | score=62.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: ESQ. Realty Group | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 7201 Forest Dale Dr, N Little Rock, AR 72118 | $171,000 | DOM: 56 | score=62.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Dawn Realty | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 421 W 24th St, North Little Rock, AR 72114 | $224,900 | DOM: 56 | score=62.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 23 Jones Rd, Jacksonville, AR 72076 | $279,999 | DOM: 56 | score=62.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty Conway | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 8501 Merriwood Ct, Sherwood, AR 72120 | $230,000 | DOM: 56 | score=62.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Realty One Group Lock and Key | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 6407 Jacksonville Cutoff Rd, Jacksonville, AR 72076 | $195,000 | DOM: 56 | score=62.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Hometown Investments & Realty | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 6600 W 32nd St, Little Rock, AR 72204 | $94,900 | DOM: 55 | score=62.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 5108 N Vine St, North Little Rock, AR 72116 | $192,000 | DOM: 55 | score=62.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Engel & Volkers | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 2409 S State St, Little Rock, AR 72206 | $255,000 | DOM: 55 | score=62.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sheridan | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 11805 Shady Ridge Dr, Little Rock, AR 72211 | $295,000 | DOM: 55 | score=62.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Edge Realty | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 1205 Twin Lakes Dr, Little Rock, AR 72205 | $215,000 | DOM: 55 | score=62.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Kanis Branch | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 1004 E 11th St, N Little Rock, AR 72114 | $89,000 | DOM: 48 | score=62.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Cook and Company | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 1400 Hawkwood Rd, Sherwood, AR 72120 | $240,000 | DOM: 36 | score=62.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 7023 W Markham St, Little Rock, AR 72205 | $250,000 | DOM: 54 | score=62.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McDaniel & Co. REALTORS Inc | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 3101 S Battery St, Little Rock, AR 72206 | $199,900 | DOM: 54 | score=62.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 4008 Emerson Dr, N Little Rock, AR 72118 | $175,000 | DOM: 54 | score=62.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 12501 Goldleaf Dr, Little Rock, AR 72210 | $210,000 | DOM: 54 | score=62.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Janet Jones Company | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 13032 Skyridge Cv, Alexander, AR 72002 | $254,900 | DOM: 54 | score=62.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Metro Real Estate Group | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 6 Heritage Ct, Little Rock, AR 72211 | $255,000 | DOM: 54 | score=62.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 9729 Lanehart Rd, Little Rock, AR 72204 | $185,000 | DOM: 54 | score=62.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Access Realty, Inc | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 25 Sun Vista Ln, Cabot, AR 72023 | $260,000 | DOM: 48 | score=62.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Homefinders | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 1159 John Shelton Rd, Jacksonville, AR 72076 | $234,900 | DOM: 54 | score=62.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 1912 Jennings Rd, Little Rock, AR 72206 | $99,000 | DOM: 47 | score=61.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Superior Real Estate, Inc | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 10 Parkridge Dr, North Little Rock, AR 72120 | $169,900 | DOM: 35 | score=61.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 112 Sheridan Rd, N Little Rock, AR 72116 | $160,000 | DOM: 52 | score=61.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 17 Pawnee Dr, Cabot, AR 72023 | $249,900 | DOM: 34 | score=61.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 17 Laver Cir, Little Rock, AR 72210 | $279,900 | DOM: 52 | score=61.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: The Legacy Team | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 8 Fredonia Ct, Mayflower, AR 72106 | $239,900 | DOM: 51 | score=61.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: MVP Real Estate | Email: NONE
+2026-08-13 15:04:40,911 INFO LEAD: 5601 Bliss Cir, Little Rock, AR 72209 | $169,900 | DOM: 51 | score=61.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 8909 Holiday Dr, Sherwood, AR 72120 | $179,900 | DOM: 51 | score=61.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Blair & Co. Realtors | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 6821 Old Tom Box Rd, Jacksonville, AR 72076 | $229,500 | DOM: 51 | score=61.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 1 Wesley Dr, Sherwood, AR 72120 | $249,900 | DOM: 51 | score=61.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 5000 Arlington Dr, N Little Rock, AR 72116 | $242,000 | DOM: 51 | score=61.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 208 Raney Pl, Jacksonville, AR 72076 | $124,000 | DOM: 50 | score=61.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Lotus Realty | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 208 Hilda St, Jacksonville, AR 72076 | $94,900 | DOM: 49 | score=61.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 10018 Forester Cv, Little Rock, AR 72209 | $152,000 | DOM: 49 | score=61.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 1909 Fair Oaks Dr, Little Rock, AR 72204 | $188,700 | DOM: 49 | score=61.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Eleven 11 Company | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 75 Kingsbridge Way, Little Rock, AR 72212 | $279,000 | DOM: 49 | score=61.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Bryant | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 506 Ann Ave, Sherwood, AR 72120 | $185,000 | DOM: 49 | score=61.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 607 Dakota St, Cabot, AR 72023 | $230,500 | DOM: 49 | score=61.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 2133 Sage Meadows Cir, Sherwood, AR 72120 | $225,000 | DOM: 36 | score=61.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Michele Phillips & Co. Realtors | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 14107 Magnolia Glen Dr, Alexander, AR 72002 | $209,900 | DOM: 48 | score=61.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Truman Ball Real Estate | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 10610 Rockbrook Dr, Sherwood, AR 72120 | $249,950 | DOM: 48 | score=61.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 1613 N James St, Jacksonville, AR 72076 | $159,500 | DOM: 48 | score=61.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 11916 Krestridge Dr, Mabelvale, AR 72103 | $149,900 | DOM: 47 | score=60.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Gold Star Realty | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 18 Windsor Dr, Little Rock, AR 72209 | $104,900 | DOM: 47 | score=60.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 4625 Pike Ave, N Little Rock, AR 72118 | $99,900 | DOM: 47 | score=60.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 416 N Pierce St APT 28, Little Rock, AR 72205 | $149,900 | DOM: 47 | score=60.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Charlotte John Company (Little Rock) | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 8 Cross St, Mayflower, AR 72106 | $245,000 | DOM: 47 | score=60.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 102 Prospect Trl, N Little Rock, AR 72118 | $259,900 | DOM: 47 | score=60.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Real Broker | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 309 Corkwood Dr, Jacksonville, AR 72076 | $230,000 | DOM: 47 | score=60.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 101 Crossbow Ct, Sherwood, AR 72120 | $249,500 | DOM: 47 | score=60.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Michele Phillips & Co. Realtors | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 44 Bent Tree Dr, Cabot, AR 72023 | $209,999 | DOM: 47 | score=60.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Realty One Group Lock and Key | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 19 Arbor Trl, Cabot, AR 72023 | $279,999 | DOM: 47 | score=60.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Trail Properties | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 1020 N Hughes St, Little Rock, AR 72207 | $275,000 | DOM: 47 | score=60.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Move Realty | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 6081 Saddle Hill Dr, Alexander, AR 72002 | $215,000 | DOM: 47 | score=60.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Plush Homes Co. Realtors | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 3125 Misty Ln, Little Rock, AR 72227 | $285,000 | DOM: 47 | score=60.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Parker & Scroggins Realty - Bryant | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 7618 Choctaw Rd, Little Rock, AR 72205 | $259,000 | DOM: 46 | score=60.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Epic Real Estate | Email: NONE
+2026-08-13 15:04:40,912 INFO LEAD: 21 Saint John St, Cabot, AR 72023 | $175,000 | DOM: 33 | score=60.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 1866 Dennison St, Little Rock, AR 72202 | $119,000 | DOM: 44 | score=60.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 20 Stacey St, Cabot, AR 72023 | $199,900 | DOM: 44 | score=60.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Ultra Properties | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 1008 N Jp Wright Loop Rd, Jacksonville, AR 72076 | $199,900 | DOM: 44 | score=60.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Michele Phillips & Co. Realtors Searcy Branch | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 2421 Gunpowder Rd, Little Rock, AR 72227 | $275,000 | DOM: 44 | score=60.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Adkins & Associates Real Estate | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 12724 Pleasant View Dr, Little Rock, AR 72212 | $216,000 | DOM: 44 | score=60.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 6109 Cantrell Rd, Little Rock, AR 72207 | $279,000 | DOM: 44 | score=60.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Edge Realty | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 8809 Pea Ridge Cir, Mabelvale, AR 72103 | $259,000 | DOM: 44 | score=60.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sheridan | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 3405 W 7th St, Little Rock, AR 72205 | $179,500 | DOM: 44 | score=60.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Adkins & Associates Real Estate | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 16 Dam Rd, Mayflower, AR 72106 | $215,000 | DOM: 43 | score=60.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 4 Rook Pl, Maumelle, AR 72113 | $204,900 | DOM: 43 | score=60.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 5501 Aviator Dr, Jacksonville, AR 72076 | $285,000 | DOM: 43 | score=60.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Edge Realty | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 105 Wells Fargo Trl, Jacksonville, AR 72076 | $175,000 | DOM: 43 | score=60.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 905 Shall Ct, Jacksonville, AR 72076 | $190,000 | DOM: 43 | score=60.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Maumelle | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 1807 Fair Park Blvd, Little Rock, AR 72204 | $215,000 | DOM: 43 | score=60.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Century 21 Parker & Scroggins Realty - Bryant | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 9 Morrison Ct, Little Rock, AR 72212 | $250,000 | DOM: 43 | score=60.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 1209 E Twin Lakes Dr, Little Rock, AR 72205 | $190,000 | DOM: 43 | score=60.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Truman Ball Real Estate | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 223 S Oak St, Little Rock, AR 72205 | $219,900 | DOM: 43 | score=60.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 16520 Landmark Rd, Little Rock, AR 72206 | $159,900 | DOM: 43 | score=60.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 6712 Longwood Rd, Cammack Village, AR 72207 | $230,000 | DOM: 43 | score=60.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Chase Calhoun Real Estate LLC | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 6609 Greenwood Rd, Cammack Village, AR 72207 | $300,000 | DOM: 43 | score=60.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Chase Calhoun Real Estate LLC | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 18 Westminister Dr, Little Rock, AR 72209 | $144,900 | DOM: 42 | score=60.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Simpli HOM | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 219 2nd St, N Little Rock, AR 72117 | $167,000 | DOM: 36 | score=60.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Epique Realty | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 35 Burns Dr, Cabot, AR 72023 | $199,000 | DOM: 36 | score=60.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: NONE | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 5609 Aviator Dr, Jacksonville, AR 72076 | $249,900 | DOM: 42 | score=60.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Homefinders | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 12 Lenox Rd, North Little Rock, AR 72120 | $159,899 | DOM: 42 | score=60.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Simpli HOM | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 1025 Oakhurst Dr, Jacksonville, AR 72076 | $257,500 | DOM: 42 | score=60.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 618 Madden Rd, Jacksonville, AR 72076 | $199,500 | DOM: 42 | score=60.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: All Around Real Estate - Dover | Email: NONE
+2026-08-13 15:04:40,913 INFO LEAD: 12621 Valleywood Dr, Little Rock, AR 72211 | $215,000 | DOM: 42 | score=60.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 3981 Palomino Cv, Alexander, AR 72002 | $239,000 | DOM: 42 | score=60.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Engel & Volkers | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 1724 W 24th St, Little Rock, AR 72206 | $285,000 | DOM: 42 | score=60.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Ownit Global Property Group | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 6905 W 34th St, Little Rock, AR 72204 | $195,000 | DOM: 42 | score=60.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: River Rock Realty Company | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 217 Mills St, N Little Rock, AR 72117 | $149,900 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 2818 Springer Blvd, Little Rock, AR 72206 | $115,000 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Fathom Realty Central | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 1824 N Hughes St APT 1, Little Rock, AR 72207 | $149,900 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 6 Dee Dee Cir, Little Rock, AR 72223 | $299,900 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Chase Calhoun Real Estate LLC | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 22 Pennwood Dr, Sherwood, AR 72120 | $219,900 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 40 Mary Ann Cir, Cabot, AR 72023 | $212,900 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Halsey Real Estate - Benton | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 1002 Eastern Ave, Cabot, AR 72023 | $174,000 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Back Porch Realty | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 62 Nevada Ln, Cabot, AR 72023 | $243,000 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Edge Realty | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 707 Indian Bay Dr, Sherwood, AR 72120 | $269,999 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Continental Real Estate Group, Inc | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 60 Andrew Dr, Cabot, AR 72023 | $299,000 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Young Home Sales | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 1206 Overview Dr, Jacksonville, AR 72076 | $164,900 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Trelora Realty, Inc | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 1514 Crestwood Rd, North Little Rock, AR 72116 | $194,900 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty - NLR | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 3315 W Markham St, Little Rock, AR 72205 | $210,000 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - LR | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 2518 Riverfront Dr APT 3, Little Rock, AR 72202 | $264,900 | DOM: 41 | score=59.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 8060 Nora Ln, Sherwood, AR 72120 | $249,900 | DOM: 40 | score=59.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Michele Phillips & Co. Realtors | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 17 Summerset, Cabot, AR 72023 | $269,700 | DOM: 40 | score=59.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 6604 Corsica Dr, N Little Rock, AR 72116 | $163,000 | DOM: 40 | score=59.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Michele Phillips & Co. Realtors | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 7309 Woodside Ln, Little Rock, AR 72205 | $275,000 | DOM: 40 | score=59.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 4803 W 22nd St, Little Rock, AR 72204 | $129,500 | DOM: 33 | score=59.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 4609 Gum Springs Rd, Little Rock, AR 72209 | $110,000 | DOM: 39 | score=59.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Mid South Realty | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 8801 Patricia Lynn Ln, Sherwood, AR 72120 | $249,900 | DOM: 39 | score=59.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Big Little Brokerage | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 97 Indian Trl, Little Rock, AR 72207 | $249,900 | DOM: 39 | score=59.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Charlotte John Company (Little Rock) | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 211 Southeastern Ave, Jacksonville, AR 72076 | $250,000 | DOM: 38 | score=59.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Move Realty | Email: NONE
+2026-08-13 15:04:40,914 INFO LEAD: 1124 Mellon St, Little Rock, AR 72207 | $264,900 | DOM: 38 | score=59.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Arkansas Land & Realty, Inc | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 7404 Indiana Ave, Little Rock, AR 72207 | $225,000 | DOM: 38 | score=59.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Maumelle | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 3703 Boyd St, Little Rock, AR 72204 | $139,900 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Rock City Realty | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 5 Cliffwood Cir, N Little Rock, AR 72118 | $149,900 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Lotus Realty | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 5906 Karen Dr, North Little Rock, AR 72118 | $279,500 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 5115 N Locust St, N Little Rock, AR 72116 | $250,000 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: The Legacy Team | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 19 Creekridge Cir, Sherwood, AR 72120 | $205,000 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Epique Realty | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 609 Beaconsfield Rd, Sherwood, AR 72120 | $268,500 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Access Realty, Inc | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 37 Shaded Oaks Dr, Cabot, AR 72023 | $194,000 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 101 Richmond Ct, Jacksonville, AR 72076 | $215,000 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Edge Realty | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 38 Country Wood St, Cabot, AR 72023 | $249,000 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Cabot Branch | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 432 Nottingham Dr, Cabot, AR 72023 | $239,900 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty NLR | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 12616 Timber Hill Dr, Little Rock, AR 72211 | $225,000 | DOM: 31 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: ESQ. Realty Group | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 14 Lenora Ln, Little Rock, AR 72206 | $269,900 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Natural State Realty of Arkansas | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 314 Walnut St, Little Rock, AR 72205 | $285,000 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Engel & Volkers | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 508 W A Ave, N Little Rock, AR 72116 | $279,000 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Van Patten & Company, LLC | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 2201 West Rd, Little Rock, AR 72207 | $299,000 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Charlotte John Company (Little Rock) | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 500 Nan Cir, Little Rock, AR 72211 | $175,000 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Rackley Realty | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 13606 Woodbrook Dr, Little Rock, AR 72211 | $265,000 | DOM: 37 | score=59.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 15 Village Ct, Little Rock, AR 72209 | $130,000 | DOM: 36 | score=59.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Arkansas Property Management & Real Estate | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 125 Melville Dr, Maumelle, AR 72113 | $259,900 | DOM: 36 | score=59.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Blair & Co. Realtors | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 19 Hightrail Dr, Maumelle, AR 72113 | $249,900 | DOM: 36 | score=59.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Arkansas Property Management & Real Estate | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 107 Hemlock Ave, Sherwood, AR 72120 | $225,000 | DOM: 36 | score=59.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Maumelle | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 31 Parkview Dr, Cabot, AR 72023 | $189,500 | DOM: 36 | score=59.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CENTURY 21 Prestige Realty | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 101 Poinsetta Dr, Little Rock, AR 72205 | $179,900 | DOM: 36 | score=59.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Signature Properties | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 12601 Pleasant Forest Dr, Little Rock, AR 72212 | $229,900 | DOM: 36 | score=59.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Big Little Brokerage | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 7115 Mabelvale Cut Off Rd, Little Rock, AR 72209 | $154,900 | DOM: 36 | score=59.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Live.Love.Arkansas Realty Group | Email: NONE
+2026-08-13 15:04:40,915 INFO LEAD: 7115 Mabelvale Cut Off, Little Rock, AR 72209 | $154,900 | DOM: 36 | score=59.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LIVE. LOVE. ARKANSAS | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 1919 S Taylor St, Little Rock, AR 72204 | $155,000 | DOM: 36 | score=59.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 16 Kingspark Rd, Little Rock, AR 72227 | $219,900 | DOM: 36 | score=59.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 4801 N Vine St, North Little Rock, AR 72116 | $189,900 | DOM: 36 | score=59.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: United Real Estate - Central AR | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 4623 Stratton Ave, Little Rock, AR 72209 | $150,000 | DOM: 35 | score=58.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Simpli HOM | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 14112 John Branch Rd, Scott, AR 72142 | $279,000 | DOM: 35 | score=58.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 8516 Eastwood Creek Dr, North Little Rock, AR 72113 | $242,000 | DOM: 35 | score=58.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 7011 Southpoint Cv, North Little Rock, AR 72113 | $245,000 | DOM: 35 | score=58.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Homeward Realty | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 3044 Woodruff Creek Dr, Sherwood, AR 72120 | $264,900 | DOM: 35 | score=58.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 6308 Tall Chief Dr, N Little Rock, AR 72116 | $234,000 | DOM: 35 | score=58.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 27 Wesley Dr, Sherwood, AR 72120 | $249,900 | DOM: 35 | score=58.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Michele Phillips & Co. Realtors | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 2511 Hickorynut Ct, Little Rock, AR 72211 | $269,000 | DOM: 35 | score=58.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Arkansas Land & Realty, Inc | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 412 Shamrock Dr, Little Rock, AR 72205 | $296,500 | DOM: 35 | score=58.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: The Property Group | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 35 Clifton Dr, Little Rock, AR 72209 | $155,000 | DOM: 35 | score=58.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Simpli HOM | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 15 Penny Ln, Alexander, AR 72002 | $215,000 | DOM: 35 | score=58.8 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Epic Real Estate | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: (undisclosed Address), N Little Rock, AR 72116 | $215,000 | DOM: 34 | score=58.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 1403 Tamara Park, Jacksonville, AR 72076 | $159,500 | DOM: 34 | score=58.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Homefinders | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 7901 Illinois St, Little Rock, AR 72227 | $275,000 | DOM: 34 | score=58.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Signature Properties | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 7300 Apache Rd, Little Rock, AR 72205 | $260,000 | DOM: 34 | score=58.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Janet Jones Company | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 220 N Monroe St, Little Rock, AR 72205 | $295,000 | DOM: 34 | score=58.7 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Simpli HOM | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 4301 Orange St, N Little Rock, AR 72118 | $149,900 | DOM: 33 | score=58.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Realty One Group Lock and Key | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 30 Ledrick Cir, Mayflower, AR 72106 | $290,000 | DOM: 33 | score=58.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 2411 Lancashire Ln, Cabot, AR 72023 | $259,900 | DOM: 33 | score=58.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Signature Properties | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 207 Orchid Dr, Sherwood, AR 72120 | $200,000 | DOM: 33 | score=58.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 15 Parkridge Dr, North Little Rock, AR 72120 | $159,000 | DOM: 33 | score=58.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: McKimmey Associates REALTORS NLR | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 1311 Lee St, Jacksonville, AR 72076 | $164,900 | DOM: 33 | score=58.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: PorchLight Realty | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 20 Kingspark Rd, Little Rock, AR 72227 | $265,000 | DOM: 33 | score=58.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: RE/MAX Encore | Email: NONE
+2026-08-13 15:04:40,916 INFO LEAD: 17 Bradford Dr, Little Rock, AR 72227 | $269,900 | DOM: 33 | score=58.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: CBRPM Group | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 311 Nix Rd, Little Rock, AR 72211 | $210,000 | DOM: 33 | score=58.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Charlotte John Company (Little Rock) | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 11618 W Stoney Point Ct, Little Rock, AR 72211 | $225,000 | DOM: 33 | score=58.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Signature Properties | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 4300 N Cypress St, North Little Rock, AR 72116 | $175,000 | DOM: 33 | score=58.5 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: LPT Realty Conway | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 4 Okemah Ct, N Little Rock, AR 72116 | $285,000 | DOM: 32 | score=58.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 5404 Aviator Dr, Jacksonville, AR 72076 | $274,000 | DOM: 32 | score=58.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS NLR Branch | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 416 N Pierce St APT 34, Little Rock, AR 72205 | $155,000 | DOM: 32 | score=58.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Charlotte John Company (Little Rock) | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 41 Reservoir Heights Dr, Little Rock, AR 72227 | $175,000 | DOM: 32 | score=58.3 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Kanis Branch | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 1717 W 55th St, North Little Rock, AR 72118 | $285,000 | DOM: 31 | score=58.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Real Broker | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 15 Valewood Cv, Jacksonville, AR 72076 | $247,700 | DOM: 31 | score=58.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Keller Williams Realty | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 112 Redbird Ln, Jacksonville, AR 72076 | $225,000 | DOM: 31 | score=58.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Arnett Realty & Investments | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 1519 Glenda Dr, Little Rock, AR 72205 | $200,000 | DOM: 31 | score=58.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Truman Ball Real Estate | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 301 Kings Row Dr APT 501, Little Rock, AR 72207 | $169,900 | DOM: 31 | score=58.2 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Halsey Real Estate - Benton | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 13118 Old River Dr, Scott, AR 72142 | $230,000 | DOM: 30 | score=58.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Signature Properties | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 86 Cato Rd, Sherwood, AR 72120 | $235,475 | DOM: 30 | score=58.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Dalrymple | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 18 Stanwood Loop, North Little Rock, AR 72118 | $255,000 | DOM: 30 | score=58.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: IRealty Arkansas - Sherwood | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 6408 Windhill Dr, N Little Rock, AR 72118 | $194,900 | DOM: 30 | score=58.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Crye-Leike REALTORS Cabot Branch | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 1506 Alberta Dr, Little Rock, AR 72227 | $270,000 | DOM: 30 | score=58.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Signature Properties | Email: NONE
+2026-08-13 15:04:40,917 INFO LEAD: 8815 McKim Dr, Mabelvale, AR 72103 | $209,000 | DOM: 30 | score=58.0 | reason: passed_by_dom|base | Agent: UNKNOWN | Brokerage: Exp Realty | Email: NONE
+2026-08-13 15:04:40,917 INFO Scrape complete: Little Rock | 806 leads passed all screening gates | Apify totals — total=9 zillow=4 google=5
+2026-08-13 15:04:40,925 INFO [1/5] 806 fresh leads from Zillow
+2026-08-13 15:04:41,044 INFO [2/5] 806 after dedup
+2026-08-13 15:04:41,705 INFO Saved 19239 leads to overflow for next run
+2026-08-13 15:04:41,706 INFO Saved 791 leads to overflow for next run
+2026-08-13 15:04:41,706 INFO [3/5] Calculating offers and generating emails...
+2026-08-13 15:04:41,706 INFO [3/5] 0 ready | Skipped: 0 pitch + 15 no email
+2026-08-13 15:04:41,708 INFO No-email contact research candidates: added 15 leads needing manual research -> data/no_email_contact_research_candidates.csv
+2026-08-13 15:04:41,708 INFO [4/5] Sending emails...
+2026-08-13 15:04:41,708 INFO Starting batch | Market: little_rock | Sender: 229holdingsllc@gmail.com | Leads: 0 | Inbox 229holdingsllc@gmail.com: 0/15 sent today, 15 remaining | Global: 0/30 sent today, 30 remaining | Effective limit this batch: 15
+2026-08-13 15:04:41,708 INFO Batch complete | Sent: 0 | Failed: 0 | Market: little_rock
+2026-08-13 15:04:41,709 INFO [4/5] 0 emails sent
+2026-08-13 15:04:41,709 INFO [5/5] Pushing to GHL...
+2026-08-13 15:04:41,723 INFO Dashboard data saved: data/little_rock_leads.json (806 current scored leads)
+2026-08-13 15:04:41,723 INFO ============================================================
+2026-08-13 15:04:41,723 INFO COMPLETE: LITTLE_ROCK | Scraped: 806 | Sent: 0 | Pitch skipped: 0 | No email: 15
+2026-08-13 15:04:41,723 INFO All-time: 23 properties | 17 agents
+2026-08-13 15:04:41,723 INFO ============================================================
+2026-08-13 15:04:41,734 INFO Global: 0/30 sent today (0 prior runs + 0 this run) | Remaining: 30
+2026-08-13 15:04:41,734 INFO Waiting 3 minutes between markets...
+2026-08-13 15:07:41,734 INFO ============================================================
+2026-08-13 15:07:41,734 INFO PIPELINE: OKLAHOMA_CITY | 2026-08-13 15:07
+2026-08-13 15:07:41,734 INFO DRY RUN: False | LIMIT: 15 emails this run
+2026-08-13 15:07:41,734 INFO ============================================================
+2026-08-13 15:07:41,873 INFO Loaded 19239 overflow leads from previous run
+2026-08-13 15:07:41,876 INFO [1/5] Scraping Zillow for oklahoma_city...
+2026-08-13 15:07:41,876 INFO ============================================================
+2026-08-13 15:07:41,876 INFO SCRAPER: Oklahoma City
+2026-08-13 15:07:41,876 INFO   APIFY_ENABLED                       : True (raw='true')
+2026-08-13 15:07:41,876 INFO   EMAIL_ENRICHMENT_ENABLED            : True (raw='true')
+2026-08-13 15:07:41,877 INFO   MAX_APIFY_RUNS_PER_WORKFLOW         : 20 (EMERGENCY global cap — all actors)
+2026-08-13 15:07:41,877 INFO   MAX_ZILLOW_CALLS_PER_WORKFLOW       : 6 (Zillow only — independent of email budget)
+2026-08-13 15:07:41,877 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW: 10
+2026-08-13 15:07:41,877 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET: 5
+2026-08-13 15:07:41,877 INFO   MAX_LEADS_TO_ENRICH_PER_WORKFLOW    : 10 (top-scored leads sent to enrichment)
+2026-08-13 15:07:41,877 INFO   ENABLE_PRICE_REDUCED_OF_VARIANT     : False
+2026-08-13 15:07:41,877 INFO   Apify calls used so far — total     : 9
+2026-08-13 15:07:41,877 INFO   Apify calls used so far — zillow    : 4
+2026-08-13 15:07:41,877 INFO   Apify calls used so far — google    : 5
+2026-08-13 15:07:41,877 INFO   Planned bands                       : 4 ($30,000-$55,000 | $55,001-$80,000 | $80,001-$150,000 | $150,001-$300,000)
+2026-08-13 15:07:41,877 INFO   Planned Zillow calls this market    : 4
+2026-08-13 15:07:41,877 INFO   Planned max Google email calls      : 5 (only for top 10 scored leads)
+2026-08-13 15:07:41,877 INFO   Estimated actor calls this market   : 9 (Zillow + Google, capped)
+2026-08-13 15:07:41,877 INFO   Remaining shared budget              : 11 calls
+2026-08-13 15:07:41,877 INFO ============================================================
+2026-08-13 15:07:41,907 INFO Scraping band: $30,000-$55,000 [variant=base]
+2026-08-13 15:07:41,907 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-08-13 15:07:41,907 INFO Band $30,000-$55,000 [base]: maxResults=200 | actor call #10 (zillow call #5)
+2026-08-13 15:07:42,072 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 403 Forbidden"
+2026-08-13 15:07:42,072 ERROR APIFY QUOTA BLOCKED — preserving previous dashboard data and stopping workflow.
+2026-08-13 15:07:42,072 ERROR APIFY QUOTA BLOCKED — preserving previous dashboard data and stopping workflow.
