@@ -83884,3 +83884,5 @@
 2026-08-28 23:28:36,383 INFO All markets complete. Dashboard updated. Check GHL for contacts.
 2026-08-29 00:47:45,965 INFO Today is Saturday — pipeline only runs Tue/Wed/Thu/Fri. Exiting.
 2026-08-29 00:47:45,965 INFO Tip: use --force flag or set FORCE_RUN=true to run on any day.
+2026-08-29 02:46:02,072 INFO Today is Saturday — pipeline only runs Tue/Wed/Thu/Fri. Exiting.
+2026-08-29 02:46:02,072 INFO Tip: use --force flag or set FORCE_RUN=true to run on any day.
