@@ -83882,3 +83882,5 @@
 2026-08-28 23:28:36,381 INFO All markets complete | Sent this run: 0 | Total today: 0/30
 2026-08-28 23:28:36,383 INFO pipeline_log.json written — 0 emails this run, 0 in active queue, 26 in sent history
 2026-08-28 23:28:36,383 INFO All markets complete. Dashboard updated. Check GHL for contacts.
+2026-08-29 00:47:45,965 INFO Today is Saturday — pipeline only runs Tue/Wed/Thu/Fri. Exiting.
+2026-08-29 00:47:45,965 INFO Tip: use --force flag or set FORCE_RUN=true to run on any day.
