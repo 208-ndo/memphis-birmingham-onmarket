@@ -84810,3 +84810,135 @@
 2026-09-03 17:44:07,981 INFO All markets complete | Sent this run: 0 | Total today: 0/30
 2026-09-03 17:44:07,983 INFO pipeline_log.json written — 0 emails this run, 0 in active queue, 26 in sent history
 2026-09-03 17:44:07,983 INFO All markets complete. Dashboard updated. Check GHL for contacts.
+2026-09-03 19:41:27,357 INFO Pipeline starting | Markets: little_rock, oklahoma_city | Dry run: False | Force: False | Global cap: 30/day | Per-inbox: 15/day | Time: 19:41 UTC
+2026-09-03 19:41:27,357 INFO Global sends already today (before this run): 0/30
+2026-09-03 19:41:27,357 INFO Global: 0/30 sent today (0 prior runs + 0 this run) | Remaining: 30
+2026-09-03 19:41:27,357 INFO ============================================================
+2026-09-03 19:41:27,357 INFO PIPELINE: LITTLE_ROCK | 2026-09-03 19:41
+2026-09-03 19:41:27,357 INFO DRY RUN: False | LIMIT: 15 emails this run
+2026-09-03 19:41:27,357 INFO ============================================================
+2026-09-03 19:41:27,526 INFO Loaded 19239 overflow leads from previous run
+2026-09-03 19:41:27,530 INFO [1/5] Scraping Zillow for little_rock...
+2026-09-03 19:41:27,530 INFO ============================================================
+2026-09-03 19:41:27,530 INFO SCRAPER: Little Rock
+2026-09-03 19:41:27,531 INFO   APIFY_ENABLED                       : True (raw='true')
+2026-09-03 19:41:27,531 INFO   EMAIL_ENRICHMENT_ENABLED            : True (raw='true')
+2026-09-03 19:41:27,531 INFO   MAX_APIFY_RUNS_PER_WORKFLOW         : 20 (EMERGENCY global cap — all actors)
+2026-09-03 19:41:27,531 INFO   MAX_ZILLOW_CALLS_PER_WORKFLOW       : 6 (Zillow only — independent of email budget)
+2026-09-03 19:41:27,531 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW: 10
+2026-09-03 19:41:27,531 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET: 5
+2026-09-03 19:41:27,531 INFO   MAX_LEADS_TO_ENRICH_PER_WORKFLOW    : 10 (top-scored leads sent to enrichment)
+2026-09-03 19:41:27,531 INFO   ENABLE_PRICE_REDUCED_OF_VARIANT     : False
+2026-09-03 19:41:27,531 INFO   Apify calls used so far — total     : 0
+2026-09-03 19:41:27,531 INFO   Apify calls used so far — zillow    : 0
+2026-09-03 19:41:27,531 INFO   Apify calls used so far — google    : 0
+2026-09-03 19:41:27,531 INFO   Planned bands                       : 4 ($30,000-$55,000 | $55,001-$80,000 | $80,001-$150,000 | $150,001-$300,000)
+2026-09-03 19:41:27,531 INFO   Planned Zillow calls this market    : 4
+2026-09-03 19:41:27,531 INFO   Planned max Google email calls      : 5 (only for top 10 scored leads)
+2026-09-03 19:41:27,531 INFO   Estimated actor calls this market   : 9 (Zillow + Google, capped)
+2026-09-03 19:41:27,531 INFO   Remaining shared budget              : 20 calls
+2026-09-03 19:41:27,531 INFO ============================================================
+2026-09-03 19:41:27,587 INFO Scraping band: $30,000-$55,000 [variant=base]
+2026-09-03 19:41:27,587 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-09-03 19:41:27,587 INFO Band $30,000-$55,000 [base]: maxResults=200 | actor call #1 (zillow call #1)
+2026-09-03 19:41:28,186 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-09-03 19:41:29,309 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/15Gq8RA0N2lMz7lYo?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-09-03 19:41:38,154 INFO HTTP Request: GET https://api.apify.com/v2/datasets/cJzFzLYhkB52UKOXe/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-09-03 19:41:38,158 INFO Band $30,000-$55,000 [base]: 27 raw results
+2026-09-03 19:41:38,180 INFO Band $30,000-$55,000 [base]: raw=27 | dom30+=0 | candidates=0 | reasons: passed_by_dom=17 | reject_dom_too_low=10 | reject_missing_address_or_price=17
+2026-09-03 19:41:43,180 INFO Band $30,000-$55,000 combined: 0 unique candidates across 1 variant(s)
+2026-09-03 19:41:43,181 INFO Scraping band: $55,001-$80,000 [variant=base]
+2026-09-03 19:41:43,181 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-09-03 19:41:43,181 INFO Band $55,001-$80,000 [base]: maxResults=200 | actor call #2 (zillow call #2)
+2026-09-03 19:41:43,685 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-09-03 19:41:44,773 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/hQ9wRMjOdggyzf0e6?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-09-03 19:41:47,868 INFO HTTP Request: GET https://api.apify.com/v2/datasets/HJm7IbiOF19SrzbIV/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-09-03 19:41:47,945 INFO Band $55,001-$80,000 [base]: 64 raw results
+2026-09-03 19:41:48,012 INFO Band $55,001-$80,000 [base]: raw=64 | dom30+=0 | candidates=0 | reasons: passed_by_dom=48 | reject_dom_missing_no_keyword=1 | reject_dom_too_low=15 | reject_missing_address_or_price=48
+2026-09-03 19:41:53,012 INFO Band $55,001-$80,000 combined: 0 unique candidates across 1 variant(s)
+2026-09-03 19:41:53,012 INFO Scraping band: $80,001-$150,000 [variant=base]
+2026-09-03 19:41:53,012 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-09-03 19:41:53,012 INFO Band $80,001-$150,000 [base]: maxResults=50 | actor call #3 (zillow call #3)
+2026-09-03 19:41:53,543 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-09-03 19:41:54,623 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/hqKGN0npq8i2mLzav?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-09-03 19:41:59,729 INFO HTTP Request: GET https://api.apify.com/v2/datasets/fYXbYgKw7hGO7wAPM/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-09-03 19:41:59,948 INFO Band $80,001-$150,000 [base]: 326 raw results
+2026-09-03 19:42:00,289 INFO Band $80,001-$150,000 [base]: raw=326 | dom30+=0 | candidates=0 | reasons: passed_by_dom=245 | reject_dom_missing_no_keyword=4 | reject_dom_too_low=77 | reject_missing_address_or_price=245
+2026-09-03 19:42:05,290 INFO Band $80,001-$150,000 combined: 0 unique candidates across 1 variant(s)
+2026-09-03 19:42:05,290 INFO Scraping band: $150,001-$300,000 [variant=base]
+2026-09-03 19:42:05,290 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-09-03 19:42:05,290 INFO Band $150,001-$300,000 [base]: maxResults=50 | actor call #4 (zillow call #4)
+2026-09-03 19:42:05,680 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-09-03 19:42:06,761 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/wBNouMa5YoBmKKaS5?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-09-03 19:42:13,070 INFO HTTP Request: GET https://api.apify.com/v2/datasets/p5YjivnMoAnsfE0XO/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-09-03 19:42:13,601 INFO Band $150,001-$300,000 [base]: 797 raw results
+2026-09-03 19:42:14,409 INFO Band $150,001-$300,000 [base]: raw=797 | dom30+=0 | candidates=0 | reasons: passed_by_dom=516 | reject_dom_missing_no_keyword=14 | reject_dom_too_low=267 | reject_missing_address_or_price=516
+2026-09-03 19:42:19,410 INFO Band $150,001-$300,000 combined: 0 unique candidates across 1 variant(s)
+2026-09-03 19:42:19,410 INFO Scrape complete: Little Rock | 0 leads passed all screening gates | Apify totals — total=4 zillow=4 google=0
+2026-09-03 19:42:19,414 INFO [1/5] 0 fresh leads from Zillow
+2026-09-03 19:42:19,414 INFO [2/5] 0 after dedup
+2026-09-03 19:42:19,414 INFO No fresh leads — exiting market
+2026-09-03 19:42:20,104 INFO Saved 19239 leads to overflow for next run
+2026-09-03 19:42:20,105 INFO Dashboard data saved: data/little_rock_leads.json (0 current scored leads)
+2026-09-03 19:42:20,126 INFO Global: 0/30 sent today (0 prior runs + 0 this run) | Remaining: 30
+2026-09-03 19:42:20,127 INFO Waiting 3 minutes between markets...
+2026-09-03 19:45:20,127 INFO ============================================================
+2026-09-03 19:45:20,127 INFO PIPELINE: OKLAHOMA_CITY | 2026-09-03 19:45
+2026-09-03 19:45:20,127 INFO DRY RUN: False | LIMIT: 15 emails this run
+2026-09-03 19:45:20,127 INFO ============================================================
+2026-09-03 19:45:20,301 INFO Loaded 19239 overflow leads from previous run
+2026-09-03 19:45:20,305 INFO [1/5] Scraping Zillow for oklahoma_city...
+2026-09-03 19:45:20,305 INFO ============================================================
+2026-09-03 19:45:20,305 INFO SCRAPER: Oklahoma City
+2026-09-03 19:45:20,305 INFO   APIFY_ENABLED                       : True (raw='true')
+2026-09-03 19:45:20,305 INFO   EMAIL_ENRICHMENT_ENABLED            : True (raw='true')
+2026-09-03 19:45:20,306 INFO   MAX_APIFY_RUNS_PER_WORKFLOW         : 20 (EMERGENCY global cap — all actors)
+2026-09-03 19:45:20,306 INFO   MAX_ZILLOW_CALLS_PER_WORKFLOW       : 6 (Zillow only — independent of email budget)
+2026-09-03 19:45:20,306 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_WORKFLOW: 10
+2026-09-03 19:45:20,306 INFO   MAX_EMAIL_ENRICHMENT_CALLS_PER_MARKET: 5
+2026-09-03 19:45:20,306 INFO   MAX_LEADS_TO_ENRICH_PER_WORKFLOW    : 10 (top-scored leads sent to enrichment)
+2026-09-03 19:45:20,306 INFO   ENABLE_PRICE_REDUCED_OF_VARIANT     : False
+2026-09-03 19:45:20,306 INFO   Apify calls used so far — total     : 4
+2026-09-03 19:45:20,306 INFO   Apify calls used so far — zillow    : 4
+2026-09-03 19:45:20,306 INFO   Apify calls used so far — google    : 0
+2026-09-03 19:45:20,306 INFO   Planned bands                       : 4 ($30,000-$55,000 | $55,001-$80,000 | $80,001-$150,000 | $150,001-$300,000)
+2026-09-03 19:45:20,306 INFO   Planned Zillow calls this market    : 4
+2026-09-03 19:45:20,306 INFO   Planned max Google email calls      : 5 (only for top 10 scored leads)
+2026-09-03 19:45:20,306 INFO   Estimated actor calls this market   : 9 (Zillow + Google, capped)
+2026-09-03 19:45:20,306 INFO   Remaining shared budget              : 16 calls
+2026-09-03 19:45:20,306 INFO ============================================================
+2026-09-03 19:45:20,342 INFO Scraping band: $30,000-$55,000 [variant=base]
+2026-09-03 19:45:20,342 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-09-03 19:45:20,342 INFO Band $30,000-$55,000 [base]: maxResults=200 | actor call #5 (zillow call #5)
+2026-09-03 19:45:20,910 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-09-03 19:45:22,054 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/nxBU3h3gKRNJrGl6r?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-09-03 19:45:24,848 INFO HTTP Request: GET https://api.apify.com/v2/datasets/Y44BXpHdzO02VxUc5/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-09-03 19:45:24,851 INFO Band $30,000-$55,000 [base]: 3 raw results
+2026-09-03 19:45:24,853 INFO Band $30,000-$55,000 [base]: raw=3 | dom30+=0 | candidates=0 | reasons: passed_by_dom=1 | reject_dom_too_low=2 | reject_missing_address_or_price=1
+2026-09-03 19:45:29,853 INFO Band $30,000-$55,000 combined: 0 unique candidates across 1 variant(s)
+2026-09-03 19:45:29,853 INFO Scraping band: $55,001-$80,000 [variant=base]
+2026-09-03 19:45:29,853 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-09-03 19:45:29,853 INFO Band $55,001-$80,000 [base]: maxResults=200 | actor call #6 (zillow call #6)
+2026-09-03 19:45:30,371 INFO HTTP Request: POST https://api.apify.com/v2/acts/maxcopell~zillow-scraper/runs?timeout=180 "HTTP/1.1 201 Created"
+2026-09-03 19:45:31,453 INFO HTTP Request: GET https://api.apify.com/v2/actor-runs/Ga9UL5aWQm8qphjom?waitForFinish=999999 "HTTP/1.1 200 OK"
+2026-09-03 19:45:36,506 INFO HTTP Request: GET https://api.apify.com/v2/datasets/K47GwD2UuV6YnU6oi/items?offset=0&limit=1000 "HTTP/1.1 200 OK"
+2026-09-03 19:45:36,576 INFO Band $55,001-$80,000 [base]: 29 raw results
+2026-09-03 19:45:36,608 INFO Band $55,001-$80,000 [base]: raw=29 | dom30+=0 | candidates=0 | reasons: passed_by_dom=23 | reject_dom_too_low=6 | reject_missing_address_or_price=23
+2026-09-03 19:45:41,608 INFO Band $55,001-$80,000 combined: 0 unique candidates across 1 variant(s)
+2026-09-03 19:45:41,608 INFO Scraping band: $80,001-$150,000 [variant=base]
+2026-09-03 19:45:41,608 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-09-03 19:45:41,608 WARNING MAX_ZILLOW_CALLS_PER_WORKFLOW=6 reached (zillow=6, total=6) — stopping Zillow scrape for Oklahoma City
+2026-09-03 19:45:41,609 INFO Band $80,001-$150,000 combined: 0 unique candidates across 1 variant(s)
+2026-09-03 19:45:41,609 INFO Scraping band: $150,001-$300,000 [variant=base]
+2026-09-03 19:45:41,609 INFO URL: https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3...
+2026-09-03 19:45:41,609 WARNING MAX_ZILLOW_CALLS_PER_WORKFLOW=6 reached (zillow=6, total=6) — stopping Zillow scrape for Oklahoma City
+2026-09-03 19:45:41,609 INFO Band $150,001-$300,000 combined: 0 unique candidates across 1 variant(s)
+2026-09-03 19:45:41,609 INFO Scrape complete: Oklahoma City | 0 leads passed all screening gates | Apify totals — total=6 zillow=6 google=0
+2026-09-03 19:45:41,610 INFO [1/5] 0 fresh leads from Zillow
+2026-09-03 19:45:41,610 INFO [2/5] 0 after dedup
+2026-09-03 19:45:41,610 INFO No fresh leads — exiting market
+2026-09-03 19:45:42,298 INFO Saved 19239 leads to overflow for next run
+2026-09-03 19:45:42,298 INFO Dashboard data saved: data/oklahoma_city_leads.json (0 current scored leads)
+2026-09-03 19:45:42,319 INFO All markets complete | Sent this run: 0 | Total today: 0/30
+2026-09-03 19:45:42,321 INFO pipeline_log.json written — 0 emails this run, 0 in active queue, 26 in sent history
+2026-09-03 19:45:42,321 INFO All markets complete. Dashboard updated. Check GHL for contacts.
